@@ -12,7 +12,7 @@ namespace TodoWebApp.Controllers
     public class TodoController : ControllerBase
     {
         private readonly TodoDbContext todoDbContext;
-        private readonly ILogger<TodoController> logger;
+        private readonly ILogger logger;
 
         public TodoController(TodoDbContext todoDbContext, ILogger<TodoController> logger)
         {
