@@ -1,0 +1,1 @@
+# aspnet-core-logging
