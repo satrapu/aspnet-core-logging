@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text;
 
 namespace TodoWebApp.Logging
@@ -9,12 +10,17 @@ namespace TodoWebApp.Logging
     public static class StreamExtensions
     {
         /// <summary>
-        /// Reads the content of a given <see cref="Stream"/> instance and then resets it to the beginning.
+        /// Reads the whole content of a given <see cref="Stream"/> instance and then sets its position to its beginning.
         /// </summary>
-        /// <param name="stream">THe <see cref="Stream"/> to read and reset.</param>
+        /// <param name="stream">The <see cref="Stream"/> to read and reset.</param>
         /// <returns>The <see cref="Stream"/> contents as a <see cref="Encoding.UTF8"/> string.</returns>
-        public static string ReadContentsAndReset(this Stream stream)
+        public static string ReadAndReset(this Stream stream)
         {
+            if (stream == null)
+            {
+                throw new ArgumentNullException(nameof(stream));
+            }
+
             string result;
             stream.Seek(0, SeekOrigin.Begin);
 
