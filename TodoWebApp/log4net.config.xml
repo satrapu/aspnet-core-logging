@@ -15,12 +15,6 @@
     </layout>
   </appender>
 
-  <!--<renderer renderingClass="Todo.Api.Logging.ResourceExecutedContextRenderer, Todo.Api"
-            renderedClass="Microsoft.AspNetCore.Mvc.Filters.ResourceExecutedContext, Microsoft.AspNetCore.Mvc.Abstractions" />
-
-  <renderer renderingClass="Todo.Api.Logging.ResourceExecutingContextRenderer, Todo.Api"
-            renderedClass="Microsoft.AspNetCore.Mvc.Filters.ResourceExecutingContext, Microsoft.AspNetCore.Mvc.Abstractions" />-->
-
   <logger name="TodoWebApp">
     <level value="ALL" />
   </logger>
