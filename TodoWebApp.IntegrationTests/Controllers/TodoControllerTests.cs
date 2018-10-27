@@ -10,8 +10,9 @@ using Xunit;
 namespace TodoWebApp.IntegrationTests.Controllers
 {
     /// <summary>
+    /// <para>
     /// Contains integration tests touching <seealso cref="TodoController"/> class.
-    /// <br />
+    /// </para>
     /// Based on: https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-2.1#aspnet-core-integration-tests.
     /// </summary>
     public class TodoControllerTests : IClassFixture<WebApplicationFactory<Startup>>
@@ -187,7 +188,7 @@ namespace TodoWebApp.IntegrationTests.Controllers
                 };
 
                 // Act
-                var response = await client.PostAsJsonAsync("api/todo", newTodoItem);
+                var response = await client.PutAsJsonAsync("api/todo", newTodoItem);
 
                 // Assert
                 Assert.False(response.IsSuccessStatusCode, $"Expected to not update {nameof(TodoItem)} instance when using invalid id");
