@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using TodoWebApp.Models;
+using TodoWebApp.Services;
 
 namespace TodoWebApp.Controllers
 {
@@ -11,123 +11,86 @@ namespace TodoWebApp.Controllers
     [ApiController]
     public class TodoController : ControllerBase
     {
-        private readonly TodoDbContext todoDbContext;
+        private readonly ITodoService todoService;
         private readonly ILogger logger;
 
-        public TodoController(TodoDbContext todoDbContext, ILogger<TodoController> logger)
+        public TodoController(ITodoService todoService, ILogger<TodoController> logger)
         {
-            this.todoDbContext = todoDbContext;
-            this.logger = logger;
-
-            if (this.logger.IsEnabled(LogLevel.Debug))
-            {
-                this.logger.LogDebug(new EventId(0, "Constructor"), $"{MethodBase.GetCurrentMethod().Name}");
-            }
-
-            if (this.todoDbContext.TodoItems.Any())
-            {
-                return;
-            }
-
-            // Create a new TodoItem if collection is empty,
-            // which means you can't delete all TodoItems.
-            this.todoDbContext.TodoItems.Add(new TodoItem { Name = "Item1" });
-            this.todoDbContext.SaveChanges();
+            this.todoService = todoService ?? throw new ArgumentNullException(nameof(todoService));
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         [HttpGet]
-        public ActionResult<List<TodoItem>> GetAll()
+        public ActionResult<IList<TodoItem>> GetAll()
         {
-            if (logger.IsEnabled(LogLevel.Debug))
-            {
-                logger.LogDebug(new EventId(1, "MethodCall"), $"{MethodBase.GetCurrentMethod().Name} - BEGIN");
-            }
-
-            var result = todoDbContext.TodoItems.ToList();
-
-            if (logger.IsEnabled(LogLevel.Debug))
-            {
-                logger.LogDebug(new EventId(1, "MethodCall"), $"{MethodBase.GetCurrentMethod().Name} - END; Result={result.Count} {nameof(TodoItem)} instance(s)");
-            }
-
-            return result;
+            var todoItems = todoService.GetAll();
+            return new ActionResult<IList<TodoItem>>(todoItems);
         }
 
         [HttpGet("{id}", Name = "GetTodo")]
         public ActionResult<TodoItem> GetById(long id)
         {
-            ActionResult<TodoItem> result = null;
+            ActionResult<TodoItem> result;
+            var item = todoService.GetById(id);
 
-            try
+            if (item == null)
             {
-                if (logger.IsEnabled(LogLevel.Debug))
-                {
-                    logger.LogDebug(new EventId(1, "MethodCall"), $"{MethodBase.GetCurrentMethod().Name} - BEGIN");
-                    logger.LogDebug(new EventId(1, "MethodCall"), $"Parameter {nameof(id)}={id}");
-                }
-
-                var item = todoDbContext.TodoItems.Find(id);
-
-                if (item == null)
-                {
-                    result = NotFound();
-                }
-                else
-                {
-                    result = item;
-                }
-
-                return result;
+                result = NotFound();
             }
-            finally
+            else
             {
-                if (logger.IsEnabled(LogLevel.Debug))
-                {
-                    logger.LogDebug(new EventId(1, "MethodCall"), $"{MethodBase.GetCurrentMethod().Name} - END; Result={result}");
-                }
+                result = item;
             }
+
+            return result;
         }
 
         [HttpPost]
-        public IActionResult Create(TodoItem item)
+        public IActionResult Create(TodoItem todoItem)
         {
-            todoDbContext.TodoItems.Add(item);
-            todoDbContext.SaveChanges();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-            return CreatedAtRoute("GetTodo", new { id = item.Id }, item);
+            todoService.Add(todoItem);
+
+            return CreatedAtRoute("GetTodo", new { id = todoItem.Id }, todoItem);
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(long id, TodoItem item)
+        public IActionResult Update(long id, TodoItem todoItem)
         {
-            var existingItem = todoDbContext.TodoItems.Find(id);
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-            if (existingItem == null)
+            var existingTodoItem = todoService.GetById(id);
+
+            if (existingTodoItem == null)
             {
                 return NotFound();
             }
 
-            existingItem.IsComplete = item.IsComplete;
-            existingItem.Name = item.Name;
+            existingTodoItem.IsComplete = todoItem.IsComplete;
+            existingTodoItem.Name = todoItem.Name;
+            todoService.Update(existingTodoItem);
 
-            todoDbContext.TodoItems.Update(existingItem);
-            todoDbContext.SaveChanges();
-
-            return CreatedAtRoute("GetTodo", new { id = item.Id }, item);
+            return CreatedAtRoute("GetTodo", new { id = existingTodoItem.Id }, existingTodoItem);
         }
 
         [HttpDelete("{id}")]
         public IActionResult Delete(long id)
         {
-            var todo = todoDbContext.TodoItems.Find(id);
+            var todoItem = todoService.GetById(id);
 
-            if (todo == null)
+            if (todoItem == null)
             {
                 return NotFound();
             }
 
-            todoDbContext.TodoItems.Remove(todo);
-            todoDbContext.SaveChanges();
+            todoService.Delete(todoItem);
 
             return NoContent();
         }
