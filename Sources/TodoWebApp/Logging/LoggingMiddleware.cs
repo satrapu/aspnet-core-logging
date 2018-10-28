@@ -36,7 +36,7 @@ namespace TodoWebApp.Logging
         /// <returns></returns>
         public async Task Invoke(HttpContext context)
         {
-            if (IsTextBased(context.Request) && logger.IsEnabled(LogLevel.Debug))
+            if (logger.IsEnabled(LogLevel.Debug) && IsTextBased(context.Request))
             {
                 // Ensure request is seekable and thus can be read and reset many times, including for logging purposes
                 context.Request.EnableRewind();
