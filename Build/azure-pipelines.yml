@@ -8,6 +8,7 @@ resources:
   - repository: aspnet-core-logging
     type: github
     name: satrapu/aspnet-core-logging
+    endpoint: https://github.com/satrapu/aspnet-core-logging
 
 trigger:
   batch: true
