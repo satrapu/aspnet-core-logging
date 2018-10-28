@@ -1,0 +1,10 @@
+# Build ASP.NET Core project using Azure Pipelines
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core?view=vsts
+
+pool:
+  vmImage: 'Ubuntu 16.04'
+  
+steps:
+- script: |
+    dotnet build ./Todo.sln --configuration Release
+    dotnet test ./Tests/* --configuration Release
