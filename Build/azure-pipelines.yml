@@ -7,7 +7,7 @@ resources:
   repositories: 
   - repository: aspnet-core-logging
     type: github
-    name: satrapu/aspnet-core-logging
+    name: aspnet-core-logging@GitHub
     endpoint: https://github.com/satrapu/aspnet-core-logging
 
 trigger:
