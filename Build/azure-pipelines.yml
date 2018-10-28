@@ -10,6 +10,7 @@ resources:
     name: satrapu/aspnet-core-logging
 
 trigger:
+  batch: true
 
 # Define several jobs
 # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/multiple-phases?tabs=yaml&view=vsts
