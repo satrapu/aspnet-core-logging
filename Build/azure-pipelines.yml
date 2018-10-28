@@ -1,10 +1,78 @@
 # Build ASP.NET Core project using Azure Pipelines
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core?view=vsts
 
-pool:
-  vmImage: 'Ubuntu 16.04'
-  
-steps:
-- script: |
-    dotnet build ./Todo.sln --configuration Release
-    dotnet test ./Tests/* --configuration Release
+name: build-each-commit-from-any-branch
+
+resources:
+  repositories: 
+  - repository: aspnet-core-logging
+    type: github
+    name: satrapu/aspnet-core-logging
+
+trigger:
+
+# Define several jobs
+# See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/multiple-phases?tabs=yaml&view=vsts
+jobs:
+- job: windows
+  displayName: Build on Windows
+  continueOnError: true
+  pool:
+    vmImage: 'vs2017-win2016'
+  steps:
+  - script: dotnet build ./Todo.sln --configuration Release
+    name: build-app
+    displayName: Build application
+  - script: dotnet test ./Tests/* --configuration Release --logger trx
+    name: run-tests
+    displayName: Run tests
+  # Publish test results
+  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=vsts&tabs=yaml
+  - task: PublishTestResults@2
+    displayName: Publish test results
+    name: publish-test-results
+    inputs:
+      testResultsFormat: 'xUnit'
+      testResultsFiles: './Tests/**/TestResults/*.trx' 
+      mergeTestResults: true
+
+- job: linux
+  displayName: Build on Linux
+  continueOnError: true
+  pool:
+    vmImage: 'ubuntu-16.04'
+  steps:
+  - script: dotnet build ./Todo.sln --configuration Release
+    name: build-app
+    displayName: Build application
+  - script: dotnet test ./Tests/* --configuration Release --logger trx
+    name: run-tests
+    displayName: Run tests
+  - task: PublishTestResults@2
+    displayName: Publish test results
+    name: publish-test-results
+    inputs:
+      testResultsFormat: 'xUnit'
+      testResultsFiles: './Tests/**/TestResults/*.trx' 
+      mergeTestResults: true
+
+- job: macOS
+  displayName: Build on macOS
+  continueOnError: true
+  pool:
+    vmImage: 'macOS-10.13'
+  steps:
+  - script: dotnet build ./Todo.sln --configuration Release
+    name: build-app
+    displayName: Build application
+  - script: dotnet test ./Tests/* --configuration Release --logger trx
+    name: run-tests
+    displayName: Run tests
+
+  - task: PublishTestResults@2
+    displayName: Publish test results
+    name: publish-test-results
+    inputs:
+      testResultsFormat: 'xUnit'
+      testResultsFiles: './Tests/**/TestResults/*.trx' 
+      mergeTestResults: true
