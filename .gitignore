@@ -1,6 +1,13 @@
-﻿/.vs
+﻿# Visual Studio artifacts
+.vs/
 bin/
 obj/
 
+# Rider IDE artifacts
+.idea/
+
+# Application logs
 Logs/
+
+# Tests
 /Tests/**/TestResults/
