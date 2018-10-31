@@ -23,16 +23,16 @@ jobs:
     vmImage: 'vs2017-win2016'
   steps:
   - script: dotnet build ./Todo.sln --configuration Release
-    name: build-app
+    name: build_app
     displayName: Build application
   - script: dotnet test ./Tests/* --configuration Release --logger trx
-    name: run-tests
+    name: run_tests
     displayName: Run tests
   # Publish test results
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=vsts&tabs=yaml.
   - task: PublishTestResults@2
     displayName: Publish test results
-    name: publish-test-results
+    name: publish_test_results
     inputs:
       testResultsFormat: 'xUnit'
       testResultsFiles: './Tests/**/TestResults/*.trx' 
