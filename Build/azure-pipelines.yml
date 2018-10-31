@@ -8,6 +8,8 @@ resources:
   - repository: aspnet-core-logging
     type: github
     name: satrapu/aspnet-core-logging
+    # The value of the "endpoint" element must match the service connection name 
+    # declared in Project Settings > Service connections section of your Azure DevOps organization
     endpoint: satrapu
 
 trigger:
@@ -22,10 +24,10 @@ jobs:
   pool:
     vmImage: 'vs2017-win2016'
   steps:
-  - script: dotnet build ./Todo.sln --configuration Release
+  - script: dotnet build Todo.sln --configuration Release
     name: build_app
     displayName: Build application
-  - script: dotnet test ./Tests/* --configuration Release --logger trx
+  - script: dotnet test Todo.sln --configuration Release --logger trx
     name: run_tests
     displayName: Run tests
   # Publish test results
