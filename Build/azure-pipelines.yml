@@ -27,7 +27,7 @@ jobs:
   - script: dotnet build Todo.sln --configuration Release
     name: build_app
     displayName: Build application
-  - script: dotnet test ./Tests/*/*.csproj --configuration Release --logger trx
+  - script: dotnet test ./Tests/* --configuration Release --logger trx
     name: run_tests
     displayName: Run tests
   # Publish test results
