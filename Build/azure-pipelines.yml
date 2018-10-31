@@ -14,6 +14,9 @@ resources:
 
 trigger:
   batch: true
+  branches:
+    include:
+    - *
 
 # Define multiple jobs, one per supported OS
 # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/multiple-phases?tabs=yaml&view=vsts.
