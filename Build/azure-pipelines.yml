@@ -37,7 +37,7 @@ jobs:
     name: publish_test_results
     inputs:
       testResultsFormat: 'xUnit'
-      testResultsFiles: './Tests/**/TestResults/*.trx' 
+      testResultsFiles: './Tests/TodoWebApp.IntegrationTests/TestResults/*.trx' 
       mergeTestResults: true
 
 #- job: linux
