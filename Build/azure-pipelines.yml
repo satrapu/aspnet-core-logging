@@ -33,7 +33,7 @@ jobs:
     displayName: Publish test results
     name: publish_test_results
     inputs:
-      testResultsFormat: 'TRX'
+      testResultsFormat: 'trx'
       testResultsFiles: '**/*.TestResults.trx'
       searchFolder: '$(System.DefaultWorkingDirectory)'
       mergeTestResults: true
