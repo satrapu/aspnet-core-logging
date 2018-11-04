@@ -34,8 +34,11 @@ jobs:
     name: publish_test_results
     inputs:
       testResultsFormat: 'xUnit'
-      testResultsFiles: 'TodoWebApp.IntegrationTests.TestResults.trx'
+      testResultsFiles: '**/*.TestResults.trx'
+      searchFolder: '$(System.DefaultWorkingDirectory)'
       mergeTestResults: true
+      buildConfiguration: 'Release'
+      publishRunAttachments: true
 
 #- job: linux
 #  displayName: Build on Linux
