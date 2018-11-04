@@ -21,10 +21,10 @@ jobs:
   pool:
     vmImage: 'vs2017-win2016'
   steps:
-  - script: dotnet build Todo.sln --configuration Release
+  - script: 'dotnet build Todo.sln --configuration Release'
     name: build_app
     displayName: Build application
-  - script: dotnet test ./Tests/TodoWebApp.IntegrationTests/TodoWebApp.IntegrationTests.csproj --configuration Release --logger trx
+  - script: 'dotnet test ./Tests/TodoWebApp.IntegrationTests/TodoWebApp.IntegrationTests.csproj --configuration Release --logger "trx;LogFileName=TodoWebApp.IntegrationTests.TestResults.trx"'
     name: run_tests
     displayName: Run tests
   # Publish test results
@@ -34,7 +34,7 @@ jobs:
     name: publish_test_results
     inputs:
       testResultsFormat: 'xUnit'
-      testResultsFiles: './Tests/TodoWebApp.IntegrationTests/TestResults/*.trx' 
+      testResultsFiles: 'TodoWebApp.IntegrationTests.TestResults.trx'
       mergeTestResults: true
 
 #- job: linux
