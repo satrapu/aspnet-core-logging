@@ -24,7 +24,7 @@ jobs:
   - script: 'dotnet build Todo.sln --configuration Release'
     name: build_app
     displayName: Build application
-  - script: 'dotnet test ./Tests/TodoWebApp.IntegrationTests/TodoWebApp.IntegrationTests.csproj --configuration Release --logger "trx;LogFileName=TodoWebApp.IntegrationTests.TestResults.xml"'
+  - script: 'dotnet test ./Tests/TodoWebApp.IntegrationTests/TodoWebApp.IntegrationTests.csproj --configuration Release --logger "trx;LogFileName=TodoWebApp.IntegrationTests.TestResults.trx"'
     name: run_tests
     displayName: Run tests
   # Publish test results
@@ -33,9 +33,8 @@ jobs:
     displayName: Publish test results
     name: publish_test_results
     inputs:
-      testResultsFormat: 'xUnit'
-      testResultsFiles: '**/*.TestResults.xml'
-      searchFolder: '$(System.DefaultWorkingDirectory)'
+      testResultsFormat: 'VSTest'
+      testResultsFiles: '**/*.TestResults.trx
       mergeTestResults: true
       buildConfiguration: 'Release'
       publishRunAttachments: true
