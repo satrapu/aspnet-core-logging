@@ -1,0 +1,30 @@
+parameters:
+  name: ''
+  displayName: ''
+  pool: ''
+  build:
+    configuration: ''
+
+jobs:
+- job: ${{ parameters.name }}
+  displayName: ${{ parameters.displayName }}
+  continueOnError: true
+  pool: ${{ parameters.pool }}
+  steps:
+  - script: dotnet build Todo.sln --configuration ${{ parameters.build.configuration }}
+    name: build_app
+    displayName: Build application
+  - script: dotnet test ./Tests/TodoWebApp.IntegrationTests/TodoWebApp.IntegrationTests.csproj --configuration ${{ parameters.build.configuration }} --logger "trx;LogFileName=TodoWebApp.IntegrationTests.TestResults.trx"
+    name: run_tests
+    displayName: Run tests
+  # Publish test results
+  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=vsts&tabs=yaml.
+  - task: PublishTestResults@2
+    displayName: Publish test results
+    name: publish_test_results
+    inputs:
+      testResultsFormat: 'VSTest'
+      testResultsFiles: '**/*.TestResults.trx'
+      mergeTestResults: true
+      buildConfiguration: ${{ parameters.build.configuration }}
+      publishRunAttachments: true

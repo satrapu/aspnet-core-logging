@@ -14,69 +14,33 @@ resources:
 
 # Define multiple jobs, one per supported OS
 # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/multiple-phases?tabs=yaml&view=vsts.
+#
+# Will use job templates, since all supported operating systems will run the same jobs.
+# See mnore here: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=vsts&tabs=example#job-templates.
 jobs:
-- job: windows
-  displayName: Build on Windows
-  continueOnError: true
-  pool:
-    vmImage: 'vs2017-win2016'
-  steps:
-  - script: 'dotnet build Todo.sln --configuration Release'
-    name: build_app
-    displayName: Build application
-  - script: 'dotnet test ./Tests/TodoWebApp.IntegrationTests/TodoWebApp.IntegrationTests.csproj --configuration Release --logger "trx;LogFileName=TodoWebApp.IntegrationTests.TestResults.trx"'
-    name: run_tests
-    displayName: Run tests
-  # Publish test results
-  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=vsts&tabs=yaml.
-  - task: PublishTestResults@2
-    displayName: Publish test results
-    name: publish_test_results
-    inputs:
-      testResultsFormat: 'VSTest'
-      testResultsFiles: '**/*.TestResults.trx'
-      mergeTestResults: true
-      buildConfiguration: 'Release'
-      publishRunAttachments: true
-- job: linux
-  displayName: Build on Linux
-  continueOnError: true
-  pool:
-    vmImage: 'ubuntu-16.04'
-  steps:
-  - script: 'dotnet build Todo.sln --configuration Release'
-    name: build_app
-    displayName: Build application
-  - script: 'dotnet test ./Tests/TodoWebApp.IntegrationTests/TodoWebApp.IntegrationTests.csproj --configuration Release --logger "trx;LogFileName=TodoWebApp.IntegrationTests.TestResults.trx"'
-    name: run_tests
-    displayName: Run tests
-  - task: PublishTestResults@2
-    displayName: Publish test results
-    name: publish_test_results
-    inputs:
-      testResultsFormat: 'VSTest'
-      testResultsFiles: '**/*.TestResults.trx'
-      mergeTestResults: true
-      buildConfiguration: 'Release'
-      publishRunAttachments: true
-- job: macOS
-  displayName: Build on macOS
-  continueOnError: true
-  pool:
-    vmImage: 'macOS-10.13'
-  steps:
-  - script: 'dotnet build Todo.sln --configuration Release'
-    name: build_app
-    displayName: Build application
-  - script: 'dotnet test ./Tests/TodoWebApp.IntegrationTests/TodoWebApp.IntegrationTests.csproj --configuration Release --logger "trx;LogFileName=TodoWebApp.IntegrationTests.TestResults.trx"'
-    name: run_tests
-    displayName: Run tests
-  - task: PublishTestResults@2
-    displayName: Publish test results
-    name: publish_test_results
-    inputs:
-      testResultsFormat: 'VSTest'
-      testResultsFiles: '**/*.TestResults.trx'
-      mergeTestResults: true
-      buildConfiguration: 'Release'
-      publishRunAttachments: true
+- template: azure-pipelines.job-template.yml
+  parameters:
+    name: linux
+    displayName: Build on Linux
+    pool:
+      vmImage: 'ubuntu-16.04'
+    build:
+      configuration: 'Release'
+
+- template: azure-pipelines.job-template.yml
+  parameters:
+    name: macOS
+    displayName: Build on macOS
+    pool:
+      vmImage: 'macOS-10.13'
+    build:
+      configuration: 'Release'
+
+- template: azure-pipelines.job-template.yml
+  parameters:
+    name: windows
+    displayName: Build on Windows
+    pool:
+      vmImage: 'vs2017-win2016'
+    build:
+      configuration: 'Release'
