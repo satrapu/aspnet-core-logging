@@ -38,44 +38,45 @@ jobs:
       mergeTestResults: true
       buildConfiguration: 'Release'
       publishRunAttachments: true
-
-#- job: linux
-#  displayName: Build on Linux
-#  continueOnError: true
-#  pool:
-#    vmImage: 'ubuntu-16.04'
-#  steps:
-#  - script: dotnet build ./Todo.sln --configuration Release
-#    name: build-app
-#    displayName: Build application
-#  - script: dotnet test ./Tests/* --configuration Release --logger trx
-#    name: run-tests
-#    displayName: Run tests
-#  - task: PublishTestResults@2
-#    displayName: Publish test results
-#    name: publish-test-results
-#    inputs:
-#      testResultsFormat: 'xUnit'
-#      testResultsFiles: './Tests/**/TestResults/*.trx' 
-#      mergeTestResults: true
-#
-#- job: macOS
-#  displayName: Build on macOS
-#  continueOnError: true
-#  pool:
-#    vmImage: 'macOS-10.13'
-#  steps:
-#  - script: dotnet build ./Todo.sln --configuration Release
-#    name: build-app
-#    displayName: Build application
-#  - script: dotnet test ./Tests/* --configuration Release --logger trx
-#    name: run-tests
-#    displayName: Run tests
-#
-#  - task: PublishTestResults@2
-#    displayName: Publish test results
-#    name: publish-test-results
-#    inputs:
-#      testResultsFormat: 'xUnit'
-#      testResultsFiles: './Tests/**/TestResults/*.trx' 
-#      mergeTestResults: true
+- job: linux
+  displayName: Build on Linux
+  continueOnError: true
+  pool:
+    vmImage: 'ubuntu-16.04'
+  steps:
+  - script: 'dotnet build Todo.sln --configuration Release'
+    name: build_app
+    displayName: Build application
+  - script: 'dotnet test ./Tests/TodoWebApp.IntegrationTests/TodoWebApp.IntegrationTests.csproj --configuration Release --logger "trx;LogFileName=TodoWebApp.IntegrationTests.TestResults.trx"'
+    name: run_tests
+    displayName: Run tests
+  - task: PublishTestResults@2
+    displayName: Publish test results
+    name: publish_test_results
+    inputs:
+      testResultsFormat: 'VSTest'
+      testResultsFiles: '**/*.TestResults.trx'
+      mergeTestResults: true
+      buildConfiguration: 'Release'
+      publishRunAttachments: true
+- job: macOS
+  displayName: Build on macOS
+  continueOnError: true
+  pool:
+    vmImage: 'macOS-10.13'
+  steps:
+  - script: 'dotnet build Todo.sln --configuration Release'
+    name: build_app
+    displayName: Build application
+  - script: 'dotnet test ./Tests/TodoWebApp.IntegrationTests/TodoWebApp.IntegrationTests.csproj --configuration Release --logger "trx;LogFileName=TodoWebApp.IntegrationTests.TestResults.trx"'
+    name: run_tests
+    displayName: Run tests
+  - task: PublishTestResults@2
+    displayName: Publish test results
+    name: publish_test_results
+    inputs:
+      testResultsFormat: 'VSTest'
+      testResultsFiles: '**/*.TestResults.trx'
+      mergeTestResults: true
+      buildConfiguration: 'Release'
+      publishRunAttachments: true
