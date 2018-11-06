@@ -34,7 +34,7 @@ jobs:
     name: publish_test_results
     inputs:
       testResultsFormat: 'VSTest'
-      testResultsFiles: '**/*.TestResults.trx
+      testResultsFiles: '**/*.TestResults.trx'
       mergeTestResults: true
       buildConfiguration: 'Release'
       publishRunAttachments: true
