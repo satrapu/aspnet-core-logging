@@ -38,5 +38,5 @@ jobs:
     displayName: Publish code coverage results
     name: publish_code_coverage_results
     inputs:
-      codeCoverageTool: 'cobertura'
-      summaryFileLocation: .Tests/**/TestResults/code-coverage-data.xml
+      codeCoverageTool: 'Cobertura'
+      summaryFileLocation: '.Tests/**/TestResults/code-coverage-data.xml'
