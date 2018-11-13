@@ -38,4 +38,4 @@ jobs:
     displayName: Publish code coverage results
     name: publish_code_coverage_results
     inputs:
-    codeCoverageTool: 'cobertura'
+      codeCoverageTool: 'cobertura'
