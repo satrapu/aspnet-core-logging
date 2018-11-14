@@ -20,7 +20,7 @@ jobs:
   - script: 'dotnet tool install --global dotnet-reportgenerator-globaltool --version 4.0.3'
     name: install_reportgenerator
     displayName: Install ReportGenerator global tool
-  - script: 'dotnet reportgenerator "-reports:./Tests/*/TestResults/code-coverage-data.xml" "-targetdir:./CodeCoverageResults/.coveragereport"'
+  - script: 'reportgenerator "-reports:./Tests/*/TestResults/code-coverage-data.xml" "-targetdir:./CodeCoverageResults/.coveragereport"'
     name: generate_code_coverage_report
     displayName: Generate code coverage report
   # Publish test results
