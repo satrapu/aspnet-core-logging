@@ -17,12 +17,12 @@ jobs:
   - script: 'dotnet test ./Tests/TodoWebApp.IntegrationTests/TodoWebApp.IntegrationTests.csproj --no-build --configuration ${{ parameters.build.configuration }} --logger "trx;LogFileName=TodoWebApp.IntegrationTests.TestResults.trx" /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput="./TestResults/code-coverage-data.xml"'
     name: run_tests
     displayName: Run tests
-#  - script: dotnet tool install --global dotnet-reportgenerator-globaltool --version 4.0.3
-#    name: install_reportgenerator
-#    displayName: Install ReportGenerator global tool
-#  - script: 'dotnet reportgenerator "-reports:./Tests/*/TestResults/code-coverage-data.xml" "-targetdir:./CodeCoverageResults/.coveragereport"'
-#    name: generate_code_coverage_report
-#    displayName: Generate code coverage report
+ - script: dotnet tool install --global dotnet-reportgenerator-globaltool --version 4.0.3
+   name: install_reportgenerator
+   displayName: Install ReportGenerator global tool
+ - script: 'dotnet reportgenerator "-reports:./Tests/*/TestResults/code-coverage-data.xml" "-targetdir:./CodeCoverageResults/.coveragereport"'
+   name: generate_code_coverage_report
+   displayName: Generate code coverage report
   # Publish test results
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=vsts&tabs=yaml.
   - task: PublishTestResults@2
@@ -34,9 +34,11 @@ jobs:
       mergeTestResults: true
       buildConfiguration: ${{ parameters.build.configuration }}
       publishRunAttachments: true
+  # Publish code coverage report
+  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-code-coverage-results?view=vsts.
   - task: PublishCodeCoverageResults@1
     displayName: Publish code coverage results
     name: publish_code_coverage_results
     inputs:
       codeCoverageTool: 'Cobertura'
-      summaryFileLocation: '**/code-coverage-data.xml'
+      summaryFileLocation: './CodeCoverageResults/.coveragereport/index.htm'
