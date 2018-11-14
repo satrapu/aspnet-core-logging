@@ -17,7 +17,7 @@ jobs:
   - script: 'dotnet test ./Tests/TodoWebApp.IntegrationTests/TodoWebApp.IntegrationTests.csproj --no-build --configuration ${{ parameters.build.configuration }} --logger "trx;LogFileName=TodoWebApp.IntegrationTests.TestResults.trx" /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput="./TestResults/code-coverage-data.xml"'
     name: run_tests
     displayName: Run tests
- - script: dotnet tool install --global dotnet-reportgenerator-globaltool --version 4.0.3
+ - script: 'dotnet tool install --global dotnet-reportgenerator-globaltool --version 4.0.3'
    name: install_reportgenerator
    displayName: Install ReportGenerator global tool
  - script: 'dotnet reportgenerator "-reports:./Tests/*/TestResults/code-coverage-data.xml" "-targetdir:./CodeCoverageResults/.coveragereport"'
