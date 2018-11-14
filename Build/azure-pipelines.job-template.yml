@@ -17,11 +17,13 @@ jobs:
   - script: 'dotnet test ./Tests/TodoWebApp.IntegrationTests/TodoWebApp.IntegrationTests.csproj --no-build --configuration ${{ parameters.build.configuration }} --logger "trx;LogFileName=TodoWebApp.IntegrationTests.TestResults.trx" /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput="./TestResults/code-coverage-data.xml"'
     name: run_tests
     displayName: Run tests
-  # Install and immediately use reportgenerator tool.
-  # See more here: https://github.com/dotnet/cli/issues/8368#issuecomment-424852996.
-  - script: |
-    'dotnet tool install --global dotnet-reportgenerator-globaltool --version 4.0.3 --tool-path .'
-    './reportgenerator "-reports:./Tests/*/TestResults/code-coverage-data.xml" "-targetdir:./CodeCoverageResults/.coveragereport"'
+  - task: DotNetCoreCLI@2
+    displayName: Install reportgenerator
+    inputs:
+      command: custom
+      custom: tool
+      arguments: 'install --tool-path ./dotnet-tools dotnet-reportgenerator-globaltool --version 4.0.3'
+  - script: './dotnet-tools/reportgenerator "-reports:./Tests/*/TestResults/code-coverage-data.xml" "-targetdir:./CodeCoverageResults/.coveragereport"'
     name: generate_code_coverage_report
     displayName: Generate code coverage report
   # Publish test results
