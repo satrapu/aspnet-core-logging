@@ -20,8 +20,8 @@ jobs:
   # Install and immediately use reportgenerator tool.
   # See more here: https://github.com/dotnet/cli/issues/8368#issuecomment-424852996.
   - script: |
-    dotnet tool install --global dotnet-reportgenerator-globaltool --version 4.0.3 --tool-path .
-    ./reportgenerator "-reports:./Tests/*/TestResults/code-coverage-data.xml" "-targetdir:./CodeCoverageResults/.coveragereport"
+    'dotnet tool install --global dotnet-reportgenerator-globaltool --version 4.0.3 --tool-path .'
+    './reportgenerator "-reports:./Tests/*/TestResults/code-coverage-data.xml" "-targetdir:./CodeCoverageResults/.coveragereport"'
     name: generate_code_coverage_report
     displayName: Generate code coverage report
   # Publish test results
