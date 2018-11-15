@@ -25,7 +25,7 @@ jobs:
       command: custom
       custom: tool
       arguments: 'install --tool-path ./dotnet-tools dotnet-reportgenerator-globaltool --version 4.0.3'
-  - script: './dotnet-tools/reportgenerator "-reports:./CodeCoverage/code-coverage-data.xml" "-targetdir:./CodeCoverage/coveragereport"'
+  - script: './dotnet-tools/reportgenerator "-reports:**/CodeCoverage/code-coverage-data.xml" "-targetdir:./CodeCoverageReport"'
     name: generate_code_coverage_report
     displayName: Generate code coverage report
   # Publish test results
@@ -42,8 +42,8 @@ jobs:
   # Publish code coverage report
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-code-coverage-results?view=vsts.
   - task: PublishCodeCoverageResults@1
-    displayName: Publish code coverage results
-    name: publish_code_coverage_results
+    displayName: Publish code coverage report
+    name: publish_code_coverage_report
     inputs:
       codeCoverageTool: 'Cobertura'
-      summaryFileLocation: './CodeCoverage/coveragereport/index.htm'
+      summaryFileLocation: './CodeCoverageReport/index.htm'
