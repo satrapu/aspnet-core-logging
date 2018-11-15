@@ -23,6 +23,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <DotNetCliToolReference Include="dotnet-reportgenerator-cli" Version="4.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\Sources\TodoWebApp\TodoWebApp.csproj" />
   </ItemGroup>
 
