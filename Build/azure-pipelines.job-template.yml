@@ -14,16 +14,18 @@ jobs:
   - script: dotnet build Todo.sln --configuration ${{ parameters.build.configuration }}
     name: build_app
     displayName: Build application
-  - script: 'dotnet test ./Tests/TodoWebApp.IntegrationTests/TodoWebApp.IntegrationTests.csproj --no-build --configuration ${{ parameters.build.configuration }} --logger "trx;LogFileName=TodoWebApp.IntegrationTests.TestResults.trx" /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput="./TestResults/code-coverage-data.xml"'
+  - script: 'dotnet test ./Tests/TodoWebApp.IntegrationTests/TodoWebApp.IntegrationTests.csproj --no-build --configuration ${{ parameters.build.configuration }} --logger "trx;LogFileName=TodoWebApp.IntegrationTests.TestResults.trx" /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput="./CodeCoverage/code-coverage-data.xml"'
     name: run_tests
     displayName: Run tests
+  # Install reportgenerator tool to be able to generate code coverage HTML report
+  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/dotnet-core-cli?view=vsts
   - task: DotNetCoreCLI@2
     displayName: Install reportgenerator
     inputs:
       command: custom
       custom: tool
-      arguments: 'install --tool-path ./dotnet-tools dotnet-reportgenerator-globaltool --version 4.0.3'
-  - script: './dotnet-tools/reportgenerator "-reports:./Tests/*/TestResults/code-coverage-data.xml" "-targetdir:./CodeCoverageResults/.coveragereport"'
+      arguments: 'install --tool-path dotnet-tools dotnet-reportgenerator-globaltool --version 4.0.3'
+  - script: 'dotnet-tools/reportgenerator "-reports:./CodeCoverage/code-coverage-data.xml" "-targetdir:./CodeCoverage/coveragereport"'
     name: generate_code_coverage_report
     displayName: Generate code coverage report
   # Publish test results
@@ -44,4 +46,4 @@ jobs:
     name: publish_code_coverage_results
     inputs:
       codeCoverageTool: 'Cobertura'
-      summaryFileLocation: './CodeCoverageResults/.coveragereport/index.htm'
+      summaryFileLocation: './CodeCoverage/coveragereport/index.htm'
