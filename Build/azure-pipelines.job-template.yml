@@ -19,7 +19,7 @@ jobs:
     displayName: Run tests
   - script: |
     cd ./Tests/Tests/TodoWebApp.IntegrationTests
-    dotnet reportgenerator "-reports:**/CodeCoverage/code-coverage-data.xml" "-targetdir:./CodeCoverageReport"'
+    dotnet reportgenerator "-reports:**/CodeCoverage/code-coverage-data.xml" "-targetdir:./CodeCoverageReport"
     name: generate_code_coverage_report
     displayName: Generate code coverage report
   # Publish test results
