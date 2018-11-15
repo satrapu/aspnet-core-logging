@@ -46,5 +46,5 @@ jobs:
     name: publish_code_coverage_report
     inputs:
       codeCoverageTool: 'Cobertura'
-      summaryFileLocation: './Tests/**/CodeCoverage/code-coverage-data.xml'
+      summaryFileLocation: '**/CodeCoverage/code-coverage-data.xml'
       reportDirectory: './CodeCoverageReport'
