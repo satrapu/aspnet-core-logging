@@ -38,10 +38,8 @@ jobs:
     inputs:
       command: custom
       custom: tool
-      arguments: 'install --tool-path ./dotnet-global-tools dotnet-reportgenerator-globaltool --version 4.0.3'
-  - script: |
-      cd ./dotnet-global-tools
-      reportgenerator "-reports:**/CodeCoverage/code-coverage-data.xml" "-targetdir:./CodeCoverageReport"
+      arguments: 'install dotnet-reportgenerator-globaltool --version 4.0.3 --global'
+  - script: reportgenerator "-reports:**/CodeCoverage/code-coverage-data.xml" "-targetdir:./CodeCoverageReport"
     name: generate_code_coverage_report
     displayName: Generate code coverage report
   # Publish code coverage report
