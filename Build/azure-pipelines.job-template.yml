@@ -13,9 +13,13 @@ jobs:
   pool: ${{ parameters.pool }}
   steps:
   # Compile source code
-  - script: dotnet build Todo.sln --configuration ${{ parameters.build.configuration }}
-    name: build_app
-    displayName: Build application
+  - task: DotNetCoreCLI@2
+    displayName: Build sources
+    name: build_sources
+    inputs:
+      command: custom
+      custom: build
+      arguments: 'Todo.sln --configuration ${{ parameters.build.configuration }}'
   # Run tests
   - script: 'dotnet test ./Tests/TodoWebApp.IntegrationTests/TodoWebApp.IntegrationTests.csproj --configuration ${{ parameters.build.configuration }} --no-build --logger "trx;LogFileName=TodoWebApp.IntegrationTests.TestResults.trx" /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput="./CodeCoverage/code-coverage-data.xml"'
     name: run_tests
