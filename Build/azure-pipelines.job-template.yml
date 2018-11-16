@@ -28,8 +28,18 @@ jobs:
       command: custom
       custom: test
       projects: ./Tests/TodoWebApp.IntegrationTests/TodoWebApp.IntegrationTests.csproj
-      publishTestResults: True
-      arguments: '--configuration ${{ parameters.build.configuration }} --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput="./CodeCoverage/code-coverage-data.xml"'
+      arguments: '--configuration ${{ parameters.build.configuration }} --no-build --logger "trx;LogFileName=TodoWebApp.IntegrationTests.TestResults.trx" /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput="./CodeCoverage/code-coverage-data.xml"'
+  # Publish test results
+  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=vsts&tabs=yaml.
+  - task: PublishTestResults@2
+    displayName: Publish integration test results
+    name: publish_integration_test_results
+    inputs:
+      testResultsFormat: 'VSTest'
+      testResultsFiles: '**/*.TestResults.trx'
+      mergeTestResults: True
+      buildConfiguration: ${{ parameters.build.configuration }}
+      publishRunAttachments: True
   # Install reportgenerator tool to be able to generate code coverage HTML report
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/dotnet-core-cli?view=vsts
   - task: DotNetCoreCLI@2
