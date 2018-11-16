@@ -2,7 +2,6 @@ parameters:
   job:
     name: ''
     displayName: ''
-    enabled: 'true'
     continueOnError: 'false'
   pool: ''
   build:
@@ -11,7 +10,6 @@ parameters:
 jobs:
 - job: ${{ parameters.job.name }}
   displayName: ${{ parameters.job.displayName }}
-  enabled: ${{ parameters.job.enabled }}
   continueOnError: ${{ parameters.job.continueOnError }}
   pool: ${{ parameters.pool }}
   steps:
