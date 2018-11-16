@@ -2,8 +2,8 @@ parameters:
   job:
     name: ''
     displayName: ''
-    enabled: true
-    continueOnError: true
+    enabled: True
+    continueOnError: True
   pool: ''
   build:
     configuration: 'Release'
@@ -40,9 +40,9 @@ jobs:
     inputs:
       testResultsFormat: 'VSTest'
       testResultsFiles: '**/*.TestResults.trx'
-      mergeTestResults: true
+      mergeTestResults: True
       buildConfiguration: ${{ parameters.build.configuration }}
-      publishRunAttachments: true
+      publishRunAttachments: True
   # Publish code coverage report
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-code-coverage-results?view=vsts.
   - task: PublishCodeCoverageResults@1
