@@ -28,9 +28,8 @@ jobs:
       command: custom
       custom: test
       projects: ./Tests/TodoWebApp.IntegrationTests/TodoWebApp.IntegrationTests.csproj
-      configuration: ${{ parameters.build.configuration }}
       publishTestResults: True
-      arguments: '--no-build /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput="./CodeCoverage/code-coverage-data.xml"'
+      arguments: '--configuration ${{ parameters.build.configuration }} --no-build /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput="./CodeCoverage/code-coverage-data.xml"'
   # Install reportgenerator tool to be able to generate code coverage HTML report
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/dotnet-core-cli?view=vsts
   - task: DotNetCoreCLI@2
