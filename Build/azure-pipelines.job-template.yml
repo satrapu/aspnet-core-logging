@@ -2,7 +2,7 @@ parameters:
   job:
     name: ''
     displayName: ''
-    continueOnError: 'false'
+    continueOnError: False
   pool: ''
   build:
     configuration: 'Release'
