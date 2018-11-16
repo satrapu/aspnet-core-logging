@@ -1,14 +1,18 @@
 parameters:
-  name: ''
-  displayName: ''
+  job:
+    name: ''
+    displayName: ''
+    enabled: true
+    continueOnError: true
   pool: ''
   build:
-    configuration: ''
+    configuration: 'Release'
 
 jobs:
-- job: ${{ parameters.name }}
-  displayName: ${{ parameters.displayName }}
-  continueOnError: true
+- job: ${{ parameters.job.name }}
+  displayName: ${{ parameters.job.displayName }}
+  enabled: ${{ parameters.job.enabled }}
+  continueOnError: ${{ parameters.job.continueOnError }}
   pool: ${{ parameters.pool }}
   steps:
   - script: dotnet build Todo.sln --configuration ${{ parameters.build.configuration }}

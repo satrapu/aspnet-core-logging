@@ -20,27 +20,26 @@ resources:
 jobs:
 - template: azure-pipelines.job-template.yml
   parameters:
-    name: linux
-    displayName: Build on Linux
+    job:
+      name: linux
+      displayName: Build on Linux
+      enabled: false
     pool:
       vmImage: 'ubuntu-16.04'
-    build:
-      configuration: 'Release'
 
 - template: azure-pipelines.job-template.yml
   parameters:
-    name: macOS
-    displayName: Build on macOS
+    job:
+      name: macOS
+      displayName: Build on macOS
+      enabled: false
     pool:
       vmImage: 'macOS-10.13'
-    build:
-      configuration: 'Release'
 
 - template: azure-pipelines.job-template.yml
   parameters:
-    name: windows
-    displayName: Build on Windows
+    job:
+      name: windows
+      displayName: Build on Windows
     pool:
       vmImage: 'vs2017-win2016'
-    build:
-      configuration: 'Release'
