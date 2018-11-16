@@ -27,7 +27,7 @@ jobs:
     inputs:
       command: custom
       custom: test
-      projects: ./Tests/**/*.csproj
+      projects: ./Tests/**/.csproj
       configuration: ${{ parameters.build.configuration }}
       publishTestResults: True
       arguments: '--no-build /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput="./CodeCoverage/code-coverage-data.xml"'
