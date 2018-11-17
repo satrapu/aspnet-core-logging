@@ -12,7 +12,8 @@ jobs:
   continueOnError: False
   pool: ${{ parameters.pool }}
   steps:
-  # Compile source code
+  # Compile source code.
+  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/dotnet-core-cli?view=vsts.
   - task: DotNetCoreCLI@2
     displayName: Build sources
     name: build_sources
@@ -20,7 +21,8 @@ jobs:
       command: custom
       custom: build
       arguments: 'Todo.sln --configuration ${{ parameters.build.configuration }}'
-  # Run tests
+  # Run tests.
+  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/dotnet-core-cli?view=vsts.
   - task: DotNetCoreCLI@2
     displayName: Run integration tests
     name: run_integration_tests
@@ -29,7 +31,7 @@ jobs:
       custom: test
       projects: ./Tests/TodoWebApp.IntegrationTests/TodoWebApp.IntegrationTests.csproj
       arguments: '--configuration ${{ parameters.build.configuration }} --no-build --logger "trx;LogFileName=TodoWebApp.IntegrationTests.TestResults.trx" /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput="./CodeCoverage/code-coverage-data.xml"'
-  # Publish test results
+  # Publish test results.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=vsts&tabs=yaml.
   - task: PublishTestResults@2
     displayName: Publish integration test results
@@ -40,18 +42,21 @@ jobs:
       mergeTestResults: True
       buildConfiguration: ${{ parameters.build.configuration }}
       publishRunAttachments: True
-  # Install reportgenerator tool to be able to generate code coverage HTML report
-  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/dotnet-core-cli?view=vsts
+  # Install reportgenerator tool to be able to generate code coverage HTML report.
+  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/dotnet-core-cli?view=vsts.
   - task: DotNetCoreCLI@2
-    displayName: Install reportgenerator
+    displayName: Install code coverage report generator tool
+    name: install_code_coverage_report_generator
     inputs:
       command: custom
       custom: tool
       arguments: 'install dotnet-reportgenerator-globaltool --version 4.0.3 --tool-path .'
+  # Generate code coverage HTML report based on coverage data XML files.
+  # See more here: https://github.com/danielpalme/ReportGenerator#usage.
   - script: reportgenerator "-reports:**/CodeCoverage/code-coverage-data.xml" "-targetdir:./CodeCoverageReport"
-    name: generate_code_coverage_report
     displayName: Generate code coverage report
-  # Publish code coverage report
+    name: generate_code_coverage_report
+  # Publish code coverage report.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-code-coverage-results?view=vsts.
   - task: PublishCodeCoverageResults@1
     displayName: Publish code coverage report
