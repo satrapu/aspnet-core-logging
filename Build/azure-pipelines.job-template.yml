@@ -66,3 +66,22 @@ jobs:
       summaryFileLocation: '**/CodeCoverage/code-coverage-data.xml'
       reportDirectory: '**/CodeCoverageReport'
       additionalCodeCoverageFiles: '**/CodeCoverageReport/index.html'
+  # Install sonarscanner tool to be able to perform a SonarQube analysis.
+  # See more here: https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner+for+MSBuild.
+  - task: DotNetCoreCLI@2
+    displayName: Install sonarscanner tool
+    name: install_sonarscanner
+    inputs:
+      command: custom
+      custom: tool
+      arguments: 'install dotnet-sonarscanner --version 4.4.2 --tool-path .'
+  # Run SonarQube analysis.
+  # See more here: https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner+for+MSBuild.
+  - script: |
+      '
+      dotnet sonarscanner begin /k:"aspnet-core-logging" /s:"$(Build.SourcesDirectory)/SonarQubeAnalysis.xml"
+      dotnet build Todo.sln --configuration ${{ parameters.build.configuration }}
+      dotnet sonarscanner end
+      '
+    displayName: Run SonarQube analysis
+    name: run_sonarqube_analysis

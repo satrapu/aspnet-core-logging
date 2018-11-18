@@ -3,6 +3,9 @@
 # YAML schema reference: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=vsts&tabs=schema.
 name: build-any-commit
 
+variables:
+  - group: SonarQube
+  
 resources:
   repositories: 
   - repository: aspnet-core-logging

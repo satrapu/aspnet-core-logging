@@ -11,3 +11,6 @@ Logs/
 
 # Tests
 /Tests/**/TestResults/
+
+# SonarQube scanner artifacts
+.sonarqube/
