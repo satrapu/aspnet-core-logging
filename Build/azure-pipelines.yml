@@ -3,9 +3,6 @@
 # YAML schema reference: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=vsts&tabs=schema.
 name: build-any-commit
 
-variables:
-  - group: SonarQube
-  
 resources:
   repositories: 
   - repository: aspnet-core-logging
@@ -14,6 +11,11 @@ resources:
     # The value of the "endpoint" element must match the service connection name 
     # declared in Project Settings > Service connections section of your Azure DevOps organization
     endpoint: satrapu
+
+# Load SonarQube related variable group
+# See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/library/variable-groups?view=vsts&tabs=yaml#use-a-variable-group.
+variables:
+  - group: SonarQube
 
 # Define multiple jobs, one per supported OS
 # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/multiple-phases?tabs=yaml&view=vsts.
