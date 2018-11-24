@@ -79,9 +79,9 @@ jobs:
   # Run SonarQube analysis.
   # See more here: https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner+for+MSBuild.
   - script: |
-      dotnet $(Build.SourcesDirectory)/.custom-tools/dotnet-sonarscanner/sonarscanner begin /k:"aspnet-core-logging" /s:"$(Build.SourcesDirectory)/SonarQubeAnalysis.xml" /d:sonar.login="%SONAR_LOGIN%"
+      $(Build.SourcesDirectory)/.custom-tools/dotnet-sonarscanner/sonarscanner begin /k:"aspnet-core-logging" /s:"$(Build.SourcesDirectory)/SonarQubeAnalysis.xml" /d:sonar.login="%SONAR_LOGIN%"
       dotnet build Todo.sln --configuration ${{ parameters.build.configuration }}
-      dotnet $(Build.SourcesDirectory)/.custom-tools/dotnet-sonarscanner/sonarscanner end
+      $(Build.SourcesDirectory)/.custom-tools/dotnet-sonarscanner/sonarscanner end
     displayName: Run SonarQube analysis
     name: run_sonarqube_analysis
     enabled: true
