@@ -50,10 +50,10 @@ jobs:
     inputs:
       command: custom
       custom: tool
-      arguments: 'install dotnet-reportgenerator-globaltool --version 4.0.3 --tool-path .'
+      arguments: 'install dotnet-reportgenerator-globaltool --version 4.0.3 --tool-path $(Build.SourcesDirectory)/.custom-tools/dotnet-reportgenerator-globaltool'
   # Generate code coverage HTML report based on coverage data XML files.
   # See more here: https://github.com/danielpalme/ReportGenerator#usage.
-  - script: reportgenerator "-reports:**/CodeCoverage/code-coverage-data.xml" "-targetdir:./CodeCoverageReport"
+  - script: $(Build.SourcesDirectory)/.custom-tools/dotnet-reportgenerator-globaltool/reportgenerator "-reports:**/CodeCoverage/code-coverage-data.xml" "-targetdir:./CodeCoverageReport"
     displayName: Generate code coverage report
     name: generate_code_coverage_report
   # Publish code coverage report.
@@ -71,20 +71,20 @@ jobs:
   - task: DotNetCoreCLI@2
     displayName: Install sonarscanner tool
     name: install_sonarscanner
-    enabled: false
+    enabled: true
     inputs:
       command: custom
       custom: tool
-      arguments: 'install dotnet-sonarscanner --version 4.4.2 --tool-path .'
+      arguments: 'install dotnet-sonarscanner --version 4.4.2 --tool-path $(Build.SourcesDirectory)/.custom-tools/dotnet-sonarscanner'
   # Run SonarQube analysis.
   # See more here: https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner+for+MSBuild.
   - script: |
-      dotnet sonarscanner begin /k:"aspnet-core-logging" /s:"$(Build.SourcesDirectory)/SonarQubeAnalysis.xml" /d:sonar.login="%SONAR_LOGIN%"
+      dotnet $(Build.SourcesDirectory)/.custom-tools/dotnet-sonarscanner/sonarscanner begin /k:"aspnet-core-logging" /s:"$(Build.SourcesDirectory)/SonarQubeAnalysis.xml" /d:sonar.login="%SONAR_LOGIN%"
       dotnet build Todo.sln --configuration ${{ parameters.build.configuration }}
-      dotnet sonarscanner end
+      dotnet $(Build.SourcesDirectory)/.custom-tools/dotnet-sonarscanner/sonarscanner end
     displayName: Run SonarQube analysis
     name: run_sonarqube_analysis
-    enabled: false
+    enabled: true
     # The token used for accessing SOnarQube server is provided as a secret variable.
     # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=vsts&tabs=yaml%2Cbatch#secret-variables.
     env:
