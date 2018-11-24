@@ -1,4 +1,4 @@
-# Build ASP.NET Core project using Azure Pipelines
+# Build ASP.NET Core project using Azure Pipelines.
 # See more here: https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core?view=vsts.
 # YAML schema reference: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=vsts&tabs=schema.
 name: build-any-commit
@@ -12,12 +12,21 @@ resources:
     # declared in Project Settings > Service connections section of your Azure DevOps organization
     endpoint: satrapu
 
-# Load SonarQube related variable group
+# Build multiple branches.
+# See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/build/ci-build-git?view=vsts&tabs=yaml.
+trigger:
+ - master
+ - feature/*
+ - bugfix/*
+ - hotfix/*
+ - release/*
+
+# Load SonarQube related variable group.
 # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/library/variable-groups?view=vsts&tabs=yaml#use-a-variable-group.
 #variables:
 #  - group: sonarqube
 
-# Define multiple jobs, one per supported OS
+# Define multiple jobs, one per supported OS.
 # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/multiple-phases?tabs=yaml&view=vsts.
 #
 # Will use job templates, since all supported operating systems will run the same jobs.
