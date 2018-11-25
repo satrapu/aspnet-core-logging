@@ -12,6 +12,15 @@ jobs:
   continueOnError: False
   pool: ${{ parameters.pool }}
   steps:
+  # Install specific .NET Core SDK.
+  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/tool/dotnet-core-tool-installer?view=vsts.
+  - task: task: DotNetCoreInstaller@0
+    displayName: Install .NET Core SDK
+    name: install_dotnetcore_sdk
+    enabled: true
+    inputs:
+      packageType: 'sdk'
+      version: '2.1.500'
   # Compile source code.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/dotnet-core-cli?view=vsts.
   - task: DotNetCoreCLI@2
