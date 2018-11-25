@@ -85,7 +85,7 @@ jobs:
   # Install sonarscanner tool to be able to perform a SonarQube analysis.
   # See more here: https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner+for+MSBuild.
   - task: DotNetCoreCLI@2
-    displayName: Install sonarscanner tool
+    displayName: Install SonarQube static code analyzing CLI tool
     name: install_sonarscanner
     enabled: true
     inputs:
@@ -97,11 +97,9 @@ jobs:
   # The analysis will make use of the branch name via the "sonar.branch.name" command parameter.
   # See more here: https://sonarcloud.io/documentation/branches/overview/#analysis.
   - script: |
-      echo "SonarLoginTest=$(SonarLoginTest)"
-      echo "SonarLoginTestSecured=$(SonarLoginTestSecured)"
       dotnet-sonarscanner begin /k:"aspnet-core-logging" /s:"$(Build.SourcesDirectory)/SonarQubeAnalysis.xml" /d:sonar.login="$(SonarLogin)" /d:sonar.branch.name="$(Build.SourceBranchName)"
       dotnet build $(Build.SourcesDirectory)/Todo.sln --configuration ${{ parameters.build.configuration }}
       dotnet-sonarscanner end
-    displayName: Run SonarQube analysis
+    displayName: Run SonarQube static code analysis
     name: run_sonarqube_analysis
     enabled: true
