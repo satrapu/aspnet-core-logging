@@ -95,8 +95,8 @@ jobs:
   # Run SonarQube analysis.
   # See more here: https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner+for+MSBuild.
   - script: |
-      echo SonarLoginTest=$(SonarLoginTest)
-      echo SonarLoginTestSecured=$(SonarLoginTestSecured)
+      echo "SonarLoginTest=$(SonarLoginTest)"
+      echo "SonarLoginTestSecured=$(SonarLoginTestSecured)"
       dotnet-sonarscanner begin /k:"aspnet-core-logging" /s:"$(Build.SourcesDirectory)/SonarQubeAnalysis.xml" /d:sonar.login=$(SonarLogin)"
       dotnet build $(Build.SourcesDirectory)/Todo.sln --configuration ${{ parameters.build.configuration }}
       dotnet-sonarscanner end
