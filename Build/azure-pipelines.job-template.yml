@@ -99,7 +99,7 @@ jobs:
   - script: |
       dotnet-sonarscanner begin /k:"aspnet-core-logging" /s:"$(Build.SourcesDirectory)/SonarQubeAnalysis.xml" /d:sonar.login="$(SonarLogin)" /d:sonar.branch.name="$(Build.SourceBranchName)"
       dotnet build $(Build.SourcesDirectory)/Todo.sln --configuration ${{ parameters.build.configuration }}
-      dotnet-sonarscanner end
+      dotnet-sonarscanner end /d:sonar.login="$(SonarLogin)" /d:sonar.branch.name="$(Build.SourceBranchName)"
     displayName: Run SonarQube static code analysis
     name: run_sonarqube_analysis
     enabled: true
