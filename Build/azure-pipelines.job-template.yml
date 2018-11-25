@@ -76,17 +76,17 @@ jobs:
   - task: DotNetCoreCLI@2
     displayName: Install sonarscanner tool
     name: install_sonarscanner
-    enabled: false
+    enabled: true
     inputs:
       command: custom
       custom: tool
-      arguments: 'install dotnet-sonarscanner --global --version 4.4.2'
+      arguments: 'install dotnet-sonarscanner --version 4.4.2 --tool-path $(Build.SourcesDirectory)/.custom-tools/dotnet-sonarscanner'
   # Run SonarQube analysis.
   # See more here: https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner+for+MSBuild.
   - script: |
-      dotnet tool install dotnet-sonarscanner --version 4.4.2 --global
+      cd "$(Build.SourcesDirectory)/.custom-tools/dotnet-sonarscanner"
       dotnet sonarscanner begin /k:"aspnet-core-logging" /s:"$(Build.SourcesDirectory)/SonarQubeAnalysis.xml" /d:sonar.login="%SONAR_LOGIN%"
-      dotnet build Todo.sln --configuration ${{ parameters.build.configuration }}
+      dotnet build $(Build.SourcesDirectory)/Todo.sln --configuration ${{ parameters.build.configuration }}
       dotnet sonarscanner end
     displayName: Run SonarQube analysis
     name: run_sonarqube_analysis
