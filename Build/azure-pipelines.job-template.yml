@@ -12,11 +12,23 @@ jobs:
   continueOnError: False
   pool: ${{ parameters.pool }}
   steps:
+  # Install specific .NET Core SDK version.
+  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/tool/dotnet-core-tool-installer?view=vsts.
+  # Installing a specific .NET Core SDK version is needed to avoid installing a .NET Core global tool in a following task and then have Azure DevOps complain that it cannot find it.
+  # This issue is documented here: https://github.com/Microsoft/azure-pipelines-tasks/issues/8291.
+  - task: DotNetCoreInstaller@0
+    displayName: Install .NET Core SDK
+    name: install_dotnetcore_sdk
+    enabled: true
+    inputs:
+      packageType: 'sdk'
+      version: '2.1.500'
   # Compile source code.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/dotnet-core-cli?view=vsts.
   - task: DotNetCoreCLI@2
     displayName: Build sources
     name: build_sources
+    enabled: true
     inputs:
       command: custom
       custom: build
@@ -26,6 +38,7 @@ jobs:
   - task: DotNetCoreCLI@2
     displayName: Run integration tests
     name: run_integration_tests
+    enabled: true
     inputs:
       command: custom
       custom: test
@@ -36,6 +49,7 @@ jobs:
   - task: PublishTestResults@2
     displayName: Publish integration test results
     name: publish_integration_test_results
+    enabled: true
     inputs:
       testResultsFormat: 'VSTest'
       testResultsFiles: '**/*.TestResults.trx'
@@ -47,13 +61,14 @@ jobs:
   - task: DotNetCoreCLI@2
     displayName: Install code coverage report generator tool
     name: install_code_coverage_report_generator
+    enabled: true
     inputs:
       command: custom
       custom: tool
-      arguments: 'install dotnet-reportgenerator-globaltool --version 4.0.3 --tool-path .'
+      arguments: 'install dotnet-reportgenerator-globaltool --global --version 4.0.3'
   # Generate code coverage HTML report based on coverage data XML files.
   # See more here: https://github.com/danielpalme/ReportGenerator#usage.
-  - script: reportgenerator "-reports:**/CodeCoverage/code-coverage-data.xml" "-targetdir:./CodeCoverageReport"
+  - script: 'reportgenerator "-reports:**/CodeCoverage/code-coverage-data.xml" "-targetdir:./CodeCoverageReport"'
     displayName: Generate code coverage report
     name: generate_code_coverage_report
   # Publish code coverage report.
@@ -61,6 +76,7 @@ jobs:
   - task: PublishCodeCoverageResults@1
     displayName: Publish code coverage report
     name: publish_code_coverage_report
+    enabled: true
     inputs:
       codeCoverageTool: Cobertura
       summaryFileLocation: '**/CodeCoverage/code-coverage-data.xml'
@@ -69,23 +85,21 @@ jobs:
   # Install sonarscanner tool to be able to perform a SonarQube analysis.
   # See more here: https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner+for+MSBuild.
   - task: DotNetCoreCLI@2
-    displayName: Install sonarscanner tool
+    displayName: Install SonarQube static code analyzing CLI tool
     name: install_sonarscanner
-    enabled: false
+    enabled: true
     inputs:
       command: custom
       custom: tool
-      arguments: 'install dotnet-sonarscanner --version 4.4.2 --tool-path .'
+      arguments: 'install dotnet-sonarscanner --global --version 4.4.2'
   # Run SonarQube analysis.
   # See more here: https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner+for+MSBuild.
+  # The analysis will make use of the branch name via the "sonar.branch.name" command parameter.
+  # See more here: https://sonarcloud.io/documentation/branches/overview/#analysis.
   - script: |
-      dotnet sonarscanner begin /k:"aspnet-core-logging" /s:"$(Build.SourcesDirectory)/SonarQubeAnalysis.xml" /d:sonar.login="%SONAR_LOGIN%"
-      dotnet build Todo.sln --configuration ${{ parameters.build.configuration }}
-      dotnet sonarscanner end
-    displayName: Run SonarQube analysis
+      dotnet-sonarscanner begin /k:"aspnet-core-logging" /s:"$(Build.SourcesDirectory)/SonarQubeAnalysis.xml" /d:sonar.login="$(SonarLogin)" /d:sonar.branch.name="$(Build.SourceBranchName)"
+      dotnet build $(Build.SourcesDirectory)/Todo.sln --configuration ${{ parameters.build.configuration }}
+      dotnet-sonarscanner end /d:sonar.login="$(SonarLogin)"
+    displayName: Run SonarQube static code analysis
     name: run_sonarqube_analysis
-    enabled: false
-    # The token used for accessing SOnarQube server is provided as a secret variable.
-    # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=vsts&tabs=yaml%2Cbatch#secret-variables.
-    env:
-      SONAR_LOGIN: $(sonar.login)
+    enabled: true
