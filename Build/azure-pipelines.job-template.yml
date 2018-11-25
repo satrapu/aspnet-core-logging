@@ -68,6 +68,7 @@ jobs:
       arguments: 'install dotnet-reportgenerator-globaltool --global --version 4.0.3'
   # Generate code coverage HTML report based on coverage data XML files.
   # See more here: https://github.com/danielpalme/ReportGenerator#usage.
+  - script: 'reportgenerator "-reports:**/CodeCoverage/code-coverage-data.xml" "-targetdir:$(Build.SourcesDirectory)/CodeCoverageReport"'
     displayName: Generate code coverage report
     name: generate_code_coverage_report
   # Publish code coverage report.
