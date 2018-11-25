@@ -99,7 +99,7 @@ jobs:
   - script: |
       echo "SonarLoginTest=$(SonarLoginTest)"
       echo "SonarLoginTestSecured=$(SonarLoginTestSecured)"
-      dotnet-sonarscanner begin /k:"aspnet-core-logging" /s:"$(Build.SourcesDirectory)/SonarQubeAnalysis.xml" /d:sonar.login=$(SonarLogin)" /d:sonar.branch.name="$(Build.SourceBranchName)"
+      dotnet-sonarscanner begin /k:"aspnet-core-logging" /s:"$(Build.SourcesDirectory)/SonarQubeAnalysis.xml" /d:sonar.login="$(SonarLogin)" /d:sonar.branch.name="$(Build.SourceBranchName)"
       dotnet build $(Build.SourcesDirectory)/Todo.sln --configuration ${{ parameters.build.configuration }}
       dotnet-sonarscanner end
     displayName: Run SonarQube analysis
