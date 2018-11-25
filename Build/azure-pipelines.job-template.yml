@@ -12,8 +12,10 @@ jobs:
   continueOnError: False
   pool: ${{ parameters.pool }}
   steps:
-  # Install specific .NET Core SDK.
+  # Install specific .NET Core SDK version.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/tool/dotnet-core-tool-installer?view=vsts.
+  # Installing a specific .NET Core SDK version is needed to avoid installing a .NET Core global tool in a following task and then have Azure DevOps complain that it cannot find it.
+  # This issue is documented here: https://github.com/Microsoft/azure-pipelines-tasks/issues/8291.
   - task: DotNetCoreInstaller@0
     displayName: Install .NET Core SDK
     name: install_dotnetcore_sdk
