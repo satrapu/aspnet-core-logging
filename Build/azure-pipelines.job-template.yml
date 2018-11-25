@@ -58,7 +58,7 @@ jobs:
   # Generate code coverage HTML report based on coverage data XML files.
   # See more here: https://github.com/danielpalme/ReportGenerator#usage.
   - script: |
-      dotnet tool install dotnet-reportgenerator-globaltool --version 4.0.3 --tool-path .tools
+      dotnet tool install dotnet-reportgenerator-globaltool --version 4.0.3 --global
       reportgenerator "-reports:**/CodeCoverage/code-coverage-data.xml" "-targetdir:./CodeCoverageReport"
     displayName: Generate code coverage report
     name: generate_code_coverage_report
@@ -86,7 +86,7 @@ jobs:
   # Run SonarQube analysis.
   # See more here: https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner+for+MSBuild.
   - script: |
-      dotnet tool install dotnet-sonarscanner --version 4.4.2 --tool-path .tools
+      dotnet tool install dotnet-sonarscanner --version 4.4.2 --global
       dotnet sonarscanner begin /k:"aspnet-core-logging" /s:"$(Build.SourcesDirectory)/SonarQubeAnalysis.xml" /d:sonar.login="%SONAR_LOGIN%"
       dotnet build Todo.sln --configuration ${{ parameters.build.configuration }}
       dotnet sonarscanner end
