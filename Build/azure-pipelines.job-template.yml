@@ -68,7 +68,6 @@ jobs:
       arguments: 'install dotnet-reportgenerator-globaltool --global --version 4.0.3'
   # Generate code coverage HTML report based on coverage data XML files.
   # See more here: https://github.com/danielpalme/ReportGenerator#usage.
-  - script: 'reportgenerator "-reports:**/CodeCoverage/code-coverage-data.xml" "-targetdir:./CodeCoverageReport"'
     displayName: Generate code coverage report
     name: generate_code_coverage_report
   # Publish code coverage report.
@@ -80,8 +79,8 @@ jobs:
     inputs:
       codeCoverageTool: Cobertura
       summaryFileLocation: '**/CodeCoverage/code-coverage-data.xml'
-      reportDirectory: '**/CodeCoverageReport'
-      additionalCodeCoverageFiles: '**/CodeCoverageReport/index.html'
+      reportDirectory: '$(Build.SourcesDirectory)/CodeCoverageReport'
+      additionalCodeCoverageFiles: '$(Build.SourcesDirectory)/CodeCoverageReport/index.html'
   # Install sonarscanner tool to be able to perform a SonarQube analysis.
   # See more here: https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner+for+MSBuild.
   - task: DotNetCoreCLI@2

@@ -1,0 +1,14 @@
+{
+  "ServerUri": "https://sonarcloud.io",
+  "Organization": {
+    "Key": "satrapu-github",
+    "Name": "Bogdan Marian"
+  },
+  "ProjectKey": "aspnet-core-logging",
+  "Profiles": {
+    "CSharp": {
+      "ProfileKey": "AVxYJ9ttFTbgxqUNcKz1",
+      "ProfileTimestamp": "2018-09-06T12:06:47+03:00"
+    }
+  }
+}
