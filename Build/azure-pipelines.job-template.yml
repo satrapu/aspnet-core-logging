@@ -63,10 +63,10 @@ jobs:
     inputs:
       command: custom
       custom: tool
-      arguments: 'install dotnet-reportgenerator-globaltool --version 4.0.3 --tool-path $(Build.SourcesDirectory)/.custom-tools/dotnet-reportgenerator-globaltool'
+      arguments: 'install dotnet-reportgenerator-globaltool --global --version 4.0.3'
   # Generate code coverage HTML report based on coverage data XML files.
   # See more here: https://github.com/danielpalme/ReportGenerator#usage.
-  - script: '$(Build.SourcesDirectory)/.custom-tools/dotnet-reportgenerator-globaltool/reportgenerator "-reports:**/CodeCoverage/code-coverage-data.xml" "-targetdir:./CodeCoverageReport"'
+  - script: 'reportgenerator "-reports:**/CodeCoverage/code-coverage-data.xml" "-targetdir:./CodeCoverageReport"'
     displayName: Generate code coverage report
     name: generate_code_coverage_report
   # Publish code coverage report.
@@ -85,15 +85,14 @@ jobs:
   - task: DotNetCoreCLI@2
     displayName: Install sonarscanner tool
     name: install_sonarscanner
-    enabled: false
+    enabled: true
     inputs:
       command: custom
       custom: tool
-      arguments: 'install dotnet-sonarscanner --version 4.4.2 --tool-path $(Build.SourcesDirectory)/.custom-tools/dotnet-sonarscanner'
+      arguments: 'install dotnet-sonarscanner --global --version 4.4.2'
   # Run SonarQube analysis.
   # See more here: https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner+for+MSBuild.
   - script: |
-      dotnet tool install dotnet-sonarscanner --version 4.4.2 --tool-path $(Build.SourcesDirectory)/.custom-tools/dotnet-sonarscanner
       dotnet-sonarscanner begin /k:"aspnet-core-logging" /s:"$(Build.SourcesDirectory)/SonarQubeAnalysis.xml" /d:sonar.login="%SONAR_LOGIN%"
       dotnet build $(Build.SourcesDirectory)/Todo.sln --configuration ${{ parameters.build.configuration }}
       dotnet-sonarscanner end
