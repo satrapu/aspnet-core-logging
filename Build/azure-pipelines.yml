@@ -33,21 +33,21 @@ variables:
 # Will use job templates, since all supported operating systems will run the same jobs.
 # See mnore here: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=vsts&tabs=example#job-templates.
 jobs:
- - template: azure-pipelines.job-template.yml
-   parameters:
-     job:
-       name: linux
-       displayName: Build on Linux
-     pool:
-       vmImage: 'ubuntu-16.04'
+- template: azure-pipelines.job-template.yml
+  parameters:
+    job:
+      name: linux
+      displayName: Build on Linux
+    pool:
+      vmImage: 'ubuntu-16.04'
 
- - template: azure-pipelines.job-template.yml
-   parameters:
-     job:
-       name: macOS
-       displayName: Build on macOS
-     pool:
-       vmImage: 'macOS-10.13'
+- template: azure-pipelines.job-template.yml
+  parameters:
+    job:
+      name: macOS
+      displayName: Build on macOS
+    pool:
+      vmImage: 'macOS-10.13'
 
 - template: azure-pipelines.job-template.yml
   parameters:
