@@ -9,5 +9,6 @@
   <Property Name="sonar.projectVersion">1.0.0-SNAPSHOT</Property>
   <Property Name="sonar.sourceEncoding">UTF-8</Property>
   <Property Name="sonar.verbose">true</Property>
+  <Property Name="sonar.cs.opencover.reportsPaths">CodeCoverage/Data/*.xml</Property>
 
 </SonarQubeAnalysisProperties>
