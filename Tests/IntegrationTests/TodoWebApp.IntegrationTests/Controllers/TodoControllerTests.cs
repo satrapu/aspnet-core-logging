@@ -11,7 +11,7 @@ namespace TodoWebApp.IntegrationTests.Controllers
 {
     /// <summary>
     /// <para>
-    /// Contains integration tests touching <seealso cref="TodoController"/> class.
+    /// Contains integration tests targeting <seealso cref="TodoController"/> class.
     /// </para>
     /// Based on: https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-2.1#aspnet-core-integration-tests.
     /// </summary>
@@ -48,7 +48,9 @@ namespace TodoWebApp.IntegrationTests.Controllers
                 //var todoItems = JsonConvert.DeserializeObject<List<TodoItem>>(responseContent);
                 // Solution #2: response.Content.ReadAsAsync<List<TodoItem>>
                 var todoItems = await response.Content.ReadAsAsync<List<TodoItem>>();
-                Assert.True(todoItems.TrueForAll(todoItem => todoItem != null && todoItem.Id >= 1 && !string.IsNullOrWhiteSpace(todoItem.Name)),
+                Assert.True(todoItems.TrueForAll(todoItem => todoItem != null
+                                                             && todoItem.Id >= 1
+                                                             && !string.IsNullOrWhiteSpace(todoItem.Name)),
                     $"List must contain non-null {nameof(TodoItem)} instances");
             }
         }
@@ -115,7 +117,8 @@ namespace TodoWebApp.IntegrationTests.Controllers
                 var response = await client.PostAsJsonAsync("api/todo", newTodoItem);
 
                 // Assert
-                Assert.False(response.IsSuccessStatusCode, $"Expected to not create new {nameof(TodoItem)} when using invalid id");
+                Assert.False(response.IsSuccessStatusCode,
+                    $"Expected to not create new {nameof(TodoItem)} when using invalid id");
             }
         }
 
@@ -140,7 +143,8 @@ namespace TodoWebApp.IntegrationTests.Controllers
                     IsComplete = isComplete
                 };
                 var response = await client.PostAsJsonAsync("api/todo", newTodoItem);
-                Assert.True(response.IsSuccessStatusCode, $"Expected to create a new valid {nameof(TodoItem)} instance");
+                Assert.True(response.IsSuccessStatusCode,
+                    $"Expected to create a new valid {nameof(TodoItem)} instance");
 
                 var updateTodoItem = new TodoItem
                 {
@@ -153,7 +157,8 @@ namespace TodoWebApp.IntegrationTests.Controllers
                 response = await client.PutAsJsonAsync($"api/todo/{updateTodoItem.Id}", updateTodoItem);
 
                 // Assert
-                Assert.True(response.IsSuccessStatusCode, $"Expected to update existing valid {nameof(TodoItem)} instance");
+                Assert.True(response.IsSuccessStatusCode,
+                    $"Expected to update existing valid {nameof(TodoItem)} instance");
 
                 var existingTodoItem = await response.Content.ReadAsAsync<TodoItem>();
                 Assert.Equal(updateTodoItem.Name, existingTodoItem.Name);
@@ -191,7 +196,8 @@ namespace TodoWebApp.IntegrationTests.Controllers
                 var response = await client.PutAsJsonAsync("api/todo", newTodoItem);
 
                 // Assert
-                Assert.False(response.IsSuccessStatusCode, $"Expected to not update {nameof(TodoItem)} instance when using invalid id");
+                Assert.False(response.IsSuccessStatusCode,
+                    $"Expected to not update {nameof(TodoItem)} instance when using invalid id");
             }
         }
     }

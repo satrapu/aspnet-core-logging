@@ -32,8 +32,19 @@ jobs:
     inputs:
       command: custom
       custom: build
-      arguments: 'Todo.sln --configuration ${{ parameters.build.configuration }}'
-  # Run tests.
+      arguments: '$(Build.SourcesDirectory)/Todo.sln --configuration ${{ parameters.build.configuration }}'
+  # Run unit tests.
+  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/dotnet-core-cli?view=vsts.
+  - task: DotNetCoreCLI@2
+    displayName: Run unit tests
+    name: run_unit_tests
+    enabled: true
+    inputs:
+      command: custom
+      custom: test
+      projects: ./Tests/UnitTests/TodoWebApp.UnitTests/TodoWebApp.UnitTests.csproj
+      arguments: '--configuration ${{ parameters.build.configuration }} --no-build --logger "trx;LogFileName=TodoWebApp.UnitTests.TestResults.trx" /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput="$(Build.SourcesDirectory)/CodeCoverage/coverage-data-for-unit-tests.xml"'
+  # Run integration tests.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/dotnet-core-cli?view=vsts.
   - task: DotNetCoreCLI@2
     displayName: Run integration tests
@@ -42,13 +53,13 @@ jobs:
     inputs:
       command: custom
       custom: test
-      projects: ./Tests/TodoWebApp.IntegrationTests/TodoWebApp.IntegrationTests.csproj
-      arguments: '--configuration ${{ parameters.build.configuration }} --no-build --logger "trx;LogFileName=TodoWebApp.IntegrationTests.TestResults.trx" /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput="./CodeCoverage/code-coverage-data.xml"'
+      projects: ./Tests/IntegrationTests/TodoWebApp.IntegrationTests/TodoWebApp.IntegrationTests.csproj
+      arguments: '--configuration ${{ parameters.build.configuration }} --no-build --logger "trx;LogFileName=TodoWebApp.IntegrationTests.TestResults.trx" /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput="$(Build.SourcesDirectory)/CodeCoverage/coverage-data-for-integration-tests.xml"'
   # Publish test results.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=vsts&tabs=yaml.
   - task: PublishTestResults@2
-    displayName: Publish integration test results
-    name: publish_integration_test_results
+    displayName: Publish test results
+    name: publish_test_results
     enabled: true
     inputs:
       testResultsFormat: 'VSTest'
@@ -68,7 +79,7 @@ jobs:
       arguments: 'install dotnet-reportgenerator-globaltool --global --version 4.0.3'
   # Generate code coverage HTML report based on coverage data XML files.
   # See more here: https://github.com/danielpalme/ReportGenerator#usage.
-  - script: 'reportgenerator "-reports:**/CodeCoverage/code-coverage-data.xml" "-targetdir:$(Build.SourcesDirectory)/CodeCoverageReport"'
+  - script: 'reportgenerator "-reports:$(Build.SourcesDirectory)/CodeCoverage/coverage-data-*.xml" "-targetdir:$(Build.SourcesDirectory)/CodeCoverageReport"'
     displayName: Generate code coverage report
     name: generate_code_coverage_report
   # Publish code coverage report.
@@ -79,7 +90,7 @@ jobs:
     enabled: true
     inputs:
       codeCoverageTool: Cobertura
-      summaryFileLocation: '**/CodeCoverage/code-coverage-data.xml'
+      summaryFileLocation: '$(Build.SourcesDirectory)/CodeCoverage/code-coverage-data-*.xml'
       reportDirectory: '$(Build.SourcesDirectory)/CodeCoverageReport'
       additionalCodeCoverageFiles: '$(Build.SourcesDirectory)/CodeCoverageReport/index.html'
   # Install sonarscanner tool to be able to perform a SonarQube analysis.
@@ -97,7 +108,7 @@ jobs:
   # The analysis will make use of the branch name via the "sonar.branch.name" command parameter.
   # See more here: https://sonarcloud.io/documentation/branches/overview/#analysis.
   - script: |
-      dotnet-sonarscanner begin /k:"aspnet-core-logging" /s:"$(Build.SourcesDirectory)/SonarQubeAnalysis.xml" /d:sonar.login="$(SonarLogin)" /d:sonar.branch.name="$(Build.SourceBranchName)"
+      dotnet-sonarscanner begin /k:"aspnet-core-logging" /s:"$(Build.SourcesDirectory)/Build/SonarQubeAnalysis.xml" /d:sonar.login="$(SonarLogin)" /d:sonar.branch.name="$(Build.SourceBranchName)"
       dotnet build $(Build.SourcesDirectory)/Todo.sln --configuration ${{ parameters.build.configuration }}
       dotnet-sonarscanner end /d:sonar.login="$(SonarLogin)"
     displayName: Run SonarQube static code analysis

@@ -4,7 +4,7 @@ namespace TodoWebApp.Models
 {
     public class TodoDbContext : DbContext
     {
-        public TodoDbContext(DbContextOptions<TodoDbContext> options): base(options)
+        public TodoDbContext(DbContextOptions options): base(options)
         {
         }
 
