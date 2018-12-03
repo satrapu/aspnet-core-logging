@@ -98,7 +98,7 @@ jobs:
   # Generate code coverage HTML report based on coverage data XML files.
   # See more here: https://github.com/danielpalme/ReportGenerator#usage.
   # See more about the output formats here: https://github.com/danielpalme/ReportGenerator/wiki/Output-formats.
-  - script: 'reportgenerator "-reports:$(Build.SourcesDirectory)/CodeCoverage/Results/*.xml" "-targetdir:$(Build.SourcesDirectory)/CodeCoverage/Report" "-reporttypes:HtmlInline_AzurePipelines"'
+  - script: 'reportgenerator "-reports:$(Build.SourcesDirectory)/CodeCoverage/Results/*.xml" "-targetdir:$(Build.SourcesDirectory)/CodeCoverage/Report" "-reporttypes:HtmlInline"'
     displayName: Generate code coverage report
     name: generate_code_coverage_report
   # Publish code coverage report.
@@ -108,7 +108,7 @@ jobs:
     name: publish_code_coverage_report
     enabled: true
     inputs:
-      codeCoverageTool: Cobertura
+      codeCoverageTool: 'cobertura'
       summaryFileLocation: '$(Build.SourcesDirectory)/CodeCoverage/Results/*.xml'
       reportDirectory: '$(Build.SourcesDirectory)/CodeCoverage/Report'
       additionalCodeCoverageFiles: '$(Build.SourcesDirectory)/CodeCoverage/Report/index.html'
