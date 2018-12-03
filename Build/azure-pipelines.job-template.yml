@@ -43,7 +43,7 @@ jobs:
       command: custom
       custom: test
       projects: ./Tests/UnitTests/TodoWebApp.UnitTests/TodoWebApp.UnitTests.csproj
-      arguments: '--configuration ${{ parameters.build.configuration }} --no-build --logger "trx;LogFileName=TodoWebApp.UnitTests.TestResults.trx" /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput="$(Build.SourcesDirectory)/CodeCoverage/coverage-data-for-unit-tests.xml"'
+      arguments: '--configuration ${{ parameters.build.configuration }} --no-build --logger "trx;LogFileName=TodoWebApp.UnitTests.TestResults.trx" /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput="$(Build.SourcesDirectory)/CodeCoverage/Results/TodoWebApp.UnitTests.cobertura.xml"'
   # Run integration tests.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/dotnet-core-cli?view=vsts.
   - task: DotNetCoreCLI@2
@@ -54,7 +54,7 @@ jobs:
       command: custom
       custom: test
       projects: ./Tests/IntegrationTests/TodoWebApp.IntegrationTests/TodoWebApp.IntegrationTests.csproj
-      arguments: '--configuration ${{ parameters.build.configuration }} --no-build --logger "trx;LogFileName=TodoWebApp.IntegrationTests.TestResults.trx" /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput="$(Build.SourcesDirectory)/CodeCoverage/coverage-data-for-integration-tests.xml"'
+      arguments: '--configuration ${{ parameters.build.configuration }} --no-build --logger "trx;LogFileName=TodoWebApp.IntegrationTests.TestResults.trx" /p:CollectCoverage=true /p:CoverletOutputFormat=cobertura /p:CoverletOutput="$(Build.SourcesDirectory)/CodeCoverage/Results/TodoWebApp.IntegrationTests.cobertura.xml"'
   # Publish test results.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=vsts&tabs=yaml.
   - task: PublishTestResults@2
@@ -79,7 +79,7 @@ jobs:
       arguments: 'install dotnet-reportgenerator-globaltool --global --version 4.0.3'
   # Generate code coverage HTML report based on coverage data XML files.
   # See more here: https://github.com/danielpalme/ReportGenerator#usage.
-  - script: 'reportgenerator "-reports:$(Build.SourcesDirectory)/CodeCoverage/coverage-data-*.xml" "-targetdir:$(Build.SourcesDirectory)/CodeCoverageReport"'
+  - script: 'reportgenerator "-reports:$(Build.SourcesDirectory)/CodeCoverage/Results/*.cobertura.xml" "-targetdir:$(Build.SourcesDirectory)/CodeCoverage/Report"'
     displayName: Generate code coverage report
     name: generate_code_coverage_report
   # Publish code coverage report.
@@ -90,9 +90,9 @@ jobs:
     enabled: true
     inputs:
       codeCoverageTool: Cobertura
-      summaryFileLocation: '$(Build.SourcesDirectory)/CodeCoverage/code-coverage-data-*.xml'
-      reportDirectory: '$(Build.SourcesDirectory)/CodeCoverageReport'
-      additionalCodeCoverageFiles: '$(Build.SourcesDirectory)/CodeCoverageReport/index.html'
+      summaryFileLocation: '$(Build.SourcesDirectory)/CodeCoverage/Results/*.cobertura.xml'
+      reportDirectory: '$(Build.SourcesDirectory)/CodeCoverage/Report'
+      additionalCodeCoverageFiles: '$(Build.SourcesDirectory)/CodeCoverage/Report/index.html'
   # Install sonarscanner tool to be able to perform a SonarQube analysis.
   # See more here: https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner+for+MSBuild.
   - task: DotNetCoreCLI@2
