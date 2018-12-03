@@ -31,7 +31,7 @@ variables:
 # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/multiple-phases?tabs=yaml&view=vsts.
 #
 # Will use job templates, since all supported operating systems will run the same jobs.
-# See mnore here: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=vsts&tabs=example#job-templates.
+# See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=vsts&tabs=example#job-templates.
 jobs:
 - template: azure-pipelines.job-template.yml
   parameters:
