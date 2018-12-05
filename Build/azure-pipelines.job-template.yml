@@ -101,12 +101,13 @@ jobs:
   - script: 'reportgenerator "-reports:$(Build.SourcesDirectory)/CodeCoverage/Results/*.xml" "-targetdir:$(Build.SourcesDirectory)/CodeCoverage/Report" "-reporttypes:HtmlInline"'
     displayName: Generate code coverage report
     name: generate_code_coverage_report
+    enabled: false
   # Publish code coverage report.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-code-coverage-results?view=vsts.
   - task: PublishCodeCoverageResults@1
     displayName: Publish code coverage report
     name: publish_code_coverage_report
-    enabled: true
+    enabled: false
     inputs:
       codeCoverageTool: 'cobertura'
       summaryFileLocation: '$(Build.SourcesDirectory)/CodeCoverage/Results/*.xml'
