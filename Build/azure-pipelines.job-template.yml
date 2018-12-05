@@ -62,7 +62,7 @@ jobs:
       configuration: ${{ parameters.build.configuration }}
       nobuild: True
       publishTestResults: False
-      arguments: '--filter "FullyQualifiedName~UnitTests" /p:CollectCoverage=True'
+      arguments: '--filter "FullyQualifiedName~UnitTests" --results-directory "./TestResults" --logger "trx;LogFileName=TestResults.trx" /p:CollectCoverage=True'
   # Run integration tests.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/dotnet-core-cli?view=vsts.
   - task: DotNetCoreCLI@2
@@ -75,7 +75,7 @@ jobs:
       configuration: ${{ parameters.build.configuration }}
       nobuild: True
       publishTestResults: False
-      arguments: '--filter "FullyQualifiedName~IntegrationTests" /p:CollectCoverage=True'
+      arguments: '--filter "FullyQualifiedName~IntegrationTests" --results-directory "./TestResults" --logger "trx;LogFileName=TestResults.trx" /p:CollectCoverage=True'
   # Publish test results.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=vsts&tabs=yaml.
   - task: PublishTestResults@2
@@ -84,7 +84,7 @@ jobs:
     enabled: True
     inputs:
       testResultsFormat: 'VSTest'
-      testResultsFiles: '$(Build.SourcesDirectory)/**/*.trx'
+      testResultsFiles: '$(Build.SourcesDirectory)/Tests/**/*.trx'
       mergeTestResults: True
       buildConfiguration: ${{ parameters.build.configuration }}
       publishRunAttachments: True
