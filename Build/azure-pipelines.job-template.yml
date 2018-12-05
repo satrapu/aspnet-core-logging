@@ -53,27 +53,15 @@ jobs:
       configuration: ${{ parameters.build.configuration }}
       noCache: False
   # Run unit tests.
-  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/dotnet-core-cli?view=vsts.
-  - task: DotNetCoreCLI@2
+  - script: 'dotnet test $(Build.SourcesDirectory)/Todo.sln --configuration ${{ parameters.build.configuration }} --filter "FullyQualifiedName~UnitTests" --no-build --logger "trx;LogFileName=TestsResults.trx" /p:CollectCoverage=true'
     displayName: Run unit tests
     name: run_unit_tests
     enabled: true
-    inputs:
-      command: custom
-      custom: test
-      projects: $(Build.SourcesDirectory)/Todo.sln
-      arguments: '--configuration ${{ parameters.build.configuration }} --filter "FullyQualifiedName~UnitTests" --no-build --logger "trx;LogFileName=TestsResults.trx" /p:CollectCoverage=true'
   # Run integration tests.
-  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/dotnet-core-cli?view=vsts.
-  - task: DotNetCoreCLI@2
+  - script: 'dotnet test $(Build.SourcesDirectory)/Todo.sln --configuration ${{ parameters.build.configuration }} --filter "FullyQualifiedName~IntegrationTests" --no-build --logger "trx;LogFileName=TestsResults.trx" /p:CollectCoverage=true'
     displayName: Run integration tests
     name: run_integration_tests
     enabled: True
-    inputs:
-      command: custom
-      custom: test
-      projects: $(Build.SourcesDirectory)/Todo.sln
-      arguments: '--configuration ${{ parameters.build.configuration }} --filter "FullyQualifiedName~IntegrationTests" --no-build --logger "trx;LogFileName=TestsResults.trx" /p:CollectCoverage=true'
   # Publish test results.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=vsts&tabs=yaml.
   - task: PublishTestResults@2
