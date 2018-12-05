@@ -59,7 +59,7 @@ jobs:
     inputs:
       command: test
       projects: $(Build.SourcesDirectory)/Todo.sln
-      arguments: '--filter "FullyQualifiedName~.UnitTests." --configuration ${{ parameters.build.configuration }} --no-build --results-directory "./TestsResults" --logger "trx;LogFileName=TestResults.trx" /p:CollectCoverage=true'
+      arguments: '--filter "FullyQualifiedName~UnitTests" --configuration ${{ parameters.build.configuration }} --no-build /p:CollectCoverage=true'
   # Run integration tests.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/dotnet-core-cli?view=vsts.
   - task: DotNetCoreCLI@2
@@ -69,7 +69,7 @@ jobs:
     inputs:
       command: test
       projects: $(Build.SourcesDirectory)/Todo.sln
-      arguments: '--filter "FullyQualifiedName~.IntegrationTests." --configuration ${{ parameters.build.configuration }} --no-build --results-directory "./TestsResults" --logger "trx;LogFileName=TestResults.trx" /p:CollectCoverage=true'
+      arguments: '--filter "FullyQualifiedName~IntegrationTests" --configuration ${{ parameters.build.configuration }} --no-build /p:CollectCoverage=true'
   # Publish test results.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=vsts&tabs=yaml.
   - task: PublishTestResults@2
