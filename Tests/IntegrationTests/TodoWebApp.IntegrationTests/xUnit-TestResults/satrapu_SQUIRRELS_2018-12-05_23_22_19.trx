@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TestRun id="a8f9dae2-2521-40a0-90c4-5f1a740dc74b" name="satrapu@SQUIRRELS 2018-12-05 23:22:19" runUser="SQUIRRELS\satrapu" xmlns="http://microsoft.com/schemas/VisualStudio/TeamTest/2010">
+  <Times creation="2018-12-05T23:22:19.8378055+02:00" queuing="2018-12-05T23:22:19.8378056+02:00" start="2018-12-05T23:22:17.7750534+02:00" finish="2018-12-05T23:22:19.8475540+02:00" />
+  <TestSettings name="default" id="f80c47d2-4410-4dca-96e0-5dccbe5a28a5">
+    <Deployment runDeploymentRoot="satrapu_SQUIRRELS_2018-12-05_23_22_19" />
+  </TestSettings>
+  <TestLists>
+    <TestList name="Results Not in a List" id="8c84fa94-04c1-424b-9868-57a2d4851a1d" />
+    <TestList name="All Loaded Results" id="19431567-8539-422a-85d7-44ee4e166bda" />
+  </TestLists>
+  <ResultSummary outcome="Completed">
+    <Counters total="0" executed="0" passed="0" failed="0" error="0" timeout="0" aborted="0" inconclusive="0" passedButRunAborted="0" notRunnable="0" notExecuted="0" disconnected="0" warning="0" completed="0" inProgress="0" pending="0" />
+    <Output>
+      <StdOut>[xUnit.net 00:00:00.00] xUnit.net VSTest Adapter v2.4.1 (64-bit .NET Core 4.6.27019.06)[xUnit.net 00:00:01.12]   Discovering: TodoWebApp.IntegrationTests[xUnit.net 00:00:01.20]   Discovered:  TodoWebApp.IntegrationTests[xUnit.net 00:00:01.21]   Starting:    TodoWebApp.IntegrationTests[xUnit.net 00:00:01.25]   Finished:    TodoWebApp.IntegrationTests</StdOut>
+    </Output>
+    <RunInfos>
+      <RunInfo computerName="SQUIRRELS" outcome="Warning" timestamp="2018-12-05T23:22:19.7320347+02:00">
+        <Text>No test matches the given testcase filter `FullyQualifiedName~UnitTests` in E:\Satrapu\Programming\dotNET\Projects\aspnet-core-logging\Tests\IntegrationTests\TodoWebApp.IntegrationTests\bin\Debug\netcoreapp2.1\TodoWebApp.IntegrationTests.dll</Text>
+      </RunInfo>
+    </RunInfos>
+  </ResultSummary>
+</TestRun>

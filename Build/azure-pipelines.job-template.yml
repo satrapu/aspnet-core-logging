@@ -28,7 +28,7 @@ jobs:
   - task: DotNetCoreCLI@2
     displayName: Install SonarQube static code analyzing CLI tool
     name: install_sonarscanner
-    enabled: true
+    enabled: false
     inputs:
       command: custom
       custom: tool
@@ -40,7 +40,7 @@ jobs:
   - script: dotnet-sonarscanner begin /k:"aspnet-core-logging" /s:"$(Build.SourcesDirectory)/Build/SonarQubeAnalysis.xml" /d:sonar.login="$(SonarLogin)" /d:sonar.branch.name="$(Build.SourceBranchName)"
     displayName: Prepare SonarQube analysis
     name: prepare_sonarqube_analysis
-    enabled: true
+    enabled: false
   # Compile source code.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/dotnet-core-cli?view=vsts.
   - task: DotNetCoreCLI@2
@@ -48,8 +48,7 @@ jobs:
     name: build_sources
     enabled: true
     inputs:
-      command: custom
-      custom: build
+      command: build
       arguments: '$(Build.SourcesDirectory)/Todo.sln --configuration ${{ parameters.build.configuration }}'
   # Run unit tests.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/dotnet-core-cli?view=vsts.
@@ -58,10 +57,9 @@ jobs:
     name: run_unit_tests
     enabled: true
     inputs:
-      command: custom
-      custom: test
-      projects: $(Build.SourcesDirectory)/Todo.sln
-      arguments: '--filter "FullyQualifiedName~.UnitTests." --configuration ${{ parameters.build.configuration }} --no-build --logger "trx;LogFileName=TestResults.trx" /p:CollectCoverage=true'
+      command: test
+      projects: '$(Build.SourcesDirectory)/Todo.sln'
+      arguments: '--filter "FullyQualifiedName~UnitTests" --configuration ${{ parameters.build.configuration }} --no-build --logger "trx;LogFileName=TestResults.trx" --results-directory ".TestResults" /p:CollectCoverage=true'
   # Run integration tests.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/dotnet-core-cli?view=vsts.
   - task: DotNetCoreCLI@2
@@ -69,10 +67,9 @@ jobs:
     name: run_integration_tests
     enabled: true
     inputs:
-      command: custom
-      custom: test
-      projects: $(Build.SourcesDirectory)/Todo.sln
-      arguments: '--filter "FullyQualifiedName~.IntegrationTests." --configuration ${{ parameters.build.configuration }} --no-build --logger "trx;LogFileName=TestResults.trx" /p:CollectCoverage=true'
+      command: test
+      projects: '$(Build.SourcesDirectory)/Todo.sln'
+      arguments: '--filter "FullyQualifiedName~IntegrationTests" --configuration ${{ parameters.build.configuration }} --no-build --logger "trx;LogFileName=TestResults.trx" --results-directory ".TestResults" /p:CollectCoverage=true'
   # Publish test results.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=vsts&tabs=yaml.
   - task: PublishTestResults@2
@@ -80,8 +77,8 @@ jobs:
     name: publish_test_results
     enabled: true
     inputs:
-      testResultsFormat: 'VSTest'
-      testResultsFiles: '$(Build.SourcesDirectory)/Tests/**/*.trx'
+      testResultsFormat: 'xUnit'
+      testResultsFiles: '$(Build.SourcesDirectory)/Tests/**/.TestResults/TestResults.trx'
       mergeTestResults: True
       buildConfiguration: ${{ parameters.build.configuration }}
       publishRunAttachments: True
@@ -90,7 +87,7 @@ jobs:
   - task: DotNetCoreCLI@2
     displayName: Install code coverage report generator tool
     name: install_code_coverage_report_generator
-    enabled: true
+    enabled: false
     inputs:
       command: custom
       custom: tool
@@ -118,4 +115,4 @@ jobs:
   - script: dotnet-sonarscanner end /d:sonar.login="$(SonarLogin)"
     displayName: Upload SonarQube report
     name: upload_sonarqube_report
-    enabled: true
+    enabled: false
