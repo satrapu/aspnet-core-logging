@@ -49,7 +49,9 @@ jobs:
     enabled: True
     inputs:
       command: build
-      arguments: '$(Build.SourcesDirectory)/Todo.sln --configuration ${{ parameters.build.configuration }}'
+      projects: $(Build.SourcesDirectory)/Todo.sln
+      configuration: ${{ parameters.build.configuration }}
+      noCache: False
   # Run unit tests.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/dotnet-core-cli?view=vsts.
   - task: DotNetCoreCLI@2
@@ -83,7 +85,7 @@ jobs:
     name: publish_test_results
     enabled: True
     inputs:
-      testResultsFormat: 'VSTest'
+      testResultsFormat: 'xUnit'
       testResultsFiles: '$(Build.SourcesDirectory)/Tests/**/*.trx'
       mergeTestResults: True
       buildConfiguration: ${{ parameters.build.configuration }}
