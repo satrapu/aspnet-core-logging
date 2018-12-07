@@ -28,7 +28,7 @@ jobs:
   - task: DotNetCoreCLI@2
     displayName: Install SonarQube static code analyzing CLI tool
     name: install_sonarscanner
-    enabled: False
+    enabled: True
     inputs:
       command: custom
       custom: tool
@@ -40,7 +40,7 @@ jobs:
   - script: dotnet-sonarscanner begin /k:"aspnet-core-logging" /s:"$(Build.SourcesDirectory)/Build/SonarQubeAnalysis.xml" /d:sonar.login="$(SonarLogin)" /d:sonar.branch.name="$(Build.SourceBranchName)"
     displayName: Prepare SonarQube analysis
     name: prepare_sonarqube_analysis
-    enabled: False
+    enabled: True
   # Compile source code.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/dotnet-core-cli?view=vsts.
   - task: DotNetCoreCLI@2
@@ -48,20 +48,31 @@ jobs:
     name: build_sources
     enabled: True
     inputs:
-      command: build
-      projects: $(Build.SourcesDirectory)/Todo.sln
-      configuration: ${{ parameters.build.configuration }}
-      noCache: False
+      command: custom
+      custom: build
+      arguments: '$(Build.SourcesDirectory)/Todo.sln --configuration ${{ parameters.build.configuration }}'
   # Run unit tests.
-  - script: 'dotnet test $(Build.SourcesDirectory)/Todo.sln --configuration ${{ parameters.build.configuration }} --filter "FullyQualifiedName~UnitTests" --no-build --logger "trx;LogFileName=TestsResults.trx" /p:CollectCoverage=true'
+  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/dotnet-core-cli?view=vsts.
+  - task: DotNetCoreCLI@2
     displayName: Run unit tests
     name: run_unit_tests
-    enabled: true
+    enabled: True
+    inputs:
+      command: custom
+      custom: test
+      projects: ./Tests/UnitTests/TodoWebApp.UnitTests/TodoWebApp.UnitTests.csproj
+      arguments: '--configuration ${{ parameters.build.configuration }} --no-build --logger "trx;LogFileName=TodoWebApp.UnitTests.trx" /p:CollectCoverage=True /p:CoverletOutputFormat=cobertura /p:CoverletOutput="$(Build.SourcesDirectory)/CodeCoverage/Results/TodoWebApp.UnitTests.xml"'
   # Run integration tests.
-  - script: 'dotnet test $(Build.SourcesDirectory)/Todo.sln --configuration ${{ parameters.build.configuration }} --filter "FullyQualifiedName~IntegrationTests" --no-build --logger "trx;LogFileName=TestsResults.trx" /p:CollectCoverage=true'
+  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/dotnet-core-cli?view=vsts.
+  - task: DotNetCoreCLI@2
     displayName: Run integration tests
     name: run_integration_tests
     enabled: True
+    inputs:
+      command: custom
+      custom: test
+      projects: ./Tests/IntegrationTests/TodoWebApp.IntegrationTests/TodoWebApp.IntegrationTests.csproj
+      arguments: '--configuration ${{ parameters.build.configuration }} --no-build --logger "trx;LogFileName=TodoWebApp.IntegrationTests.trx" /p:CollectCoverage=True /p:CoverletOutputFormat=cobertura /p:CoverletOutput="$(Build.SourcesDirectory)/CodeCoverage/Results/TodoWebApp.IntegrationTests.xml"'
   # Publish test results.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=vsts&tabs=yaml.
   - task: PublishTestResults@2
@@ -79,7 +90,7 @@ jobs:
   - task: DotNetCoreCLI@2
     displayName: Install code coverage report generator tool
     name: install_code_coverage_report_generator
-    enabled: False
+    enabled: True
     inputs:
       command: custom
       custom: tool
@@ -90,13 +101,12 @@ jobs:
   - script: 'reportgenerator "-reports:$(Build.SourcesDirectory)/CodeCoverage/Results/*.xml" "-targetdir:$(Build.SourcesDirectory)/CodeCoverage/Report" "-reporttypes:HtmlInline"'
     displayName: Generate code coverage report
     name: generate_code_coverage_report
-    enabled: False
   # Publish code coverage report.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-code-coverage-results?view=vsts.
   - task: PublishCodeCoverageResults@1
     displayName: Publish code coverage report
     name: publish_code_coverage_report
-    enabled: False
+    enabled: True
     inputs:
       codeCoverageTool: 'cobertura'
       summaryFileLocation: '$(Build.SourcesDirectory)/CodeCoverage/Results/*.xml'
@@ -107,4 +117,4 @@ jobs:
   - script: dotnet-sonarscanner end /d:sonar.login="$(SonarLogin)"
     displayName: Upload SonarQube report
     name: upload_sonarqube_report
-    enabled: False
+    enabled: True
