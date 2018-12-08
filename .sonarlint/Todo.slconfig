@@ -1,5 +1,5 @@
 {
-  "ServerUri": "https://sonarcloud.io",
+  "ServerUri": "https://sonarcloud.io/",
   "Organization": {
     "Key": "satrapu-github",
     "Name": "Bogdan Marian"
@@ -8,7 +8,7 @@
   "Profiles": {
     "CSharp": {
       "ProfileKey": "AVxYJ9ttFTbgxqUNcKz1",
-      "ProfileTimestamp": "2018-09-06T12:06:47+03:00"
+      "ProfileTimestamp": "2018-11-29T12:14:41+02:00"
     }
   }
 }
