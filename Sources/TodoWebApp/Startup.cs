@@ -48,6 +48,12 @@ namespace TodoWebApp
 
             // Configure application services
             services.AddScoped<ITodoService, TodoService>();
+
+            // Register service with 2 interfaces.
+            // See more here: https://andrewlock.net/how-to-register-a-service-with-multiple-interfaces-for-in-asp-net-core-di/.
+            services.AddSingleton<TextBasedHttpLoggingService>();
+            services.AddSingleton<IHttpLogMessageConverter>(x => x.GetRequiredService<TextBasedHttpLoggingService>());
+            services.AddSingleton<IHttpContextLoggingHandler>(x => x.GetRequiredService<TextBasedHttpLoggingService>());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -63,7 +69,7 @@ namespace TodoWebApp
                 applicationBuilder.UseHsts();
             }
 
-            applicationBuilder.UseMiddleware<LoggingMiddleware>()
+            applicationBuilder.UseHttpLogging()
                               .UseHttpsRedirection()
                               .UseMvc();
         }

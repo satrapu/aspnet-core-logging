@@ -9,8 +9,10 @@ namespace TodoWebApp.Logging
     /// </summary>
     public static class StreamExtensions
     {
+        private const int BUFFER_SIZE = 1024;
+
         /// <summary>
-        /// Reads the whole content of a given <see cref="Stream"/> instance and then sets its position to its beginning.
+        /// Reads the whole content of a given <see cref="Stream"/> instance and then sets its position to the beginning.
         /// </summary>
         /// <param name="stream">The <see cref="Stream"/> to read and reset.</param>
         /// <returns>The <see cref="Stream"/> contents as a <see cref="Encoding.UTF8"/> string.</returns>
@@ -24,7 +26,7 @@ namespace TodoWebApp.Logging
             string result;
             stream.Seek(0, SeekOrigin.Begin);
 
-            using (var streamReader = new StreamReader(stream, Encoding.UTF8, true, 1024, true))
+            using (var streamReader = new StreamReader(stream, Encoding.UTF8, true, BUFFER_SIZE, true))
             {
                 result = streamReader.ReadToEnd();
             }
