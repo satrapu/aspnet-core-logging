@@ -11,7 +11,7 @@ namespace TodoWebApp.Logging
     /// <summary>
     /// Handles only text-based HTTP requests and responses (e.g. plain text, JSON or XML).
     /// </summary>
-    public class TextBasedHttpLoggingService : IHttpContextLoggingHandler, IHttpLogMessageConverter
+    public class TextBasedHttpLoggingService : IHttpContextLoggingHandler, IHttpObjectConverter
     {
         private const int REQUEST_SIZE = 1000;
         private const int RESPONSE_SIZE = 1000;

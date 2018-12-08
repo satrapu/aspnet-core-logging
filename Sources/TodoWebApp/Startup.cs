@@ -52,7 +52,7 @@ namespace TodoWebApp
             // Register service with 2 interfaces.
             // See more here: https://andrewlock.net/how-to-register-a-service-with-multiple-interfaces-for-in-asp-net-core-di/.
             services.AddSingleton<TextBasedHttpLoggingService>();
-            services.AddSingleton<IHttpLogMessageConverter>(x => x.GetRequiredService<TextBasedHttpLoggingService>());
+            services.AddSingleton<IHttpObjectConverter>(x => x.GetRequiredService<TextBasedHttpLoggingService>());
             services.AddSingleton<IHttpContextLoggingHandler>(x => x.GetRequiredService<TextBasedHttpLoggingService>());
         }
 

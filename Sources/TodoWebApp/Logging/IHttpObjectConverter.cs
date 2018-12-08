@@ -6,7 +6,7 @@ namespace TodoWebApp.Logging
     /// <summary>
     /// Converts HTTP objects to strings intended to be logged using <see cref="ILogger.Log{TState}"/> method.
     /// </summary>
-    public interface IHttpLogMessageConverter
+    public interface IHttpObjectConverter
     {
         /// <summary>
         /// Converts the given <paramref name="httpRequest"/> to a string.

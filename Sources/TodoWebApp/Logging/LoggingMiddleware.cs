@@ -16,7 +16,7 @@ namespace TodoWebApp.Logging
     
         private readonly RequestDelegate nextRequestDelegate;
         private readonly IHttpContextLoggingHandler httpContextLoggingHandler;
-        private readonly IHttpLogMessageConverter httpLogMessageConverter;
+        private readonly IHttpObjectConverter httpObjectConverter;
         private readonly ILogger logger;
 
         /// <summary>
@@ -24,16 +24,16 @@ namespace TodoWebApp.Logging
         /// </summary>
         /// <param name="nextRequestDelegate"></param>
         /// <param name="httpContextLoggingHandler"></param>
-        /// <param name="httpLogMessageConverter"></param>
+        /// <param name="httpObjectConverter"></param>
         /// <param name="logger"></param>
         public LoggingMiddleware(RequestDelegate nextRequestDelegate
                                , IHttpContextLoggingHandler httpContextLoggingHandler
-                               , IHttpLogMessageConverter httpLogMessageConverter
+                               , IHttpObjectConverter httpObjectConverter
                                , ILogger<LoggingMiddleware> logger)
         {
             this.nextRequestDelegate = nextRequestDelegate ?? throw new ArgumentNullException(nameof(nextRequestDelegate));
             this.httpContextLoggingHandler = httpContextLoggingHandler ?? throw new ArgumentNullException(nameof(httpContextLoggingHandler));
-            this.httpLogMessageConverter = httpLogMessageConverter ?? throw new ArgumentNullException(nameof(httpLogMessageConverter));
+            this.httpObjectConverter = httpObjectConverter ?? throw new ArgumentNullException(nameof(httpObjectConverter));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -65,7 +65,7 @@ namespace TodoWebApp.Logging
             httpContext.Request.EnableRewind();
 
             // Logs the current HTTP request
-            var httpRequestAsLogMessage = httpLogMessageConverter.ToLogMessage(httpContext.Request);
+            var httpRequestAsLogMessage = httpObjectConverter.ToLogMessage(httpContext.Request);
             logger.LogDebug(httpRequestAsLogMessage);
 
             // Replace response body stream with a seekable one, like a MemoryStream, to allow logging it
@@ -77,7 +77,7 @@ namespace TodoWebApp.Logging
                 await nextRequestDelegate(httpContext);
 
                 // Logs the current HTTP response
-                var httpResponseAsLogMessage = httpLogMessageConverter.ToLogMessage(httpContext.Response);
+                var httpResponseAsLogMessage = httpObjectConverter.ToLogMessage(httpContext.Response);
                 logger.LogDebug(httpResponseAsLogMessage);
 
                 // Ensure the original HTTP response is sent to the next middleware
