@@ -24,7 +24,7 @@ jobs:
     enabled: True
     inputs:
       packageType: 'sdk'
-      version: '2.1.500'
+      version: $(DotNetCore_SDK_Version)
   # Install sonarscanner tool to be able to perform a SonarQube analysis.
   # See more here: https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner+for+MSBuild.
   - task: DotNetCoreCLI@2
@@ -34,7 +34,7 @@ jobs:
     inputs:
       command: custom
       custom: tool
-      arguments: 'install dotnet-sonarscanner --global --version 4.4.2'
+      arguments: 'install dotnet-sonarscanner --global --version $(SonarScanner_Version)'
   # Prepare SonarQube analysis.
   # See more here: https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner+for+MSBuild.
   # The analysis will make use of the branch name via the "sonar.branch.name" command parameter.
@@ -96,7 +96,7 @@ jobs:
     inputs:
       command: custom
       custom: tool
-      arguments: 'install dotnet-reportgenerator-globaltool --global --version 4.0.3'
+      arguments: 'install dotnet-reportgenerator-globaltool --global --version $(ReportGenerator_Version)'
   # Generate code coverage HTML report based on coverage data XML files.
   # See more here: https://github.com/danielpalme/ReportGenerator#usage.
   # See more about the output formats here: https://github.com/danielpalme/ReportGenerator/wiki/Output-formats.

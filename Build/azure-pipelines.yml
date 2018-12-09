@@ -26,6 +26,12 @@ trigger:
 # Be sure to link this group to this pipeline by selecting the latter -> Edit -> Variables -> Variable Groups!
 variables:
   - group: SonarQube
+  - name: 'DotNetCore_SDK_Version'
+    value: '2.1.500'
+  - name: 'ReportGenerator_Version'
+    value: '4.0.3'
+  - name: 'SonarScanner_Version'
+    value: '4.4.2'
 
 # Define multiple jobs, one per supported OS.
 # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/multiple-phases?tabs=yaml&view=vsts.
