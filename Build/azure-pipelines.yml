@@ -38,7 +38,6 @@ jobs:
     job:
       name: linux
       displayName: Build on Linux
-      enabled: False
     pool:
       vmImage: 'ubuntu-16.04'
 
@@ -47,7 +46,6 @@ jobs:
     job:
       name: macOS
       displayName: Build on macOS
-      enabled: False
     pool:
       vmImage: 'macOS-10.13'
 
@@ -56,6 +54,5 @@ jobs:
     job:
       name: windows
       displayName: Build on Windows
-      enabled: True
     pool:
       vmImage: 'vs2017-win2016'
