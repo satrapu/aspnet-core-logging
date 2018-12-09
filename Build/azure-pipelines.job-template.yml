@@ -5,6 +5,8 @@ parameters:
   pool: ''
   build:
     configuration: 'Release'
+  sonar:
+    enabled: True
 
 jobs:
 - job: ${{ parameters.job.name }}
@@ -30,7 +32,7 @@ jobs:
   - task: DotNetCoreCLI@2
     displayName: Install SonarQube static code analyzing CLI tool
     name: install_sonarscanner
-    enabled: True
+    enabled: ${{ parameters.sonar.enabled }}
     inputs:
       command: custom
       custom: tool
@@ -42,7 +44,7 @@ jobs:
   - script: dotnet-sonarscanner begin /k:"aspnet-core-logging" /s:"$(Build.SourcesDirectory)/Build/SonarQubeAnalysis.xml" /d:sonar.login="$(SonarLogin)" /d:sonar.branch.name="$(Build.SourceBranchName)"
     displayName: Prepare SonarQube analysis
     name: prepare_sonarqube_analysis
-    enabled: True
+    enabled: ${{ parameters.sonar.enabled }}
   # Compile source code.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/dotnet-core-cli?view=vsts.
   - task: DotNetCoreCLI@2
@@ -119,4 +121,4 @@ jobs:
   - script: dotnet-sonarscanner end /d:sonar.login="$(SonarLogin)"
     displayName: Upload SonarQube report
     name: upload_sonarqube_report
-    enabled: True
+    enabled: ${{ parameters.sonar.enabled }}
