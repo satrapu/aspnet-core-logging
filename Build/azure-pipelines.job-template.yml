@@ -2,6 +2,7 @@ parameters:
   job:
     name: ''
     displayName: ''
+    enabled: True
   pool: ''
   build:
     configuration: 'Release'
@@ -9,8 +10,11 @@ parameters:
 jobs:
 - job: ${{ parameters.job.name }}
   displayName: ${{ parameters.job.displayName }}
+  enabled: ${{ parameters.job.enbled }}
   continueOnError: False
   pool: ${{ parameters.pool }}
+  workspace:
+    clean: all
   steps:
   # Install specific .NET Core SDK version.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/tool/dotnet-core-tool-installer?view=vsts.
