@@ -65,7 +65,9 @@ jobs:
       command: custom
       custom: test
       projects: ./Tests/UnitTests/TodoWebApp.UnitTests/TodoWebApp.UnitTests.csproj
-      arguments: '--configuration ${{ parameters.build.configuration }} --no-build --logger "trx;LogFileName=TodoWebApp.UnitTests.trx" /p:CollectCoverage=True /p:CoverletOutputFormat=cobertura /p:CoverletOutput="$(Build.SourcesDirectory)/CodeCoverage/Results/TodoWebApp.UnitTests.xml"'
+      # Instruct "dotnet test" command to generate xUnit test results too.
+      # See more here: https://stackoverflow.com/a/47815319.
+      arguments: '--configuration ${{ parameters.build.configuration }} --test-adapter-path "." --logger "xunit;LogFilePath=./TestResults/TestResults.xunit.xml" /p:CollectCoverage=True /p:CoverletOutputFormat=cobertura /p:CoverletOutput="$(Build.SourcesDirectory)/CodeCoverage/Results/TodoWebApp.UnitTests.xml"'
   # Run integration tests.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/dotnet-core-cli?view=vsts.
   - task: DotNetCoreCLI@2
@@ -76,7 +78,9 @@ jobs:
       command: custom
       custom: test
       projects: ./Tests/IntegrationTests/TodoWebApp.IntegrationTests/TodoWebApp.IntegrationTests.csproj
-      arguments: '--configuration ${{ parameters.build.configuration }} --no-build --logger "trx;LogFileName=TodoWebApp.IntegrationTests.trx" /p:CollectCoverage=True /p:CoverletOutputFormat=cobertura /p:CoverletOutput="$(Build.SourcesDirectory)/CodeCoverage/Results/TodoWebApp.IntegrationTests.xml"'
+      # Instruct "dotnet test" command to generate xUnit test results too.
+      # See more here: https://stackoverflow.com/a/47815319.
+      arguments: '--configuration ${{ parameters.build.configuration }} --test-adapter-path "." --logger "xunit;LogFilePath=./TestResults/TestResults.xunit.xml" /p:CollectCoverage=True /p:CoverletOutputFormat=cobertura /p:CoverletOutput="$(Build.SourcesDirectory)/CodeCoverage/Results/TodoWebApp.IntegrationTests.xml"'
   # Publish test results.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=vsts&tabs=yaml.
   - task: PublishTestResults@2
@@ -84,8 +88,8 @@ jobs:
     name: publish_test_results
     enabled: True
     inputs:
-      testResultsFormat: 'VSTest'
-      testResultsFiles: '$(Build.SourcesDirectory)/Tests/**/*.trx'
+      testResultsFormat: 'xunit'
+      testResultsFiles: '$(Build.SourcesDirectory)/Tests/**/TestResults.xunit.xml'
       mergeTestResults: True
       buildConfiguration: ${{ parameters.build.configuration }}
       publishRunAttachments: True

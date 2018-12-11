@@ -29,7 +29,7 @@ variables:
   - name: 'DotNetCore_SDK_Version'
     value: '2.1.500'
   - name: 'ReportGenerator_Version'
-    value: '4.0.3'
+    value: '4.0.4'
   - name: 'SonarScanner_Version'
     value: '4.4.2'
 
