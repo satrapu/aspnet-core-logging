@@ -106,12 +106,16 @@ jobs:
   # Generate code coverage data file in Cobertura format based on coverage data XML files in OpenCover format.
   # This command will aggregate several OpenCOver files into one Cobertura file.
   - script: 'reportgenerator "-reports:$(Build.SourcesDirectory)/.CoverageResults/*.opencover.xml" "-targetdir:$(Build.SourcesDirectory)/.CoverageResults/Report" "-reporttypes:Cobertura"'
+    displayName: Convert code coverage data files to a different format
+    name: convert_code_coverage_data_files
+    enabled: True
   # Generate code coverage HTML report based on coverage data XML files in OpenCover format.
   # See more here: https://github.com/danielpalme/ReportGenerator#usage.
   # See more about the output formats here: https://github.com/danielpalme/ReportGenerator/wiki/Output-formats.
   - script: 'reportgenerator "-reports:$(Build.SourcesDirectory)/.CoverageResults/*.opencover.xml" "-targetdir:$(Build.SourcesDirectory)/.CoverageResults/Report" "-reporttypes:HtmlInline_AzurePipelines"'
     displayName: Generate code coverage report
     name: generate_code_coverage_report
+    enabled: True
   # Publish code coverage report.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-code-coverage-results?view=vsts.
   - task: PublishCodeCoverageResults@1
@@ -122,7 +126,6 @@ jobs:
       codeCoverageTool: 'cobertura'
       summaryFileLocation: '$(Build.SourcesDirectory)/.CoverageResults/Report/Cobertura.xml'
       reportDirectory: '$(Build.SourcesDirectory)/.CoverageResults/Report'
-      additionalCodeCoverageFiles: '$(Build.SourcesDirectory)/.CoverageResults/Report/index.htm'
   # Upload SonarQube report to SonarCloud.
   # See more here: https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner+for+MSBuild.
   - script: dotnet-sonarscanner end /d:sonar.login="$(SonarLogin)"
