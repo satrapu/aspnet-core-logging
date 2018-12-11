@@ -67,7 +67,7 @@ jobs:
       projects: ./Tests/UnitTests/TodoWebApp.UnitTests/TodoWebApp.UnitTests.csproj
       # Instruct "dotnet test" command to generate xUnit test results too.
       # See more here: https://stackoverflow.com/a/47815319.
-      arguments: '--configuration ${{ parameters.build.configuration }} --test-adapter-path "." --logger "xunit;LogFilePath=./TestResults/TestResults.xunit.xml" /p:CollectCoverage=True /p:CoverletOutputFormat=opencover /p:CoverletOutput="$(Build.SourcesDirectory)/CodeCoverage/Results/TodoWebApp.UnitTests.xml"'
+      arguments: '--configuration ${{ parameters.build.configuration }} --test-adapter-path "." --logger "xunit;LogFilePath=$(Build.SourcesDirectory)/.TestResults/TodoWebApp.UnitTests.xunit.xml" /p:CollectCoverage=True /p:CoverletOutputFormat=opencover /p:CoverletOutput="$(Build.SourcesDirectory)/.CoverageResults/TodoWebApp.UnitTests.opencover.xml"'
   # Run integration tests.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/dotnet-core-cli?view=vsts.
   - task: DotNetCoreCLI@2
@@ -80,7 +80,7 @@ jobs:
       projects: ./Tests/IntegrationTests/TodoWebApp.IntegrationTests/TodoWebApp.IntegrationTests.csproj
       # Instruct "dotnet test" command to generate xUnit test results too.
       # See more here: https://stackoverflow.com/a/47815319.
-      arguments: '--configuration ${{ parameters.build.configuration }} --test-adapter-path "." --logger "xunit;LogFilePath=./TestResults/TestResults.xunit.xml" /p:CollectCoverage=True /p:CoverletOutputFormat=opencover /p:CoverletOutput="$(Build.SourcesDirectory)/CodeCoverage/Results/TodoWebApp.IntegrationTests.xml"'
+      arguments: '--configuration ${{ parameters.build.configuration }} --test-adapter-path "." --logger "xunit;LogFilePath=(Build.SourcesDirectory)/.TestResults/TodoWebApp.IntegrationTests.xunit.xml" /p:CollectCoverage=True /p:CoverletOutputFormat=opencover /p:CoverletOutput="$(Build.SourcesDirectory)/.CoverageResults/TodoWebApp.IntegrationTests.opencover.xml"'
   # Publish test results.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=vsts&tabs=yaml.
   - task: PublishTestResults@2
@@ -89,7 +89,7 @@ jobs:
     enabled: True
     inputs:
       testResultsFormat: 'xUnit'
-      testResultsFiles: '$(Build.SourcesDirectory)/Tests/**/TestResults.xunit.xml'
+      testResultsFiles: '$(Build.SourcesDirectory)/.TestResults/*.xunit.xml'
       mergeTestResults: True
       buildConfiguration: ${{ parameters.build.configuration }}
       publishRunAttachments: True
@@ -103,10 +103,13 @@ jobs:
       command: custom
       custom: tool
       arguments: 'install dotnet-reportgenerator-globaltool --global --version $(ReportGenerator_Version)'
-  # Generate code coverage HTML report based on coverage data XML files.
+  # Generate code coverage data file in Cobertura format based on coverage data XML files in OpenCover format.
+  # This command will aggregate several OpenCOver files into one Cobertura file.
+  - script: 'reportgenerator "-reports:$(Build.SourcesDirectory)/.CoverageResults/*.opencover.xml" "-targetdir:$(Build.SourcesDirectory)/.CoverageResults/Report" "-reporttypes:Cobertura"'
+  # Generate code coverage HTML report based on coverage data XML files in OpenCover format.
   # See more here: https://github.com/danielpalme/ReportGenerator#usage.
   # See more about the output formats here: https://github.com/danielpalme/ReportGenerator/wiki/Output-formats.
-  - script: 'reportgenerator "-reports:$(Build.SourcesDirectory)/CodeCoverage/Results/*.xml" "-targetdir:$(Build.SourcesDirectory)/CodeCoverage/Report" "-reporttypes:HtmlInline"'
+  - script: 'reportgenerator "-reports:$(Build.SourcesDirectory)/.CoverageResults/*.opencover.xml" "-targetdir:$(Build.SourcesDirectory)/.CoverageResults/Report" "-reporttypes:HtmlInline_AzurePipelines"'
     displayName: Generate code coverage report
     name: generate_code_coverage_report
   # Publish code coverage report.
@@ -117,9 +120,9 @@ jobs:
     enabled: True
     inputs:
       codeCoverageTool: 'cobertura'
-      summaryFileLocation: '$(Build.SourcesDirectory)/CodeCoverage/Results/*.xml'
-      reportDirectory: '$(Build.SourcesDirectory)/CodeCoverage/Report'
-      additionalCodeCoverageFiles: '$(Build.SourcesDirectory)/CodeCoverage/Report/index.html'
+      summaryFileLocation: '$(Build.SourcesDirectory)/.CoverageResults/Report/Cobertura.xml'
+      reportDirectory: '$(Build.SourcesDirectory)/.CoverageResults/Report'
+      additionalCodeCoverageFiles: '$(Build.SourcesDirectory)/.CoverageResults/Report/index.htm'
   # Upload SonarQube report to SonarCloud.
   # See more here: https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner+for+MSBuild.
   - script: dotnet-sonarscanner end /d:sonar.login="$(SonarLogin)"
