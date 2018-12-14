@@ -104,7 +104,7 @@ jobs:
       custom: tool
       arguments: 'install dotnet-reportgenerator-globaltool --global --version $(ReportGenerator_Version)'
   # Generate code coverage data file in Cobertura format based on coverage data XML files in OpenCover format.
-  # This command will aggregate several OpenCOver files into one Cobertura file.
+  # This command will aggregate several OpenCover files into one Cobertura file.
   - script: 'reportgenerator "-reports:$(Build.SourcesDirectory)/.CoverageResults/*.opencover.xml" "-targetdir:$(Build.SourcesDirectory)/.CoverageResults/Report" "-reporttypes:Cobertura"'
     displayName: Convert code coverage data files to a different format
     name: convert_code_coverage_data_files
