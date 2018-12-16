@@ -67,7 +67,7 @@ jobs:
       projects: ./Tests/UnitTests/TodoWebApp.UnitTests/TodoWebApp.UnitTests.csproj
       # Instruct "dotnet test" command to generate xUnit test results too.
       # See more here: https://stackoverflow.com/a/47815319.
-      arguments: '--configuration ${{ parameters.build.configuration }} --test-adapter-path "." --logger "xunit;LogFilePath=$(Build.SourcesDirectory)/.TestResults/TodoWebApp.UnitTests.xunit.xml" /p:CollectCoverage=True /p:CoverletOutputFormat=opencover /p:CoverletOutput="$(Build.SourcesDirectory)/.CoverageResults/TodoWebApp.UnitTests.opencover.xml"'
+      arguments: '--configuration ${{ parameters.build.configuration }} --test-adapter-path "." --logger "xunit;LogFilePath=$(Build.SourcesDirectory)/.TestResults/TodoWebApp.UnitTests.xunit.xml" /p:CollectCoverage=True /p:CoverletOutputFormat=cobertura /p:CoverletOutput="$(Build.SourcesDirectory)/.CoverageResults/TodoWebApp.cobertura.xml"'
   # Run integration tests.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/dotnet-core-cli?view=vsts.
   - task: DotNetCoreCLI@2
@@ -80,7 +80,7 @@ jobs:
       projects: ./Tests/IntegrationTests/TodoWebApp.IntegrationTests/TodoWebApp.IntegrationTests.csproj
       # Instruct "dotnet test" command to generate xUnit test results too.
       # See more here: https://stackoverflow.com/a/47815319.
-      arguments: '--configuration ${{ parameters.build.configuration }} --test-adapter-path "." --logger "xunit;LogFilePath=(Build.SourcesDirectory)/.TestResults/TodoWebApp.IntegrationTests.xunit.xml" /p:CollectCoverage=True /p:CoverletOutputFormat=opencover /p:CoverletOutput="$(Build.SourcesDirectory)/.CoverageResults/TodoWebApp.IntegrationTests.opencover.xml"'
+      arguments: '--configuration ${{ parameters.build.configuration }} --test-adapter-path "." --logger "xunit;LogFilePath=(Build.SourcesDirectory)/.TestResults/TodoWebApp.IntegrationTests.xunit.xml" /p:CollectCoverage=True /p:CoverletOutputFormat=cobertura /p:MergeWtih="$(Build.SourcesDirectory)/.CoverageResults/TodoWebApp.cobertura.xml"'
   # Publish test results.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=vsts&tabs=yaml.
   - task: PublishTestResults@2
@@ -108,7 +108,7 @@ jobs:
   #   - generate coverage HTML report ready to be displayed by Azure DevOps
   # See more here: https://github.com/danielpalme/ReportGenerator#usage.
   # See more about the output formats here: https://github.com/danielpalme/ReportGenerator/wiki/Output-formats.
-  - script: 'reportgenerator "-reports:$(Build.SourcesDirectory)/.CoverageResults/*.opencover.xml" "-targetdir:$(Build.SourcesDirectory)/.CoverageResults/Report" "-reporttypes:Cobertura;HtmlInline"'
+  - script: 'reportgenerator "-reports:$(Build.SourcesDirectory)/.CoverageResults/TodoWebApp.cobertura.xml" "-targetdir:$(Build.SourcesDirectory)/.CoverageResults/Report" "-reporttypes:HtmlInline"'
     displayName: Generate code coverage report
     name: generate_code_coverage_report
     enabled: True
