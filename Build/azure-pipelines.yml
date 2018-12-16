@@ -61,13 +61,13 @@ variables:
 # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=vsts&tabs=example#job-templates
 # and here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/templates?view=vsts.
 jobs:
-- template: azure-pipelines.job-template.yml
-  parameters:
-    job:
-      name: linux
-      displayName: Build on Linux
-    pool:
-      vmImage: 'ubuntu-16.04'
+#- template: azure-pipelines.job-template.yml
+#  parameters:
+#    job:
+#      name: linux
+#      displayName: Build on Linux
+#    pool:
+#      vmImage: 'ubuntu-16.04'
 
 #- template: azure-pipelines.job-template.yml
 #  parameters:
@@ -77,10 +77,10 @@ jobs:
 #    pool:
 #      vmImage: 'macOS-10.13'
 
-#- template: azure-pipelines.job-template.yml
-#  parameters:
-#    job:
-#      name: windows
-#      displayName: Build on Windows
-#    pool:
-#      vmImage: 'vs2017-win2016'
+- template: azure-pipelines.job-template.yml
+  parameters:
+    job:
+      name: windows
+      displayName: Build on Windows
+    pool:
+      vmImage: 'vs2017-win2016'
