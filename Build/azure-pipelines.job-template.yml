@@ -120,7 +120,7 @@ jobs:
     enabled: True
     inputs:
       codeCoverageTool: Cobertura
-      summaryFileLocation: $(Build.SourcesDirectory)/.CoverageResults/Report/Cobertura.xml
+      summaryFileLocation: $(Build.SourcesDirectory)/.CoverageResults/Report/TodoWebApp.cobertura.xml
       reportDirectory: $(Build.SourcesDirectory)/.CoverageResults/Report
   # Upload SonarQube report to SonarCloud.
   # See more here: https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner+for+MSBuild.
