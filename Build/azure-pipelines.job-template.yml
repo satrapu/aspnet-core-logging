@@ -103,16 +103,12 @@ jobs:
       command: custom
       custom: tool
       arguments: 'install dotnet-reportgenerator-globaltool --global --version $(ReportGenerator_Version)'
-  # Generate code coverage data file in Cobertura format based on coverage data XML files in OpenCover format.
-  # This command will aggregate several OpenCover files into one Cobertura file.
-  - script: 'reportgenerator "-reports:$(Build.SourcesDirectory)/.CoverageResults/*.opencover.xml" "-targetdir:$(Build.SourcesDirectory)/.CoverageResults/Report" "-reporttypes:Cobertura"'
-    displayName: Convert code coverage data files to a different format
-    name: convert_code_coverage_data_files
-    enabled: True
-  # Generate code coverage HTML report based on coverage data XML files in OpenCover format.
+  # Generate code coverage report:
+  #   - combine several OpenCOver coverag data files into one single file in Cobertura format
+  #   - generate coverage HTML report ready to be displayed by Azure DevOps
   # See more here: https://github.com/danielpalme/ReportGenerator#usage.
   # See more about the output formats here: https://github.com/danielpalme/ReportGenerator/wiki/Output-formats.
-  - script: 'reportgenerator "-reports:$(Build.SourcesDirectory)/.CoverageResults/*.opencover.xml" "-targetdir:$(Build.SourcesDirectory)/.CoverageResults/Report" "-reporttypes:HtmlInline_AzurePipelines"'
+  - script: 'reportgenerator "-reports:$(Build.SourcesDirectory)/.CoverageResults/*.opencover.xml" "-targetdir:$(Build.SourcesDirectory)/.CoverageResults/Report" "-reporttypes:Cobertura;HtmlInline_AzurePipelines"'
     displayName: Generate code coverage report
     name: generate_code_coverage_report
     enabled: True
