@@ -3,6 +3,9 @@
                              xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
                              xmlns="http://www.sonarsource.com/msbuild/integration/2015/1">
 
+  <!--
+    Analysis parameters are defined here: https://docs.sonarqube.org/latest/analysis/analysis-parameters/.
+  -->
   <Property Name="sonar.host.url">https://sonarcloud.io</Property>
   <Property Name="sonar.organization">satrapu-github</Property>
   <Property Name="sonar.projectKey">aspnet-core-logging</Property>
@@ -15,7 +18,7 @@
     Specify the location of code coverage data files in OpenCover format.
     See more here: https://docs.sonarqube.org/pages/viewpage.action?pageId=6389770.
   -->
-  <Property Name="sonar.cs.opencover.reportsPaths">./.CoverageResults/*.UnitTests.opencover.xml</Property>
-  <Property Name="sonar.cs.opencover.it.reportsPaths">./.CoverageResults/*.IntegrationTests.opencover.xml</Property>
+  <Property Name="sonar.cs.opencover.reportsPaths">.CoverageResults/*.UnitTests.opencover.xml</Property>
+  <Property Name="sonar.cs.opencover.it.reportsPaths">.CoverageResults/*.IntegrationTests.opencover.xml</Property>
 
 </SonarQubeAnalysisProperties>
