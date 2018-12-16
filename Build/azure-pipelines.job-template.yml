@@ -119,7 +119,7 @@ jobs:
     name: publish_code_coverage_report
     enabled: True
     inputs:
-      codeCoverageTool: cobertura
+      codeCoverageTool: Cobertura
       summaryFileLocation: $(Build.SourcesDirectory)/.CoverageResults/Report/Cobertura.xml
       reportDirectory: $(Build.SourcesDirectory)/.CoverageResults/Report
   # Upload SonarQube report to SonarCloud.
