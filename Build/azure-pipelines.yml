@@ -21,15 +21,22 @@ trigger:
  - hotfix/*
  - release/*
 
-# Load SonarQube related variable group.
-# See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/library/variable-groups?view=vsts&tabs=yaml#use-a-variable-group.
-# Be sure to link this group to this pipeline by selecting the latter -> Edit -> Variables -> Variable Groups!
+# See more about Azure Pipelines variables here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=vsts.
 variables:
+  # Load SonarQube related variable group.
+  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/library/variable-groups?view=vsts&tabs=yaml#use-a-variable-group.
+  # Be sure to link this group to this pipeline by selecting the latter -> Edit -> Variables -> Variable Groups!
   - group: SonarQube
+
+  # Specifies the version of the .NET Core SDK to install and use when running this pipeline
   - name: 'DotNetCore_SDK_Version'
     value: '2.1.500'
+
+  # Specifies the version of the ReportGenerator tool used for generaring code coverage reports
   - name: 'ReportGenerator_Version'
     value: '4.0.4'
+
+  # Specifies the version of the SonarQube scanner to use when performing statically analysis against this project.
   - name: 'SonarScanner_Version'
     value: '4.4.2'
 
