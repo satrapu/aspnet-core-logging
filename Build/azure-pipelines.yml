@@ -40,6 +40,20 @@ variables:
   - name: 'SonarScanner_Version'
     value: '4.4.2'
 
+  # Avoid caching NuGet packages each time a build runs on an Azure DevOps agent.
+  # See more here: http://donovanbrown.com/post/Stop-wasting-time-during-NET-Core-builds.
+  - name: 'DOTNET_SKIP_FIRST_TIME_EXPERIENCE'
+    value: 1
+
+  # Disable .NET Core telemetry.
+  # See more here: https://docs.microsoft.com/en-us/dotnet/core/tools/telemetry#how-to-opt-out.
+  - name: 'DOTNET_CLI_TELEMETRY_OPTOUT'
+    value: 1
+
+  # Disable Core CLR tracing.
+  - name: 'COREHOST_TRACE'
+    value: 0
+
 # Define multiple jobs, one per supported OS.
 # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/multiple-phases?tabs=yaml&view=vsts.
 #
