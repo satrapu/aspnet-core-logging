@@ -108,7 +108,7 @@ jobs:
   #   - generate coverage HTML report ready to be displayed by Azure DevOps
   # See more here: https://github.com/danielpalme/ReportGenerator#usage.
   # See more about the output formats here: https://github.com/danielpalme/ReportGenerator/wiki/Output-formats.
-  - script: 'reportgenerator "-reports:$(Build.SourcesDirectory)/.CoverageResults/*.opencover.xml" "-targetdir:$(Build.SourcesDirectory)/.CoverageResults/Report" "-reporttypes:Cobertura;HtmlInline_AzurePipelines"'
+  - script: 'reportgenerator "-reports:$(Build.SourcesDirectory)/.CoverageResults/*.opencover.xml" "-targetdir:$(Build.SourcesDirectory)/.CoverageResults/Report" "-reporttypes:Cobertura;HtmlInline"'
     displayName: Generate code coverage report
     name: generate_code_coverage_report
     enabled: True
@@ -119,9 +119,9 @@ jobs:
     name: publish_code_coverage_report
     enabled: True
     inputs:
-      codeCoverageTool: 'cobertura'
-      summaryFileLocation: '$(Build.SourcesDirectory)/.CoverageResults/Report/Cobertura.xml'
-      reportDirectory: '$(Build.SourcesDirectory)/.CoverageResults/Report'
+      codeCoverageTool: cobertura
+      summaryFileLocation: $(Build.SourcesDirectory)/.CoverageResults/Report/Cobertura.xml
+      reportDirectory: $(Build.SourcesDirectory)/.CoverageResults/Report
   # Upload SonarQube report to SonarCloud.
   # See more here: https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner+for+MSBuild.
   - script: dotnet-sonarscanner end /d:sonar.login="$(SonarLogin)"
