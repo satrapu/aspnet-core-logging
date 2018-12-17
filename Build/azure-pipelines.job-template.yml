@@ -80,7 +80,7 @@ jobs:
       projects: ./Tests/IntegrationTests/TodoWebApp.IntegrationTests/TodoWebApp.IntegrationTests.csproj
       # Instruct "dotnet test" command to generate xUnit test results too.
       # See more here: https://stackoverflow.com/a/47815319.
-      arguments: '--configuration ${{ parameters.build.configuration }} --test-adapter-path "." --logger "xunit;LogFilePath=(Build.SourcesDirectory)/.TestResults/TodoWebApp.IntegrationTests.xunit.xml" /p:CollectCoverage=True /p:CoverletOutputFormat=cobertura /p:MergeWtih="$(Build.SourcesDirectory)/.CoverageResults/TodoWebApp.cobertura.xml"'
+      arguments: '--configuration ${{ parameters.build.configuration }} --test-adapter-path "." --logger "xunit;LogFilePath=$(Build.SourcesDirectory)/.TestResults/TodoWebApp.IntegrationTests.xunit.xml" /p:CollectCoverage=True /p:CoverletOutputFormat=cobertura /p:MergeWtih="$(Build.SourcesDirectory)/.CoverageResults/TodoWebApp.cobertura.xml"'
   # Publish test results.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=vsts&tabs=yaml.
   - task: PublishTestResults@2
