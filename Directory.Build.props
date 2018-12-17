@@ -1,0 +1,19 @@
+<!--
+  Customize your build: https://docs.microsoft.com/en-us/visualstudio/msbuild/customize-your-build?view=vs-2017.
+  See more MSBuild properties here: https://docs.microsoft.com/en-us/visualstudio/msbuild/common-msbuild-project-properties?view=vs-2017.
+-->
+<Project>
+  <PropertyGroup>
+
+    <!--
+      Sets up property "Treat warnings as errors" found in Visual Studio project -> Properties -> Build.
+    -->
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+
+    <!--
+      Sets up property "Language version" found in Visual Studio project -> Properties -> Build -> Advanced.
+    -->
+    <LangVersion>7.3</LangVersion>
+
+  </PropertyGroup>
+</Project>
