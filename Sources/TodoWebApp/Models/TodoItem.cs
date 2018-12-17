@@ -15,5 +15,10 @@ namespace TodoWebApp.Models
 
         [Required]
         public bool IsComplete { get; set; }
+
+        public override string ToString()
+        {
+            return $"[{nameof(Id)}: {Id}, {nameof(Name)}: {Name}, {nameof(IsComplete)}: {IsComplete}]";
+        }
     }
 }

@@ -22,30 +22,84 @@ namespace TodoWebApp.Services
 
         public IList<TodoItem> GetAll()
         {
-            return todoDbContext.TodoItems.ToList();
+            if (logger.IsEnabled(LogLevel.Debug))
+            {
+                logger.LogDebug("GetAll() - BEGIN");
+            }
+
+            var result = todoDbContext.TodoItems.ToList();
+
+            if (logger.IsEnabled(LogLevel.Debug))
+            {
+                logger.LogDebug("GetAll() - END");
+            }
+
+            return result;
         }
 
         public TodoItem GetById(long id)
         {
-            return todoDbContext.TodoItems.SingleOrDefault(x => x.Id == id);
+            if (logger.IsEnabled(LogLevel.Debug))
+            {
+                logger.LogDebug($"GetById(long id={id}) - BEGIN");
+            }
+
+            var result = todoDbContext.TodoItems.SingleOrDefault(x => x.Id == id);
+
+            if (logger.IsEnabled(LogLevel.Debug))
+            {
+                logger.LogDebug($"GetById(long id={id}) - END");
+            }
+
+            return result;
         }
 
         public void Add(TodoItem todoItem)
         {
+            if (logger.IsEnabled(LogLevel.Debug))
+            {
+                logger.LogDebug($"Add(TodoItem todoItem={todoItem}) - BEGIN");
+            }
+
             todoDbContext.TodoItems.Add(todoItem);
             todoDbContext.SaveChanges();
+
+            if (logger.IsEnabled(LogLevel.Debug))
+            {
+                logger.LogDebug($"Add(TodoItem todoItem={todoItem}) - END");
+            }
         }
 
         public void Update(TodoItem todoItem)
         {
+            if (logger.IsEnabled(LogLevel.Debug))
+            {
+                logger.LogDebug($"Update(TodoItem todoItem={todoItem}) - BEGIN");
+            }
+
             todoDbContext.TodoItems.Update(todoItem);
             todoDbContext.SaveChanges();
+
+            if (logger.IsEnabled(LogLevel.Debug))
+            {
+                logger.LogDebug($"Update(TodoItem todoItem={todoItem}) - END");
+            }
         }
 
         public void Delete(TodoItem todoItem)
         {
+            if (logger.IsEnabled(LogLevel.Debug))
+            {
+                logger.LogDebug($"Delete(TodoItem todoItem={todoItem}) - BEGIN");
+            }
+
             todoDbContext.TodoItems.Remove(todoItem);
             todoDbContext.SaveChanges();
+
+            if (logger.IsEnabled(LogLevel.Debug))
+            {
+                logger.LogDebug($"Delete(TodoItem todoItem={todoItem}) - END");
+            }
         }
     }
 }
