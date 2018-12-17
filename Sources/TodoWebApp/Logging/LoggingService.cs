@@ -11,7 +11,7 @@ namespace TodoWebApp.Logging
     /// <summary>
     /// Handles only text-based HTTP requests and responses (e.g. plain text, JSON or XML).
     /// </summary>
-    public class TextBasedHttpLoggingService : IHttpContextLoggingHandler, IHttpObjectConverter
+    public class LoggingService : IHttpContextLoggingHandler, IHttpObjectConverter
     {
         private const int REQUEST_SIZE = 1000;
         private const int RESPONSE_SIZE = 1000;
@@ -21,7 +21,7 @@ namespace TodoWebApp.Logging
         private static readonly Regex textBasedRegex = new Regex(@"/api/", RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
         private readonly ILogger logger;
 
-        public TextBasedHttpLoggingService(ILogger<TextBasedHttpLoggingService> logger)
+        public LoggingService(ILogger<LoggingService> logger)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
