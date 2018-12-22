@@ -66,6 +66,9 @@ namespace TodoWebApp
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder applicationBuilder, IHostingEnvironment environment)
         {
+            // Ensure logging middleware is invoked as early as possible
+            applicationBuilder.UseHttpLogging();
+
             if (environment.IsDevelopment())
             {
                 applicationBuilder.UseDeveloperExceptionPage();
@@ -76,8 +79,7 @@ namespace TodoWebApp
                 applicationBuilder.UseHsts();
             }
 
-            applicationBuilder.UseHttpLogging()
-                              .UseHttpsRedirection()
+            applicationBuilder.UseHttpsRedirection()
                               .UseMvc();
         }
     }
