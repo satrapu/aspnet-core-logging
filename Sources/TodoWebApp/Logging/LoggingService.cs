@@ -98,7 +98,6 @@ namespace TodoWebApp.Logging
 
             var stringBuilder = new StringBuilder(RESPONSE_SIZE);
             stringBuilder.AppendLine($"--- RESPONSE {httpResponse.HttpContext.TraceIdentifier}: BEGIN ---");
-            stringBuilder.AppendLine("");
             stringBuilder.AppendLine($"{httpResponse.HttpContext.Request.Protocol} {httpResponse.StatusCode} {((HttpStatusCode)httpResponse.StatusCode).ToString()}");
 
             if (httpResponse.Headers.Any())
