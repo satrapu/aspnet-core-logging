@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 namespace TodoWebApp.Logging
 {
     /// <summary>
-    /// Handles only text-based HTTP requests and responses (e.g. plain text, JSON or XML).
+    /// Logs text-based only HTTP requests and responses (e.g. plain text, JSON or XML).
     /// </summary>
     public class LoggingService : IHttpContextLoggingHandler, IHttpObjectConverter
     {
@@ -18,9 +18,13 @@ namespace TodoWebApp.Logging
 
         private static readonly string[] textBasedHeaderNames = { "Accept", "Content-Type" };
         private static readonly string[] textBasedFragments = { "application/json", "application/xml", "text/" };
-        private static readonly Regex textBasedRegex = new Regex(@"/api/", RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+        private static readonly Regex textBasedRegex = new Regex("/api/", RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
         private readonly ILogger logger;
 
+        /// <summary>
+        /// Creates a new instance of the <see cref="LoggingService"/> class.
+        /// </summary>
+        /// <param name="logger"></param>
         public LoggingService(ILogger<LoggingService> logger)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));

@@ -11,8 +11,15 @@ using TodoWebApp.Services;
 
 namespace TodoWebApp
 {
+    /// <summary>
+    /// Starts this ASP.NET Core application.
+    /// </summary>
     public class Startup
     {
+        /// <summary>
+        /// Creates a new instance of the <see cref="Startup"/> class.
+        /// </summary>
+        /// <param name="configuration">The configuration to be used for setting up this application.</param>
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;

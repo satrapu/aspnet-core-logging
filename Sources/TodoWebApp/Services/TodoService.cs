@@ -7,13 +7,18 @@ using TodoWebApp.Models;
 namespace TodoWebApp.Services
 {
     /// <summary>
-    /// An <see cref="ITodoService"/> implementation which persists <see cref="TodoItem"/> using Entity Framework Core.
+    /// An <see cref="ITodoService"/> implementation which persists <see cref="TodoItem"/> instances using Entity Framework Core.
     /// </summary>
     public class TodoService : ITodoService
     {
         private readonly TodoDbContext todoDbContext;
         private readonly ILogger logger;
 
+        /// <summary>
+        /// Creates a new instance of the <see cref="TodoService"/> class.
+        /// </summary>
+        /// <param name="todoDbContext">Provides access to the underlying database storing <see cref="TodoItem"/> instances.</param>
+        /// <param name="logger">Provides logging services.</param>
         public TodoService(TodoDbContext todoDbContext, ILogger<TodoService> logger)
         {
             this.todoDbContext = todoDbContext ?? throw new ArgumentNullException(nameof(todoDbContext));

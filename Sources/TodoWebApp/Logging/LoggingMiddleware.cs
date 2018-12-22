@@ -68,12 +68,15 @@ namespace TodoWebApp.Logging
             var httpRequestAsLogMessage = httpObjectConverter.ToLogMessage(httpContext.Request);
             logger.LogDebug(httpRequestAsLogMessage);
 
-            // Replace response body stream with a seekable one, like a MemoryStream, to allow logging it
+            // Saves the original response body stream for latter purposes
             var originalResponseBodyStream = httpContext.Response.Body;
 
             using (var stream = new MemoryStream(RESPONSE_BUFFER_SIZE_IN_BYTES))
             {
+                // Replace response body stream with a seekable one, like a MemoryStream, to allow logging it
                 httpContext.Response.Body = stream;
+
+                // Process current request
                 await nextRequestDelegate(httpContext);
 
                 // Logs the current HTTP response
