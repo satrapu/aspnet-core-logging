@@ -1,8 +1,8 @@
 ﻿using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System;
-using Microsoft.EntityFrameworkCore;
 using TodoWebApp.Models;
 using TodoWebApp.Services;
 using Xunit;
