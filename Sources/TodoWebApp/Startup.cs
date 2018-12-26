@@ -51,7 +51,7 @@ namespace TodoWebApp
 
             // Configure ASP.NET Web API
             services.AddMvc()
-                    .SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+                    .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             // Configure application services
             services.AddScoped<ITodoService, TodoService>();
