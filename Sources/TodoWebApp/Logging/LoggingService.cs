@@ -4,7 +4,6 @@ using System;
 using System.Linq;
 using System.Net;
 using System.Text;
-using System.Text.RegularExpressions;
 
 namespace TodoWebApp.Logging
 {
@@ -17,8 +16,8 @@ namespace TodoWebApp.Logging
         private const int RESPONSE_SIZE = 1000;
 
         private static readonly string[] textBasedHeaderNames = { "Accept", "Content-Type" };
-        private static readonly string[] textBasedFragments = { "application/json", "application/xml", "text/" };
-        private static readonly Regex textBasedRegex = new Regex("/api/", RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+        private static readonly string[] textBasedHeaderValues = { "application/json", "application/xml", "text/" };
+        private const string ACCEPTABLE_REQUEST_URL_PREFIX = "/api/";
         private readonly ILogger logger;
 
         /// <summary>
@@ -43,10 +42,11 @@ namespace TodoWebApp.Logging
             }
 
             var result = IsTextBased(httpContext.Request);
+            var willBeLoggedOutcome = result ? string.Empty : " NOT";
 
             if (logger.IsEnabled(LogLevel.Debug))
             {
-                logger.LogDebug($"HTTP context {httpContext.TraceIdentifier} will be logged: {result.ToString().ToLowerInvariant()}");
+                logger.LogDebug($"HTTP context {httpContext.TraceIdentifier} will{willBeLoggedOutcome} be logged");
             }
 
             return result;
@@ -119,13 +119,13 @@ namespace TodoWebApp.Logging
         private static bool IsTextBased(HttpRequest httpRequest)
         {
             return textBasedHeaderNames.Any(headerName => IsTextBased(httpRequest, headerName))
-                || textBasedRegex.IsMatch(httpRequest.Path);
+                || httpRequest.Path.ToUriComponent().StartsWith(ACCEPTABLE_REQUEST_URL_PREFIX);
         }
 
         private static bool IsTextBased(HttpRequest httpRequest, string headerName)
         {
-            return httpRequest.Headers.TryGetValue(headerName, out var headerValue)
-                && textBasedFragments.Any(fragment => headerValue.Contains(fragment));
+            return httpRequest.Headers.TryGetValue(headerName, out var headerValues)
+                && textBasedHeaderValues.Any(textBasedHeaderValue => headerValues.Any(headerValue => headerValue.StartsWith(textBasedHeaderValue)));
         }
     }
 }
