@@ -62,9 +62,9 @@ jobs:
     displayName: Build sources
     name: build_sources
     env:
-      - DOTNET_SKIP_FIRST_TIME_EXPERIENCE: $(DotNetSkipFirstTimeExperience)
-      - DOTNET_CLI_TELEMETRY_OPTOUT: $(DotNetCliTelemetryOptOut)
-      - COREHOST_TRACE: $(CoreHostTrace)
+      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: $(DotNetSkipFirstTimeExperience)
+      DOTNET_CLI_TELEMETRY_OPTOUT: $(DotNetCliTelemetryOptOut)
+      COREHOST_TRACE: $(CoreHostTrace)
     enabled: True
 
   # Run unit tests.
