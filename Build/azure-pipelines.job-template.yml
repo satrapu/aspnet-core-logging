@@ -46,7 +46,7 @@ jobs:
       dotnet-sonarscanner begin /k:"aspnet-core-logging" 
       /s:"$(Build.SourcesDirectory)/Build/SonarQubeAnalysis.xml" 
       /d:sonar.login="$(SonarLogin)" 
-      /d4:sonar.branch.name="$(Build.SourceBranchName)"
+      /d:sonar.branch.name="$(Build.SourceBranchName)"
     displayName: Prepare SonarQube analysis
     name: prepare_sonarqube_analysis
     enabled: ${{ parameters.sonar.enabled }}
