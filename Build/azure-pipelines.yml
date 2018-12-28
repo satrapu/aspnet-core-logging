@@ -47,16 +47,16 @@ variables:
 
   # Avoid caching NuGet packages each time a build runs on an Azure DevOps agent.
   # See more here: http://donovanbrown.com/post/Stop-wasting-time-during-NET-Core-builds.
-  - name: 'DOTNET_SKIP_FIRST_TIME_EXPERIENCE'
+  - name: 'DotNetSkipFirstTimeExperience'
     value: 1
 
   # Disable .NET Core telemetry.
   # See more here: https://docs.microsoft.com/en-us/dotnet/core/tools/telemetry#how-to-opt-out.
-  - name: 'DOTNET_CLI_TELEMETRY_OPTOUT'
+  - name: 'DotNetCliTelemetryOptOut'
     value: 1
 
   # Disable Core CLR tracing.
-  - name: 'COREHOST_TRACE'
+  - name: 'CoreHostTrace'
     value: 0
 
   # Represents the key of the project hosted on SonarCloud
