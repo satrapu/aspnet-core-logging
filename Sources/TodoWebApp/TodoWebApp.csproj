@@ -3,12 +3,6 @@
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
     <IsTestProject>false</IsTestProject>
-    <SonarQubeTestProject>False</SonarQubeTestProject>
-    <!--
-      Enable displaying code coverage in Azure DevOps.
-      See more here: https://developercommunity.visualstudio.com/solutions/198482/view.html.
-    -->
-    <DebugType>Full</DebugType>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
