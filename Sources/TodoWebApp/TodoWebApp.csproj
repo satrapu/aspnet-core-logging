@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
+    <IsTestProject>false</IsTestProject>
     <SonarQubeTestProject>False</SonarQubeTestProject>
     <!--
       Enable displaying code coverage in Azure DevOps.
