@@ -63,6 +63,10 @@ variables:
   - name: 'SonarProjectKey'
     value: 'aspnet-core-logging'
 
+  # Represents the version attached to the SonarQube analysis
+  - name: 'SonarProjectVersion'
+    value: $(SourceBranchName)_$(Date:yyyyMMdd).$(Rev:rrr)
+
 # Define multiple jobs, one per supported OS.
 # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/multiple-phases?tabs=yaml&view=vsts.
 #
