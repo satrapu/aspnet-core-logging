@@ -9,16 +9,21 @@
   <Property Name="sonar.host.url">https://sonarcloud.io</Property>
   <Property Name="sonar.organization">satrapu-github</Property>
   <Property Name="sonar.projectKey">aspnet-core-logging</Property>
+  <!--
   <Property Name="sonar.projectVersion">1.0.0-SNAPSHOT</Property>
+  -->
   <Property Name="sonar.sourceEncoding">UTF-8</Property>
   <Property Name="sonar.verbose">true</Property>
-  <Property Name="sonar.test.exclusions">./Tests/**</Property>
+  <!--
+  <Property Name="sonar.tests">Tests/**</Property>
+  <Property Name="sonar.test.exclusions">Tests/**</Property>
+  -->
 
   <!--
     Specify the location of code coverage data files in OpenCover format.
     See more here: https://docs.sonarqube.org/pages/viewpage.action?pageId=6389770.
   -->
-  <Property Name="sonar.cs.opencover.reportsPaths">.CoverageResults/*.UnitTests.opencover.xml</Property>
-  <Property Name="sonar.cs.opencover.it.reportsPaths">.CoverageResults/*.IntegrationTests.opencover.xml</Property>
+  <Property Name="sonar.cs.opencover.reportsPaths">Tests/UnitTests/**/*.opencover.xml</Property>
+  <Property Name="sonar.cs.opencover.it.reportsPaths">Tests/IntegrationTests/**/*.opencover.xml</Property>
 
 </SonarQubeAnalysisProperties>
