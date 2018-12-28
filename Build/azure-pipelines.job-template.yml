@@ -61,12 +61,17 @@ jobs:
       --configuration ${{ parameters.build.configuration }}
     displayName: Build sources
     name: build_sources
+    env:
+      - DOTNET_SKIP_FIRST_TIME_EXPERIENCE: $(DotNetSkipFirstTimeExperience)
+      - DOTNET_CLI_TELEMETRY_OPTOUT: $(DotNetCliTelemetryOptOut)
+      - COREHOST_TRACE: $(CoreHostTrace)
     enabled: True
 
   # Run unit tests.
   # See more about running selective tests here: https://docs.microsoft.com/en-us/dotnet/core/testing/selective-unit-tests#xunit.
   - script: >-
       dotnet test $(Build.SourcesDirectory)/Todo.sln 
+      --no-build
       --configuration ${{ parameters.build.configuration }} 
       --filter "FullyQualifiedName~UnitTests" 
       --test-adapter-path "." 
@@ -82,6 +87,7 @@ jobs:
   # Run integration tests.
   - script: >-
       dotnet test $(Build.SourcesDirectory)/Todo.sln 
+      --no-build
       --configuration ${{ parameters.build.configuration }} 
       --filter "FullyQualifiedName~IntegrationTests" 
       --test-adapter-path "." 
