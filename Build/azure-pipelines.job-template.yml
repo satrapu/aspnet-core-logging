@@ -117,7 +117,7 @@ jobs:
       reportgenerator 
       "-reports:$(Build.SourcesDirectory)/.CoverageResults/*.cobertura.xml" 
       "-targetdir:$(Build.SourcesDirectory)/.CoverageResults/Report" 
-      "-reporttypes:Cobertura;HtmlInline"
+      "-reporttypes:Cobertura;HtmlInline_AzurePipelines"
     displayName: Generate code coverage report
     name: generate_code_coverage_report
     enabled: True
