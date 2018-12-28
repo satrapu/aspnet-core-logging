@@ -70,10 +70,10 @@ jobs:
       --configuration ${{ parameters.build.configuration }} 
       --filter "FullyQualifiedName~UnitTests" 
       --test-adapter-path "." 
-      --logger "xunit;LogFilePath=$(Build.SourcesDirectory)/.TestResults/TodoWebApp.UnitTests.xunit.xml" 
+      --logger "xunit;LogFilePath=TodoWebApp.UnitTests.xunit.xml" 
       /p:CollectCoverage=True 
       /p:CoverletOutputFormat=cobertura 
-      /p:CoverletOutput="$(Build.SourcesDirectory)/.CoverageResults/TodoWebApp.UnitTests.cobertura.xml" 
+      /p:CoverletOutput="TodoWebApp.UnitTests.cobertura.xml" 
       /p:Exclude="[xunit.*]*"
     displayName: Run unit tests
     name: run_unit_tests
@@ -85,10 +85,10 @@ jobs:
       --configuration ${{ parameters.build.configuration }} 
       --filter "FullyQualifiedName~IntegrationTests" 
       --test-adapter-path "." 
-      --logger "xunit;LogFilePath=$(Build.SourcesDirectory)/.TestResults/TodoWebApp.IntegrationTests.xunit.xml" 
+      --logger "xunit;LogFilePath=TodoWebApp.IntegrationTests.xunit.xml" 
       /p:CollectCoverage=True 
       /p:CoverletOutputFormat=cobertura 
-      /p:CoverletOutput="$(Build.SourcesDirectory)/.CoverageResults/TodoWebApp.IntegrationTests.cobertura.xml" 
+      /p:CoverletOutput="TodoWebApp.IntegrationTests.cobertura.xml" 
       /p:Exclude="[xunit.*]*"
     displayName: Run integration tests
     name: run_integration_tests
@@ -102,7 +102,7 @@ jobs:
     enabled: True
     inputs:
       testResultsFormat: 'xUnit'
-      testResultsFiles: '$(Build.SourcesDirectory)/.TestResults/*.xunit.xml'
+      testResultsFiles: '$(Build.SourcesDirectory)/Tests/**/*.xunit.xml'
       mergeTestResults: True
       buildConfiguration: ${{ parameters.build.configuration }}
       publishRunAttachments: True
@@ -125,9 +125,9 @@ jobs:
   # enable Azure Boards for your project, as documented here: https://developercommunity.visualstudio.com/solutions/403137/view.html.
   - script: >-
       reportgenerator 
-      "-reports:$(Build.SourcesDirectory)/.CoverageResults/*.cobertura.xml" 
+      "-reports:$(Build.SourcesDirectory)/Tests/**/*.cobertura.xml" 
       "-targetdir:$(Build.SourcesDirectory)/.CoverageResults/Report" 
-      "-reporttypes:Cobertura;HtmlInline_AzurePipelines"
+      "-reporttypes:Cobertura;HtmlInline_AzurePipelines;Badges"
     displayName: Generate code coverage report
     name: generate_code_coverage_report
     enabled: True
@@ -142,7 +142,7 @@ jobs:
       codeCoverageTool: 'Cobertura'
       summaryFileLocation: '$(Build.SourcesDirectory)/.CoverageResults/Report/Cobertura.xml'
       reportDirectory: '$(Build.SourcesDirectory)/.CoverageResults/Report'
-      
+
   # Upload SonarQube report to SonarCloud.
   # See more here: https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner+for+MSBuild.
   - script: >-
