@@ -4,7 +4,7 @@
 
 # Specify build number format.
 # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/build/options?view=vsts&tabs=yaml#build-number-format.
-name: $(TeamProject)_$(BuildDefinitionName)_$(SourceBranchName)_$(Date:yyyyMMdd)$(Rev:rrr)
+name: $(SourceBranchName)_$(Date:yyyyMMdd).$(Rev:rrr)
 
 resources:
   repositories: 
