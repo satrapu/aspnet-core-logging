@@ -113,6 +113,8 @@ jobs:
   #   - generate coverage HTML report ready to be displayed by Azure DevOps
   # See more here: https://github.com/danielpalme/ReportGenerator#usage.
   # See more about the output formats here: https://github.com/danielpalme/ReportGenerator/wiki/Output-formats.
+  # In order to be able to see the report inside the Code Coverage tab on Azure DevOps, 
+  # enable Azure Boards for your project, as documented here: https://developercommunity.visualstudio.com/solutions/403137/view.html.
   - script: >-
       reportgenerator 
       "-reports:$(Build.SourcesDirectory)/.CoverageResults/*.cobertura.xml" 
