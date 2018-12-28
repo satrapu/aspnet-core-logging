@@ -87,8 +87,8 @@ jobs:
       --test-adapter-path "." 
       --logger "xunit;LogFilePath=TodoWebApp.UnitTests.xunit.xml" 
       /p:CollectCoverage=True 
-      /p:CoverletOutputFormat=cobertura 
-      /p:CoverletOutput="TodoWebApp.UnitTests.cobertura.xml" 
+      /p:CoverletOutputFormat=opencover 
+      /p:CoverletOutput="TodoWebApp.UnitTests.opencover.xml" 
       /p:Exclude="[xunit.*]*"
     displayName: Run unit tests
     name: run_unit_tests
@@ -107,8 +107,8 @@ jobs:
       --test-adapter-path "." 
       --logger "xunit;LogFilePath=TodoWebApp.IntegrationTests.xunit.xml" 
       /p:CollectCoverage=True 
-      /p:CoverletOutputFormat=cobertura 
-      /p:CoverletOutput="TodoWebApp.IntegrationTests.cobertura.xml" 
+      /p:CoverletOutputFormat=opencover 
+      /p:CoverletOutput="TodoWebApp.IntegrationTests.opencover.xml" 
       /p:Exclude="[xunit.*]*"
     displayName: Run integration tests
     name: run_integration_tests
@@ -153,7 +153,7 @@ jobs:
   # enable Azure Boards for your project, as documented here: https://developercommunity.visualstudio.com/solutions/403137/view.html.
   - script: >-
       reportgenerator 
-      "-reports:$(Build.SourcesDirectory)/Tests/**/*.cobertura.xml" 
+      "-reports:$(Build.SourcesDirectory)/Tests/**/*.opencover.xml" 
       "-targetdir:$(Build.SourcesDirectory)/.CoverageResults/Report" 
       "-reporttypes:Cobertura;HtmlInline_AzurePipelines;Badges"
     displayName: Generate code coverage report
@@ -171,7 +171,7 @@ jobs:
       summaryFileLocation: '$(Build.SourcesDirectory)/.CoverageResults/Report/Cobertura.xml'
       reportDirectory: '$(Build.SourcesDirectory)/.CoverageResults/Report'
 
-  # Upload SonarQube report to SonarCloud.
+  # Upload SonarQube report to external service, SonarCloud.
   # See more here: https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner+for+MSBuild.
   - script: >-
       dotnet-sonarscanner end  
