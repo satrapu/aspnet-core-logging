@@ -14,18 +14,5 @@
   -->
   <Property Name="sonar.sourceEncoding">UTF-8</Property>
   <Property Name="sonar.verbose">true</Property>
-  <!--
-  <Property Name="sonar.tests">Tests/**</Property>
-  <Property Name="sonar.test.exclusions">Tests/**</Property>
-  -->
-
-  <!--
-    Specify the location of code coverage data files in OpenCover format.
-    See more here: https://docs.sonarqube.org/pages/viewpage.action?pageId=6389770.
-    Starting with SonarQube 6.2 there is no distinction between unit and integration tests, 
-    so I will use only the "sonar.cs.opencover.reportsPaths" property and will drop
-    "sonar.cs.opencover.it.reportsPaths" property.
-  -->
-  <Property Name="sonar.cs.opencover.reportsPaths">./Tests/**/*.opencover.xml</Property>
 
 </SonarQubeAnalysisProperties>
