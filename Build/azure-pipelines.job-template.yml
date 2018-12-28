@@ -29,19 +29,24 @@ jobs:
       version: $(DotNetCore_SDK_Version)
   # Install sonarscanner tool to be able to perform a SonarQube analysis.
   # See more here: https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner+for+MSBuild.
-  - task: DotNetCoreCLI@2
+  # See more about "script" step here: https://docs.microsoft.com/en-us/azure/devops/pipelines/scripts/cross-platform-scripting?view=vsts&tabs=yaml.
+  - script: >-
+      dotnet tool install dotnet-sonarscanner 
+      --global 
+      --version $(SonarScanner_Version)
     displayName: Install SonarQube static code analyzing CLI tool
     name: install_sonarscanner
     enabled: ${{ parameters.sonar.enabled }}
-    inputs:
-      command: custom
-      custom: tool
-      arguments: 'install dotnet-sonarscanner --global --version $(SonarScanner_Version)'
   # Prepare SonarQube analysis.
   # See more here: https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner+for+MSBuild.
   # The analysis will make use of the branch name via the "sonar.branch.name" command parameter.
   # See more here: https://sonarcloud.io/documentation/branches/overview/#analysis.
-  - script: dotnet-sonarscanner begin /k:"aspnet-core-logging" /s:"$(Build.SourcesDirectory)/Build/SonarQubeAnalysis.xml" /d:sonar.login="$(SonarLogin)" /d:sonar.branch.name="$(Build.SourceBranchName)"
+  # The long line has been splitted using "block chomping indicator", as documented here: https://stackoverflow.com/a/3790497.
+  - script: >-
+      dotnet-sonarscanner begin /k:"aspnet-core-logging" 
+      /s:"$(Build.SourcesDirectory)/Build/SonarQubeAnalysis.xml" 
+      /d:sonar.login="$(SonarLogin)" 
+      /d4:sonar.branch.name="$(Build.SourceBranchName)"
     displayName: Prepare SonarQube analysis
     name: prepare_sonarqube_analysis
     enabled: ${{ parameters.sonar.enabled }}
@@ -56,11 +61,24 @@ jobs:
       custom: build
       arguments: '$(Build.SourcesDirectory)/Todo.sln --configuration ${{ parameters.build.configuration }}'
   # Run unit tests.
+  # See more about running selective tests here: https://docs.microsoft.com/en-us/dotnet/core/testing/selective-unit-tests#xunit.
+  - script: >-
+      dotnet test $(Build.SourcesDirectory)/Todo.sln 
+      --configuration ${{ parameters.build.configuration }} 
+      --filter "FullyQualifiedName~UnitTests" 
+      --test-adapter-path "." 
+      --logger "xunit;LogFilePath=$(Build.SourcesDirectory)/.TestResults/TodoWebApp.UnitTests.xunit.xml" 
+      /p:CollectCoverage=True 
+      /p:CoverletOutputFormat=cobertura 
+      /p:CoverletOutput="$(Build.SourcesDirectory)/.CoverageResults/TodoWebApp.UnitTests.cobertura.xml"
+    displayName: Run unit tests
+    name: run_unit_tests
+    enabled: True
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/dotnet-core-cli?view=vsts.
   - task: DotNetCoreCLI@2
     displayName: Run unit tests
     name: run_unit_tests
-    enabled: True
+    enabled: False
     inputs:
       command: custom
       custom: test
