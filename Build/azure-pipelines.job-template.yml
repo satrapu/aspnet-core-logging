@@ -55,7 +55,7 @@ jobs:
       /s:"$(Build.SourcesDirectory)/Build/SonarQubeAnalysis.xml" 
       /d:sonar.login="$(SonarLogin)" 
       /d:sonar.branch.name="$(Build.SourceBranchName)"
-      /v:"$(Date:yyyyMMdd).$(Rev:rrr)"
+      /v:"1.0.0-SNAPSHOT"
     displayName: Prepare SonarQube analysis
     name: prepare_sonarqube_analysis
     env:
