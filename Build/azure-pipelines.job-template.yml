@@ -27,6 +27,7 @@ jobs:
     inputs:
       packageType: 'sdk'
       version: $(DotNetCore_SDK_Version)
+
   # Install sonarscanner tool to be able to perform a SonarQube analysis.
   # See more here: https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner+for+MSBuild.
   # See more about "script" step here: https://docs.microsoft.com/en-us/azure/devops/pipelines/scripts/cross-platform-scripting?view=vsts&tabs=yaml.
@@ -37,6 +38,7 @@ jobs:
     displayName: Install SonarQube static code analyzing CLI tool
     name: install_sonarscanner
     enabled: ${{ parameters.sonar.enabled }}
+
   # Prepare SonarQube analysis.
   # See more here: https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner+for+MSBuild.
   # The analysis will make use of the branch name via the "sonar.branch.name" command parameter.
@@ -51,6 +53,7 @@ jobs:
     displayName: Prepare SonarQube analysis
     name: prepare_sonarqube_analysis
     enabled: ${{ parameters.sonar.enabled }}
+
   # Compile source code.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/dotnet-core-cli?view=vsts.
   - script: >-
@@ -59,6 +62,7 @@ jobs:
     displayName: Build sources
     name: build_sources
     enabled: True
+
   # Run unit tests.
   # See more about running selective tests here: https://docs.microsoft.com/en-us/dotnet/core/testing/selective-unit-tests#xunit.
   - script: >-
@@ -74,6 +78,7 @@ jobs:
     displayName: Run unit tests
     name: run_unit_tests
     enabled: True
+
   # Run integration tests.
   - script: >-
       dotnet test $(Build.SourcesDirectory)/Todo.sln 
@@ -88,6 +93,7 @@ jobs:
     displayName: Run integration tests
     name: run_integration_tests
     enabled: True
+
   # Publish test results.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=vsts&tabs=yaml.
   - task: PublishTestResults@2
@@ -100,6 +106,7 @@ jobs:
       mergeTestResults: True
       buildConfiguration: ${{ parameters.build.configuration }}
       publishRunAttachments: True
+
   # Install reportgenerator tool to be able to generate code coverage related reports.
   - script: >-
       dotnet tool install dotnet-reportgenerator-globaltool 
@@ -108,6 +115,7 @@ jobs:
     displayName: Install code coverage report generator tool
     name: install_code_coverage_report_generator
     enabled: True
+
   # Generate code coverage report:
   #   - combine several OpenCover coverag data files into one single file in Cobertura format
   #   - generate coverage HTML report ready to be displayed by Azure DevOps
@@ -123,6 +131,7 @@ jobs:
     displayName: Generate code coverage report
     name: generate_code_coverage_report
     enabled: True
+
   # Publish code coverage report.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-code-coverage-results?view=vsts.
   - task: PublishCodeCoverageResults@1
@@ -133,6 +142,7 @@ jobs:
       codeCoverageTool: 'Cobertura'
       summaryFileLocation: '$(Build.SourcesDirectory)/.CoverageResults/Report/Cobertura.xml'
       reportDirectory: '$(Build.SourcesDirectory)/.CoverageResults/Report'
+      
   # Upload SonarQube report to SonarCloud.
   # See more here: https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner+for+MSBuild.
   - script: >-
