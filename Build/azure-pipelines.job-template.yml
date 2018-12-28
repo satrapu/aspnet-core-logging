@@ -32,8 +32,8 @@ jobs:
   # See more about "script" step here: https://docs.microsoft.com/en-us/azure/devops/pipelines/scripts/cross-platform-scripting?view=vsts&tabs=yaml.
   - script: >-
       dotnet tool install dotnet-sonarscanner 
-        --global 
-        --version $(SonarScanner_Version)
+      --global 
+      --version $(SonarScanner_Version)
     displayName: Install SonarQube static code analyzing CLI tool
     name: install_sonarscanner
     enabled: ${{ parameters.sonar.enabled }}
@@ -44,10 +44,10 @@ jobs:
   # The long line has been splitted using "block chomping indicator", as documented here: https://stackoverflow.com/a/3790497.
   - script: >-
       dotnet-sonarscanner begin 
-        /k:"$(SonarProjectKey)"
-        /s:"$(Build.SourcesDirectory)/Build/SonarQubeAnalysis.xml" 
-        /d:sonar.login="$(SonarLogin)" 
-        /d:sonar.branch.name="$(Build.SourceBranchName)"
+      /k:"$(SonarProjectKey)" 
+      /s:"$(Build.SourcesDirectory)/Build/SonarQubeAnalysis.xml" 
+      /d:sonar.login="$(SonarLogin)" 
+      /d:sonar.branch.name="$(Build.SourceBranchName)"
     displayName: Prepare SonarQube analysis
     name: prepare_sonarqube_analysis
     enabled: ${{ parameters.sonar.enabled }}
@@ -55,7 +55,7 @@ jobs:
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/dotnet-core-cli?view=vsts.
   - script: >-
       dotnet build $(Build.SourcesDirectory)/Todo.sln 
-        --configuration ${{ parameters.build.configuration }}
+      --configuration ${{ parameters.build.configuration }}
     displayName: Build sources
     name: build_sources
     enabled: True
@@ -63,28 +63,28 @@ jobs:
   # See more about running selective tests here: https://docs.microsoft.com/en-us/dotnet/core/testing/selective-unit-tests#xunit.
   - script: >-
       dotnet test $(Build.SourcesDirectory)/Todo.sln 
-        --configuration ${{ parameters.build.configuration }} 
-        --filter "FullyQualifiedName~UnitTests" 
-        --test-adapter-path "." 
-        --logger "xunit;LogFilePath=$(Build.SourcesDirectory)/.TestResults/TodoWebApp.UnitTests.xunit.xml" 
-        /p:CollectCoverage=True 
-        /p:CoverletOutputFormat=cobertura 
-        /p:CoverletOutput="$(Build.SourcesDirectory)/.CoverageResults/TodoWebApp.UnitTests.cobertura.xml"
-        /p:Exclude="[xunit.*]*"
+      --configuration ${{ parameters.build.configuration }} 
+      --filter "FullyQualifiedName~UnitTests" 
+      --test-adapter-path "." 
+      --logger "xunit;LogFilePath=$(Build.SourcesDirectory)/.TestResults/TodoWebApp.UnitTests.xunit.xml" 
+      /p:CollectCoverage=True 
+      /p:CoverletOutputFormat=cobertura 
+      /p:CoverletOutput="$(Build.SourcesDirectory)/.CoverageResults/TodoWebApp.UnitTests.cobertura.xml" 
+      /p:Exclude="[xunit.*]*"
     displayName: Run unit tests
     name: run_unit_tests
     enabled: True
   # Run integration tests.
   - script: >-
       dotnet test $(Build.SourcesDirectory)/Todo.sln 
-        --configuration ${{ parameters.build.configuration }} 
-        --filter "FullyQualifiedName~IntegrationTests" 
-        --test-adapter-path "." 
-        --logger "xunit;LogFilePath=$(Build.SourcesDirectory)/.TestResults/TodoWebApp.IntegrationTests.xunit.xml" 
-        /p:CollectCoverage=True 
-        /p:CoverletOutputFormat=cobertura 
-        /p:CoverletOutput="$(Build.SourcesDirectory)/.CoverageResults/TodoWebApp.IntegrationTests.cobertura.xml"
-        /p:Exclude="[xunit.*]*"
+      --configuration ${{ parameters.build.configuration }} 
+      --filter "FullyQualifiedName~IntegrationTests" 
+      --test-adapter-path "." 
+      --logger "xunit;LogFilePath=$(Build.SourcesDirectory)/.TestResults/TodoWebApp.IntegrationTests.xunit.xml" 
+      /p:CollectCoverage=True 
+      /p:CoverletOutputFormat=cobertura 
+      /p:CoverletOutput="$(Build.SourcesDirectory)/.CoverageResults/TodoWebApp.IntegrationTests.cobertura.xml" 
+      /p:Exclude="[xunit.*]*"
     displayName: Run integration tests
     name: run_integration_tests
     enabled: True
@@ -102,9 +102,9 @@ jobs:
       publishRunAttachments: True
   # Install reportgenerator tool to be able to generate code coverage related reports.
   - script: >-
-      dotnet tool install dotnet-reportgenerator-globaltool
-        --global 
-        --version $(ReportGenerator_Version)
+      dotnet tool install dotnet-reportgenerator-globaltool 
+      --global 
+      --version $(ReportGenerator_Version)
     displayName: Install code coverage report generator tool
     name: install_code_coverage_report_generator
     enabled: True
@@ -115,9 +115,9 @@ jobs:
   # See more about the output formats here: https://github.com/danielpalme/ReportGenerator/wiki/Output-formats.
   - script: >-
       reportgenerator 
-        "-reports:$(Build.SourcesDirectory)/.CoverageResults/*.cobertura.xml" 
-        "-targetdir:$(Build.SourcesDirectory)/.CoverageResults/Report" 
-        "-reporttypes:Cobertura;HtmlInline"
+      "-reports:$(Build.SourcesDirectory)/.CoverageResults/*.cobertura.xml" 
+      "-targetdir:$(Build.SourcesDirectory)/.CoverageResults/Report" 
+      "-reporttypes:Cobertura;HtmlInline"
     displayName: Generate code coverage report
     name: generate_code_coverage_report
     enabled: True
@@ -134,8 +134,8 @@ jobs:
   # Upload SonarQube report to SonarCloud.
   # See more here: https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner+for+MSBuild.
   - script: >-
-      dotnet-sonarscanner end 
-        /d:sonar.login="$(SonarLogin)"
+      dotnet-sonarscanner end  
+      /d:sonar.login="$(SonarLogin)"
     displayName: Upload SonarQube report
     name: upload_sonarqube_report
     enabled: ${{ parameters.sonar.enabled }}
