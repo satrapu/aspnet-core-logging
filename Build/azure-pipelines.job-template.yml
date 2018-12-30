@@ -32,6 +32,7 @@ jobs:
   # See more here: https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner+for+MSBuild.
   # See more about "script" step here: https://docs.microsoft.com/en-us/azure/devops/pipelines/scripts/cross-platform-scripting?view=vsts&tabs=yaml
   # and here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/command-line?view=vsts&tabs=yaml#yaml-snippet.
+  # The long YAML line has been splitted using "block chomping indicator", as documented here: https://stackoverflow.com/a/3790497.
   - script: >-
       dotnet tool install dotnet-sonarscanner 
       --global 
@@ -46,16 +47,21 @@ jobs:
 
   # Prepare SonarQube analysis.
   # See more here: https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner+for+MSBuild.
+  #
+  # You need to define a variable group named "SonarQube" and add several variables:
+  #   - SonarProjectKey - contains the key used for connecting to the project hosted on SonarCloud
+  #   - SonarProjectVersion - specifies the version to attach to this SonarQube analysis
+  # Then map this group to the "variables" section of this pipeline.
+  #
   # The analysis will make use of the branch name via the "sonar.branch.name" command parameter.
   # See more here: https://sonarcloud.io/documentation/branches/overview/#analysis.
-  # The long line has been splitted using "block chomping indicator", as documented here: https://stackoverflow.com/a/3790497.
   - script: >-
       dotnet-sonarscanner begin 
       /k:"$(SonarProjectKey)" 
+      /v:"$(SonarProjectVersion)"
       /s:"$(Build.SourcesDirectory)/Build/SonarQubeAnalysis.xml" 
       /d:sonar.login="$(SonarLogin)" 
       /d:sonar.branch.name="$(Build.SourceBranchName)"
-      /v:"1.0.0-SNAPSHOT"
       /d:sonar.cs.opencover.reportsPaths="$(Build.SourcesDirectory)/Tests/**/*.opencover.xml"
     displayName: Prepare SonarQube analysis
     name: prepare_sonarqube_analysis
