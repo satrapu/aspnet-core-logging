@@ -28,6 +28,9 @@ trigger:
 
 # See more about Azure Pipelines variables here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=vsts.
 variables:
+  # Load group containing variables applicable to all pipelines belonging to this project.
+  - group: GlobalVariables
+
   # Load SonarQube related variable group.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/library/variable-groups?view=vsts&tabs=yaml#use-a-variable-group.
   # Be sure to link this group to this pipeline by selecting the latter -> Edit -> Variables -> Variable Groups!
