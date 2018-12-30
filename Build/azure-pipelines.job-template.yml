@@ -57,12 +57,11 @@ jobs:
   # See more here: https://sonarcloud.io/documentation/branches/overview/#analysis.
   - script: >-
       dotnet-sonarscanner begin 
-      /k:"$(SonarProjectKey)" 
-      /v:"$(SonarProjectVersion)"
+      /k:"$(CurrentProject.Sonar.ProjectKey)" 
+      /v:"$(CurrentProject.Version)"
       /s:"$(Build.SourcesDirectory)/Build/SonarQubeAnalysis.xml" 
-      /d:sonar.login="$(SonarLogin)" 
+      /d:sonar.login="$(CurrentProject.Sonar.Token)" 
       /d:sonar.branch.name="$(Build.SourceBranchName)"
-      /d:sonar.cs.opencover.reportsPaths="$(Build.SourcesDirectory)/Tests/**/*.opencover.xml"
     displayName: Prepare SonarQube analysis
     name: prepare_sonarqube_analysis
     env:
@@ -182,7 +181,7 @@ jobs:
   # See more here: https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner+for+MSBuild.
   - script: >-
       dotnet-sonarscanner end  
-      /d:sonar.login="$(SonarLogin)"
+      /d:sonar.login="$(CurrentProject.Sonar.Token)"
     displayName: Upload SonarQube report
     name: upload_sonarqube_report
     env:

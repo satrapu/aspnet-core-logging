@@ -63,7 +63,7 @@ variables:
     value: 0
 
   # Represents the key of the project hosted on SonarCloud
-  - name: 'SonarProjectKey'
+  - name: 'CurrentProject.Sonar.ProjectKey'
     value: 'aspnet-core-logging'
 
 # Define multiple jobs, one per supported OS.
