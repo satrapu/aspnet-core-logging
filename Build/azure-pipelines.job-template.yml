@@ -151,8 +151,9 @@ jobs:
     enabled: True
 
   # Generate code coverage report:
-  #   - combine several OpenCover coverag data files into one single file in Cobertura format
+  #   - combine several OpenCover coverage data files into one single file in Cobertura format
   #   - generate coverage HTML report ready to be displayed by Azure DevOps
+  #   - generate coverage badge to be displayed on GitHub project home page
   # See more here: https://github.com/danielpalme/ReportGenerator#usage.
   # See more about the output formats here: https://github.com/danielpalme/ReportGenerator/wiki/Output-formats.
   # In order to be able to see the report inside the Code Coverage tab on Azure DevOps, 
