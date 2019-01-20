@@ -96,7 +96,6 @@ jobs:
       /p:CoverletOutputFormat=opencover 
       /p:CoverletOutput="TodoWebApp.UnitTests.opencover.xml" 
       /p:Include="[TodoWebApp]*"
-      /p:Exclude="[*]*"
     displayName: Run unit tests
     name: run_unit_tests
     env:
@@ -117,7 +116,6 @@ jobs:
       /p:CoverletOutputFormat=opencover 
       /p:CoverletOutput="TodoWebApp.IntegrationTests.opencover.xml" 
       /p:Include="[TodoWebApp]*"
-      /p:Exclude="[*]*"
     displayName: Run integration tests
     name: run_integration_tests
     env:
