@@ -83,7 +83,7 @@ jobs:
       COREHOST_TRACE: $(CoreHostTrace)
     enabled: True
 
-  # Run unit tests.
+  # Run unit tests and collect code coverage metrics.
   # See more about running selective tests here: https://docs.microsoft.com/en-us/dotnet/core/testing/selective-unit-tests#xunit.
   - script: >-
       dotnet test $(Build.SourcesDirectory)/Todo.sln 
@@ -95,7 +95,8 @@ jobs:
       /p:CollectCoverage=True 
       /p:CoverletOutputFormat=opencover 
       /p:CoverletOutput="TodoWebApp.UnitTests.opencover.xml" 
-      /p:Exclude="[xunit.*]*"
+      /p:Include="[TodoWebApp]*"
+      /p:Exclude="[*]*"
     displayName: Run unit tests
     name: run_unit_tests
     env:
@@ -104,7 +105,7 @@ jobs:
       COREHOST_TRACE: $(CoreHostTrace)    
     enabled: True
 
-  # Run integration tests.
+  # Run integration tests and collect code coverage metrics.
   - script: >-
       dotnet test $(Build.SourcesDirectory)/Todo.sln 
       --no-build
@@ -115,7 +116,8 @@ jobs:
       /p:CollectCoverage=True 
       /p:CoverletOutputFormat=opencover 
       /p:CoverletOutput="TodoWebApp.IntegrationTests.opencover.xml" 
-      /p:Exclude="[xunit.*]*"
+      /p:Include="[TodoWebApp]*"
+      /p:Exclude="[*]*"
     displayName: Run integration tests
     name: run_integration_tests
     env:
