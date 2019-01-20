@@ -10,7 +10,11 @@ obj/
 Logs/
 
 # Tests
+/Tests/**/.TestResults/
 /Tests/**/TestResults/
+
+# Code coverage
+/Tests/**/*.opencover.xml
 
 # SonarQube scanner artifacts
 .sonarqube/
