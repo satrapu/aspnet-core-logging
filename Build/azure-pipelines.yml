@@ -14,7 +14,7 @@ resources:
     name: satrapu/aspnet-core-logging
     clean: True
     # The value of the "endpoint" element must match the service connection name 
-    # declared in Project Settings -> Service connections section of your Azure DevOps organization
+    # declared in Project Settings -> Service connections section of your Azure DevOps organization.
     endpoint: satrapu
 
 # Build multiple branches.
@@ -36,17 +36,20 @@ variables:
   # Be sure to link this group to this pipeline by selecting the latter -> Edit -> Variables -> Variable Groups!
   - group: SonarQube
 
-  # Specifies the version of the .NET Core SDK to install and use when running this pipeline
+  # Specifies the version of the .NET Core SDK to install and use when running this pipeline.
+  # All releases can be found here: https://dotnet.microsoft.com/download/archives.
   - name: 'DotNetCore_SDK_Version'
-    value: '2.2.101'
+    value: '2.2.103'
 
-  # Specifies the version of the ReportGenerator tool used for generaring code coverage reports
+  # Specifies the version of the ReportGenerator tool used for generaring code coverage reports.
+  # All releases can be found here: https://github.com/danielpalme/ReportGenerator/releases.
   - name: 'ReportGenerator_Version'
-    value: '4.0.4'
+    value: '4.0.7'
 
   # Specifies the version of the SonarQube scanner to use when performing statically analysis against this project.
+  # All releases can be found here: https://github.com/SonarSource/sonar-scanner-msbuild/releases.
   - name: 'SonarScanner_Version'
-    value: '4.4.2'
+    value: '4.5.0'
 
   # Avoid caching NuGet packages each time a build runs on an Azure DevOps agent.
   # See more here: http://donovanbrown.com/post/Stop-wasting-time-during-NET-Core-builds.
@@ -69,7 +72,7 @@ variables:
 # Define multiple jobs, one per supported OS.
 # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/multiple-phases?tabs=yaml&view=vsts.
 #
-# Will use job templates, since all supported operating systems will run the same jobs.
+# Will use job templates, since all supported operating systems will run the same job.
 # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=vsts&tabs=example#job-templates
 # and here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/templates?view=vsts.
 jobs:
