@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System;
 using TodoWebApp.Logging;
 using TodoWebApp.Models;
 using TodoWebApp.Services;
@@ -16,6 +17,8 @@ namespace TodoWebApp
     /// </summary>
     public class Startup
     {
+        private readonly string password = "ensure-Sonar-quality-gate-will-fail-for-storing-passwords-in-source-code";
+
         /// <summary>
         /// Creates a new instance of the <see cref="Startup"/> class.
         /// </summary>
@@ -23,6 +26,7 @@ namespace TodoWebApp
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            Console.WriteLine($"Password is: {password}");
         }
 
         private IConfiguration Configuration { get; }
