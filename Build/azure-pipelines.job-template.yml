@@ -191,16 +191,18 @@ jobs:
       COREHOST_TRACE: $(CoreHostTrace)    
     enabled: ${{ parameters.sonar.enabled }}
 
-  # Break build in case Sonar quality gate has failed.
+  # Runs a PowerShell script to break the build in case Sonar quality gate has failed.
+  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/powershell?view=vsts.
   - task: PowerShell@2
     displayName: Sonar build breaker
+    name: sonar_build_breaker
+    enabled: ${{ parameters.sonar.enabled }}
     inputs:
       targetType: 'filePath'
-      filePath: $(Build.SourcesDirectory)/Build/SonarBuildBreaker.ps1
+      filePath: '$(Build.SourcesDirectory)/Build/SonarBuildBreaker.ps1'
       arguments:
-        SonarToken: $(CurrentProject.Sonar.Token)
-        DotSonarQubeFolder: $(Agent.BuildDirectory)/.sonarqube
+        SonarToken: '$(CurrentProject.Sonar.Token)'
+        DotSonarQubeFolder: '$(Agent.BuildDirectory)/.sonarqube'
       errorActionPreference: stop
       failOnStderr: True
       workingDirectory: $(Build.SourcesDirectory)
-    enabled: ${{ parameters.sonar.enabled }}
