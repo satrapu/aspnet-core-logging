@@ -190,3 +190,17 @@ jobs:
       DOTNET_CLI_TELEMETRY_OPTOUT: $(DotNetCliTelemetryOptOut)
       COREHOST_TRACE: $(CoreHostTrace)    
     enabled: ${{ parameters.sonar.enabled }}
+
+  # Break build in case Sonar quality gate has failed.
+  - task: PowerShell@2
+    displayName: Sonar build breaker
+    inputs:
+      targetType: 'filePath'
+      filePath: $(Build.SourcesDirectory)/Build/SonarBuildBreaker.ps1
+      arguments:
+        SonarToken: $(CurrentProject.Sonar.Token)
+        DotSonarQubeFolder: $(Agent.BuildDirectory)/.sonarqube
+      errorActionPreference: stop
+      failOnStderr: True
+      workingDirectory: $(Build.SourcesDirectory)
+    enabled: ${{ parameters.sonar.enabled }}
