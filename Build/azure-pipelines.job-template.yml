@@ -200,9 +200,7 @@ jobs:
     inputs:
       targetType: 'filePath'
       filePath: '$(Build.SourcesDirectory)/Build/SonarBuildBreaker.ps1'
-      arguments:
-        SonarToken: '$(CurrentProject.Sonar.Token)'
-        DotSonarQubeFolder: '$(Agent.BuildDirectory)/.sonarqube'
+      arguments: '-SonarToken "$(CurrentProject.Sonar.Token)" -DotSonarQubeFolder "$(Agent.BuildDirectory)/.sonarqube"'
       errorActionPreference: stop
       failOnStderr: True
       workingDirectory: $(Build.SourcesDirectory)
