@@ -198,7 +198,7 @@ jobs:
   - task: PowerShell@2
     name: sonar_build_breaker
     displayName: Run Sonar build breaker
-    enabled: and(${{ parameters.sonar.enabled }}, ${{ parameters.sonar.buildBreaker.enabled }})
+    condition: and(${{ parameters.sonar.enabled }}, ${{ parameters.sonar.buildBreaker.enabled }})
     inputs:
       targetType: 'filePath'
       filePath: '$(Build.SourcesDirectory)/Build/SonarBuildBreaker.ps1'
