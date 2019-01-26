@@ -8,7 +8,7 @@ parameters:
   sonar:
     enabled: True
     buildBreaker:
-      enabled: False
+      enabled: True
 
 jobs:
 - job: ${{ parameters.job.name }}
