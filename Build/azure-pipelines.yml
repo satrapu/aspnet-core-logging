@@ -41,7 +41,7 @@ variables:
   - name: 'DotNetCore_SDK_Version'
     value: '2.2.101'
 
-  # Specifies the version of the ReportGenerator tool used for generaring code coverage reports.
+  # Specifies the version of the ReportGenerator tool used for generating code coverage reports.
   # All releases can be found here: https://github.com/danielpalme/ReportGenerator/releases.
   - name: 'ReportGenerator_Version'
     value: '4.0.7'
