@@ -19,7 +19,7 @@ jobs:
     clean: all
   steps:
   # Install specific .NET Core SDK version.
-  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/tool/dotnet-core-tool-installer?view=vsts.
+  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/tool/dotnet-core-tool-installer?view=azure-devops.
   # Installing a specific .NET Core SDK version is needed to avoid installing a .NET Core global tool in a following task and then have Azure DevOps complain that it cannot find it.
   # This issue is documented here: https://github.com/Microsoft/azure-pipelines-tasks/issues/8291.
   - task: DotNetCoreInstaller@0
@@ -32,7 +32,7 @@ jobs:
 
   # Install sonarscanner tool to be able to perform a SonarQube analysis.
   # See more here: https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner+for+MSBuild.
-  # See more about "script" step here: https://docs.microsoft.com/en-us/azure/devops/pipelines/scripts/cross-platform-scripting?view=vsts&tabs=yaml
+  # See more about "script" step here: https://docs.microsoft.com/en-us/azure/devops/pipelines/scripts/cross-platform-scripting?view=azure-devops&tabs=yaml
   # and here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/command-line?view=vsts&tabs=yaml#yaml-snippet.
   # The long YAML line has been splitted using "block chomping indicator", as documented here: https://stackoverflow.com/a/3790497.
   - script: >-
