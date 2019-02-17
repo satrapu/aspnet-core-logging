@@ -4,18 +4,18 @@
 
 # Specify build number format.
 # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/build/options?view=vsts&tabs=yaml#build-number-format.
-name: $(SourceBranchName)_$(Date:yyyyMMdd).$(Rev:rrr)
+name: '$(SourceBranchName)_$(Date:yyyyMMdd).$(Rev:rrr)'
 
 resources:
   repositories: 
   # See more about repositories here: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=vsts&tabs=schema#repository.
-  - repository: aspnet_core_logging
-    type: github
-    name: satrapu/aspnet-core-logging
+  - repository: 'aspnet_core_logging'
+    type: 'github'
+    name: 'satrapu/aspnet-core-logging'
     clean: True
     # The value of the "endpoint" element must match the service connection name 
     # declared in Project Settings -> Service connections section of your Azure DevOps organization.
-    endpoint: satrapu
+    endpoint: 'satrapu'
 
 # Build multiple branches.
 # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/build/ci-build-git?view=vsts&tabs=yaml.
@@ -29,12 +29,12 @@ trigger:
 # See more about Azure Pipelines variables here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=vsts.
 variables:
   # Load group containing variables applicable to all pipelines belonging to this project.
-  - group: GlobalVariables
+  - group: 'GlobalVariables'
 
   # Load SonarQube related variable group.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/library/variable-groups?view=vsts&tabs=yaml#use-a-variable-group.
   # Be sure to link this group to this pipeline by selecting the latter -> Edit -> Variables -> Variable Groups!
-  - group: SonarQube
+  - group: 'SonarQube'
 
   # Specifies the version of the .NET Core SDK to install and use when running this pipeline.
   # All releases can be found here: https://dotnet.microsoft.com/download/archives.
@@ -76,26 +76,26 @@ variables:
 # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=vsts&tabs=example#job-templates
 # and here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/templates?view=vsts.
 jobs:
-#- template: azure-pipelines.job-template.yml
-#  parameters:
-#    job:
-#      name: linux
-#      displayName: Build on Linux
-#    pool:
-#      vmImage: 'ubuntu-16.04'
-
-#- template: azure-pipelines.job-template.yml
-#  parameters:
-#    job:
-#      name: macOS
-#      displayName: Build on macOS
-#    pool:
-#      vmImage: 'macOS-10.13'
-
-- template: azure-pipelines.job-template.yml
+- template: './azure-pipelines.job-template.yml'
   parameters:
     job:
-      name: windows
-      displayName: Build on Windows
+      name: 'linux'
+      displayName: 'Build on Linux'
+    pool:
+      vmImage: 'ubuntu-16.04'
+
+- template: './azure-pipelines.job-template.yml'
+  parameters:
+    job:
+      name: 'macOS'
+      displayName: 'Build on macOS'
+    pool:
+      vmImage: 'macOS-10.13'
+
+- template: './azure-pipelines.job-template.yml'
+  parameters:
+    job:
+      name: 'windows'
+      displayName: 'Build on Windows'
     pool:
       vmImage: 'vs2017-win2016'
