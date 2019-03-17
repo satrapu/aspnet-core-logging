@@ -202,8 +202,8 @@ jobs:
     condition: |
       and
       (
-        eq(variables['parameters.sonar.enabled'], True),
-        eq(variables['parameters.sonar.buildBreaker.enabled'], True)
+        eq( ${{ parameters.sonar.enabled }}, True),
+        eq( ${{ parameters.sonar.buildBreaker.enabled }}, True)
       )
     inputs:
       targetType: 'filePath'
