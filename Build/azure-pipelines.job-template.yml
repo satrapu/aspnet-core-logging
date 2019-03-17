@@ -199,7 +199,12 @@ jobs:
     name: sonar_build_breaker
     displayName: Run Sonar build breaker
     # See more about conditions here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/conditions?view=azdevops&tabs=yaml.
-    condition: and(${{ parameters.sonar.enabled }}, ${{ parameters.sonar.buildBreaker.enabled }})
+    condition: |
+      and
+      (
+        eq(variables['parameters.sonar.enabled'], True),
+        eq(variables['parameters.sonar.buildBreaker.enabled'], True)
+      )
     inputs:
       targetType: 'filePath'
       filePath: '$(Build.SourcesDirectory)/Build/SonarBuildBreaker.ps1'
