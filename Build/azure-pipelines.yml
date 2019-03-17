@@ -83,6 +83,8 @@ jobs:
       displayName: 'Build on Linux'
     pool:
       vmImage: 'ubuntu-16.04'
+    sonar:
+      enabled: False
 
 - template: './azure-pipelines.job-template.yml'
   parameters:
@@ -91,6 +93,8 @@ jobs:
       displayName: 'Build on macOS'
     pool:
       vmImage: 'macOS-10.13'
+    sonar:
+      enabled: False
 
 - template: './azure-pipelines.job-template.yml'
   parameters:
