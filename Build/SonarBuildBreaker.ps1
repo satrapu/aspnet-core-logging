@@ -44,6 +44,6 @@ $Response = Invoke-WebRequest -Uri $AnalysisUrl -Headers $Headers -UseBasicParsi
 
 if (($Response.projectStatus.status -ne 'OK') -and ($Response.projectStatus.status -ne 'NONE')) {
       $ErrorMsg = "##vso[task.LogIssue type=error;] Quality gate FAILED. Please check it here: {0}/dashboard?id={1}" -f $ServerUrl, $ProjectKey
-      Write-Host $ErrorMsg
-      Write-Host "##vso[task.complete result=Failed;]"
+      Write-Output $ErrorMsg
+      Write-Output "##vso[task.complete result=Failed;]"
 }
