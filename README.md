@@ -2,8 +2,11 @@
 
 ## Description
 ASP.NET Core v2.x logging in action.  
-The Azure Pipelines instance used by this project is described here: https://crossprogramming.com/2019/03/17/build-asp-net-core-app-using-azure-pipelines.html. 
+This project has several posts associated with it:
 
+ - [Build an ASP.NET Core application using Azure Pipelines](https://crossprogramming.com/2019/03/17/build-asp-net-core-app-using-azure-pipelines.html)
+ - [Logging HTTP context in ASP.NET Core](https://crossprogramming.com/2018/12/27/logging-http-context-in-asp-net-core.html)
+ 
 ## Build Status
 | Operating System | Status |
 | ---------------- | ------------ |
