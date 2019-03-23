@@ -15,11 +15,7 @@ This project has several posts associated with it:
 | Windows          | [![Build Status](https://satrapu.visualstudio.com/aspnet-core-logging/_apis/build/status/build-any-commit?branchName=master&jobName=Build%20on%20Windows)](https://satrapu.visualstudio.com/aspnet-core-logging/_build/latest?definitionId=2&branchName=master) |
 
 ## Code Quality Status
-
-### Codacy
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/001d9d7bbf43459aae186c7d8cd49858)](https://www.codacy.com/app/satrapu/aspnet-core-logging?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=satrapu/aspnet-core-logging&amp;utm_campaign=Badge_Grade)
-
-### Sonar
 [![SonarCloud Status](https://sonarcloud.io/api/project_badges/measure?project=aspnet-core-logging&metric=alert_status)](https://sonarcloud.io/dashboard?id=aspnet-core-logging) 
 
 ## Dependencies License Status
