@@ -18,6 +18,7 @@ namespace TodoWebApp.Models
         /// <summary>
         /// Gets or sets the set of <see cref="TodoItem"/> stored inside the underlying database.
         /// </summary>
+        // ReSharper disable once UnusedAutoPropertyAccessor.Global
         public DbSet<TodoItem> TodoItems { get; set; }
     }
 }

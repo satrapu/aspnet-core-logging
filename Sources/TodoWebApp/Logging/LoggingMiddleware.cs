@@ -10,10 +10,14 @@ namespace TodoWebApp.Logging
     /// <summary>
     /// Logs HTTP requests and responses.
     /// </summary>
+    // ReSharper disable once ClassNeverInstantiated.Global
     public class LoggingMiddleware
     {
-        private const int RESPONSE_BUFFER_SIZE_IN_BYTES = 1024 * 1024;
-    
+        /// <summary>
+        /// Represents the response buffer size.
+        /// </summary>
+        private const int BUFFER_SIZE_IN_BYTES = 1024 * 1024;
+
         private readonly RequestDelegate nextRequestDelegate;
         private readonly IHttpContextLoggingHandler httpContextLoggingHandler;
         private readonly IHttpObjectConverter httpObjectConverter;
@@ -42,6 +46,7 @@ namespace TodoWebApp.Logging
         /// </summary>
         /// <param name="httpContext">The current HTTP context to be processed.</param>
         /// <returns></returns>
+        // ReSharper disable once UnusedMember.Global
         public async Task Invoke(HttpContext httpContext)
         {
             if (httpContextLoggingHandler.ShouldLog(httpContext))
@@ -71,7 +76,7 @@ namespace TodoWebApp.Logging
             // Saves the original response body stream for latter purposes
             var originalResponseBodyStream = httpContext.Response.Body;
 
-            using (var stream = new MemoryStream(RESPONSE_BUFFER_SIZE_IN_BYTES))
+            using (var stream = new MemoryStream(BUFFER_SIZE_IN_BYTES))
             {
                 // Replace response body stream with a seekable one, like a MemoryStream, to allow logging it
                 httpContext.Response.Body = stream;

@@ -12,8 +12,7 @@ namespace TodoWebApp.Logging
     /// </summary>
     public class LoggingService : IHttpContextLoggingHandler, IHttpObjectConverter
     {
-        private const int REQUEST_SIZE = 1000;
-        private const int RESPONSE_SIZE = 1000;
+        private const int BUFFER_SIZE = 1000;
 
         private static readonly string[] textBasedHeaderNames = { "Accept", "Content-Type" };
         private static readonly string[] textBasedHeaderValues = { "application/json", "application/xml", "text/" };
@@ -64,15 +63,15 @@ namespace TodoWebApp.Logging
                 logger.LogDebug($"Converting HTTP request {httpRequest.HttpContext.TraceIdentifier} ...");
             }
 
-            var stringBuilder = new StringBuilder(REQUEST_SIZE);
+            var stringBuilder = new StringBuilder(BUFFER_SIZE);
             stringBuilder.AppendLine($"--- REQUEST {httpRequest.HttpContext.TraceIdentifier}: BEGIN ---");
             stringBuilder.AppendLine($"{httpRequest.Method} {httpRequest.Path}{httpRequest.QueryString.ToUriComponent()} {httpRequest.Protocol}");
 
             if (httpRequest.Headers.Any())
             {
-                foreach (var header in httpRequest.Headers)
+                foreach (var (key, value) in httpRequest.Headers)
                 {
-                    stringBuilder.AppendLine($"{header.Key}: {header.Value}");
+                    stringBuilder.AppendLine($"{key}: {value}");
                 }
             }
 
@@ -96,15 +95,15 @@ namespace TodoWebApp.Logging
                 logger.LogDebug($"Converting HTTP response {httpResponse.HttpContext.TraceIdentifier} ...");
             }
 
-            var stringBuilder = new StringBuilder(RESPONSE_SIZE);
+            var stringBuilder = new StringBuilder(BUFFER_SIZE);
             stringBuilder.AppendLine($"--- RESPONSE {httpResponse.HttpContext.TraceIdentifier}: BEGIN ---");
             stringBuilder.AppendLine($"{httpResponse.HttpContext.Request.Protocol} {httpResponse.StatusCode} {((HttpStatusCode)httpResponse.StatusCode).ToString()}");
 
             if (httpResponse.Headers.Any())
             {
-                foreach (var header in httpResponse.Headers)
+                foreach (var (key, value) in httpResponse.Headers)
                 {
-                    stringBuilder.AppendLine($"{header.Key}: {header.Value}");
+                    stringBuilder.AppendLine($"{key}: {value}");
                 }
             }
 
@@ -125,7 +124,7 @@ namespace TodoWebApp.Logging
         private static bool IsTextBased(HttpRequest httpRequest, string headerName)
         {
             return httpRequest.Headers.TryGetValue(headerName, out var headerValues)
-                && textBasedHeaderValues.Any(textBasedHeaderValue => headerValues.Any(headerValue => headerValue.StartsWith(textBasedHeaderValue)));
+                && textBasedHeaderValues.Any(acceptedHeaderValue => headerValues.Any(headerValue => headerValue.StartsWith(acceptedHeaderValue)));
         }
     }
 }

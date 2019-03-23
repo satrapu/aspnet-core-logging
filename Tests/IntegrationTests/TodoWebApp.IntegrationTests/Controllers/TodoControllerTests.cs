@@ -40,13 +40,6 @@ namespace TodoWebApp.IntegrationTests.Controllers
                 // Assert
                 Assert.True(response.IsSuccessStatusCode);
 
-                // Deserialize response content using either Newtonsoft.Json.JsonConvert class
-                // or directly reading response content as an instance of a List<TodoItem> type.
-                // Solution #1: Use Newtonsoft.Json.JsonConvert
-                //var responseContent = await response.Content.ReadAsStringAsync();
-                //Assert.NotEmpty(responseContent);
-                //var todoItems = JsonConvert.DeserializeObject<List<TodoItem>>(responseContent);
-                // Solution #2: response.Content.ReadAsAsync<List<TodoItem>>
                 var todoItems = await response.Content.ReadAsAsync<List<TodoItem>>();
                 Assert.True(todoItems.TrueForAll(todoItem => todoItem != null
                                                              && todoItem.Id >= 1
