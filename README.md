@@ -14,7 +14,7 @@ This project has several posts associated with it:
 | macOs            | [![Build Status](https://satrapu.visualstudio.com/aspnet-core-logging/_apis/build/status/build-any-commit?branchName=master&jobName=Build%20on%20macOS)](https://satrapu.visualstudio.com/aspnet-core-logging/_build/latest?definitionId=2&branchName=master) |
 | Windows          | [![Build Status](https://satrapu.visualstudio.com/aspnet-core-logging/_apis/build/status/build-any-commit?branchName=master&jobName=Build%20on%20Windows)](https://satrapu.visualstudio.com/aspnet-core-logging/_build/latest?definitionId=2&branchName=master) |
 
-## Code Quality Status
+## Quality Status
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/001d9d7bbf43459aae186c7d8cd49858)](https://www.codacy.com/app/satrapu/aspnet-core-logging?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=satrapu/aspnet-core-logging&amp;utm_campaign=Badge_Grade)
 [![SonarCloud Status](https://sonarcloud.io/api/project_badges/measure?project=aspnet-core-logging&metric=alert_status)](https://sonarcloud.io/dashboard?id=aspnet-core-logging) 
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fsatrapu%2Faspnet-core-logging.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fsatrapu%2Faspnet-core-logging?ref=badge_shield)  
