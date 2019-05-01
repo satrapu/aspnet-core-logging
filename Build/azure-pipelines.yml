@@ -7,6 +7,18 @@
 name: '$(SourceBranchName)_$(Date:yyyyMMdd).$(Rev:rrr)'
 
 resources:
+  containers:
+  # Specify the Docker container hosting the database to be used when running integration tests.
+  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/service-containers?view=azure-devops&tabs=yaml#single-job.
+  - container: postgres11_2_for_integration_tests
+    image: postgres:11.2-alpine
+    ports:
+    - 5432/tcp
+    env:
+    POSTGRES_DB: $(IntegrationTests.Database.Todo.DatabaseName)
+    POSTGRES_USERNAME: $(IntegrationTests.Database.Todo.UserName)
+    POSTGRES_PASSWORD: $(IntegrationTests.Database.Todo.Password)
+
   repositories: 
   # See more about repositories here: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=vsts&tabs=schema#repository.
   - repository: 'aspnet_core_logging'
@@ -16,6 +28,9 @@ resources:
     # The value of the "endpoint" element must match the service connection name 
     # declared in Project Settings -> Service connections section of your Azure DevOps organization.
     endpoint: 'satrapu'
+
+ services:
+   postgres4it: postgres11_2_for_integration_tests
 
 # Build multiple branches.
 # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/build/ci-build-git?view=vsts&tabs=yaml.
