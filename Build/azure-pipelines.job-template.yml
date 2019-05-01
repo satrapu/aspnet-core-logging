@@ -143,6 +143,7 @@ jobs:
   - task: PublishTestResults@2
     displayName: Publish test results
     name: publish_test_results
+    condition: succeededOrFailed()
     enabled: True
     inputs:
       testResultsFormat: 'xUnit'
