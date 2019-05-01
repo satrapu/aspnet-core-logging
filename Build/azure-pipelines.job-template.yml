@@ -33,7 +33,7 @@ jobs:
   # Install sonarscanner tool to be able to perform a SonarQube analysis.
   # See more here: https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner+for+MSBuild.
   # See more about "script" step here: https://docs.microsoft.com/en-us/azure/devops/pipelines/scripts/cross-platform-scripting?view=azure-devops&tabs=yaml
-  # and here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/command-line?view=vsts&tabs=yaml#yaml-snippet.
+  # and here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/command-line?view=azure-devops&tabs=yaml#yaml-snippet.
   # The long YAML line has been splitted using "block chomping indicator", as documented here: https://stackoverflow.com/a/3790497.
   - script: >-
       dotnet tool install dotnet-sonarscanner 
@@ -73,7 +73,7 @@ jobs:
       COREHOST_TRACE: $(CoreHostTrace)    
 
   # Compile source code.
-  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/dotnet-core-cli?view=vsts.
+  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/dotnet-core-cli?view=azure-devops.
   - script: >-
       dotnet build $(Build.SourcesDirectory)/Todo.sln 
       --configuration ${{ parameters.build.configuration }}
@@ -127,7 +127,7 @@ jobs:
       COREHOST_TRACE: $(CoreHostTrace)    
 
   # Publish test results.
-  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=vsts&tabs=yaml.
+  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=azure-devops&tabs=yaml.
   - task: PublishTestResults@2
     displayName: Publish test results
     name: publish_test_results
@@ -170,7 +170,7 @@ jobs:
     enabled: True
 
   # Publish code coverage report.
-  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-code-coverage-results?view=vsts.
+  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-code-coverage-results?view=azure-devops.
   - task: PublishCodeCoverageResults@1
     name: publish_code_coverage_report
     displayName: Publish code coverage report
@@ -194,11 +194,11 @@ jobs:
       COREHOST_TRACE: $(CoreHostTrace)    
 
   # Runs a PowerShell script to break the build in case Sonar quality gate has failed.
-  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/powershell?view=vsts.
+  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/powershell?view=azure-devops.
   - task: PowerShell@2
     name: sonar_build_breaker
     displayName: Run Sonar build breaker
-    # See more about conditions here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/conditions?view=azdevops&tabs=yaml.
+    # See more about conditions here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/conditions?view=azure-devops&tabs=yaml.
     condition: |
       and
       (
