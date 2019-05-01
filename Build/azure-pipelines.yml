@@ -29,8 +29,8 @@ resources:
     # declared in Project Settings -> Service connections section of your Azure DevOps organization.
     endpoint: 'satrapu'
 
- services:
-   postgres4it: postgres11_2_for_integration_tests
+services:
+  postgres4it: postgres11_2_for_integration_tests
 
 # Build multiple branches.
 # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/build/ci-build-git?view=vsts&tabs=yaml.
