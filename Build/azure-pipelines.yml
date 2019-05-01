@@ -17,6 +17,21 @@ resources:
     # declared in Project Settings -> Service connections section of your Azure DevOps organization.
     endpoint: 'satrapu'
 
+  # Specify the Docker container hosting the database to be used when running integration tests.
+  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/service-containers?view=azure-devops&tabs=yaml#single-job.
+  containers:
+  - container: postgres11_2_for_integration_tests
+    image: postgres:11.2-alpine
+    ports:
+    - 5432
+    env:
+      POSTGRES_DB: $(IntegrationTests.Database.Todo.DatabaseName)
+      POSTGRES_USERNAME: $(IntegrationTests.Database.Todo.UserName)
+      POSTGRES_PASSWORD: $(IntegrationTests.Database.Todo.Password)
+
+services:
+  postgres4it: postgres11_2_for_integration_tests
+
 # Build multiple branches.
 # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/build/ci-build-git?view=vsts&tabs=yaml.
 trigger:
