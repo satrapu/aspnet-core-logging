@@ -130,9 +130,9 @@ jobs:
       CONNECTIONSTRINGS__TODO: >-
         Host=localhost;
         Port=5432;
-        Database=db-it;
         Username=satrapu;
-        Password=Satrapu0987654321
+        Password=Satrapu0987654321;
+        Database=db-it;
 
   # Publish test results.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=azure-devops&tabs=yaml.
