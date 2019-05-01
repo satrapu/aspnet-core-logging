@@ -17,6 +17,8 @@ jobs:
   pool: ${{ parameters.pool }}
   workspace:
     clean: all
+  services:
+    postgres4it: postgres11_2_for_integration_tests
   steps:
   # Install specific .NET Core SDK version.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/tool/dotnet-core-tool-installer?view=azure-devops.
