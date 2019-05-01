@@ -124,7 +124,8 @@ jobs:
     env:
       DOTNET_SKIP_FIRST_TIME_EXPERIENCE: $(DotNetSkipFirstTimeExperience)
       DOTNET_CLI_TELEMETRY_OPTOUT: $(DotNetCliTelemetryOptOut)
-      COREHOST_TRACE: $(CoreHostTrace)    
+      COREHOST_TRACE: $(CoreHostTrace) 
+      CONNECTIONSTRINGS__TODO: $(IntegrationTests.ConnectionStrings.Todo)
 
   # Publish test results.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=azure-devops&tabs=yaml.
