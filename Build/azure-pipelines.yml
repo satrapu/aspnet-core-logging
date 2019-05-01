@@ -17,7 +17,7 @@ resources:
     env:
       POSTGRES_DB: db-it
       POSTGRES_USERNAME: satrapu
-      POSTGRES_PASSWORD: S@trapu0987654321
+      POSTGRES_PASSWORD: Satrapu0987654321
 
   repositories: 
   # See more about repositories here: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=vsts&tabs=schema#repository.
