@@ -129,7 +129,7 @@ jobs:
       COREHOST_TRACE: $(CoreHostTrace) 
       CONNECTIONSTRINGS__TODO: >-
         Host=localhost;
-        Port=$(AGENT_SERVICES_POSTGRES4IT_PORTS_5432);
+        Port=5432;
         Database=$(IntegrationTests.Database.Todo.DatabaseName);
         Username=$(IntegrationTests.Database.Todo.UserName);
         Password=$(IntegrationTests.Database.Todo.Password);
