@@ -16,7 +16,7 @@ resources:
     - 5432:5432/tcp
     env:
       POSTGRES_DB: db-it
-      POSTGRES_USERNAME: satrapu
+      POSTGRES_USER: satrapu
       POSTGRES_PASSWORD: Satrapu0987654321
 
   repositories: 
