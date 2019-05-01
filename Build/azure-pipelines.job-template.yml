@@ -133,7 +133,7 @@ jobs:
       # TODO: satrapu 2019-05-01 Find a way to replace hard-coded sensitive data with something more secure. 
       CONNECTIONSTRINGS__TODO: >-
         Host=localhost;
-        Port=$(Agent.Services.Postgres4IT.Ports.5432);
+        Port=5432;
         Database=db;
         Username=service.azuredevops;
         Password=62u5Xg3I55J0l5hx3iqJ43f5T1Mo3Wri;

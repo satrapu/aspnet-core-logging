@@ -20,7 +20,7 @@ resources:
     #     postgres4it: postgres11_2_for_integration_tests
     #
     # Then the variable to be used for fetching the host port is: $(Agent.Services.Postgres4IT.Ports.5432); lower or upper casing does not matter.
-    - 5432/tcp
+    - 5432:5432/tcp
     env:
       POSTGRES_DB: db
       POSTGRES_USER: service.azuredevops
@@ -29,7 +29,7 @@ resources:
   - container: postgres11_windows_server_core_for_integration_tests
     image: stellirin/postgres-windows:11
     ports:
-    - 5432/tcp
+    - 5432:5432/tcp
     env:
       POSTGRES_DB: db
       POSTGRES_USER: service.azuredevops
@@ -127,7 +127,7 @@ jobs:
 #      name: 'macOS'
 #      displayName: 'Build on macOS'
 #    pool:
-#      vmImage: 'macOS-10.13'
+#      vmImage: 'macOS-10.14'
 #    sonar:
 #      enabled: False
 #      buildBreaker:
