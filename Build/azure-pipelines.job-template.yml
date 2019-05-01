@@ -130,9 +130,9 @@ jobs:
       CONNECTIONSTRINGS__TODO: >-
         Host=localhost;
         Port=5432;
-        Database=$(IntegrationTests.Database.Todo.DatabaseName);
-        Username=$(IntegrationTests.Database.Todo.UserName);
-        Password=$(IntegrationTests.Database.Todo.Password);
+        Database=db-it;
+        Username=satrapu;
+        Password=S@trapu0987654321;
 
   # Publish test results.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=azure-devops&tabs=yaml.
