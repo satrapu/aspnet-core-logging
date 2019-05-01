@@ -22,9 +22,9 @@ resources:
     # Then the variable to be used for fetching the host port is: $(Agent.Services.Postgres4IT.Ports.5432); lower or upper casing does not matter.
     - 5432/tcp
     env:
-      POSTGRES_DB: db-it
-      POSTGRES_USER: satrapu
-      POSTGRES_PASSWORD: Satrapu0987654321
+      POSTGRES_DB: $(IntegrationTests.Database.Todo.DatabaseName)
+      POSTGRES_USER: $(IntegrationTests.Database.Todo.UserName)
+      POSTGRES_PASSWORD: $(IntegrationTests.Database.Todo.Password)
 
   repositories: 
   # See more about repositories here: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=vsts&tabs=schema#repository.

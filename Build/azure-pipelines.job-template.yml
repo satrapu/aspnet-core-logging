@@ -129,11 +129,11 @@ jobs:
       DOTNET_CLI_TELEMETRY_OPTOUT: $(DotNetCliTelemetryOptOut)
       COREHOST_TRACE: $(CoreHostTrace) 
       CONNECTIONSTRINGS__TODO: >-
-        Host=localhost;
-        Port=$(Agent.Services.Postgres4IT.Ports.5432);
-        Database=db-it;
-        Username=satrapu;
-        Password=Satrapu0987654321;
+        Host="localhost";
+        Port="$(Agent.Services.Postgres4IT.Ports.5432)";
+        Database="$(IntegrationTests.Database.Todo.DatabaseName)";
+        Username="$(IntegrationTests.Database.Todo.Username)";
+        Password="$(IntegrationTests.Database.Todo.Password)";
 
   # Publish test results.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=azure-devops&tabs=yaml.
