@@ -13,7 +13,7 @@ resources:
   - container: postgres11_2_for_integration_tests
     image: postgres:11.2-alpine
     ports:
-    - 5432:5432/tcp
+    - 5432/tcp
     env:
       POSTGRES_DB: db-it
       POSTGRES_USER: satrapu

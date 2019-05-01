@@ -129,7 +129,7 @@ jobs:
       COREHOST_TRACE: $(CoreHostTrace) 
       CONNECTIONSTRINGS__TODO: >-
         Host=localhost;
-        Port=5432;
+        Port=$(Agent.Services.postgres4it.Ports.5432);
         Database=db-it;
         Username=satrapu;
         Password=Satrapu0987654321;
