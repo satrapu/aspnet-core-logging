@@ -132,7 +132,7 @@ jobs:
         Host="localhost";
         Port="$(Agent.Services.Postgres4IT.Ports.5432)";
         Database="$(IntegrationTests.Database.Todo.DatabaseName)";
-        Username="$(IntegrationTests.Database.Todo.Username)";
+        Username="$(IntegrationTests.Database.Todo.User)";
         Password="$(IntegrationTests.Database.Todo.Password)";
 
   # Publish test results.
