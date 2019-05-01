@@ -90,35 +90,35 @@ variables:
     value: 'aspnet-core-logging'
 
 # Define multiple jobs, one per supported OS.
-# See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/multiple-phases?tabs=yaml&view=vsts.
+# See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/multiple-phases?tabs=yaml&view=azure-devops.
 #
 # Will use job templates, since all supported operating systems will run the same job.
-# See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=vsts&tabs=example#job-templates
-# and here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/templates?view=vsts.
+# See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=azure-devops&tabs=example#job-templates
+# and here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/templates?view=azure-devops.
 jobs:
-- template: './azure-pipelines.job-template.yml'
-  parameters:
-    job:
-      name: 'linux'
-      displayName: 'Build on Linux'
-    pool:
-      vmImage: 'ubuntu-16.04'
-    sonar:
-      enabled: False
-      buildBreaker:
-        enabled: False
+#- template: './azure-pipelines.job-template.yml'
+#  parameters:
+#    job:
+#      name: 'linux'
+#      displayName: 'Build on Linux'
+#    pool:
+#      vmImage: 'ubuntu-16.04'
+#    sonar:
+#      enabled: False
+#      buildBreaker:
+#        enabled: False
 
-- template: './azure-pipelines.job-template.yml'
-  parameters:
-    job:
-      name: 'macOS'
-      displayName: 'Build on macOS'
-    pool:
-      vmImage: 'macOS-10.13'
-    sonar:
-      enabled: False
-      buildBreaker:
-        enabled: False
+#- template: './azure-pipelines.job-template.yml'
+#  parameters:
+#    job:
+#      name: 'macOS'
+#      displayName: 'Build on macOS'
+#    pool:
+#      vmImage: 'macOS-10.13'
+#    sonar:
+#      enabled: False
+#      buildBreaker:
+#        enabled: False
 
 - template: './azure-pipelines.job-template.yml'
   parameters:
