@@ -13,6 +13,13 @@ resources:
   - container: postgres11_2_for_integration_tests
     image: postgres:11.2-alpine
     ports:
+    # The container port will be mapped to a random host port; the host port can be fetched via the variable: 'agent.services.<serviceName>.ports.<port>'.
+    # Given the YAML frament declaring the 'postgres4it' service using the 'postgres11_2_for_integration_tests' Docker container:
+    #
+    #   services:
+    #     postgres4it: postgres11_2_for_integration_tests
+    #
+    # Then the variable to be used for fetching the host port is: $(Agent.Services.Postgres4IT.Ports.5432); lower or upper casing does not matter.
     - 5432/tcp
     env:
       POSTGRES_DB: db-it

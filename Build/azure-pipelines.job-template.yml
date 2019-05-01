@@ -18,6 +18,7 @@ jobs:
   workspace:
     clean: all
   services:
+    # The right side name has been declared in the 'containers' section found inside the 'azure-pipelines.yml' file.
     postgres4it: postgres11_2_for_integration_tests
   steps:
   # Install specific .NET Core SDK version.
@@ -129,7 +130,7 @@ jobs:
       COREHOST_TRACE: $(CoreHostTrace) 
       CONNECTIONSTRINGS__TODO: >-
         Host=localhost;
-        Port=$(Agent.Services.postgres4it.Ports.5432);
+        Port=$(Agent.Services.Postgres4IT.Ports.5432);
         Database=db-it;
         Username=satrapu;
         Password=Satrapu0987654321;
