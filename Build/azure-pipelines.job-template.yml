@@ -131,7 +131,7 @@ jobs:
         Host=localhost;
         Port=$(AGENT_SERVICES_POSTGRES4IT_PORTS_5432);
         Database=$(IntegrationTests.Database.Todo.DatabaseName);
-        Username=$(IntegrationTests.Database.Todo.UserName)";
+        Username=$(IntegrationTests.Database.Todo.UserName);
         Password=$(IntegrationTests.Database.Todo.Password);
 
   # Publish test results.
