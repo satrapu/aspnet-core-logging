@@ -22,9 +22,9 @@ resources:
     # Then the variable to be used for fetching the host port is: $(Agent.Services.Postgres4IT.Ports.5432); lower or upper casing does not matter.
     - 5432/tcp
     env:
-      POSTGRES_DB: '$(IntegrationTests.Database.Todo.DatabaseName)'
-      POSTGRES_USER: '$(IntegrationTests.Database.Todo.User)'
-      POSTGRES_PASSWORD: '$(IntegrationTests.Database.Todo.Password)'
+      POSTGRES_DB: db
+      POSTGRES_USER: service.azuredevops
+      POSTGRES_PASSWORD: 62u5Xg3I55J0l5hx3iqJ43f5T1Mo3Wri
 
   repositories: 
   # See more about repositories here: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=vsts&tabs=schema#repository.
@@ -49,9 +49,6 @@ trigger:
 variables:
   # Load group containing variables applicable to all pipelines belonging to this project.
   - group: 'GlobalVariables'
-
-  # Load group containing variables used when running integration tests.
-  - group: 'IntegrationTests'
 
   # Load SonarQube related variable group.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/library/variable-groups?view=vsts&tabs=yaml#use-a-variable-group.
