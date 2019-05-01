@@ -10,7 +10,7 @@ resources:
   containers:
   # Specify the Docker container hosting the database to be used when running integration tests.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/service-containers?view=azure-devops&tabs=yaml#single-job.
-  - container: postgres11_2_for_integration_tests
+  - container: postgres11_2_alpine_for_integration_tests
     image: postgres:11.2-alpine
     ports:
     # The container port will be mapped to a random host port; the host port can be fetched via the variable: 'agent.services.<serviceName>.ports.<port>'.
@@ -104,6 +104,8 @@ jobs:
       displayName: 'Build on Linux'
     pool:
       vmImage: 'ubuntu-16.04'
+    containers:
+      db4it: 'postgres11_2_alpine_for_integration_tests'
     sonar:
       enabled: False
       buildBreaker:

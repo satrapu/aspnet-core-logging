@@ -3,6 +3,8 @@ parameters:
     name: ''
     displayName: ''
   pool: ''
+  containers:
+    db4it: ''
   build:
     configuration: 'Release'
   sonar:
@@ -19,7 +21,7 @@ jobs:
     clean: all
   services:
     # The right side name has been declared in the 'containers' section found inside the 'azure-pipelines.yml' file.
-    postgres4it: postgres11_2_for_integration_tests
+    postgres4it: ${{ parameters.containers.db4it }}
   steps:
   # Install specific .NET Core SDK version.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/tool/dotnet-core-tool-installer?view=azure-devops.
