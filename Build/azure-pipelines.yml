@@ -43,13 +43,15 @@ variables:
 
   # Specifies the version of the ReportGenerator tool used for generating code coverage reports.
   # All releases can be found here: https://github.com/danielpalme/ReportGenerator/releases.
+  # All NuGet packages can be found here: https://www.nuget.org/packages/ReportGenerator/.
   - name: 'ReportGenerator_Version'
-    value: '4.0.7'
+    value: '4.1.4'
 
   # Specifies the version of the SonarQube scanner to use when performing statically analysis against this project.
   # All releases can be found here: https://github.com/SonarSource/sonar-scanner-msbuild/releases.
+  # All NuGet packages can be found here: https://www.nuget.org/packages/dotnet-sonarscanner/.
   - name: 'SonarScanner_Version'
-    value: '4.5.0'
+    value: '4.6.0'
 
   # Avoid caching NuGet packages each time a build runs on an Azure DevOps agent.
   # See more here: http://donovanbrown.com/post/Stop-wasting-time-during-NET-Core-builds.
