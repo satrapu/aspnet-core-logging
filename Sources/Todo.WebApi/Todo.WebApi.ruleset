@@ -1,0 +1,5 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="SonarQube - aspnet-core-logging Sonar way" ToolsVersion="15.0">
+  <Include Path="..\..\.sonarlint\aspnet-core-loggingcsharp.ruleset" Action="Default" />
+  <Include Path="todowebapp.ruleset" Action="Default" />
+</RuleSet>

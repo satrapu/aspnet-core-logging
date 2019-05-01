@@ -5,10 +5,11 @@
     "Name": "Bogdan Marian"
   },
   "ProjectKey": "aspnet-core-logging",
+  "ProjectName": "aspnet-core-logging",
   "Profiles": {
     "CSharp": {
       "ProfileKey": "AVxYJ9ttFTbgxqUNcKz1",
-      "ProfileTimestamp": "2019-01-14T11:58:53+02:00"
+      "ProfileTimestamp": "2019-03-26T07:47:46+02:00"
     }
   }
 }
