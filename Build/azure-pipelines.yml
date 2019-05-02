@@ -115,7 +115,7 @@ jobs:
       # Need a VM capable of running Linux containers
       vmImage: 'ubuntu-16.04'
     containers:
-      db4it: 'postgres11_2_alpine_linux_for_integration_tests'
+      db4it: 'postgres_linux_container_for_integration_tests'
     sonar:
       enabled: False
       buildBreaker:
@@ -142,7 +142,7 @@ jobs:
       # Need a VM capable of running Windows containers
       vmImage: 'win1803'
     containers:
-      db4it: 'postgres11_windows_server_core_for_integration_tests'
+      db4it: 'postgres_windows_container_for_integration_tests'
     sonar:
       enabled: True
       buildBreaker:
