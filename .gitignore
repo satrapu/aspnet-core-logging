@@ -3,6 +3,9 @@
 bin/
 obj/
 
+# Visual Studio Code artifacts
+.vscode/
+
 # Rider IDE artifacts
 .idea/
 
