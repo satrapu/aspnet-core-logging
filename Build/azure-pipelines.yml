@@ -10,26 +10,26 @@ resources:
   containers:
   # Specify the Docker container hosting the database to be used when running integration tests.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/service-containers?view=azure-devops&tabs=yaml#single-job.
-  - container: postgres11_2_alpine_linux_for_integration_tests
-    image: postgres:11.2-alpine
+  - container: postgres_linux_container_for_integration_tests
+    image: postgres:10-alpine
     ports:
     # The container port will be mapped to a random host port; the host port can be fetched via the variable: 'agent.services.<serviceName>.ports.<port>'.
-    # Given the YAML frament declaring the 'postgres4it' service using the 'postgres11_2_for_integration_tests' Docker container:
+    # Given the YAML fragment declaring the 'postgres4it' service using the 'postgres11_2_for_integration_tests' Docker container:
     #
     #   services:
     #     postgres4it: postgres11_2_for_integration_tests
     #
     # Then the variable to be used for fetching the host port is: $(Agent.Services.Postgres4IT.Ports.5432); lower or upper casing does not matter.
-    - 5432:5432/tcp
+    - 5432/tcp
     env:
       POSTGRES_DB: db
       POSTGRES_USER: service.azuredevops
       POSTGRES_PASSWORD: 62u5Xg3I55J0l5hx3iqJ43f5T1Mo3Wri
 
-  - container: postgres11_windows_server_core_for_integration_tests
-    image: stellirin/postgres-windows:11
+  - container: postgres_windows_container_for_integration_tests
+    image: stefanscherer/postgres-windows:10.2-nano
     ports:
-    - 5432:5432/tcp
+    - 5432/tcp
     env:
       POSTGRES_DB: db
       POSTGRES_USER: service.azuredevops

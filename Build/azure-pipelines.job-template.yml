@@ -39,7 +39,7 @@ jobs:
   # See more here: https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner+for+MSBuild.
   # See more about "script" step here: https://docs.microsoft.com/en-us/azure/devops/pipelines/scripts/cross-platform-scripting?view=azure-devops&tabs=yaml
   # and here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/command-line?view=azure-devops&tabs=yaml#yaml-snippet.
-  # The long YAML line has been splitted using "block chomping indicator", as documented here: https://stackoverflow.com/a/3790497.
+  # The long YAML line has been split using "block chomping indicator", as documented here: https://stackoverflow.com/a/3790497.
   - script: >-
       dotnet tool install dotnet-sonarscanner 
       --global 
@@ -133,7 +133,7 @@ jobs:
       # TODO: satrapu 2019-05-01 Find a way to replace hard-coded sensitive data with something more secure. 
       CONNECTIONSTRINGS__TODO: >-
         Host=localhost;
-        Port=5432;
+        Port=$(Agent.Services.Postgres4IT.Ports.5432);
         Database=db;
         Username=service.azuredevops;
         Password=62u5Xg3I55J0l5hx3iqJ43f5T1Mo3Wri;
