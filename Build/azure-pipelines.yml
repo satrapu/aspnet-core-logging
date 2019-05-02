@@ -27,7 +27,7 @@ resources:
       POSTGRES_PASSWORD: 62u5Xg3I55J0l5hx3iqJ43f5T1Mo3Wri
 
   - container: postgres_windows_container_for_integration_tests
-    image: stefanscherer/postgres-windows:10.2-nano
+    image: stellirin/postgres-windows:11
     ports:
     - 5432/tcp
     env:
