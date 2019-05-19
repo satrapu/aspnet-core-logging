@@ -13,7 +13,7 @@ resources:
   - container: postgres_linux_container_for_integration_tests
     # PostgreSQL Docker image (Linux container): https://hub.docker.com/_/postgres.
     image: postgres:11.2-alpine
-    options: --hostname db4it-linux --ip 192.168.100.101
+    options: --hostname db4it-linux
     ports:
     - 5432/tcp
     env:
@@ -24,7 +24,7 @@ resources:
   - container: postgres_windows_container_for_integration_tests
     # PostgreSQL Docker image (Windows container): https://hub.docker.com/r/stellirin/postgres-windows.
     image: stellirin/postgres-windows:11.2
-    options: --hostname db4it-windows --ip 192.168.100.102
+    options: --hostname db4it-windows
     ports:
     - 5432/tcp
     env:
@@ -114,7 +114,6 @@ jobs:
     containers:
       db4it: 
         name: 'postgres_linux_container_for_integration_tests'
-        ip: 192.168.100.101
         hostname: db4it-linux
     sonar:
       enabled: False
@@ -144,7 +143,6 @@ jobs:
     containers:
       db4it: 
         name: 'postgres_windows_container_for_integration_tests'
-        ip: 192.168.100.102
         hostname: db4it-windows
     sonar:
       enabled: True

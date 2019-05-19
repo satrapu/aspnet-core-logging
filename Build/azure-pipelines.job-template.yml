@@ -6,7 +6,6 @@ parameters:
   containers:
     db4it:
       name: ''
-      ip: ''
       hostname: ''
   build:
     configuration: 'Release'
@@ -115,8 +114,6 @@ jobs:
       COREHOST_TRACE: $(CoreHostTrace)    
 
   # Run integration tests and collect code coverage metrics.
-  # Since the database used by these tests is running in a Docker container, its host must be referenced via 'localhost',
-  # as stated here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/service-containers?view=azure-devops&tabs=yaml#single-job.
   - script: >-
       dotnet test $(Build.SourcesDirectory)/Todo.sln 
       --no-build
