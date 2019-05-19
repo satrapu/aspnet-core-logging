@@ -4,9 +4,7 @@ parameters:
     displayName: ''
   pool: ''
   containers:
-    db4it:
-      name: ''
-      hostname: ''
+    db4it: ''
   build:
     configuration: 'Release'
   sonar:
@@ -23,7 +21,7 @@ jobs:
     clean: all
   services:
     # The right side name has been declared in the 'containers' section found inside the 'azure-pipelines.yml' file.
-    db4it: ${{ parameters.containers.db4it.name }}
+    db4it: ${{ parameters.containers.db4it }}
   steps:
   # Install specific .NET Core SDK version.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/tool/dotnet-core-tool-installer?view=azure-devops.
@@ -134,7 +132,7 @@ jobs:
       COREHOST_TRACE: $(CoreHostTrace) 
       # TODO: satrapu 2019-05-01 Find a way to replace hard-coded sensitive data with something more secure. 
       CONNECTIONSTRINGS__TODO: >-
-        Host=${{ parameters.containers.db4it.hostname }};
+        Host=localhost;
         Port=$(Agent.Services.db4it.Ports.5432);
         Database=db;
         Username=service.azuredevops;
