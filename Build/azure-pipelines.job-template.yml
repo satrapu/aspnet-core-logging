@@ -134,7 +134,7 @@ jobs:
       COREHOST_TRACE: $(CoreHostTrace) 
       # TODO: satrapu 2019-05-01 Find a way to replace hard-coded sensitive data with something more secure. 
       CONNECTIONSTRINGS__TODO: >-
-        Host={{ parameters.containers.db4it.hostname }};
+        Host=${{ parameters.containers.db4it.hostname }};
         Port=$(Agent.Services.db4it.Ports.5432);
         Database=db;
         Username=service.azuredevops;
