@@ -21,7 +21,7 @@ jobs:
     clean: all
   services:
     # The right side name has been declared in the 'containers' section found inside the 'azure-pipelines.yml' file.
-    postgres4it: ${{ parameters.containers.db4it }}
+    db4it: ${{ parameters.containers.db4it }}
   steps:
   # Install specific .NET Core SDK version.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/tool/dotnet-core-tool-installer?view=azure-devops.
@@ -132,7 +132,7 @@ jobs:
       COREHOST_TRACE: $(CoreHostTrace) 
       # TODO: satrapu 2019-05-01 Find a way to replace hard-coded sensitive data with something more secure. 
       CONNECTIONSTRINGS__TODO: >-
-        Host=postgres4it;
+        Host=db4it;
         Port=$(Agent.Services.Postgres4IT.Ports.5432);
         Database=db;
         Username=service.azuredevops;

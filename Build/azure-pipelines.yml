@@ -14,7 +14,7 @@ resources:
     # PostgreSQL Docker image (Linux container): https://hub.docker.com/_/postgres.
     image: postgres:11.2-alpine
     ports:
-    - 5432:5432/tcp
+    - 5432/tcp
     env:
       POSTGRES_DB: db
       POSTGRES_USER: service.azuredevops
@@ -24,7 +24,7 @@ resources:
     # PostgreSQL Docker image (Windows container): https://hub.docker.com/r/stellirin/postgres-windows.
     image: stellirin/postgres-windows:11.2
     ports:
-    - 5432:5432/tcp
+    - 5432/tcp
     env:
       POSTGRES_DB: db
       POSTGRES_USER: service.azuredevops
