@@ -114,7 +114,7 @@ jobs:
     containers:
       db4it: 
         name: 'postgres_linux_container_for_integration_tests'
-        hostname: 'db4it-linux''
+        hostname: 'db4it-linux'
     sonar:
       enabled: False
       buildBreaker:
