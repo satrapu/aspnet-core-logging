@@ -142,7 +142,7 @@ jobs:
       displayName: 'Build on Windows'
     pool:
       # Need a VM capable of running Windows containers
-      vmImage: 'win1803'
+      vmImage: 'windows-2019'
     containers:
       db4it: 'postgres_windows_container_for_integration_tests'
     sonar:
