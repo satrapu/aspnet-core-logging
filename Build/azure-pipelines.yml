@@ -15,6 +15,8 @@ resources:
     image: postgres:11.2-alpine
     ports:
     - 5432/tcp
+    volumes:
+    - postgres_linux_data:/var/lib/postgresql
     env:
       POSTGRES_DB: db
       POSTGRES_USER: service.azuredevops
@@ -25,6 +27,8 @@ resources:
     image: stellirin/postgres-windows:11.2
     ports:
     - 5432/tcp
+    volumes:
+    - postgres_windows_data:C:/pgsql/data
     env:
       POSTGRES_DB: db
       POSTGRES_USER: service.azuredevops
