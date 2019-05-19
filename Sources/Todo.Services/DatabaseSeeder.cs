@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 using Todo.Persistence;
 
 namespace Todo.Services
@@ -29,6 +30,8 @@ namespace Todo.Services
 
             try
             {
+                logger.LogInformation("Seeding database identified by connection string: {ConnectionString}"
+                                    , todoDbContext.Database.GetDbConnection().ConnectionString);
                 var hasDatabaseBeenCreated = todoDbContext.Database.EnsureCreated();
 
                 // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
