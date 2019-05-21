@@ -23,21 +23,6 @@ jobs:
     # The right side name has been declared in the 'containers' section found inside the 'azure-pipelines.yml' file.
     db4it: ${{ parameters.services.db4it }}
   steps:
-  - script: docker info
-    name: show_docker_info
-    displayName: Show Docker info
-    enabled: True
-  - script: docker version
-    name: show_docker_version
-    displayName: Show Docker version
-    enabled: True
-  - powershell: 'docker container ls --all --format "{{ .ID }}" | ForEach-Object { docker logs $_  }'
-    workingDirectory: $(Build.SourcesDirectory)
-    displayName: Show service logs
-    failOnStderr: False
-    errorActionPreference: continue
-    ignoreLASTEXITCODE: True
-
   # Install specific .NET Core SDK version.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/tool/dotnet-core-tool-installer?view=azure-devops.
   # Installing a specific .NET Core SDK version is needed to avoid installing a .NET Core global tool in a following task and then have Azure DevOps complain that it cannot find it.
@@ -150,7 +135,7 @@ jobs:
         Host=localhost;
         Port=$(Agent.Services.db4it.Ports.5432);
         Database=todo;
-        Username=azuredevops;
+        Username=satrapu;
         Password=;
 
   # Publish test results.
