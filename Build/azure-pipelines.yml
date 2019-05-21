@@ -17,16 +17,31 @@ resources:
     - 5432/tcp
     env:
       POSTGRES_DB: 'todo'
-      POSTGRES_USER: 'azuredevops'
+      POSTGRES_USER: 'satrapu'
 
   - container: 'postgres_windows_container_for_integration_tests'
     # PostgreSQL Docker image (Windows container): https://hub.docker.com/r/stellirin/postgres-windows.
+    #
+    # Do *not* use 'POSTGRES_PASSWORD' environment variable as this will cause the Windows container to stop due to an error.
+    #
+    # The error occuring in Azure Pipeline has been captured by running a PowerShell script: 
+    # - powershell: 'docker container ls --all --format "{{ .ID }}" | ForEach-Object { docker logs $_  }'
+    #   workingDirectory: $(Build.SourcesDirectory)
+    #   displayName: Show db4it service log
+    #   failOnStderr: False
+    #   errorActionPreference: continue
+    #   ignoreLASTEXITCODE: True
+    #
+    # The task output is: 'initdb: could not open file "C:\.pgpass" for reading: No such file or directory'.
+    #
+    # The offending line inside the Docker ENTRYPOINT can be seen here: 
+    # https://github.com/stellirin/docker-postgres-windows/blob/master/docker-entrypoint.cmd#L76.
     image: 'stellirin/postgres-windows:11.2'
     ports:
     - 5432/tcp
     env:
       POSTGRES_DB: 'todo'
-      POSTGRES_USER: 'azuredevops'
+      POSTGRES_USER: 'satrapu'
 
   repositories: 
   # See more about repositories here: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=vsts&tabs=schema#repository.
