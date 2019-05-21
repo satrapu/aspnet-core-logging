@@ -27,7 +27,11 @@ jobs:
     name: show_docker_info
     displayName: Show Docker info
     enabled: True
-  - script: docker logs --details $(docker container ls -q --filter name=postgres)
+  - script: docker version
+    name: show_docker_version
+    displayName: Show Docker version
+    enabled: True
+  - script: 'docker logs --details $(docker container ls --filter name=postgres --format "{{ .ID }}")'
     name: show_docker_container_logs
     displayName: Show Docker container logs
     enabled: True
