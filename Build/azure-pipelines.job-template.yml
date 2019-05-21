@@ -3,7 +3,7 @@ parameters:
     name: ''
     displayName: ''
   pool: ''
-  containers:
+  services:
     db4it: ''
   build:
     configuration: 'Release'
@@ -21,7 +21,7 @@ jobs:
     clean: all
   services:
     # The right side name has been declared in the 'containers' section found inside the 'azure-pipelines.yml' file.
-    db4it: ${{ parameters.containers.db4it }}
+    db4it: ${{ parameters.services.db4it }}
   steps:
   - script: docker info
     name: show_docker_info
@@ -31,7 +31,7 @@ jobs:
     name: show_docker_version
     displayName: Show Docker version
     enabled: True
-  - powershell: 'docker container ls -a --format "{{ .ID }}" | ForEach-Object { echo "ContainerID=$_`n`n"; docker logs $_  }'
+  - powershell: 'docker container ls --all --format "{{ .ID }}" | ForEach-Object { docker logs $_  }'
     workingDirectory: $(Build.SourcesDirectory)
     displayName: Show service logs
     failOnStderr: False
