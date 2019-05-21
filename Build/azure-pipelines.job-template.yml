@@ -31,7 +31,7 @@ jobs:
     name: show_docker_version
     displayName: Show Docker version
     enabled: True
-  - powershell: 'docker container ls --format "{{ .ID }}" | ForEach-Object { echo "ContainerID=$_`n`n"; docker logs $_  }'
+  - powershell: 'docker container ls -a --format "{{ .ID }}" | ForEach-Object { echo "ContainerID=$_`n`n"; docker logs $_  }'
     workingDirectory: $(Build.SourcesDirectory)
     displayName: Show service logs
     failOnStderr: False
