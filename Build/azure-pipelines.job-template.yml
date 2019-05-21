@@ -149,9 +149,9 @@ jobs:
       CONNECTIONSTRINGS__TODO: >-
         Host=localhost;
         Port=$(Agent.Services.db4it.Ports.5432);
-        Database=db;
+        Database=todo;
         Username=azuredevops;
-        Password=62u5Xg3I55J0l5hx3iqJ43f5T1Mo3Wri;
+        Password=;
 
   # Publish test results.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=azure-devops&tabs=yaml.

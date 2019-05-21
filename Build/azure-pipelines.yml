@@ -16,9 +16,8 @@ resources:
     ports:
     - 5432/tcp
     env:
-      POSTGRES_DB: 'db'
+      POSTGRES_DB: 'todo'
       POSTGRES_USER: 'azuredevops'
-      POSTGRES_PASSWORD: '62u5Xg3I55J0l5hx3iqJ43f5T1Mo3Wri'
 
   - container: 'postgres_windows_container_for_integration_tests'
     # PostgreSQL Docker image (Windows container): https://hub.docker.com/r/stellirin/postgres-windows.
@@ -26,9 +25,8 @@ resources:
     ports:
     - 5432/tcp
     env:
-      POSTGRES_DB: 'db'
+      POSTGRES_DB: 'todo'
       POSTGRES_USER: 'azuredevops'
-      POSTGRES_PASSWORD: '62u5Xg3I55J0l5hx3iqJ43f5T1Mo3Wri'
 
   repositories: 
   # See more about repositories here: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=vsts&tabs=schema#repository.
