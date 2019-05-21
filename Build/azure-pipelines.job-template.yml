@@ -23,6 +23,12 @@ jobs:
     # The right side name has been declared in the 'containers' section found inside the 'azure-pipelines.yml' file.
     db4it: ${{ parameters.containers.db4it }}
   steps:
+  - script: >-
+      docker logs db4it
+    name: show_docker_container_logs
+    displayName: Show Docker container logs
+    enabled: True
+
   # Install specific .NET Core SDK version.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/tool/dotnet-core-tool-installer?view=azure-devops.
   # Installing a specific .NET Core SDK version is needed to avoid installing a .NET Core global tool in a following task and then have Azure DevOps complain that it cannot find it.
