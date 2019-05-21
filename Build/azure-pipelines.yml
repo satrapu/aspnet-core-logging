@@ -17,7 +17,7 @@ resources:
     - 5432/tcp
     env:
       POSTGRES_DB: db
-      POSTGRES_USER: service.azuredevops
+      POSTGRES_USER: azuredevops
       POSTGRES_PASSWORD: 62u5Xg3I55J0l5hx3iqJ43f5T1Mo3Wri
 
   - container: postgres_windows_container_for_integration_tests
@@ -27,7 +27,7 @@ resources:
     - 5432/tcp
     env:
       POSTGRES_DB: db
-      POSTGRES_USER: service.azuredevops
+      POSTGRES_USER: azuredevops
       POSTGRES_PASSWORD: 62u5Xg3I55J0l5hx3iqJ43f5T1Mo3Wri
 
   repositories: 
