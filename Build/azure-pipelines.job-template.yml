@@ -23,8 +23,11 @@ jobs:
     # The right side name has been declared in the 'containers' section found inside the 'azure-pipelines.yml' file.
     db4it: ${{ parameters.containers.db4it }}
   steps:
-  - script: >-
-       docker logs --details $(docker container ls --quiet --filter name=postgres)
+  - script: docker info
+    name: show_docker_info
+    displayName: Show Docker info
+    enabled: True
+  - script: docker logs --details $(docker container ls -q --filter name=postgres)
     name: show_docker_container_logs
     displayName: Show Docker container logs
     enabled: True
