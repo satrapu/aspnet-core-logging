@@ -31,12 +31,12 @@ jobs:
     name: show_docker_version
     displayName: Show Docker version
     enabled: True
-  - powershell: 'docker container ls --filter "name=postgres" --format "{{ .ID }}" | ForEach-Object { echo "ContainerID=$_`n`n"; docker logs $_  }'
+  - powershell: 'docker container ls --format "{{ .ID }}" | ForEach-Object { echo "ContainerID=$_`n`n"; docker logs $_  }'
     workingDirectory: $(Build.SourcesDirectory)
     displayName: Show service logs
-    failOnStderr: True
+    failOnStderr: False
     errorActionPreference: continue
-    ignoreLASTEXITCODE: False
+    ignoreLASTEXITCODE: True
 
   # Install specific .NET Core SDK version.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/tool/dotnet-core-tool-installer?view=azure-devops.
@@ -150,7 +150,7 @@ jobs:
         Host=localhost;
         Port=$(Agent.Services.db4it.Ports.5432);
         Database=db;
-        Username=service.azuredevops;
+        Username=azuredevops;
         Password=62u5Xg3I55J0l5hx3iqJ43f5T1Mo3Wri;
 
   # Publish test results.
