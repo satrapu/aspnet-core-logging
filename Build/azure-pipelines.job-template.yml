@@ -24,7 +24,7 @@ jobs:
     db4it: ${{ parameters.containers.db4it }}
   steps:
   - script: >-
-      docker logs --details postgres
+       docker logs --details $(docker container ls --quiet --filter name=postgres)
     name: show_docker_container_logs
     displayName: Show Docker container logs
     enabled: True
