@@ -20,9 +20,8 @@ namespace Todo.Services.UnitTests
         public void Constructor_WithValidArguments_MustSucceed()
         {
             // Arrange
-            var dbName = Guid.NewGuid().ToString("N");
-            var options = new DbContextOptionsBuilder<TodoDbContext>().UseInMemoryDatabase(dbName).Options;
-            var todoDbContext = new TodoDbContext(options);
+            //TODO satrapu 2019-05-21: Find a way to mock this context
+            var todoDbContext = new TodoDbContext(new DbContextOptions<TodoDbContext>());
             var logger = new Mock<ILogger<TodoService>>().Object;
 
             // Act
@@ -61,12 +60,14 @@ namespace Todo.Services.UnitTests
         /// </summary>
         private class ConstructorTestData : TheoryData<TodoDbContext, ILogger<TodoService>>
         {
+            #pragma warning disable S1144 // Unused private types or members should be removed
             public ConstructorTestData()
             {
                 AddRow(null, null);
                 AddRow(null, new Mock<ILogger<TodoService>>().Object);
                 AddRow(new TodoDbContext(new DbContextOptions<TodoDbContext>()), null);
             }
+            #pragma warning restore S1144 // Unused private types or members should be removed
         }
     }
 }
