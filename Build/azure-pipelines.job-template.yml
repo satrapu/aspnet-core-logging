@@ -98,10 +98,10 @@ jobs:
       --configuration ${{ parameters.build.configuration }} 
       --filter "FullyQualifiedName~UnitTests" 
       --test-adapter-path "." 
-      --logger "xunit;LogFilePath=TodoWebApp.UnitTests.xunit.xml" 
+      --logger "xunit;LogFilePath=UnitTestResults.xunit.xml" 
       /p:CollectCoverage=True 
       /p:CoverletOutputFormat=opencover 
-      /p:CoverletOutput="TodoWebApp.UnitTests.opencover.xml" 
+      /p:CoverletOutput="UnitTests.opencover.xml" 
       /p:Include="[TodoWebApp]*"
     name: run_unit_tests
     displayName: Run unit tests
@@ -118,10 +118,10 @@ jobs:
       --configuration ${{ parameters.build.configuration }} 
       --filter "FullyQualifiedName~IntegrationTests" 
       --test-adapter-path "." 
-      --logger "xunit;LogFilePath=TodoWebApp.IntegrationTests.xunit.xml" 
+      --logger "xunit;LogFilePath=IntegrationTestResults.xunit.xml" 
       /p:CollectCoverage=True 
       /p:CoverletOutputFormat=opencover 
-      /p:CoverletOutput="TodoWebApp.IntegrationTests.opencover.xml" 
+      /p:CoverletOutput="IntegrationTests.opencover.xml" 
       /p:Include="[TodoWebApp]*"
     name: run_integration_tests
     displayName: Run integration tests
