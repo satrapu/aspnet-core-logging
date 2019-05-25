@@ -100,6 +100,7 @@ jobs:
       command: custom
       projects: '$(Build.SourcesDirectory)/Tests/UnitTests/**/*.csproj'
       custom: test
+      nobuild: True
       arguments: >-
         '--configuration ${{ parameters.build.configuration }}
         --test-adapter-path:. 
@@ -117,6 +118,7 @@ jobs:
       command: custom
       projects: '$(Build.SourcesDirectory)/Tests/IntegrationTests/**/*.csproj'
       custom: test
+      nobuild: True
       arguments: >-
         '--configuration ${{ parameters.build.configuration }}
         --test-adapter-path:. 
@@ -124,7 +126,7 @@ jobs:
         /p:CollectCoverage=True 
         /p:CoverletOutputFormat=opencover 
         /p:Include="[TodoWebApp]*"'
-     env:
+      # Specify the environment variables to use when running this task
       DOTNET_SKIP_FIRST_TIME_EXPERIENCE: $(DotNetSkipFirstTimeExperience)
       DOTNET_CLI_TELEMETRY_OPTOUT: $(DotNetCliTelemetryOptOut)
       COREHOST_TRACE: $(CoreHostTrace) 
