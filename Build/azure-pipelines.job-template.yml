@@ -142,7 +142,7 @@ jobs:
     condition: succeededOrFailed()
     enabled: True
     inputs:
-      testResultsFormat: 'VSTest'
+      testResultsFormat: 'xUnit'
       testResultsFiles: '$(Build.SourcesDirectory)/Tests/**/TestResults/*.trx'
       mergeTestResults: True
       buildConfiguration: ${{ parameters.build.configuration }}
