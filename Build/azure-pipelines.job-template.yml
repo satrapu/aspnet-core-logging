@@ -97,8 +97,8 @@ jobs:
       --no-build
       --configuration ${{ parameters.build.configuration }} 
       --filter "FullyQualifiedName~UnitTests" 
-      --test-adapter-path "." 
-      --logger "xunit;LogFilePath=.TestResults/xunit.xml" 
+      --test-adapter-path:"." 
+      --logger:"xunit;LogFilePath=.TestResults/xunit.xml" 
       /p:CollectCoverage=True 
       /p:CoverletOutputFormat=opencover 
       /p:CoverletOutput=".CodeCoverageResults/opencover.xml" 
@@ -117,8 +117,8 @@ jobs:
       --no-build
       --configuration ${{ parameters.build.configuration }} 
       --filter "FullyQualifiedName~IntegrationTests" 
-      --test-adapter-path "." 
-      --logger "xunit;LogFilePath=.TestResults/xunit.xml" 
+      --test-adapter-path:"." 
+      --logger:"xunit;LogFilePath=.TestResults/xunit.xml" 
       /p:CollectCoverage=True 
       /p:CoverletOutputFormat=opencover 
       /p:CoverletOutput=".CodeCoverageResults/opencover.xml" 
