@@ -91,38 +91,40 @@ jobs:
       COREHOST_TRACE: $(CoreHostTrace)
 
   # Run unit tests and collect code coverage metrics.
-  # See more about running selective tests here: https://docs.microsoft.com/en-us/dotnet/core/testing/selective-unit-tests#xunit.
-  - script: >-
-      dotnet test $(Build.SourcesDirectory)/Todo.sln 
-      --no-build
-      --configuration ${{ parameters.build.configuration }} 
-      --filter "FullyQualifiedName~UnitTests" 
-      --logger:trx 
-      /p:CollectCoverage=True 
-      /p:CoverletOutputFormat=opencover 
-      /p:Include="[TodoWebApp]*"
+  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/dotnet-core-cli?view=azure-devops
+  - task: DotNetCoreCLI@2
     name: run_unit_tests
-    displayName: Run unit tests
+    displayName: 'Run unit tests'
     enabled: True
-    env:
-      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: $(DotNetSkipFirstTimeExperience)
-      DOTNET_CLI_TELEMETRY_OPTOUT: $(DotNetCliTelemetryOptOut)
-      COREHOST_TRACE: $(CoreHostTrace)    
-
-  # Run integration tests and collect code coverage metrics.
-  - script: >-
-      dotnet test $(Build.SourcesDirectory)/Todo.sln 
-      --no-build
-      --configuration ${{ parameters.build.configuration }} 
-      --filter "FullyQualifiedName~IntegrationTests" 
-      --logger:trx
-      /p:CollectCoverage=True 
-      /p:CoverletOutputFormat=opencover 
-      /p:Include="[TodoWebApp]*"
+    inputs:
+      command: custom
+      projects: '$(Build.SourcesDirectory)/Tests/UnitTests/**/*.csproj'
+      custom: test
+      arguments: >-
+        --configuration ${{ parameters.build.configuration }}
+        --test-adapter-path:. 
+        --logger:xunit 
+        /p:CollectCoverage=True 
+        /p:CoverletOutputFormat=opencover 
+        /p:Include="[TodoWebApp]*"  
+       
+  # Run integration tests and collect code coverage metrics.    
+  - task: DotNetCoreCLI@2
     name: run_integration_tests
-    displayName: Run integration tests
+    displayName: 'Run integration tests'
     enabled: True
-    env:
+    inputs:
+      command: custom
+      projects: '$(Build.SourcesDirectory)/Tests/IntegrationTests/**/*.csproj'
+      custom: test
+      arguments: >-
+        --configuration ${{ parameters.build.configuration }}
+        --test-adapter-path:. 
+        --logger:xunit 
+        /p:CollectCoverage=True 
+        /p:CoverletOutputFormat=opencover 
+        /p:Include="[TodoWebApp]*"
+     env:
       DOTNET_SKIP_FIRST_TIME_EXPERIENCE: $(DotNetSkipFirstTimeExperience)
       DOTNET_CLI_TELEMETRY_OPTOUT: $(DotNetCliTelemetryOptOut)
       COREHOST_TRACE: $(CoreHostTrace) 
@@ -142,8 +144,8 @@ jobs:
     condition: succeededOrFailed()
     enabled: True
     inputs:
-      testResultsFormat: 'xUnit'
-      testResultsFiles: '$(Build.SourcesDirectory)/Tests/**/TestResults/*.trx'
+      testResultsFormat: XUnit
+      testResultsFiles: '**/Tests/**/TestResults.xml'
       mergeTestResults: True
       buildConfiguration: ${{ parameters.build.configuration }}
       publishRunAttachments: True
@@ -173,7 +175,7 @@ jobs:
       reportgenerator 
       "-reports:$(Build.SourcesDirectory)/Tests/**/coverage.opencover.xml" 
       "-targetdir:$(Build.SourcesDirectory)/.CodeCoverageReport" 
-      "-reporttypes:Cobertura;HtmlInline_AzurePipelines"
+      "-reporttypes:Cobertura"
     name: generate_code_coverage_report
     displayName: Generate code coverage report
     enabled: True
