@@ -1,6 +1,8 @@
-﻿using FluentAssertions;
+﻿using System.Reflection;
+using FluentAssertions;
 using System.Security.Claims;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Todo.Services.UnitTests
 {
@@ -9,6 +11,13 @@ namespace Todo.Services.UnitTests
     /// </summary>
     public class ClaimPrincipalExtensionsTests
     {
+        private readonly ITestOutputHelper testOutputHelper;
+
+        public ClaimPrincipalExtensionsTests(ITestOutputHelper testOutputHelper)
+        {
+            this.testOutputHelper = testOutputHelper;
+        }
+
         /// <summary>
         /// Tests <see cref="ClaimPrincipalExtensions.GetUserId"/> method.
         /// </summary>
@@ -16,6 +25,7 @@ namespace Todo.Services.UnitTests
         public void GetUserById_UsingNullAsClaimsPrincipal_MustThrowException()
         {
             // Arrange
+            testOutputHelper.WriteLine($"Running test method: {GetType().FullName}.{MethodBase.GetCurrentMethod().Name}");
             ClaimsPrincipal nullClaimsPrincipal = null;
 
             // Act
