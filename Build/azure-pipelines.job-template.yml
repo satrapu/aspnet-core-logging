@@ -101,8 +101,8 @@ jobs:
       projects: '$(Build.SourcesDirectory)/Todo.sln'
       custom: test
       nobuild: True
+      configuration: ${{ parameters.build.configuration }} 
       arguments: >-
-        --configuration ${{ parameters.build.configuration }}
         --filter "FullyQualifiedName~UnitTests" 
         --test-adapter-path:. 
         --logger:xunit 
@@ -120,14 +120,7 @@ jobs:
       projects: '$(Build.SourcesDirectory)/Todo.sln'
       custom: test
       nobuild: True
-      arguments: >-
-        --configuration ${{ parameters.build.configuration }}
-        --filter "FullyQualifiedName~IntegrationTests" 
-        --test-adapter-path:. 
-        --logger:xunit 
-        /p:CollectCoverage=True 
-        /p:CoverletOutputFormat=opencover 
-        /p:Include="[TodoWebApp]*"
+      configuration: ${{ parameters.build.configuration }} 
       # Specify the environment variables to use when running this task
       DOTNET_SKIP_FIRST_TIME_EXPERIENCE: $(DotNetSkipFirstTimeExperience)
       DOTNET_CLI_TELEMETRY_OPTOUT: $(DotNetCliTelemetryOptOut)
@@ -139,7 +132,14 @@ jobs:
         Database=todo;
         Username=satrapu;
         Password=;
-
+      arguments: >-
+        --filter "FullyQualifiedName~IntegrationTests" 
+        --test-adapter-path:. 
+        --logger:xunit 
+        /p:CollectCoverage=True 
+        /p:CoverletOutputFormat=opencover 
+        /p:Include="[TodoWebApp]*"
+      
   # Publish test results.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=azure-devops&tabs=yaml.
   - task: PublishTestResults@2
