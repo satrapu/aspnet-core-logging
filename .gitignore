@@ -14,9 +14,11 @@ Logs/
 
 # Tests
 /Tests/**/.TestResults/
+/Tests/**/TestResults/
 
 # Code coverage
 /Tests/**/.CodeCoverageResults/
+/Tests/**/coverage.opencover.xml
 
 # SonarQube scanner artifacts
 .sonarqube/
