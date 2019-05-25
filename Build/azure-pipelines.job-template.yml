@@ -98,16 +98,17 @@ jobs:
     enabled: True
     inputs:
       command: custom
-      projects: '$(Build.SourcesDirectory)/Tests/UnitTests/**/*.csproj'
+      projects: '$(Build.SourcesDirectory)/Todo.sln'
       custom: test
       nobuild: True
       arguments: >-
-        '--configuration ${{ parameters.build.configuration }}
+        --configuration ${{ parameters.build.configuration }}
+        --filter "FullyQualifiedName~UnitTests" 
         --test-adapter-path:. 
         --logger:xunit 
         /p:CollectCoverage=True 
         /p:CoverletOutputFormat=opencover 
-        /p:Include="[TodoWebApp]*"'  
+        /p:Include="[TodoWebApp]*" 
        
   # Run integration tests and collect code coverage metrics.    
   - task: DotNetCoreCLI@2
@@ -116,16 +117,17 @@ jobs:
     enabled: True
     inputs:
       command: custom
-      projects: '$(Build.SourcesDirectory)/Tests/IntegrationTests/**/*.csproj'
+      projects: '$(Build.SourcesDirectory)/Todo.sln'
       custom: test
       nobuild: True
       arguments: >-
-        '--configuration ${{ parameters.build.configuration }}
+        --configuration ${{ parameters.build.configuration }}
+        --filter "FullyQualifiedName~IntegrationTests" 
         --test-adapter-path:. 
         --logger:xunit 
         /p:CollectCoverage=True 
         /p:CoverletOutputFormat=opencover 
-        /p:Include="[TodoWebApp]*"'
+        /p:Include="[TodoWebApp]*"
       # Specify the environment variables to use when running this task
       DOTNET_SKIP_FIRST_TIME_EXPERIENCE: $(DotNetSkipFirstTimeExperience)
       DOTNET_CLI_TELEMETRY_OPTOUT: $(DotNetCliTelemetryOptOut)
