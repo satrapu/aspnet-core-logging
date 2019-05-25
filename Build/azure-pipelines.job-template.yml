@@ -97,8 +97,7 @@ jobs:
       --no-build
       --configuration ${{ parameters.build.configuration }} 
       --filter "FullyQualifiedName~UnitTests" 
-      --test-adapter-path:. 
-      --logger:xunit 
+      --logger:trx 
       /p:CollectCoverage=True 
       /p:CoverletOutputFormat=opencover 
       /p:Include="[TodoWebApp]*"
@@ -116,8 +115,7 @@ jobs:
       --no-build
       --configuration ${{ parameters.build.configuration }} 
       --filter "FullyQualifiedName~IntegrationTests" 
-      --test-adapter-path:. 
-      --logger:xunit
+      --logger:trx
       /p:CollectCoverage=True 
       /p:CoverletOutputFormat=opencover 
       /p:Include="[TodoWebApp]*"
@@ -144,8 +142,8 @@ jobs:
     condition: succeededOrFailed()
     enabled: True
     inputs:
-      testResultsFormat: 'xUnit'
-      testResultsFiles: '$(Build.SourcesDirectory)/Tests/**/TestResults/TestResults.xml'
+      testResultsFormat: 'VSTest'
+      testResultsFiles: '$(Build.SourcesDirectory)/Tests/**/TestResults/*.trx'
       mergeTestResults: True
       buildConfiguration: ${{ parameters.build.configuration }}
       publishRunAttachments: True
