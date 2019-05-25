@@ -7,7 +7,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Todo.Persistence;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Todo.Services.UnitTests
 {
@@ -18,14 +17,9 @@ namespace Todo.Services.UnitTests
     {
         private readonly TodoDbContextFactory todoDbContextFactory;
 
-        public DatabaseSeederTests(TodoDbContextFactory todoDbContextFactory, ITestOutputHelper testOutputHelper)
+        public DatabaseSeederTests(TodoDbContextFactory todoDbContextFactory)
         {
             this.todoDbContextFactory = todoDbContextFactory;
-
-            // satrapu 2019-05-25: Write something to the standard output to ensure the test result file to contain all test methods.
-            // Without this hack, the test result file is not seen as valid by Azure Pipelines:
-            // ##[warning]Invalid results file. Make sure the result format of the file '...xunit.xml' matches 'XUnit' test results format.
-            testOutputHelper.WriteLine($"Running tests from class: {GetType().FullName}");
         }
 
         /// <summary>
