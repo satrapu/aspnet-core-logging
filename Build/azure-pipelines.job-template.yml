@@ -97,11 +97,10 @@ jobs:
       --no-build
       --configuration ${{ parameters.build.configuration }} 
       --filter "FullyQualifiedName~UnitTests" 
-      --test-adapter-path:"." 
-      --logger:"xunit;LogFilePath=.TestResults/xunit.xml" 
+      --test-adapter-path:. 
+      --logger:xunit 
       /p:CollectCoverage=True 
       /p:CoverletOutputFormat=opencover 
-      /p:CoverletOutput=".CodeCoverageResults/opencover.xml" 
       /p:Include="[TodoWebApp]*"
     name: run_unit_tests
     displayName: Run unit tests
@@ -117,11 +116,10 @@ jobs:
       --no-build
       --configuration ${{ parameters.build.configuration }} 
       --filter "FullyQualifiedName~IntegrationTests" 
-      --test-adapter-path:"." 
-      --logger:"xunit;LogFilePath=.TestResults/xunit.xml" 
+      --test-adapter-path:. 
+      --logger:xunit
       /p:CollectCoverage=True 
       /p:CoverletOutputFormat=opencover 
-      /p:CoverletOutput=".CodeCoverageResults/opencover.xml" 
       /p:Include="[TodoWebApp]*"
     name: run_integration_tests
     displayName: Run integration tests
@@ -147,7 +145,7 @@ jobs:
     enabled: True
     inputs:
       testResultsFormat: 'xUnit'
-      testResultsFiles: '$(Build.SourcesDirectory)/Tests/**/.TestResults/xunit.xml'
+      testResultsFiles: '$(Build.SourcesDirectory)/Tests/**/TestResults/TestResults.xml'
       mergeTestResults: True
       buildConfiguration: ${{ parameters.build.configuration }}
       publishRunAttachments: True
@@ -175,9 +173,9 @@ jobs:
   # enable Azure Boards for your project, as documented here: https://developercommunity.visualstudio.com/solutions/403137/view.html.
   - script: >-
       reportgenerator 
-      "-reports:$(Build.SourcesDirectory)/Tests/**/.CodeCoverageResults/opencover.xml" 
+      "-reports:$(Build.SourcesDirectory)/Tests/**/coverage.opencover.xml" 
       "-targetdir:$(Build.SourcesDirectory)/.CodeCoverageReport" 
-      "-reporttypes:Cobertura;HtmlInline_AzurePipelines;Badges"
+      "-reporttypes:Cobertura;HtmlInline_AzurePipelines"
     name: generate_code_coverage_report
     displayName: Generate code coverage report
     enabled: True
