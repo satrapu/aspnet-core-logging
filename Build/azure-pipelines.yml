@@ -107,7 +107,7 @@ variables:
   - name: 'CurrentProject.Sonar.ProjectKey'
     value: 'aspnet-core-logging'
 
-# Define multiple jobs, one per supported OS.
+# Define multiple jobs, one per supported operating system (Linux, macOS and Windows).
 # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/multiple-phases?tabs=yaml&view=azure-devops.
 #
 # Will use job templates, since all supported operating systems will run the same job.
