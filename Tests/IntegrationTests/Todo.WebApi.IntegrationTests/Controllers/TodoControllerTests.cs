@@ -6,13 +6,12 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Todo.WebApi.Controllers;
-using Todo.WebApi.IntegrationTests.Infrastructure;
+using Todo.WebApi.Infrastructure;
 using Todo.WebApi.Models;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Todo.WebApi.IntegrationTests.Controllers
+namespace Todo.WebApi.Controllers
 {
     /// <summary>
     ///  Contains integration tests targeting <see cref="TodoController" /> class.

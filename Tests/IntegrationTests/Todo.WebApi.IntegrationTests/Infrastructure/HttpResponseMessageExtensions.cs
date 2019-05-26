@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Xunit.Abstractions;
 
-namespace Todo.WebApi.IntegrationTests.Infrastructure
+namespace Todo.WebApi.Infrastructure
 {
     public static class HttpResponseMessageExtensions
     {

@@ -6,6 +6,7 @@
     <IsPackable>false</IsPackable>
     <OutputType>Library</OutputType>
     <IsTestProject>true</IsTestProject>
+    <RootNamespace>Todo.WebApi</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

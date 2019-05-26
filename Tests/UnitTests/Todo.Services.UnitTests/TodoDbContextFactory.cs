@@ -2,7 +2,7 @@
 using System;
 using Todo.Persistence;
 
-namespace Todo.Services.UnitTests
+namespace Todo.Services
 {
     // ReSharper disable once ClassNeverInstantiated.Global
     #pragma warning disable S3881 // "IDisposable" should be implemented correctly

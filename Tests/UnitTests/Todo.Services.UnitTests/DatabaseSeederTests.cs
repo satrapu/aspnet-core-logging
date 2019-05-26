@@ -10,7 +10,7 @@ using Todo.Persistence;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Todo.Services.UnitTests
+namespace Todo.Services
 {
     /// <summary>
     /// Contains unit tests targeting <see cref="DatabaseSeeder"/> class.

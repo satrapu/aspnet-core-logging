@@ -1,10 +1,10 @@
-﻿using System.Reflection;
-using FluentAssertions;
+﻿using FluentAssertions;
+using System.Reflection;
 using System.Security.Claims;
 using Xunit;
 using Xunit.Abstractions;
 
-namespace Todo.Services.UnitTests
+namespace Todo.Services
 {
     /// <summary>
     /// Contains unit tests targeting <see cref="ClaimPrincipalExtensions"/> class.

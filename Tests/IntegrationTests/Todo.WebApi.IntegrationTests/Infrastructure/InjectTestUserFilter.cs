@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace Todo.WebApi.IntegrationTests.Infrastructure
+namespace Todo.WebApi.Infrastructure
 {
     public class InjectTestUserFilter : IAsyncActionFilter
     {

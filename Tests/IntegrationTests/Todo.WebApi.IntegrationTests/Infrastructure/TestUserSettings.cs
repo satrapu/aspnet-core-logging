@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Todo.WebApi.IntegrationTests.Infrastructure
+namespace Todo.WebApi.Infrastructure
 {
     public static class TestUserSettings
     {

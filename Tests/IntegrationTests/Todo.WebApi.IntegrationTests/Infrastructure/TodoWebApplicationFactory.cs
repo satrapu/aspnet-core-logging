@@ -9,7 +9,7 @@ using System.Linq;
 using Todo.Persistence;
 using Todo.Services;
 
-namespace Todo.WebApi.IntegrationTests.Infrastructure
+namespace Todo.WebApi.Infrastructure
 {
     // ReSharper disable once ClassNeverInstantiated.Global
     public class TodoWebApplicationFactory : WebApplicationFactory<Startup>
