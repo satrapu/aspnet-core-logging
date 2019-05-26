@@ -92,17 +92,18 @@ jobs:
 
   # Run unit tests and collect code coverage metrics.
   # See more about running selective tests here: https://docs.microsoft.com/en-us/dotnet/core/testing/selective-unit-tests#xunit.
+  # Decorate the AsemblyInfo.cs found inside each unit test related project with:
+  #     [assembly: Xunit.AssemblyTrait("Category", "IntegrationTests")]
   - script: >-
       dotnet test $(Build.SourcesDirectory)/Todo.sln 
       --no-build
       --configuration ${{ parameters.build.configuration }} 
-      --filter "FullyQualifiedName~UnitTests" 
+      --filter "Category=UnitTests" 
       --test-adapter-path "." 
-      --logger "xunit;LogFilePath=TodoWebApp.UnitTests.xunit.xml" 
+      --logger "xunit" 
       /p:CollectCoverage=True 
       /p:CoverletOutputFormat=opencover 
-      /p:CoverletOutput="TodoWebApp.UnitTests.opencover.xml" 
-      /p:Include="[TodoWebApp]*"
+      /p:Include="[Todo.*]*"
     name: run_unit_tests
     displayName: Run unit tests
     enabled: True
@@ -112,17 +113,18 @@ jobs:
       COREHOST_TRACE: $(CoreHostTrace)    
 
   # Run integration tests and collect code coverage metrics.
+  # Decorate the AsemblyInfo.cs found inside each integration test related project with:
+  #     [assembly: Xunit.AssemblyTrait("Category", "IntegrationTests")]
   - script: >-
       dotnet test $(Build.SourcesDirectory)/Todo.sln 
       --no-build
       --configuration ${{ parameters.build.configuration }} 
-      --filter "FullyQualifiedName~IntegrationTests" 
+      --filter "Category=IntegrationTests" 
       --test-adapter-path "." 
-      --logger "xunit;LogFilePath=TodoWebApp.IntegrationTests.xunit.xml" 
+      --logger "xunit" 
       /p:CollectCoverage=True 
       /p:CoverletOutputFormat=opencover 
-      /p:CoverletOutput="TodoWebApp.IntegrationTests.opencover.xml" 
-      /p:Include="[TodoWebApp]*"
+      /p:Include="[Todo.*]*"
     name: run_integration_tests
     displayName: Run integration tests
     enabled: True
@@ -147,7 +149,7 @@ jobs:
     enabled: True
     inputs:
       testResultsFormat: 'xUnit'
-      testResultsFiles: '$(Build.SourcesDirectory)/Tests/**/*.xunit.xml'
+      testResultsFiles: '$(Build.SourcesDirectory)/Tests/**/TestResults/*.xml'
       mergeTestResults: True
       buildConfiguration: ${{ parameters.build.configuration }}
       publishRunAttachments: True
@@ -175,9 +177,9 @@ jobs:
   # enable Azure Boards for your project, as documented here: https://developercommunity.visualstudio.com/solutions/403137/view.html.
   - script: >-
       reportgenerator 
-      "-reports:$(Build.SourcesDirectory)/Tests/**/*.opencover.xml" 
+      "-reports:$(Build.SourcesDirectory)/Tests/**/coverage.opencover.xml" 
       "-targetdir:$(Build.SourcesDirectory)/.CodeCoverageReport" 
-      "-reporttypes:Cobertura"
+      "-reporttypes:Cobertura;HtmlInline_AzurePipelines;HtmlSummary;Badges"
     name: generate_code_coverage_report
     displayName: Generate code coverage report
     enabled: True
