@@ -2,7 +2,7 @@
 
 ## Description
 
-ASP.NET Core v2.x logging in action.  
+This repo shows ASP.NET Core v2.x logging in action; it also serves as a learning path for [Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/).   
 This project has several posts associated with it:
 
 - [Build an ASP.NET Core application using Azure Pipelines](https://crossprogramming.com/2019/03/17/build-asp-net-core-app-using-azure-pipelines.html)
