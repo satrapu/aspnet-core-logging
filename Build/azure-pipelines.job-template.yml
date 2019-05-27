@@ -146,7 +146,7 @@ jobs:
   # This task will make use of the ~/Tests/.artifactignore file.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/artifacts/pipeline-artifacts?view=azure-devops&tabs=yaml#using-artifactignore-files.
   - task: PublishPipelineArtifact@0
-   displayName: Publish test results as pipeline artifacts
+    displayName: Publish test results as pipeline artifacts
     name: publish_test_results_as_pipeline_artifacts
     condition: succeededOrFailed()
     enabled: True
