@@ -6,6 +6,7 @@ using System;
 using System.Reflection;
 using System.Security.Claims;
 using Todo.Persistence;
+using Todo.Services.Infrastructure;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -14,15 +15,23 @@ namespace Todo.Services
     /// <summary>
     /// Contains unit tests targeting <see cref="TodoService"/> class.
     /// </summary>
-    public class TodoServiceTests: IClassFixture<TodoDbContextFactory>
+    public class TodoServiceTests: IClassFixture<TodoDbContextFactory>, IDisposable
     {
         private readonly TodoDbContextFactory todoDbContextFactory;
-        private readonly ITestOutputHelper testOutputHelper;
+        private readonly XunitLoggerProvider xunitLoggerProvider;
+        private readonly ILogger logger;
 
         public TodoServiceTests(TodoDbContextFactory todoDbContextFactory, ITestOutputHelper testOutputHelper)
         {
             this.todoDbContextFactory = todoDbContextFactory;
-            this.testOutputHelper = testOutputHelper;
+            xunitLoggerProvider = new XunitLoggerProvider(testOutputHelper);
+            logger = xunitLoggerProvider.CreateLogger<TodoServiceTests>();
+        }
+
+        
+        public void Dispose()
+        {
+            xunitLoggerProvider?.Dispose();
         }
 
         /// <summary>
@@ -32,13 +41,15 @@ namespace Todo.Services
         public void Constructor_WithValidArguments_MustSucceed()
         {
             // Arrange
-            testOutputHelper.WriteLine($"Running test method: {GetType().FullName}.{MethodBase.GetCurrentMethod().Name}");
+            logger.LogInformation("Running test method: {TestMethod}"
+                                , $"{GetType().FullName}.{MethodBase.GetCurrentMethod().Name}");
+
             var todoDbContext = todoDbContextFactory.TodoDbContext; 
-            var logger = new Mock<ILogger<TodoService>>().Object;
+            var mockLogger = new Mock<ILogger<TodoService>>();
 
             // Act
             // ReSharper disable once AccessToDisposedClosure
-            var exception = Record.Exception(() => new TodoService(todoDbContext, logger));
+            var exception = Record.Exception(() => new TodoService(todoDbContext, mockLogger.Object));
 
             // Assert
             exception.Should()
@@ -49,18 +60,19 @@ namespace Todo.Services
         /// Tests <see cref="TodoService"/> constructor.
         /// </summary>
         /// <param name="todoDbContext"></param>
-        /// <param name="logger"></param>
+        /// <param name="todoServiceLogger"></param>
         [Theory]
         [ClassData(typeof(ConstructorTestData))]
         public void Constructor_WithInvalidArguments_MustThrowException(TodoDbContext todoDbContext
-                                                                      , ILogger<TodoService> logger)
+                                                                      , ILogger<TodoService> todoServiceLogger)
         {
             // Arrange
-            testOutputHelper.WriteLine($"Running test method: {GetType().FullName}.{MethodBase.GetCurrentMethod().Name}");
+            logger.LogInformation("Running test method: {TestMethod}"
+                                , $"{GetType().FullName}.{MethodBase.GetCurrentMethod().Name}");
             const string reason = "class was instantiated using null argument(s)";
 
             // Act
-            var exception = Record.Exception(() => new TodoService(todoDbContext, logger));
+            var exception = Record.Exception(() => new TodoService(todoDbContext, todoServiceLogger));
 
             // Assert
             exception.Should()
@@ -75,10 +87,12 @@ namespace Todo.Services
         public void GetByQuery_UsingNullAsQuery_MustThrowException()
         {
             // Arrange
-            testOutputHelper.WriteLine($"Running test method: {GetType().FullName}.{MethodBase.GetCurrentMethod().Name}");
+            logger.LogInformation("Running test method: {TestMethod}"
+                                , $"{GetType().FullName}.{MethodBase.GetCurrentMethod().Name}");
+
             var todoDbContext = todoDbContextFactory.TodoDbContext; 
-            var logger = new Mock<ILogger<TodoService>>().Object;
-            var todoService = new TodoService(todoDbContext, logger);
+            var mockLogger = new Mock<ILogger<TodoService>>();
+            var todoService = new TodoService(todoDbContext, mockLogger.Object);
 
             // Act
             var exception = Record.Exception(() => todoService.GetByQuery(null));
@@ -97,10 +111,12 @@ namespace Todo.Services
         public void GetByQuery_UsingValidQuery_MustSucceed()
         {
             // Arrange
-            testOutputHelper.WriteLine($"Running test method: {GetType().FullName}.{MethodBase.GetCurrentMethod().Name}");
+            logger.LogInformation("Running test method: {TestMethod}"
+                                , $"{GetType().FullName}.{MethodBase.GetCurrentMethod().Name}");
+
             var todoDbContext = todoDbContextFactory.TodoDbContext; 
-            var logger = new Mock<ILogger<TodoService>>().Object;
-            var todoService = new TodoService(todoDbContext, logger);
+            var mockLogger = new Mock<ILogger<TodoService>>();
+            var todoService = new TodoService(todoDbContext, mockLogger.Object);
 
             var claimsPrincipal = new Mock<ClaimsPrincipal>();
             claimsPrincipal.Setup(x => x.FindFirst(It.IsAny<string>()))
@@ -126,10 +142,12 @@ namespace Todo.Services
         public void Add_UsingNullAsNewTodoItemInfo_MustThrowException()
         {
             // Arrange
-            testOutputHelper.WriteLine($"Running test method: {GetType().FullName}.{MethodBase.GetCurrentMethod().Name}");
+            logger.LogInformation("Running test method: {TestMethod}"
+                                , $"{GetType().FullName}.{MethodBase.GetCurrentMethod().Name}");
+
             var todoDbContext = todoDbContextFactory.TodoDbContext; 
-            var logger = new Mock<ILogger<TodoService>>().Object;
-            var todoService = new TodoService(todoDbContext, logger);
+            var mockLogger = new Mock<ILogger<TodoService>>();
+            var todoService = new TodoService(todoDbContext, mockLogger.Object);
 
             // Act
             var exception = Record.Exception(() => todoService.Add(null));
@@ -148,10 +166,12 @@ namespace Todo.Services
         public void Delete_UsingNullAsDeleteTodoItemInfo_MustThrowException()
         {
             // Arrange
-            testOutputHelper.WriteLine($"Running test method: {GetType().FullName}.{MethodBase.GetCurrentMethod().Name}");
+            logger.LogInformation("Running test method: {TestMethod}"
+                                , $"{GetType().FullName}.{MethodBase.GetCurrentMethod().Name}");
+
             var todoDbContext = todoDbContextFactory.TodoDbContext; 
-            var logger = new Mock<ILogger<TodoService>>().Object;
-            var todoService = new TodoService(todoDbContext, logger);
+            var mockLogger = new Mock<ILogger<TodoService>>();
+            var todoService = new TodoService(todoDbContext, mockLogger.Object);
 
             // Act
             var exception = Record.Exception(() => todoService.Delete(null));
@@ -170,10 +190,12 @@ namespace Todo.Services
         public void Delete_UsingNonExistentId_MustThrowException()
         {
             // Arrange
-            testOutputHelper.WriteLine($"Running test method: {GetType().FullName}.{MethodBase.GetCurrentMethod().Name}");
+            logger.LogInformation("Running test method: {TestMethod}"
+                                , $"{GetType().FullName}.{MethodBase.GetCurrentMethod().Name}");
+
             var todoDbContext = todoDbContextFactory.TodoDbContext; 
-            var logger = new Mock<ILogger<TodoService>>().Object;
-            var todoService = new TodoService(todoDbContext, logger);
+            var mockLogger = new Mock<ILogger<TodoService>>();
+            var todoService = new TodoService(todoDbContext, mockLogger.Object);
 
             var deleteTodoItemInfo = new DeleteTodoItemInfo
             {
@@ -197,10 +219,12 @@ namespace Todo.Services
         public void Update_UsingNullAsUpdateTodoItemInfo_MustThrowException()
         {
             // Arrange
-            testOutputHelper.WriteLine($"Running test method: {GetType().FullName}.{MethodBase.GetCurrentMethod().Name}");
+            logger.LogInformation("Running test method: {TestMethod}"
+                                , $"{GetType().FullName}.{MethodBase.GetCurrentMethod().Name}");
+
             var todoDbContext = todoDbContextFactory.TodoDbContext; 
-            var logger = new Mock<ILogger<TodoService>>().Object;
-            var todoService = new TodoService(todoDbContext, logger);
+            var mockLogger = new Mock<ILogger<TodoService>>();
+            var todoService = new TodoService(todoDbContext, mockLogger.Object);
 
             // Act
             var exception = Record.Exception(() => todoService.Update(null));

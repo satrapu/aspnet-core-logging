@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Todo.Persistence;
+using Todo.Services.Infrastructure;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -15,15 +16,22 @@ namespace Todo.Services
     /// <summary>
     /// Contains unit tests targeting <see cref="DatabaseSeeder"/> class.
     /// </summary>
-    public class DatabaseSeederTests: IClassFixture<TodoDbContextFactory>
+    public class DatabaseSeederTests: IClassFixture<TodoDbContextFactory>, IDisposable
     {
         private readonly TodoDbContextFactory todoDbContextFactory;
-        private readonly ITestOutputHelper testOutputHelper;
+        private readonly XunitLoggerProvider xunitLoggerProvider;
+        private readonly ILogger logger;
 
         public DatabaseSeederTests(TodoDbContextFactory todoDbContextFactory,  ITestOutputHelper testOutputHelper)
         {
             this.todoDbContextFactory = todoDbContextFactory;
-            this.testOutputHelper = testOutputHelper;
+            xunitLoggerProvider = new XunitLoggerProvider(testOutputHelper);
+            logger = xunitLoggerProvider.CreateLogger<DatabaseSeederTests>();
+        }
+
+        public void Dispose()
+        {
+            xunitLoggerProvider.Dispose();
         }
 
         /// <summary>
@@ -33,11 +41,13 @@ namespace Todo.Services
         public void Seed_UsingNullAsTodoDbContext_MustThrowException()
         {
             // Arrange
-            testOutputHelper.WriteLine($"Running test method: {GetType().FullName}.{MethodBase.GetCurrentMethod().Name}");
+            logger.LogInformation("Running test method: {TestMethod}"
+                                , $"{GetType().FullName}.{MethodBase.GetCurrentMethod().Name}");
+
             TodoDbContext nullTodoDbContext = null;
             var seedingData = Enumerable.Empty<TodoItem>();
-            var logger = new Mock<ILogger<DatabaseSeeder>>().Object;
-            var databaseSeeder = new DatabaseSeeder(logger);
+            var mockLogger = new Mock<ILogger<DatabaseSeeder>>();
+            var databaseSeeder = new DatabaseSeeder(mockLogger.Object);
 
             // Act 
             // ReSharper disable once ExpressionIsAlwaysNull
@@ -57,11 +67,13 @@ namespace Todo.Services
         public void Seed_UsingNullAsSeedingData_MustThrowException()
         {
             // Arrange
-            testOutputHelper.WriteLine($"Running test method: {GetType().FullName}.{MethodBase.GetCurrentMethod().Name}");
+            logger.LogInformation("Running test method: {TestMethod}"
+                                , $"{GetType().FullName}.{MethodBase.GetCurrentMethod().Name}");
+
             var todoDbContext = todoDbContextFactory.TodoDbContext;
             IEnumerable<TodoItem> nullSeedingData = null;
-            var logger = new Mock<ILogger<DatabaseSeeder>>().Object;
-            var databaseSeeder = new DatabaseSeeder(logger);
+            var mockLogger = new Mock<ILogger<DatabaseSeeder>>();
+            var databaseSeeder = new DatabaseSeeder(mockLogger.Object);
 
             // Act 
             // ReSharper disable once ExpressionIsAlwaysNull
@@ -81,11 +93,13 @@ namespace Todo.Services
         public void Seed_UsingValidArguments_MustReturnTrue()
         {
             // Arrange
-            testOutputHelper.WriteLine($"Running test method: {GetType().FullName}.{MethodBase.GetCurrentMethod().Name}");
+            logger.LogInformation("Running test method: {TestMethod}"
+                                , $"{GetType().FullName}.{MethodBase.GetCurrentMethod().Name}");
+
             var todoDbContext = todoDbContextFactory.TodoDbContext;
             var seedingData = Enumerable.Empty<TodoItem>();
-            var logger = new Mock<ILogger<DatabaseSeeder>>().Object;
-            var databaseSeeder = new DatabaseSeeder(logger);
+            var mockLogger = new Mock<ILogger<DatabaseSeeder>>();
+            var databaseSeeder = new DatabaseSeeder(mockLogger.Object);
 
             // Act 
             var hasSeededSucceeded = databaseSeeder.Seed(todoDbContext, seedingData);
@@ -101,7 +115,8 @@ namespace Todo.Services
         public void Seed_WhenThereIsAlreadySomeData_MustReturnFalse()
         {
             // Arrange
-            testOutputHelper.WriteLine($"Running test method: {GetType().FullName}.{MethodBase.GetCurrentMethod().Name}");
+            logger.LogInformation("Running test method: {TestMethod}"
+                                , $"{GetType().FullName}.{MethodBase.GetCurrentMethod().Name}");
 
             using (var todoDbContext = GetTodoDbContextMock())
             {
@@ -109,8 +124,8 @@ namespace Todo.Services
                 todoDbContext.SaveChanges();
 
                 var seedingData = Enumerable.Empty<TodoItem>();
-                var logger = new Mock<ILogger<DatabaseSeeder>>().Object;
-                var databaseSeeder = new DatabaseSeeder(logger);
+                var mockLogger = new Mock<ILogger<DatabaseSeeder>>();
+                var databaseSeeder = new DatabaseSeeder(mockLogger.Object);
 
                 // Act 
                 var hasSeededSucceeded = databaseSeeder.Seed(todoDbContext, seedingData);
