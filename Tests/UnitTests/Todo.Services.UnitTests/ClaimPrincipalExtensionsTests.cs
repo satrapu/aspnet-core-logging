@@ -1,9 +1,6 @@
 ﻿using FluentAssertions;
-using Microsoft.Extensions.Logging;
-using System;
 using System.Reflection;
 using System.Security.Claims;
-using Todo.Services.Infrastructure;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -12,20 +9,13 @@ namespace Todo.Services
     /// <summary>
     /// Contains unit tests targeting <see cref="ClaimPrincipalExtensions"/> class.
     /// </summary>
-    public class ClaimPrincipalExtensionsTests : IDisposable
+    public class ClaimPrincipalExtensionsTests
     {
-        private readonly XunitLoggerProvider xunitLoggerProvider;
-        private readonly ILogger logger;
+        private readonly ITestOutputHelper testOutputHelper;
 
         public ClaimPrincipalExtensionsTests(ITestOutputHelper testOutputHelper)
         {
-            xunitLoggerProvider = new XunitLoggerProvider(testOutputHelper);
-            logger = xunitLoggerProvider.CreateLogger<ClaimPrincipalExtensionsTests>();
-        }
-
-        public void Dispose()
-        {
-            xunitLoggerProvider.Dispose();
+            this.testOutputHelper = testOutputHelper;
         }
 
         /// <summary>
@@ -34,10 +24,8 @@ namespace Todo.Services
         [Fact]
         public void GetUserById_UsingNullAsClaimsPrincipal_MustThrowException()
         {
-            logger.LogInformation("Running test method: {TestMethod}"
-                                , $"{GetType().FullName}.{MethodBase.GetCurrentMethod().Name}");
-
             // Arrange
+            testOutputHelper.WriteLine($"Running test method: {GetType().FullName}.{MethodBase.GetCurrentMethod().Name}");
             ClaimsPrincipal nullClaimsPrincipal = null;
 
             // Act
@@ -48,7 +36,5 @@ namespace Todo.Services
             // Assert
             exception.Should().NotBeNull();
         }
-
-
     }
 }
