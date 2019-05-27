@@ -125,6 +125,7 @@ jobs:
       enabled: False
       buildBreaker:
         enabled: False
+    publishPipelineArtifacts: False
 
 #- template: './azure-pipelines.job-template.yml'
 #  parameters:
@@ -137,6 +138,7 @@ jobs:
 #      enabled: False
 #      buildBreaker:
 #        enabled: False
+#    publishPipelineArtifacts: False
 
 - template: './azure-pipelines.job-template.yml'
   parameters:
@@ -152,3 +154,4 @@ jobs:
       enabled: True
       buildBreaker:
         enabled: True
+    publishPipelineArtifacts: True
