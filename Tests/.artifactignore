@@ -1,0 +1,3 @@
+# Ensure only test results can be published as pipeline artifacts
+**/*
+!**/TestResults/TestResults.xml

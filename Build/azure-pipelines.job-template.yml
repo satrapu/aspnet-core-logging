@@ -140,7 +140,21 @@ jobs:
         Username=satrapu;
         Password=;
 
-  # Publish test results.
+  # Publish test results as pipeline artifacts.
+  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/artifacts/pipeline-artifacts?view=azure-devops&tabs=yaml#publish-a-pipeline-artifact.
+  #
+  # This task will make use of the ~/Tests/.artifactignore file.
+  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/artifacts/pipeline-artifacts?view=azure-devops&tabs=yaml#using-artifactignore-files.
+  - task: PublishPipelineArtifact@0
+   displayName: Publish test results as pipeline artifacts
+    name: publish_test_results_as_pipeline_artifacts
+    condition: succeededOrFailed()
+    enabled: True
+    inputs:
+      artifactName: 'test-results'
+      targetPath: '$(Build.SourcesDirectory)/Tests'
+
+  # Publish test results inside the build 'Tests' tab.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=azure-devops&tabs=yaml.
   - task: PublishTestResults@2
     displayName: Publish test results

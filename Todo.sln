@@ -16,6 +16,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sources", "Sources", "{ED7A5363-C21A-4D47-A2A5-67DEB1E0DDE3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{280A9085-F56E-43CA-A419-1E4609E378EA}"
+	ProjectSection(SolutionItems) = preProject
+		Tests\.artifactignore = Tests\.artifactignore
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{D084DD17-3480-4A70-8296-92FB55BAD433}"
 EndProject
