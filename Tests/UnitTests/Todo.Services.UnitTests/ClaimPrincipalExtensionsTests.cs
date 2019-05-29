@@ -1,6 +1,8 @@
 ﻿using FluentAssertions;
-using System.Reflection;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Security.Claims;
+using Todo.Services.Infrastructure;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -9,13 +11,20 @@ namespace Todo.Services
     /// <summary>
     /// Contains unit tests targeting <see cref="ClaimPrincipalExtensions"/> class.
     /// </summary>
-    public class ClaimPrincipalExtensionsTests
+    public class ClaimPrincipalExtensionsTests : IDisposable
     {
-        private readonly ITestOutputHelper testOutputHelper;
+        private readonly XunitLoggerProvider xunitLoggerProvider;
+        private readonly ILogger logger;
 
         public ClaimPrincipalExtensionsTests(ITestOutputHelper testOutputHelper)
         {
-            this.testOutputHelper = testOutputHelper;
+            xunitLoggerProvider = new XunitLoggerProvider(testOutputHelper);
+            logger = xunitLoggerProvider.CreateLogger<ClaimPrincipalExtensionsTests>();
+        }
+
+        public void Dispose()
+        {
+            xunitLoggerProvider.Dispose();
         }
 
         /// <summary>
@@ -24,17 +33,25 @@ namespace Todo.Services
         [Fact]
         public void GetUserById_UsingNullAsClaimsPrincipal_MustThrowException()
         {
-            // Arrange
-            testOutputHelper.WriteLine($"Running test method: {GetType().FullName}.{MethodBase.GetCurrentMethod().Name}");
-            ClaimsPrincipal nullClaimsPrincipal = null;
+            try
+            {
+                logger.LogMethodEntered();
 
-            // Act
-            // ReSharper disable once ExpressionIsAlwaysNull
-            // ReSharper disable once InvokeAsExtensionMethod
-            var exception = Record.Exception(() => ClaimPrincipalExtensions.GetUserId(nullClaimsPrincipal));
+                // Arrange
+                ClaimsPrincipal nullClaimsPrincipal = null;
 
-            // Assert
-            exception.Should().NotBeNull();
+                // Act
+                // ReSharper disable once ExpressionIsAlwaysNull
+                // ReSharper disable once InvokeAsExtensionMethod
+                var exception = Record.Exception(() => ClaimPrincipalExtensions.GetUserId(nullClaimsPrincipal));
+
+                // Assert
+                exception.Should().NotBeNull();
+            }
+            finally
+            {
+                logger.LogMethodExited();
+            }
         }
     }
 }
