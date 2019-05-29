@@ -100,8 +100,7 @@ jobs:
       --no-build
       --configuration ${{ parameters.build.configuration }} 
       --filter "Category=UnitTests" 
-      --test-adapter-path "." 
-      --logger "xunit" 
+      --logger "trx" 
       /p:CollectCoverage=True 
       /p:CoverletOutputFormat=opencover 
       /p:Include="[Todo.*]*"
@@ -121,8 +120,7 @@ jobs:
       --no-build
       --configuration ${{ parameters.build.configuration }} 
       --filter "Category=IntegrationTests" 
-      --test-adapter-path "." 
-      --logger "xunit" 
+      --logger "trx" 
       /p:CollectCoverage=True 
       /p:CoverletOutputFormat=opencover 
       /p:Include="[Todo.*]*"
@@ -164,7 +162,7 @@ jobs:
     enabled: True
     inputs:
       testResultsFormat: 'xUnit'
-      testResultsFiles: '$(Build.SourcesDirectory)/Tests/**/TestResults/*.xml'
+      testResultsFiles: '$(Build.SourcesDirectory)/Tests/**/TestResults/*.trx'
       mergeTestResults: True
       buildConfiguration: ${{ parameters.build.configuration }}
       publishRunAttachments: True
