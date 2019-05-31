@@ -12,6 +12,13 @@ namespace Todo.WebApi.Logging
     /// </summary>
     public class LoggingMiddlewareTests
     {
+        /// <summary>
+        /// Tests the constructor of <see cref="LoggingMiddleware"/> class.
+        /// </summary>
+        /// <param name="requestDelegate"></param>
+        /// <param name="httpContextLoggingHandler"></param>
+        /// <param name="httpObjectConverter"></param>
+        /// <param name="logger"></param>
         [Theory]
         [ClassData(typeof(ConstructorTestData))]
         public void Constructor_WhenInvokedWithAtLeastOneNullParameter_MustThrowException(RequestDelegate requestDelegate
@@ -30,6 +37,9 @@ namespace Todo.WebApi.Logging
                      .And.BeAssignableTo<ArgumentNullException>();
         }
 
+        /// <summary>
+        /// Tests the constructor of <see cref="LoggingMiddleware"/> class.
+        /// </summary>
         [Fact]
         public void Constructor_WhenInvokedWithValidParameters_MustSucceed()
         {
