@@ -1,9 +1,9 @@
 # Build ASP.NET Core project using Azure Pipelines.
-# See more here: https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core?view=vsts.
-# YAML schema reference: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=vsts&tabs=schema.
+# See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/languages/dotnet-core?view=azure-devops.
+# YAML schema reference: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=azure-devops&tabs=schema.
 
 # Specify build number format.
-# See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/build/options?view=vsts&tabs=yaml#build-number-format.
+# See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/build/options?view=azure-devops&tabs=yaml#build-number-format.
 name: '$(SourceBranchName)_$(Date:yyyyMMdd).$(Rev:rrr)'
 
 resources:
