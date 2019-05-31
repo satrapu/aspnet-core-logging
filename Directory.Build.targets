@@ -16,6 +16,5 @@
     <PackageReference Update="Npgsql.EntityFrameworkCore.PostgreSQL" Version="2.2.4" />
     <PackageReference Update="xunit" Version="2.4.1" />
     <PackageReference Update="xunit.runner.visualstudio" Version="2.4.1"/>
-    <PackageReference Update="XunitXml.TestLogger" Version="2.1.26" />
   </ItemGroup>
 </Project>
