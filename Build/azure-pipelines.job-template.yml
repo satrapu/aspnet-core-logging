@@ -47,7 +47,12 @@ jobs:
       --version $(SonarScanner_Version)
     name: install_sonarscanner
     displayName: Install SonarQube static code analyzing CLI tool
-    enabled: ${{ parameters.sonar.enabled }}
+    condition: |
+      and
+      (
+          succeeded()
+        , eq( ${{ parameters.sonar.enabled }}, True)
+      )
     env:
       DOTNET_SKIP_FIRST_TIME_EXPERIENCE: $(DotNetSkipFirstTimeExperience)
       DOTNET_CLI_TELEMETRY_OPTOUT: $(DotNetCliTelemetryOptOut)
@@ -72,7 +77,12 @@ jobs:
       /d:sonar.branch.name="$(Build.SourceBranchName)"
     name: prepare_sonarqube_analysis
     displayName: Prepare SonarQube analysis
-    enabled: ${{ parameters.sonar.enabled }}
+    condition: |
+      and
+      (
+          succeeded()
+        , eq( ${{ parameters.sonar.enabled }}, True)
+      )
     env:
       DOTNET_SKIP_FIRST_TIME_EXPERIENCE: $(DotNetSkipFirstTimeExperience)
       DOTNET_CLI_TELEMETRY_OPTOUT: $(DotNetCliTelemetryOptOut)
@@ -219,7 +229,12 @@ jobs:
       /d:sonar.login="$(CurrentProject.Sonar.Token)"
     name: upload_sonarqube_report
     displayName: Upload SonarQube report
-    enabled: ${{ parameters.sonar.enabled }}
+    condition: |
+      and
+      (
+          succeeded()
+        , eq( ${{ parameters.sonar.enabled }}, True)
+      )
     env:
       DOTNET_SKIP_FIRST_TIME_EXPERIENCE: $(DotNetSkipFirstTimeExperience)
       DOTNET_CLI_TELEMETRY_OPTOUT: $(DotNetCliTelemetryOptOut)
