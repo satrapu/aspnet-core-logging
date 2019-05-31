@@ -17,7 +17,7 @@ namespace Todo.WebApi.Infrastructure
                 new Claim(ClaimTypes.Role, "Admin")
             }));
 
-            await next();
+            await next().ConfigureAwait(false);
         }
     }
 }

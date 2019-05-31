@@ -51,11 +51,11 @@ namespace Todo.WebApi.Logging
         {
             if (httpContextLoggingHandler.ShouldLog(httpContext))
             {
-                await Log(httpContext);
+                await Log(httpContext).ConfigureAwait(false);
             }
             else
             {
-                await nextRequestDelegate(httpContext);
+                await nextRequestDelegate(httpContext).ConfigureAwait(false);
             }
         }
 
@@ -82,14 +82,14 @@ namespace Todo.WebApi.Logging
                 httpContext.Response.Body = stream;
 
                 // Process current request
-                await nextRequestDelegate(httpContext);
+                await nextRequestDelegate(httpContext).ConfigureAwait(false);
 
                 // Logs the current HTTP response
                 var httpResponseAsLogMessage = httpObjectConverter.ToLogMessage(httpContext.Response);
                 logger.LogDebug(httpResponseAsLogMessage);
 
                 // Ensure the original HTTP response is sent to the next middleware
-                await stream.CopyToAsync(originalResponseBodyStream);
+                await stream.CopyToAsync(originalResponseBodyStream).ConfigureAwait(false);
             }
         }
     }
