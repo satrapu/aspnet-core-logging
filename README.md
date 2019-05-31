@@ -2,7 +2,7 @@
 
 ## Description
 
-This repo shows ASP.NET Core v2.x logging in action; it also serves as a learning path for [Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/).   
+This repo shows ASP.NET Core v2.x logging in action; it also serves as a learning path for [Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/).  
 This project has several posts associated with it:
 
 - [Build an ASP.NET Core application using Azure Pipelines](https://crossprogramming.com/2019/03/17/build-asp-net-core-app-using-azure-pipelines.html)
@@ -19,7 +19,7 @@ This project has several posts associated with it:
 ## Code Quality
 
 | Provider                                  | Badge |
-| ----------------------------------------- | ------ |
-| [Codacy](https://www.codacy.com/)         | [![Codacy Badge](https://api.codacy.com/project/badge/Grade/001d9d7bbf43459aae186c7d8cd49858)](https://www.codacy.com/app/satrapu/aspnet-core-logging) |
+| ----------------------------------------- | ----- |
+| [Codacy](https://www.codacy.com/)         | [![Codacy Badge](https://api.codacy.com/project/badge/Grade/001d9d7bbf43459aae186c7d8cd49858)](https://www.codacy.com/app/satrapu/aspnet-core-logging)                                                                                                       |
 | [FOSSA](https://fossa.com/)               | [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fsatrapu%2Faspnet-core-logging.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fsatrapu%2Faspnet-core-logging?ref=badge_shield) |
-| [SonarCloud](https://sonarcloud.io/about) | [![SonarCloud Status](https://sonarcloud.io/api/project_badges/measure?project=aspnet-core-logging&metric=alert_status)](https://sonarcloud.io/dashboard?id=aspnet-core-logging) |
+| [SonarCloud](https://sonarcloud.io/about) | [![SonarCloud Status](https://sonarcloud.io/api/project_badges/measure?project=aspnet-core-logging&metric=alert_status)](https://sonarcloud.io/dashboard?id=aspnet-core-logging)                                                                             |
