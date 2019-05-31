@@ -12,13 +12,13 @@
   <Property Name="sonar.verbose">true</Property>
 
   <!--
-    Import xUnit test results: https://docs.sonarqube.org/pages/viewpage.action?pageId=6389772#UnitTestExecutionResultsImport(C#,VB.NET)-xUnit.
+    Import test results: https://docs.sonarqube.org/pages/viewpage.action?pageId=6389772#UnitTestExecutionResultsImport(C#,VB.NET).
   -->
-  <Property Name="sonar.cs.xunit.reportsPaths">**/*.xunit.xml</Property>
+  <Property Name="sonar.cs.vstest.reportsPaths">**/TestResults/*.trx</Property>
 
   <!--
-    Import OpenCover code coverage results: https://docs.sonarqube.org/pages/viewpage.action?pageId=6389770#CodeCoverageResultsImport(C#,VB.NET)-OpenCover.
+    Import code coverage results: https://docs.sonarqube.org/pages/viewpage.action?pageId=6389770.
   -->
-  <Property Name="sonar.cs.opencover.reportsPaths">**/*.opencover.xml</Property>
+  <Property Name="sonar.cs.opencover.reportsPaths">**/coverage.opencover.xml</Property>
 
 </SonarQubeAnalysisProperties>
