@@ -43,7 +43,7 @@ namespace Todo.WebApi.Controllers
 
                 try
                 {
-                    var newTodoItemModel = new NewTodoItemModel()
+                    var newTodoItemModel = new NewTodoItemModel
                     {
                         Name = $"it--{nameof(Create_UsingValidTodoItem_ReturnsTheSameInstance)}--{Guid.NewGuid():N}"
                       , IsComplete = DateTime.UtcNow.Ticks % 2 == 0
@@ -169,7 +169,7 @@ namespace Todo.WebApi.Controllers
                     var todoItemModel = await response.Content.ReadAsAsync<TodoItemModel>();
                     id = todoItemModel.Id;
 
-                    var updateTodoItemModel = new UpdateTodoItemModel()
+                    var updateTodoItemModel = new UpdateTodoItemModel
                     {
                         IsComplete = !newTodoItemInfo.IsComplete
                       , Name = $"CHANGED--{newTodoItemInfo.Name}"
@@ -231,7 +231,7 @@ namespace Todo.WebApi.Controllers
                 var name = $"it--{nameof(Update_UsingNonPositiveId_MustFail)}--{Guid.NewGuid():N}";
                 var isComplete = DateTime.UtcNow.Ticks % 2 == 0;
 
-                var updateTodoItemModel = new UpdateTodoItemModel()
+                var updateTodoItemModel = new UpdateTodoItemModel
                 {
                     Name = name
                   , IsComplete = isComplete
