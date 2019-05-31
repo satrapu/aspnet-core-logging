@@ -4,38 +4,63 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using System;
 using System.Threading.Tasks;
+using Todo.TestInfrastructure.Logging;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Todo.WebApi.Logging
 {
     /// <summary>
     /// Contains unit tests targeting <see cref="LoggingMiddleware"/> class.
     /// </summary>
-    public class LoggingMiddlewareTests
+    public class LoggingMiddlewareTests: IDisposable
     {
+        private readonly XunitLoggerProvider xunitLoggerProvider;
+        private readonly ILogger logger;
+
+        public LoggingMiddlewareTests(ITestOutputHelper testOutputHelper)
+        {
+            xunitLoggerProvider = new XunitLoggerProvider(testOutputHelper);
+            logger = xunitLoggerProvider.CreateLogger<LoggingMiddlewareTests>();
+        }
+
+        public void Dispose()
+        {
+            xunitLoggerProvider.Dispose();
+        }
+
         /// <summary>
         /// Tests the constructor of <see cref="LoggingMiddleware"/> class.
         /// </summary>
         /// <param name="requestDelegate"></param>
         /// <param name="httpContextLoggingHandler"></param>
         /// <param name="httpObjectConverter"></param>
-        /// <param name="logger"></param>
+        /// <param name="localLogger"></param>
         [Theory]
         [ClassData(typeof(ConstructorTestData))]
         public void Constructor_WhenInvokedWithAtLeastOneNullParameter_MustThrowException(RequestDelegate requestDelegate
                                                                                         , IHttpContextLoggingHandler httpContextLoggingHandler
                                                                                         , IHttpObjectConverter httpObjectConverter
-                                                                                        , ILogger<LoggingMiddleware> logger)
+                                                                                        , ILogger<LoggingMiddleware> localLogger)
         {
-            var exception =
-                Record.Exception(() => new LoggingMiddleware(requestDelegate
-                                                                   , httpContextLoggingHandler
-                                                                   , httpObjectConverter
-                                                                   , logger));
+            try
+            {
+                logger.LogMethodEntered();
 
-            exception.Should()
-                     .NotBeNull()
-                     .And.BeAssignableTo<ArgumentNullException>();
+                var exception =
+                    Record.Exception(() => new LoggingMiddleware(requestDelegate
+                                                                       , httpContextLoggingHandler
+                                                                       , httpObjectConverter
+                                                                       , localLogger));
+
+                exception.Should()
+                         .NotBeNull()
+                         .And.BeAssignableTo<ArgumentNullException>();
+            }
+            finally
+            {
+                logger.LogMethodExited();
+            }
         }
 
         /// <summary>
@@ -44,16 +69,27 @@ namespace Todo.WebApi.Logging
         [Fact]
         public void Constructor_WhenInvokedWithValidParameters_MustSucceed()
         {
-            var requestDelegateMock = new Mock<RequestDelegate>();
-            var httpContextLoggingHandlerMock = new Mock<IHttpContextLoggingHandler>();
-            var httpObjectConverterMock = new Mock<IHttpObjectConverter>();
-            var loggerMock = new Mock<ILogger<LoggingMiddleware>>();
 
-            var exception = Record.Exception(() => new LoggingMiddleware(requestDelegateMock.Object
-                                                                               , httpContextLoggingHandlerMock.Object
-                                                                               , httpObjectConverterMock.Object
-                                                                               , loggerMock.Object));
-            exception.Should().BeNull();
+            try
+            {
+                logger.LogMethodEntered();
+
+                var requestDelegateMock = new Mock<RequestDelegate>();
+                var httpContextLoggingHandlerMock = new Mock<IHttpContextLoggingHandler>();
+                var httpObjectConverterMock = new Mock<IHttpObjectConverter>();
+                var loggerMock = new Mock<ILogger<LoggingMiddleware>>();
+
+                var exception = Record.Exception(() => new LoggingMiddleware(requestDelegateMock.Object
+                                                                                   , httpContextLoggingHandlerMock.Object
+                                                                                   , httpObjectConverterMock.Object
+                                                                                   , loggerMock.Object));
+
+                exception.Should().BeNull();
+            }
+            finally
+            {
+                logger.LogMethodExited();
+            }
         }
 
         /// <summary>
@@ -62,22 +98,31 @@ namespace Todo.WebApi.Logging
         [Fact]
         public async Task Invoke_UsingNoLogging_MustSucceed()
         {
-            var requestDelegateMock = new Mock<RequestDelegate>();
+            try
+            {
+                logger.LogMethodEntered();
+                var requestDelegateMock = new Mock<RequestDelegate>();
 
-            var httpContextLoggingHandlerMock = new Mock<IHttpContextLoggingHandler>();
-            httpContextLoggingHandlerMock.Setup(x => x.ShouldLog(It.IsAny<HttpContext>()))
-                                         .Returns(false);
+                var httpContextLoggingHandlerMock = new Mock<IHttpContextLoggingHandler>();
 
-            var httpObjectConverterMock = new Mock<IHttpObjectConverter>();
-            var loggerMock = new Mock<ILogger<LoggingMiddleware>>();
+                httpContextLoggingHandlerMock.Setup(x => x.ShouldLog(It.IsAny<HttpContext>()))
+                                             .Returns(false);
 
-            var loggingMiddleware = new LoggingMiddleware(requestDelegateMock.Object
-                                                        , httpContextLoggingHandlerMock.Object
-                                                        , httpObjectConverterMock.Object
-                                                        , loggerMock.Object);
+                var httpObjectConverterMock = new Mock<IHttpObjectConverter>();
+                var loggerMock = new Mock<ILogger<LoggingMiddleware>>();
 
-           var exception = await Record.ExceptionAsync(() => loggingMiddleware.Invoke(new DefaultHttpContext()));
-           exception.Should().BeNull();
+                var loggingMiddleware = new LoggingMiddleware(requestDelegateMock.Object
+                                                            , httpContextLoggingHandlerMock.Object
+                                                            , httpObjectConverterMock.Object
+                                                            , loggerMock.Object);
+
+                var exception = await Record.ExceptionAsync(() => loggingMiddleware.Invoke(new DefaultHttpContext()));
+                exception.Should().BeNull();
+            }
+            finally
+            {
+                logger.LogMethodExited();
+            }
         }
 
         /// <summary>
