@@ -147,8 +147,12 @@ jobs:
   - task: PublishPipelineArtifact@0
     displayName: Publish test results as pipeline artifacts
     name: publish_test_results_as_pipeline_artifacts
-    condition: succeededOrFailed()
-    enabled: ${{ parameters.publishPipelineArtifacts }}
+    condition: |
+      and
+      (
+          succeededOrFailed()
+        , eq( ${{ parameters.publishPipelineArtifacts }}, True)
+      )
     inputs:
       artifactName: 'test-results'
       targetPath: '$(Build.SourcesDirectory)/Tests'
