@@ -40,7 +40,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Todo.WebApi.IntegrationTest
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Todo.Services.UnitTests", "Tests\UnitTests\Todo.Services.UnitTests\Todo.Services.UnitTests.csproj", "{31B079C8-A348-489A-A8CD-60513D1F35EB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.WebApi.UnitTests", "Todo.WebApi.UnitTests\Todo.WebApi.UnitTests.csproj", "{DCC35591-AA9B-49B3-958F-E996B612314F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Todo.WebApi.UnitTests", "Tests\UnitTests\Todo.WebApi.UnitTests\Todo.WebApi.UnitTests.csproj", "{24A37AC4-63B0-44F4-A58A-58F2DCF0F3DE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -68,10 +68,10 @@ Global
 		{31B079C8-A348-489A-A8CD-60513D1F35EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{31B079C8-A348-489A-A8CD-60513D1F35EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{31B079C8-A348-489A-A8CD-60513D1F35EB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{DCC35591-AA9B-49B3-958F-E996B612314F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{DCC35591-AA9B-49B3-958F-E996B612314F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{DCC35591-AA9B-49B3-958F-E996B612314F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{DCC35591-AA9B-49B3-958F-E996B612314F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{24A37AC4-63B0-44F4-A58A-58F2DCF0F3DE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{24A37AC4-63B0-44F4-A58A-58F2DCF0F3DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{24A37AC4-63B0-44F4-A58A-58F2DCF0F3DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{24A37AC4-63B0-44F4-A58A-58F2DCF0F3DE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -84,7 +84,7 @@ Global
 		{82E9FDE3-D9CC-4D3D-A326-0CF1EFBF22CA} = {ED7A5363-C21A-4D47-A2A5-67DEB1E0DDE3}
 		{731B35B0-3444-4501-A6AA-75E6A58B8919} = {674A15CE-A829-4F07-A3B9-4BF349136133}
 		{31B079C8-A348-489A-A8CD-60513D1F35EB} = {D084DD17-3480-4A70-8296-92FB55BAD433}
-		{DCC35591-AA9B-49B3-958F-E996B612314F} = {D084DD17-3480-4A70-8296-92FB55BAD433}
+		{24A37AC4-63B0-44F4-A58A-58F2DCF0F3DE} = {D084DD17-3480-4A70-8296-92FB55BAD433}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {74318BEF-DB50-4852-A16D-E2FB8671BE7F}
