@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace Todo.WebApi.Logging
@@ -48,12 +49,35 @@ namespace Todo.WebApi.Logging
             var httpObjectConverterMock = new Mock<IHttpObjectConverter>();
             var loggerMock = new Mock<ILogger<LoggingMiddleware>>();
 
+            var exception = Record.Exception(() => new LoggingMiddleware(requestDelegateMock.Object
+                                                                               , httpContextLoggingHandlerMock.Object
+                                                                               , httpObjectConverterMock.Object
+                                                                               , loggerMock.Object));
+            exception.Should().BeNull();
+        }
+
+        /// <summary>
+        /// Tests <see cref="LoggingMiddleware.Invoke"/> method.
+        /// </summary>
+        [Fact]
+        public async Task Invoke_UsingNoLogging_MustSucceed()
+        {
+            var requestDelegateMock = new Mock<RequestDelegate>();
+
+            var httpContextLoggingHandlerMock = new Mock<IHttpContextLoggingHandler>();
+            httpContextLoggingHandlerMock.Setup(x => x.ShouldLog(It.IsAny<HttpContext>()))
+                                         .Returns(false);
+
+            var httpObjectConverterMock = new Mock<IHttpObjectConverter>();
+            var loggerMock = new Mock<ILogger<LoggingMiddleware>>();
+
             var loggingMiddleware = new LoggingMiddleware(requestDelegateMock.Object
                                                         , httpContextLoggingHandlerMock.Object
                                                         , httpObjectConverterMock.Object
                                                         , loggerMock.Object);
 
-            loggingMiddleware.Should().NotBeNull();
+           var exception = await Record.ExceptionAsync(() => loggingMiddleware.Invoke(new DefaultHttpContext()));
+           exception.Should().BeNull();
         }
 
         /// <summary>
