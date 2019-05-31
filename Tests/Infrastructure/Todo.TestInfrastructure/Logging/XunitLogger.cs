@@ -2,7 +2,7 @@
 using System;
 using Xunit.Abstractions;
 
-namespace Todo.Services.Infrastructure
+namespace Todo.TestInfrastructure.Logging
 {
     /// <summary>
     /// https://stackoverflow.com/a/46172875

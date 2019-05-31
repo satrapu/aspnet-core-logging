@@ -42,6 +42,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Todo.Services.UnitTests", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Todo.WebApi.UnitTests", "Tests\UnitTests\Todo.WebApi.UnitTests\Todo.WebApi.UnitTests.csproj", "{24A37AC4-63B0-44F4-A58A-58F2DCF0F3DE}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{0C25522F-7A59-4109-A1A7-7355FB949146}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.TestInfrastructure", "Tests\Infrastructure\Todo.TestInfrastructure\Todo.TestInfrastructure.csproj", "{066664C8-4A98-468D-969E-6F984D56008D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -72,6 +76,10 @@ Global
 		{24A37AC4-63B0-44F4-A58A-58F2DCF0F3DE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{24A37AC4-63B0-44F4-A58A-58F2DCF0F3DE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{24A37AC4-63B0-44F4-A58A-58F2DCF0F3DE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{066664C8-4A98-468D-969E-6F984D56008D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{066664C8-4A98-468D-969E-6F984D56008D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{066664C8-4A98-468D-969E-6F984D56008D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{066664C8-4A98-468D-969E-6F984D56008D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -85,6 +93,8 @@ Global
 		{731B35B0-3444-4501-A6AA-75E6A58B8919} = {674A15CE-A829-4F07-A3B9-4BF349136133}
 		{31B079C8-A348-489A-A8CD-60513D1F35EB} = {D084DD17-3480-4A70-8296-92FB55BAD433}
 		{24A37AC4-63B0-44F4-A58A-58F2DCF0F3DE} = {D084DD17-3480-4A70-8296-92FB55BAD433}
+		{0C25522F-7A59-4109-A1A7-7355FB949146} = {280A9085-F56E-43CA-A419-1E4609E378EA}
+		{066664C8-4A98-468D-969E-6F984D56008D} = {0C25522F-7A59-4109-A1A7-7355FB949146}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {74318BEF-DB50-4852-A16D-E2FB8671BE7F}

@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.Runtime.CompilerServices;
 
-namespace Todo.Services.Infrastructure
+namespace Todo.TestInfrastructure.Logging
 {
     public static class LoggerExtensions
     {

@@ -6,7 +6,8 @@ using System;
 using System.Reflection;
 using System.Security.Claims;
 using Todo.Persistence;
-using Todo.Services.Infrastructure;
+using Todo.TestInfrastructure.Logging;
+using Todo.TestInfrastructure.Persistence;
 using Xunit;
 using Xunit.Abstractions;
 

@@ -26,6 +26,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Sources\Todo.Services\Todo.Services.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\Todo.TestInfrastructure\Todo.TestInfrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

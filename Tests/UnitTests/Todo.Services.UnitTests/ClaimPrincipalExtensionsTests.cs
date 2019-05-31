@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Logging;
 using System;
 using System.Security.Claims;
-using Todo.Services.Infrastructure;
+using Todo.TestInfrastructure.Logging;
 using Xunit;
 using Xunit.Abstractions;
 
