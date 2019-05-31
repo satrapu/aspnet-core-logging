@@ -93,7 +93,7 @@ jobs:
 
   # Run unit tests and collect code coverage metrics.
   # See more about running selective tests here: https://docs.microsoft.com/en-us/dotnet/core/testing/selective-unit-tests#xunit.
-  # Decorate the AsemblyInfo.cs found inside each unit test related project with:
+  # Decorate the AssemblyInfo.cs found inside each unit test related project with:
   #     [assembly: Xunit.AssemblyTrait("Category", "IntegrationTests")]
   - script: >-
       dotnet test $(Build.SourcesDirectory)/Todo.sln 
@@ -113,7 +113,7 @@ jobs:
       COREHOST_TRACE: $(CoreHostTrace)    
 
   # Run integration tests and collect code coverage metrics.
-  # Decorate the AsemblyInfo.cs found inside each integration test related project with:
+  # Decorate the AssemblyInfo.cs found inside each integration test related project with:
   #     [assembly: Xunit.AssemblyTrait("Category", "IntegrationTests")]
   - script: >-
       dotnet test $(Build.SourcesDirectory)/Todo.sln 
@@ -161,7 +161,7 @@ jobs:
     condition: succeededOrFailed()
     enabled: True
     inputs:
-      testResultsFormat: 'xUnit'
+      testResultsFormat: 'VSTest'
       testResultsFiles: '$(Build.SourcesDirectory)/Tests/**/TestResults/*.trx'
       mergeTestResults: True
       buildConfiguration: ${{ parameters.build.configuration }}
