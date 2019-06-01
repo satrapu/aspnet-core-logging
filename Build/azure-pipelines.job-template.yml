@@ -116,6 +116,7 @@ jobs:
       /p:CoverletOutputFormat=opencover 
       /p:Include="[Todo.*]*"
       /p:Exclude="[Todo.*.*Tests]*"
+      /p:Exclude="[Todo.TestInfrastructure]*"
     name: run_unit_tests
     displayName: Run unit tests
     enabled: True
@@ -138,6 +139,7 @@ jobs:
       /p:CoverletOutputFormat=opencover 
       /p:Include="[Todo.*]*"
       /p:Exclude="[Todo.*.*Tests]*"
+      /p:Exclude="[Todo.TestInfrastructure]*"
     name: run_integration_tests
     displayName: Run integration tests
     enabled: True
