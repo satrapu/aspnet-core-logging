@@ -14,7 +14,7 @@
   <!--
     Import test results: https://docs.sonarqube.org/pages/viewpage.action?pageId=6389772#UnitTestExecutionResultsImport(C#,VB.NET).
   -->
-  <Property Name="sonar.cs.vstest.reportsPaths">**/TestResults/*.trx</Property>
+  <Property Name="sonar.cs.nunit.reportsPaths">**/TestResults/*.*</Property>
 
   <!--
     Import code coverage results: https://docs.sonarqube.org/pages/viewpage.action?pageId=6389770.
