@@ -110,7 +110,8 @@ jobs:
       --no-build
       --configuration ${{ parameters.build.configuration }} 
       --filter "Category=UnitTests" 
-      --logger "trx" 
+      --test-adapter-path "."
+      --logger "nunit" 
       /p:CollectCoverage=True 
       /p:CoverletOutputFormat=opencover 
       /p:Include="[Todo.*]*"
@@ -131,7 +132,8 @@ jobs:
       --no-build
       --configuration ${{ parameters.build.configuration }} 
       --filter "Category=IntegrationTests" 
-      --logger "trx" 
+      --test-adapter-path "."
+      --logger "nunit" 
       /p:CollectCoverage=True 
       /p:CoverletOutputFormat=opencover 
       /p:Include="[Todo.*]*"
@@ -177,8 +179,8 @@ jobs:
     condition: succeededOrFailed()
     enabled: True
     inputs:
-      testResultsFormat: 'VSTest'
-      testResultsFiles: '$(Build.SourcesDirectory)/Tests/**/TestResults/*.trx'
+      testResultsFormat: 'NUnit'
+      testResultsFiles: '$(Build.SourcesDirectory)/Tests/**/TestResults/*.*'
       mergeTestResults: True
       buildConfiguration: ${{ parameters.build.configuration }}
       publishRunAttachments: True

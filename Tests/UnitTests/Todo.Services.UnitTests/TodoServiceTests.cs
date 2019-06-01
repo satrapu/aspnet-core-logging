@@ -1,315 +1,71 @@
 ﻿using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
+using NUnit.Framework;
 using System;
-using System.Reflection;
-using System.Security.Claims;
-using Todo.Persistence;
-using Todo.TestInfrastructure.Logging;
 using Todo.TestInfrastructure.Persistence;
-using Xunit;
-using Xunit.Abstractions;
 
 namespace Todo.Services
 {
     /// <summary>
     /// Contains unit tests targeting <see cref="TodoService"/> class.
     /// </summary>
-    public class TodoServiceTests: IClassFixture<TodoDbContextFactory>, IDisposable
+    [TestFixture]
+    public class TodoServiceTests
     {
-        private readonly TodoDbContextFactory todoDbContextFactory;
-        private readonly XunitLoggerProvider xunitLoggerProvider;
-        private readonly ILogger logger;
-
-        public TodoServiceTests(TodoDbContextFactory todoDbContextFactory, ITestOutputHelper testOutputHelper)
-        {
-            this.todoDbContextFactory = todoDbContextFactory;
-            xunitLoggerProvider = new XunitLoggerProvider(testOutputHelper);
-            logger = xunitLoggerProvider.CreateLogger<TodoServiceTests>();
-        }
-
         
-        public void Dispose()
-        {
-            xunitLoggerProvider?.Dispose();
-        }
-
         /// <summary>
         /// Tests <see cref="TodoService"/> constructor.
         /// </summary>
-        [Fact]
+        [Test]
         public void Constructor_WithValidArguments_MustSucceed()
         {
-            try
+            using (var todoDbContextFactory = new TodoDbContextFactory())
+            using(var todoDbContext = todoDbContextFactory.TodoDbContext)
             {
-                // Arrange
-                logger.LogMethodEntered();
-
-                var todoDbContext = todoDbContextFactory.TodoDbContext;
                 var mockLogger = new Mock<ILogger<TodoService>>();
 
-                // Act
-                // ReSharper disable once AccessToDisposedClosure
-                var exception = Record.Exception(() => new TodoService(todoDbContext, mockLogger.Object));
-
-                // Assert
-                exception.Should()
-                         .BeNull("class was instantiated using valid arguments");
-            }
-            finally
-            {
-                logger.LogMethodExited();
-            }
-        }
-
-        /// <summary>
-        /// Tests <see cref="TodoService"/> constructor.
-        /// </summary>
-        /// <param name="todoDbContext"></param>
-        /// <param name="todoServiceLogger"></param>
-        [Theory]
-        [ClassData(typeof(ConstructorTestData))]
-        public void Constructor_WithInvalidArguments_MustThrowException(TodoDbContext todoDbContext
-                                                                      , ILogger<TodoService> todoServiceLogger)
-        {
-            try
-            {
-                // Arrange
-                logger.LogMethodEntered();
-
-                const string reason = "class was instantiated using null argument(s)";
-
-                // Act
-                var exception = Record.Exception(() => new TodoService(todoDbContext, todoServiceLogger));
-
-                // Assert
-                exception.Should()
-                         .NotBeNull(reason)
-                         .And.BeAssignableTo<ArgumentNullException>(reason);
-            }
-            finally
-            {
-                logger.LogMethodExited();
+                try
+                {
+                    var todoService = new TodoService(todoDbContext, mockLogger.Object);
+                    todoService.Should().NotBeNull();
+                }
+                catch
+                {
+                    Assert.Fail("Expected to create an instance of the "
+                              + $"{nameof(TodoService)} class using valid arguments");
+                }
             }
         }
 
         /// <summary>
         /// Tests <see cref="TodoService.GetByQuery"/> method.
         /// </summary>
-        [Fact]
+        [Test]
         public void GetByQuery_UsingNullAsQuery_MustThrowException()
         {
-            try
+            using(var todoDbContextFactory = new TodoDbContextFactory())
+            using(var todoDbContext = todoDbContextFactory.TodoDbContext)
             {
-                // Arrange
-                logger.LogMethodEntered();
-
-                var todoDbContext = todoDbContextFactory.TodoDbContext;
                 var mockLogger = new Mock<ILogger<TodoService>>();
                 var todoService = new TodoService(todoDbContext, mockLogger.Object);
 
-                // Act
-                var exception = Record.Exception(() => todoService.GetByQuery(null));
-
-                // Assert
-                exception.Should()
-                         .NotBeNull()
-                         .And.BeAssignableTo<ArgumentNullException>()
-                         .Subject.As<ArgumentNullException>()
-                         .ParamName.Should()
-                         .Be("todoItemQuery");
-            }
-            finally
-            {
-                logger.LogMethodExited();
-            }
-        }
-
-        /// <summary>
-        /// Tests <see cref="TodoService.GetByQuery"/> method.
-        /// </summary>
-        [Fact]
-        public void GetByQuery_UsingValidQuery_MustSucceed()
-        {
-            try
-            {
-                // Arrange
-                logger.LogMethodEntered();
-
-                var todoDbContext = todoDbContextFactory.TodoDbContext;
-                var mockLogger = new Mock<ILogger<TodoService>>();
-                var todoService = new TodoService(todoDbContext, mockLogger.Object);
-
-                var claimsPrincipal = new Mock<ClaimsPrincipal>();
-
-                claimsPrincipal.Setup(x => x.FindFirst(It.IsAny<string>()))
-                               .Returns(new Claim(ClaimTypes.NameIdentifier, "satrapu"));
-
-                var todoItemQuery = new TodoItemQuery
+                try
                 {
-                    User = claimsPrincipal.Object, IsComplete = true
-                };
-
-                // Act
-                var queryResult = todoService.GetByQuery(todoItemQuery);
-
-                // Assert
-                queryResult.Should().NotBeNull();
-            }
-            finally
-            {
-                logger.LogMethodExited();
-            }
-        }
-
-        /// <summary>
-        /// Tests <see cref="TodoService.Add"/> method.
-        /// </summary>
-        [Fact]
-        public void Add_UsingNullAsNewTodoItemInfo_MustThrowException()
-        {
-            try
-            {
-                // Arrange
-                logger.LogInformation("Running test method: {TestMethod}"
-                                    , $"{GetType().FullName}.{MethodBase.GetCurrentMethod().Name}");
-
-                var todoDbContext = todoDbContextFactory.TodoDbContext;
-                var mockLogger = new Mock<ILogger<TodoService>>();
-                var todoService = new TodoService(todoDbContext, mockLogger.Object);
-
-                // Act
-                var exception = Record.Exception(() => todoService.Add(null));
-
-                // Assert
-                exception.Should()
-                         .NotBeNull()
-                         .And.BeAssignableTo<ArgumentNullException>()
-                         .Subject.As<ArgumentNullException>().ParamName.Should()
-                         .Be("newTodoItemInfo");
-            }
-            finally
-            {
-                logger.LogMethodExited();
-            }
-        }
-
-        /// <summary>
-        /// Tests <see cref="TodoService.Delete"/> method.
-        /// </summary>
-        [Fact]
-        public void Delete_UsingNullAsDeleteTodoItemInfo_MustThrowException()
-        {
-            try
-            {
-                // Arrange
-                logger.LogMethodEntered();
-
-                var todoDbContext = todoDbContextFactory.TodoDbContext;
-                var mockLogger = new Mock<ILogger<TodoService>>();
-                var todoService = new TodoService(todoDbContext, mockLogger.Object);
-
-                // Act
-                var exception = Record.Exception(() => todoService.Delete(null));
-
-                // Assert
-                exception.Should()
-                         .NotBeNull()
-                         .And.BeAssignableTo<ArgumentNullException>()
-                         .Subject.As<ArgumentNullException>().ParamName.Should()
-                         .Be("deleteTodoItemInfo");
-            }
-            finally
-            {
-                logger.LogMethodExited();
-            }
-        }
-
-        /// <summary>
-        /// Tests <see cref="TodoService.Delete"/> method.
-        /// </summary>
-        [Fact]
-        public void Delete_UsingNonExistentId_MustThrowException()
-        {
-            try
-            {
-                // Arrange
-                logger.LogMethodEntered();
-
-                var todoDbContext = todoDbContextFactory.TodoDbContext;
-                var mockLogger = new Mock<ILogger<TodoService>>();
-                var todoService = new TodoService(todoDbContext, mockLogger.Object);
-
-                var deleteTodoItemInfo = new DeleteTodoItemInfo
+                    todoService.GetByQuery(null);
+                    Assert.Fail("Expected to not be able to call method "
+                              + $"{nameof(todoService.GetByQuery)} using null as argument");
+                }
+                catch (Exception expectedException)
                 {
-                    Id = long.MaxValue
-                };
-
-                // Act
-                var exception = Record.Exception(() => todoService.Delete(deleteTodoItemInfo));
-
-                // Assert
-                exception.Should()
-                         .NotBeNull()
-                         .And.BeAssignableTo<ArgumentException>()
-                         .Subject.As<ArgumentException>().ParamName.Should()
-                         .Be("deleteTodoItemInfo");
+                    expectedException.Should()
+                             .NotBeNull()
+                             .And.BeAssignableTo<ArgumentNullException>()
+                             .Subject.As<ArgumentNullException>()
+                             .ParamName.Should()
+                             .Be("todoItemQuery");
+                }
             }
-            finally
-            {
-                logger.LogMethodExited();
-            }
-        }
-
-        /// <summary>
-        /// Tests <see cref="TodoService.Update"/> method.
-        /// </summary>
-        [Fact]
-        public void Update_UsingNullAsUpdateTodoItemInfo_MustThrowException()
-        {
-            try
-            {
-                // Arrange
-                logger.LogMethodEntered();
-
-                var todoDbContext = todoDbContextFactory.TodoDbContext;
-                var mockLogger = new Mock<ILogger<TodoService>>();
-                var todoService = new TodoService(todoDbContext, mockLogger.Object);
-
-                // Act
-                var exception = Record.Exception(() => todoService.Update(null));
-
-                // Assert
-                exception.Should()
-                         .NotBeNull()
-                         .And.BeAssignableTo<ArgumentNullException>()
-                         .Subject.As<ArgumentNullException>().ParamName.Should()
-                         .Be("updateTodoItemInfo");
-            }
-            finally
-            {
-                logger.LogMethodExited();
-            }
-        }
-
-        /// <summary>
-        /// Contains test data to be used by the parameterized unit tests from <see cref="TodoServiceTests"/> class.
-        /// </summary>
-        private class ConstructorTestData : TheoryData<TodoDbContext, ILogger<TodoService>>
-        {
-            #pragma warning disable S1144 // Unused private types or members should be removed
-            public ConstructorTestData()
-            {
-                var dbContextOptions = new Mock<DbContextOptions<TodoDbContext>>();
-                dbContextOptions.SetupGet(x => x.ContextType)
-                                .Returns(typeof(DbContext));
-
-                AddRow(null, null);
-                AddRow(null, new Mock<ILogger<TodoService>>().Object);
-                AddRow(new TodoDbContext(dbContextOptions.Object), null);
-            }
-            #pragma warning restore S1144 // Unused private types or members should be removed
         }
     }
 }

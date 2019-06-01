@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
-     <PackageReference Include="xunit" />
   </ItemGroup>
 
   <ItemGroup>

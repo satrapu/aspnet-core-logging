@@ -5,7 +5,7 @@ using Todo.Persistence;
 namespace Todo.TestInfrastructure.Persistence
 {
     // ReSharper disable once ClassNeverInstantiated.Global
-#pragma warning disable S3881 // "IDisposable" should be implemented correctly
+    #pragma warning disable S3881 // "IDisposable" should be implemented correctly
     public class TodoDbContextFactory: IDisposable
     #pragma warning restore S3881 // "IDisposable" should be implemented correctly
     {

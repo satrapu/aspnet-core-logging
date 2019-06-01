@@ -151,7 +151,7 @@ jobs:
     services:
       db4it: 'postgres_windows_container_for_integration_tests'
     sonar:
-      enabled: True
+      enabled: False
       buildBreaker:
         enabled: True
     publishPipelineArtifacts: True
