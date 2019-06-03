@@ -1,1 +1,1 @@
-﻿[assembly: Xunit.AssemblyTrait("Category", "IntegrationTests")]
+﻿[assembly: NUnit.Framework.Category("IntegrationTests")]

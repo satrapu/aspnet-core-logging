@@ -1,56 +1,32 @@
 ﻿using FluentAssertions;
-using Microsoft.Extensions.Logging;
+using NUnit.Framework;
 using System;
-using System.Security.Claims;
-using Todo.TestInfrastructure.Logging;
-using Xunit;
-using Xunit.Abstractions;
 
 namespace Todo.Services
 {
     /// <summary>
     /// Contains unit tests targeting <see cref="ClaimPrincipalExtensions"/> class.
     /// </summary>
-    public class ClaimPrincipalExtensionsTests : IDisposable
+    [TestFixture]
+    public class ClaimPrincipalExtensionsTests
     {
-        private readonly XunitLoggerProvider xunitLoggerProvider;
-        private readonly ILogger logger;
-
-        public ClaimPrincipalExtensionsTests(ITestOutputHelper testOutputHelper)
-        {
-            xunitLoggerProvider = new XunitLoggerProvider(testOutputHelper);
-            logger = xunitLoggerProvider.CreateLogger<ClaimPrincipalExtensionsTests>();
-        }
-
-        public void Dispose()
-        {
-            xunitLoggerProvider.Dispose();
-        }
-
         /// <summary>
         /// Tests <see cref="ClaimPrincipalExtensions.GetUserId"/> method.
         /// </summary>
-        [Fact]
+        [Test]
         public void GetUserById_UsingNullAsClaimsPrincipal_MustThrowException()
         {
             try
             {
-                logger.LogMethodEntered();
-
-                // Arrange
-                ClaimsPrincipal nullClaimsPrincipal = null;
-
-                // Act
-                // ReSharper disable once ExpressionIsAlwaysNull
-                // ReSharper disable once InvokeAsExtensionMethod
-                var exception = Record.Exception(() => ClaimPrincipalExtensions.GetUserId(nullClaimsPrincipal));
-
-                // Assert
-                exception.Should().NotBeNull();
+                ClaimPrincipalExtensions.GetUserId(null);
             }
-            finally
+            catch (Exception expectedException)
             {
-                logger.LogMethodExited();
+                expectedException.Should()
+                                 .BeAssignableTo<ArgumentNullException>()
+                                 .And.Subject.As<ArgumentNullException>()
+                                 .ParamName.Should()
+                                 .Be("claimsPrincipal");
             }
         }
     }

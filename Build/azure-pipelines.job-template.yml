@@ -104,17 +104,19 @@ jobs:
   # Run unit tests and collect code coverage metrics.
   # See more about running selective tests here: https://docs.microsoft.com/en-us/dotnet/core/testing/selective-unit-tests#xunit.
   # Decorate the AssemblyInfo.cs found inside each unit test related project with:
-  #     [assembly: Xunit.AssemblyTrait("Category", "IntegrationTests")]
+  #     [assembly: NUnit.Framework.Category("IntegrationTests")]
   - script: >-
       dotnet test $(Build.SourcesDirectory)/Todo.sln 
       --no-build
       --configuration ${{ parameters.build.configuration }} 
       --filter "Category=UnitTests" 
-      --logger "trx" 
+      --test-adapter-path "."
+      --logger "nunit" 
       /p:CollectCoverage=True 
       /p:CoverletOutputFormat=opencover 
       /p:Include="[Todo.*]*"
       /p:Exclude="[Todo.*.*Tests]*"
+      /p:Exclude="[Todo.TestInfrastructure]*"
     name: run_unit_tests
     displayName: Run unit tests
     enabled: True
@@ -125,17 +127,19 @@ jobs:
 
   # Run integration tests and collect code coverage metrics.
   # Decorate the AssemblyInfo.cs found inside each integration test related project with:
-  #     [assembly: Xunit.AssemblyTrait("Category", "IntegrationTests")]
+  #     [assembly: NUnit.Framework.Category("IntegrationTests")]
   - script: >-
       dotnet test $(Build.SourcesDirectory)/Todo.sln 
       --no-build
       --configuration ${{ parameters.build.configuration }} 
       --filter "Category=IntegrationTests" 
-      --logger "trx" 
+      --test-adapter-path "."
+      --logger "nunit" 
       /p:CollectCoverage=True 
       /p:CoverletOutputFormat=opencover 
       /p:Include="[Todo.*]*"
       /p:Exclude="[Todo.*.*Tests]*"
+      /p:Exclude="[Todo.TestInfrastructure]*"
     name: run_integration_tests
     displayName: Run integration tests
     enabled: True
@@ -177,8 +181,8 @@ jobs:
     condition: succeededOrFailed()
     enabled: True
     inputs:
-      testResultsFormat: 'VSTest'
-      testResultsFiles: '$(Build.SourcesDirectory)/Tests/**/TestResults/*.trx'
+      testResultsFormat: 'NUnit'
+      testResultsFiles: '$(Build.SourcesDirectory)/Tests/**/TestResults/*.*'
       mergeTestResults: True
       buildConfiguration: ${{ parameters.build.configuration }}
       publishRunAttachments: True

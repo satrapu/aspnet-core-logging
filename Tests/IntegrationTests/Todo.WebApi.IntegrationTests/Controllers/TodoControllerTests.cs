@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using Microsoft.AspNetCore.WebUtilities;
+using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,8 +9,6 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Todo.WebApi.Infrastructure;
 using Todo.WebApi.Models;
-using Xunit;
-using Xunit.Abstractions;
 
 namespace Todo.WebApi.Controllers
 {
@@ -17,23 +16,23 @@ namespace Todo.WebApi.Controllers
     ///  Contains integration tests targeting <see cref="TodoController" /> class.
     ///  <br/>
     ///  Based on: https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-2.1#aspnet-core-integration-tests.
+    ///  and: https://medium.com/@daniel.edwards_82928/using-webapplicationfactory-with-nunit-817a616e26f9.
     /// </summary>
-    public class TodoControllerTests : IClassFixture<TodoWebApplicationFactory>
+    public class TodoControllerTests
     {
-        private readonly TodoWebApplicationFactory testFactory;
-        private readonly ITestOutputHelper testOutputHelper;
+        private TodoWebApplicationFactory testFactory;
 
-        public TodoControllerTests(TodoWebApplicationFactory testFactory, ITestOutputHelper testOutputHelper)
+        [OneTimeSetUp]
+        public void GivenAnHttpRequestIsToBePerformed()
         {
-            this.testFactory = testFactory;
-            this.testOutputHelper = testOutputHelper;
+            testFactory = new TodoWebApplicationFactory();
         }
 
         /// <summary>
         /// Ensures method <see cref="TodoController.Create" /> works as expected.
         /// </summary>
         /// <returns></returns>
-        [Fact]
+        [Test]
         public async Task Create_UsingValidTodoItem_ReturnsTheSameInstance()
         {
             // Arrange
@@ -51,7 +50,6 @@ namespace Todo.WebApi.Controllers
 
                     // Act
                     var response = await client.PostAsJsonAsync("api/todo", newTodoItemModel);
-                    await response.PrintError(testOutputHelper);
 
                     // Assert
                     response.IsSuccessStatusCode.Should().BeTrue();
@@ -78,7 +76,7 @@ namespace Todo.WebApi.Controllers
         /// Ensures method <see cref="TodoController.GetByQuery" /> works as expected.
         /// </summary>
         /// <returns></returns>
-        [Fact]
+        [Test]
         public async Task GetByQuery_UsingDefaults_ReturnsExpectedResult()
         {
             // Arrange
@@ -97,7 +95,6 @@ namespace Todo.WebApi.Controllers
                     };
 
                     var response = await client.PostAsJsonAsync("api/todo", newTodoItemModel);
-                    await response.PrintError(testOutputHelper);
                     response.IsSuccessStatusCode.Should().BeTrue();
                     response.StatusCode.Should().Be(HttpStatusCode.Created);
                     var todoItemModel = await response.Content.ReadAsAsync<TodoItemModel>();
@@ -114,7 +111,6 @@ namespace Todo.WebApi.Controllers
 
                     // Act
                     response = await client.GetAsync(requestUri);
-                    await response.PrintError(testOutputHelper);
 
                     // Assert
                     response.IsSuccessStatusCode.Should().BeTrue();
@@ -143,7 +139,7 @@ namespace Todo.WebApi.Controllers
         /// Ensures method <see cref="TodoController.Update" /> works as expected.
         /// </summary>
         /// <returns></returns>
-        [Fact]
+        [Test]
         public async Task Update_UsingNewlyCreatedTodoItem_MustSucceed()
         {
             // Arrange
@@ -158,12 +154,10 @@ namespace Todo.WebApi.Controllers
 
                     var newTodoItemInfo = new NewTodoItemModel
                     {
-                        Name = name
-                      , IsComplete = isComplete
+                        Name = name, IsComplete = isComplete
                     };
 
                     var response = await client.PostAsJsonAsync("api/todo", newTodoItemInfo);
-                    await response.PrintError(testOutputHelper);
                     response.IsSuccessStatusCode.Should().BeTrue("a new entity has been created");
 
                     var todoItemModel = await response.Content.ReadAsAsync<TodoItemModel>();
@@ -171,13 +165,11 @@ namespace Todo.WebApi.Controllers
 
                     var updateTodoItemModel = new UpdateTodoItemModel
                     {
-                        IsComplete = !newTodoItemInfo.IsComplete
-                      , Name = $"CHANGED--{newTodoItemInfo.Name}"
+                        IsComplete = !newTodoItemInfo.IsComplete, Name = $"CHANGED--{newTodoItemInfo.Name}"
                     };
 
                     // Act
                     response = await client.PutAsJsonAsync($"api/todo/{id}", updateTodoItemModel);
-                    await response.PrintError(testOutputHelper);
 
                     // Assert
                     response.IsSuccessStatusCode.Should().BeTrue("an entity has been previously created");
@@ -185,12 +177,14 @@ namespace Todo.WebApi.Controllers
 
                     var parametersToAdd = new Dictionary<string, string>
                     {
-                        { "id", id.Value.ToString() }
+                        {
+                            "id", id.Value.ToString()
+                        }
                     };
+
                     var requestUri = QueryHelpers.AddQueryString("api/todo", parametersToAdd);
 
                     response = await client.GetAsync(requestUri);
-                    await response.PrintError(testOutputHelper);
                     response.IsSuccessStatusCode.Should().BeTrue("an entity has been previously update");
                     response.StatusCode.Should().Be(HttpStatusCode.OK);
 
@@ -210,39 +204,6 @@ namespace Todo.WebApi.Controllers
                         response.IsSuccessStatusCode.Should().BeTrue("cleanup must succeed");
                     }
                 }
-            }
-        }
-
-        /// <summary>
-        /// Ensures method <see cref="TodoController.Update" /> fails when using an id set to zero or negative value.
-        /// </summary>
-        /// <param name="invalidId"></param>
-        /// <returns></returns>
-        [Theory]
-        [InlineData(long.MinValue)]
-        [InlineData(-100)]
-        [InlineData(-1)]
-        [InlineData(0)]
-        public async Task Update_UsingNonPositiveId_MustFail(long invalidId)
-        {
-            // Arrange
-            using (var client = testFactory.CreateClient())
-            {
-                var name = $"it--{nameof(Update_UsingNonPositiveId_MustFail)}--{Guid.NewGuid():N}";
-                var isComplete = DateTime.UtcNow.Ticks % 2 == 0;
-
-                var updateTodoItemModel = new UpdateTodoItemModel
-                {
-                    Name = name
-                  , IsComplete = isComplete
-                };
-
-                // Act
-                var response = await client.PutAsJsonAsync($"api/todo/{invalidId}", updateTodoItemModel);
-                await response.PrintError(testOutputHelper);
-
-                // Assert
-                response.IsSuccessStatusCode.Should().BeFalse($"must not update an entity when using invalid id");
             }
         }
     }
