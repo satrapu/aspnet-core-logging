@@ -1,11 +1,13 @@
-﻿using FluentAssertions;
+﻿using EntityFrameworkCoreMock;
+using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Todo.Persistence;
-using Todo.TestInfrastructure.Persistence;
 
 namespace Todo.Services
 {
@@ -15,28 +17,33 @@ namespace Todo.Services
     [TestFixture]
     public class DatabaseSeederTests
     {
+        private DbContextOptions<TodoDbContext> DummyOptions { get; } = new DbContextOptionsBuilder<TodoDbContext>().Options;
+
         /// <summary>
         /// Tests <see cref="DatabaseSeeder.Seed"/> method.
         /// </summary>
         [Test]
         public void Seed_UsingNullAsTodoDbContext_MustThrowException()
         {
+            // Arrange
             var seedingData = Enumerable.Empty<TodoItem>();
             var mockLogger = new Mock<ILogger<DatabaseSeeder>>();
             var databaseSeeder = new DatabaseSeeder(mockLogger.Object);
+            TodoDbContext todoDbContext = null;
 
             try
             {
-                databaseSeeder.Seed(null, seedingData);
+                // Act
+                // ReSharper disable once ExpressionIsAlwaysNull
+                databaseSeeder.Seed(todoDbContext, seedingData);
             }
             catch (Exception expectedException)
             {
+                // Assert
                 expectedException.Should()
-                         .NotBeNull()
-                         .And.BeAssignableTo<ArgumentNullException>()
-                         .And.Subject.As<ArgumentNullException>()
-                         .ParamName.Should()
-                         .Be("todoDbContext");
+                                 .NotBeNull()
+                                 .And.BeAssignableTo<ArgumentNullException>()
+                                 .And.Subject.As<ArgumentNullException>().ParamName.Should().Be(nameof(todoDbContext));
             }
         }
 
@@ -46,25 +53,25 @@ namespace Todo.Services
         [Test]
         public void Seed_UsingNullAsSeedingData_MustThrowException()
         {
-            using (var todoDbContextFactory = new TodoDbContextFactory())
-            {
-                var mockLogger = new Mock<ILogger<DatabaseSeeder>>();
-                var databaseSeeder = new DatabaseSeeder(mockLogger.Object);
+            // Arrange
+            var mockTodoDbContext = new DbContextMock<TodoDbContext>(DummyOptions);
+            var mockLogger = new Mock<ILogger<DatabaseSeeder>>();
+            var databaseSeeder = new DatabaseSeeder(mockLogger.Object);
+            IEnumerable<TodoItem> seedingData = null;
 
-                try
-                {
-                    databaseSeeder.Seed(todoDbContextFactory.TodoDbContext
-                                      , null);
-                }
-                catch (Exception expectedException)
-                {
-                    expectedException.Should()
-                                     .NotBeNull()
-                                     .And.BeAssignableTo<ArgumentNullException>()
-                                     .And.Subject.As<ArgumentNullException>()
-                                     .ParamName.Should()
-                                     .Be("seedingData");
-                }
+            try
+            {
+                // Act
+                // ReSharper disable once ExpressionIsAlwaysNull
+                databaseSeeder.Seed(mockTodoDbContext.Object, seedingData);
+            }
+            catch (Exception expectedException)
+            {
+                // Assert
+                expectedException.Should()
+                                 .NotBeNull()
+                                 .And.BeAssignableTo<ArgumentNullException>()
+                                 .And.Subject.As<ArgumentNullException>().ParamName.Should().Be(nameof(seedingData));
             }
         }
 
@@ -72,44 +79,32 @@ namespace Todo.Services
         /// Tests <see cref="DatabaseSeeder.Seed"/> method.
         /// </summary>
         [Test]
-        public void Seed_UsingValidArguments_MustReturnTrue()
+        public void Seed_WhenInvokingDbContextFails_MustThrowException()
         {
-            using (var todoDbContextFactory = new TodoDbContextFactory())
+            // Arrange
+            var hardCodedException = new InvalidOperationException("Cannot access the underlying database");
+
+            var mockTodoDbContext = new DbContextMock<TodoDbContext>(DummyOptions);
+            mockTodoDbContext.SetupGet(x => x.Database)
+                             .Throws(hardCodedException);
+
+            var mockLogger = new Mock<ILogger<DatabaseSeeder>>();
+            var databaseSeeder = new DatabaseSeeder(mockLogger.Object);
+            var seedingData = Enumerable.Empty<TodoItem>();
+
+            try
             {
-                var seedingData = Enumerable.Empty<TodoItem>();
-                var mockLogger = new Mock<ILogger<DatabaseSeeder>>();
-                var databaseSeeder = new DatabaseSeeder(mockLogger.Object);
-
-                // Act 
-                var hasSeededSucceeded = databaseSeeder.Seed(todoDbContextFactory.TodoDbContext
-                                                           , seedingData);
-
-                // Assert
-                hasSeededSucceeded.Should().BeTrue();
+                // Act
+                // ReSharper disable once ExpressionIsAlwaysNull
+                databaseSeeder.Seed(mockTodoDbContext.Object, seedingData);
             }
-        }
-
-        /// <summary>
-        /// Tests <see cref="DatabaseSeeder.Seed"/> method.
-        /// </summary>
-        [Test]
-        public void Seed_WhenThereIsAlreadySomeData_MustReturnFalse()
-        {
-            using (var todoDbContextFactory = new TodoDbContextFactory())
+            catch (Exception expectedException)
             {
-                var todoDbContext = todoDbContextFactory.TodoDbContext;
-                todoDbContext.TodoItems.Add(new TodoItem());
-                todoDbContext.SaveChanges();
-
-                var seedingData = Enumerable.Empty<TodoItem>();
-                var mockLogger = new Mock<ILogger<DatabaseSeeder>>();
-                var databaseSeeder = new DatabaseSeeder(mockLogger.Object);
-
-                // Act 
-                var hasSeededSucceeded = databaseSeeder.Seed(todoDbContext, seedingData);
-
                 // Assert
-                hasSeededSucceeded.Should().BeFalse();
+                expectedException.Should()
+                                 .NotBeNull()
+                                 .And.BeAssignableTo<InvalidOperationException>()
+                                 .And.Subject.As<InvalidOperationException>().Message.Should().Be(hardCodedException.Message);
             }
         }
     }
