@@ -180,7 +180,7 @@ jobs:
     enabled: True
     inputs:
       testResultsFormat: 'NUnit'
-      testResultsFiles: '$(Build.SourcesDirectory)/Tests/**/TestResults/*.*'
+      testResultsFiles: '**/TestResults/*'
       mergeTestResults: True
       buildConfiguration: ${{ parameters.build.configuration }}
       publishRunAttachments: True
