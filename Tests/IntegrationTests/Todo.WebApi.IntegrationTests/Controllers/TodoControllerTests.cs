@@ -18,6 +18,7 @@ namespace Todo.WebApi.Controllers
     ///  Based on: https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-2.1#aspnet-core-integration-tests.
     ///  and: https://medium.com/@daniel.edwards_82928/using-webapplicationfactory-with-nunit-817a616e26f9.
     /// </summary>
+    [TestFixture]
     public class TodoControllerTests
     {
         private TodoWebApplicationFactory testFactory;
