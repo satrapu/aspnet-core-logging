@@ -33,7 +33,7 @@ namespace Todo.WebApi.Infrastructure
             });
         }
 
-        private void SeedDatabase(IServiceProvider serviceProvider)
+        private static void SeedDatabase(IServiceProvider serviceProvider)
         {
             using (var serviceScope = serviceProvider.CreateScope())
             {
@@ -43,7 +43,7 @@ namespace Todo.WebApi.Infrastructure
             }
         }
 
-        private IList<TodoItem> GetItems(int count)
+        private static IEnumerable<TodoItem> GetItems(int count)
         {
             if (count <= 0)
             {
