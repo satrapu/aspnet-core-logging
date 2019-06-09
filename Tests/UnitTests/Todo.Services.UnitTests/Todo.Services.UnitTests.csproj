@@ -13,6 +13,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="EntityFrameworkCoreMock.Moq" />
     <PackageReference Include="FluentAssertions" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
     <PackageReference Include="Microsoft.Extensions.Logging.Log4Net.AspNetCore" />
@@ -25,7 +26,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Sources\Todo.Services\Todo.Services.csproj" />
-    <ProjectReference Include="..\..\Infrastructure\Todo.TestInfrastructure\Todo.TestInfrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>
