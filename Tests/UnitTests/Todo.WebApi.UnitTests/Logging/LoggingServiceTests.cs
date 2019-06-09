@@ -2,119 +2,105 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Moq;
+using NUnit.Framework;
 using System;
-using Todo.TestInfrastructure.Logging;
-using Xunit;
-using Xunit.Abstractions;
 
 namespace Todo.WebApi.Logging
 {
     /// <summary>
     /// Contains unit tests targeting <see cref="LoggingService"/> class.
     /// </summary>
-    public class LoggingServiceTests: IDisposable
+    [TestFixture]
+    public class LoggingServiceTests
     {
-        private readonly XunitLoggerProvider xunitLoggerProvider;
-        private readonly ILogger logger;
-
-        public LoggingServiceTests(ITestOutputHelper testOutputHelper)
-        {
-            xunitLoggerProvider = new XunitLoggerProvider(testOutputHelper);
-            logger = xunitLoggerProvider.CreateLogger<LoggingServiceTests>();
-        }
-
-        public void Dispose()
-        {
-            xunitLoggerProvider.Dispose();
-        }
-
         /// <summary>
         /// Tests the constructor of <see cref="LoggingService"/> class.
         /// </summary>
-        [Fact]
+        [Test]
         public void Constructor_UsingNullLogger_MustThrowException()
         {
             try
             {
-                logger.LogMethodEntered();
-                var exception = Record.Exception(() => new LoggingService(null));
-
-                exception.Should()
-                         .NotBeNull()
-                         .And.BeAssignableTo<ArgumentNullException>();
+                // ReSharper disable once UnusedVariable
+                var loggingService = new LoggingService(null);
+                Assert.Fail("Must not create instance using null argument");
             }
-            finally
+            catch (Exception expectedException)
             {
-                logger.LogMethodExited();
+                expectedException.Should()
+                                 .NotBeNull()
+                                 .And.BeAssignableTo<ArgumentNullException>();
             }
         }
 
         /// <summary>
         /// Tests the <see cref="LoggingService.ShouldLog"/> method.
         /// </summary>
-        [Fact]
+        [Test]
         public void ShouldLog_UsingNullHttpContext_MustThrowException()
         {
             try
             {
-                logger.LogMethodEntered();
                 var loggerMock = new Mock<ILogger<LoggingService>>();
                 var loggingService = new LoggingService(loggerMock.Object);
-
-                var exception = Record.Exception(() => loggingService.ShouldLog(null));
-                exception.Should()
-                         .NotBeNull()
-                         .And.BeAssignableTo<ArgumentNullException>();
+                loggingService.ShouldLog(null);
+                Assert.Fail("Must not log using null HTTP context");
             }
-            finally
+            catch (Exception expectedException)
             {
-                logger.LogMethodExited();
+                expectedException.Should()
+                                 .NotBeNull()
+                                 .And.BeAssignableTo<ArgumentNullException>();
             }
         }
 
         /// <summary>
         /// Tests the <see cref="LoggingService.ToLogMessage(HttpRequest)"/> method.
         /// </summary>
-        [Fact]
+        [Test]
         public void ToLogMessage_UsingNullHttpRequest_MustThrowException()
         {
+            HttpRequest httpRequest = null;
+
             try
             {
-                logger.LogMethodEntered();
                 var loggerMock = new Mock<ILogger<LoggingService>>();
                 var loggingService = new LoggingService(loggerMock.Object);
-
-                var exception = Record.Exception(() => loggingService.ToLogMessage((HttpRequest)null));
-                exception.Should()
-                         .NotBeNull()
-                         .And.BeAssignableTo<ArgumentNullException>();
+                // ReSharper disable once ExpressionIsAlwaysNull
+                loggingService.ToLogMessage(httpRequest);
+                Assert.Fail("Must not create log message using null HTTP request");
             }
-            finally
+            catch (Exception expectedException)
             {
-                logger.LogMethodExited();
+                expectedException.Should()
+                                 .NotBeNull()
+                                 .And.BeAssignableTo<ArgumentNullException>()
+                                 .And.Subject.As<ArgumentNullException>().ParamName.Should().Be(nameof(httpRequest));
             }
         }
 
         /// <summary>
         /// Tests the <see cref="LoggingService.ToLogMessage(HttpResponse)"/> method.
         /// </summary>
-        [Fact]
+        [Test]
         public void ToLogMessage_UsingNullHttpResponse_MustThrowException()
         {
+            HttpResponse httpResponse = null;
+
             try
             {
-                logger.LogMethodEntered();
                 var loggerMock = new Mock<ILogger<LoggingService>>();
                 var loggingService = new LoggingService(loggerMock.Object);
-
-                var exception = Record.Exception(() => loggingService.ToLogMessage((HttpResponse)null));
-                exception.Should()
-                         .NotBeNull()
-                         .And.BeAssignableTo<ArgumentNullException>();
+                // ReSharper disable once ExpressionIsAlwaysNull
+                loggingService.ToLogMessage(httpResponse);
+                Assert.Fail("Must not create log message using null HTTP response");
             }
-            finally
+            catch (Exception expectedException)
             {
-                logger.LogMethodExited();
+                expectedException.Should()
+                                 .NotBeNull()
+                                 .And.BeAssignableTo<ArgumentNullException>()
+                                 .And.Subject.As<ArgumentNullException>().ParamName.Should().Be(nameof(httpResponse));
             }
         }
     }
