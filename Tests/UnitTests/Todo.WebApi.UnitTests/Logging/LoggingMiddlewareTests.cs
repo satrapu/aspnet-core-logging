@@ -43,9 +43,31 @@ namespace Todo.WebApi.Logging
             var requestDelegateMock = new Mock<RequestDelegate>();
 
             var httpContextLoggingHandlerMock = new Mock<IHttpContextLoggingHandler>();
-
             httpContextLoggingHandlerMock.Setup(x => x.ShouldLog(It.IsAny<HttpContext>()))
                                          .Returns(false);
+
+            var httpObjectConverterMock = new Mock<IHttpObjectConverter>();
+            var loggerMock = new Mock<ILogger<LoggingMiddleware>>();
+
+            var loggingMiddleware = new LoggingMiddleware(requestDelegateMock.Object
+                                                        , httpContextLoggingHandlerMock.Object
+                                                        , httpObjectConverterMock.Object
+                                                        , loggerMock.Object);
+
+            await loggingMiddleware.Invoke(new DefaultHttpContext()).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Tests <see cref="LoggingMiddleware.Invoke"/> method.
+        /// </summary>
+        [Test]
+        public async Task Invoke_UsingLogging_MustSucceed()
+        {
+            var requestDelegateMock = new Mock<RequestDelegate>();
+
+            var httpContextLoggingHandlerMock = new Mock<IHttpContextLoggingHandler>();
+            httpContextLoggingHandlerMock.Setup(x => x.ShouldLog(It.IsAny<HttpContext>()))
+                                         .Returns(true);
 
             var httpObjectConverterMock = new Mock<IHttpObjectConverter>();
             var loggerMock = new Mock<ILogger<LoggingMiddleware>>();
