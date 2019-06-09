@@ -30,8 +30,8 @@ namespace Todo.WebApi.Logging
             // Arrange
             using (var client = testFactory.CreateClient())
             {
-                var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, "qwerty/ytrewq");
-                httpRequestMessage.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("qwerty/ytrewq"));
+                var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, "qwerty/123456");
+                httpRequestMessage.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("qwerty/123456"));
 
                 // Act
                 var httpResponseMessage = await client.SendAsync(httpRequestMessage).ConfigureAwait(false);
