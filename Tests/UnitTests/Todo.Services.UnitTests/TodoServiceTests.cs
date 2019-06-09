@@ -1,9 +1,11 @@
-﻿using FluentAssertions;
+﻿using EntityFrameworkCoreMock;
+using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using System;
-using Todo.TestInfrastructure.Persistence;
+using Todo.Persistence;
 
 namespace Todo.Services
 {
@@ -13,28 +15,25 @@ namespace Todo.Services
     [TestFixture]
     public class TodoServiceTests
     {
-        
+        private DbContextOptions<TodoDbContext> DummyOptions { get; } = new DbContextOptionsBuilder<TodoDbContext>().Options;
+
         /// <summary>
         /// Tests <see cref="TodoService"/> constructor.
         /// </summary>
         [Test]
         public void Constructor_WithValidArguments_MustSucceed()
         {
-            using (var todoDbContextFactory = new TodoDbContextFactory())
-            using(var todoDbContext = todoDbContextFactory.TodoDbContext)
-            {
-                var mockLogger = new Mock<ILogger<TodoService>>();
+            var mockTodoDbContext = new DbContextMock<TodoDbContext>(DummyOptions);
+            var mockLogger = new Mock<ILogger<TodoService>>();
 
-                try
-                {
-                    var todoService = new TodoService(todoDbContext, mockLogger.Object);
-                    todoService.Should().NotBeNull();
-                }
-                catch
-                {
-                    Assert.Fail("Expected to create an instance of the "
-                              + $"{nameof(TodoService)} class using valid arguments");
-                }
+            try
+            {
+                var todoService = new TodoService(mockTodoDbContext.Object, mockLogger.Object);
+                todoService.Should().NotBeNull();
+            }
+            catch
+            {
+                Assert.Fail($"Expected to create an instance of the {nameof(TodoService)} class using valid arguments");
             }
         }
 
@@ -44,27 +43,24 @@ namespace Todo.Services
         [Test]
         public void GetByQuery_UsingNullAsQuery_MustThrowException()
         {
-            using(var todoDbContextFactory = new TodoDbContextFactory())
-            using(var todoDbContext = todoDbContextFactory.TodoDbContext)
-            {
-                var mockLogger = new Mock<ILogger<TodoService>>();
-                var todoService = new TodoService(todoDbContext, mockLogger.Object);
+            var mockTodoDbContext = new DbContextMock<TodoDbContext>(DummyOptions);
+            var mockLogger = new Mock<ILogger<TodoService>>();
+            var todoService = new TodoService(mockTodoDbContext.Object, mockLogger.Object);
+            TodoItemQuery todoItemQuery = null;
 
-                try
-                {
-                    todoService.GetByQuery(null);
-                    Assert.Fail("Expected to not be able to call method "
-                              + $"{nameof(todoService.GetByQuery)} using null as argument");
-                }
-                catch (Exception expectedException)
-                {
-                    expectedException.Should()
-                             .NotBeNull()
-                             .And.BeAssignableTo<ArgumentNullException>()
-                             .Subject.As<ArgumentNullException>()
-                             .ParamName.Should()
-                             .Be("todoItemQuery");
-                }
+            try
+            {
+                // ReSharper disable once ExpressionIsAlwaysNull
+                todoService.GetByQuery(todoItemQuery);
+                Assert.Fail($"Expected to not be able to call method {nameof(todoService.GetByQuery)} using null as argument");
+            }
+            catch (Exception expectedException)
+            {
+                expectedException.Should()
+                                 .NotBeNull()
+                                 .And.BeAssignableTo<ArgumentNullException>()
+                                 .Subject.As<ArgumentNullException>()
+                                 .ParamName.Should().Be("todoItemQuery");
             }
         }
     }
