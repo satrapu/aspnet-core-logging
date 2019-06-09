@@ -71,6 +71,7 @@ namespace Todo.WebApi.Logging
 
             // Logs the current HTTP request
             var httpRequestAsLogMessage = httpObjectConverter.ToLogMessage(httpContext.Request);
+            // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
             logger.LogDebug(httpRequestAsLogMessage);
 
             // Saves the original response body stream for latter purposes
@@ -86,6 +87,7 @@ namespace Todo.WebApi.Logging
 
                 // Logs the current HTTP response
                 var httpResponseAsLogMessage = httpObjectConverter.ToLogMessage(httpContext.Response);
+                // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
                 logger.LogDebug(httpResponseAsLogMessage);
 
                 // Ensure the original HTTP response is sent to the next middleware

@@ -37,6 +37,7 @@ namespace Todo.WebApi.Logging
 
             if (logger.IsEnabled(LogLevel.Debug))
             {
+                // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
                 logger.LogDebug($"Checking whether the HTTP context {httpContext.TraceIdentifier} should be logged or not ...");
             }
 
@@ -45,6 +46,7 @@ namespace Todo.WebApi.Logging
 
             if (logger.IsEnabled(LogLevel.Debug))
             {
+                // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
                 logger.LogDebug($"HTTP context {httpContext.TraceIdentifier} will{willBeLoggedOutcome} be logged");
             }
 
@@ -60,6 +62,7 @@ namespace Todo.WebApi.Logging
 
             if (logger.IsEnabled(LogLevel.Debug))
             {
+                // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
                 logger.LogDebug($"Converting HTTP request {httpRequest.HttpContext.TraceIdentifier} ...");
             }
 
@@ -92,6 +95,7 @@ namespace Todo.WebApi.Logging
 
             if (logger.IsEnabled(LogLevel.Debug))
             {
+                // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
                 logger.LogDebug($"Converting HTTP response {httpResponse.HttpContext.TraceIdentifier} ...");
             }
 
