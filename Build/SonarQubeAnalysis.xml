@@ -21,4 +21,9 @@
   -->
   <Property Name="sonar.cs.opencover.reportsPaths">**/coverage.opencover.xml</Property>
 
+  <!--
+    Exclude test code when collecting code coverage
+  -->
+  <Property Name="sonar.coverage.exclusions">**/Tests/**/*.cs</Property>
+
 </SonarQubeAnalysisProperties>
