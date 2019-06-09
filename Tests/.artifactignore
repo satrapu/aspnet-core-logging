@@ -1,4 +1,4 @@
-# Ensure only test results can be published as pipeline artifacts
+# Ensure only test and code coverage results can be published as pipeline artifacts
 **/*
 !**/TestResults/*
 !**/coverage.opencover.xml
