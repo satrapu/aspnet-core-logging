@@ -72,13 +72,13 @@ variables:
   # Specifies the version of the .NET Core SDK to install and use when running this pipeline.
   # All releases can be found here: https://dotnet.microsoft.com/download/dotnet-core.
   - name: 'DotNetCore_SDK_Version'
-    value: '2.2.203'
+    value: '2.2.300'
 
   # Specifies the version of the ReportGenerator tool used for generating code coverage reports.
   # All releases can be found here: https://github.com/danielpalme/ReportGenerator/releases.
   # All NuGet packages can be found here: https://www.nuget.org/packages/ReportGenerator/.
   - name: 'ReportGenerator_Version'
-    value: '4.1.9'
+    value: '4.1.10'
 
   # Specifies the version of the SonarQube scanner to use when performing statically analysis against this project.
   # All releases can be found here: https://github.com/SonarSource/sonar-scanner-msbuild/releases.
