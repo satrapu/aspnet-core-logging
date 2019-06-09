@@ -25,7 +25,7 @@ namespace Todo.WebApi.Logging
         /// Tests <see cref="LoggingMiddleware.Invoke"/> method.
         /// </summary>
         [Test]
-        public async Task Invoke_WithTextHeaderNotTriggeringRequestBeingLogged_MustSucceed()
+        public async Task Invoke_WithTextHeaderNotTriggeringRequestBeingLogged_MustFail()
         {
             // Arrange
             using (var client = testFactory.CreateClient())
