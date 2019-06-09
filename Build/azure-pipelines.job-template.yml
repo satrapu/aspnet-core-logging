@@ -168,7 +168,7 @@ jobs:
         , eq( ${{ parameters.publishPipelineArtifacts }}, True)
       )
     inputs:
-      artifactName: 'test-results'
+      artifactName: 'test-results-$(Agent.OS)-$(Agent.OSArchitecture)'
       targetPath: '$(Build.SourcesDirectory)/Tests'
 
   # Publish test results inside the build 'Tests' tab.

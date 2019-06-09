@@ -125,7 +125,7 @@ jobs:
       enabled: False
       buildBreaker:
         enabled: False
-    publishPipelineArtifacts: False
+    publishPipelineArtifacts: True
 
 #- template: './azure-pipelines.job-template.yml'
 #  parameters:
