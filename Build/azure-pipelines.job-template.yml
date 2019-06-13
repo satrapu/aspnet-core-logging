@@ -224,7 +224,7 @@ jobs:
       reportgenerator 
       "-reports:$(Build.SourcesDirectory)/Tests/**/coverage.opencover.xml" 
       "-targetdir:$(Build.SourcesDirectory)/.CodeCoverageReport" 
-      "-reporttypes:Cobertura;HtmlInline_AzurePipelines;HtmlSummary;Badges"
+      "-reporttypes:Cobertura;Badges"
     name: generate_code_coverage_report
     displayName: Generate code coverage report
     enabled: True
