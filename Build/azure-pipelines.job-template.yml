@@ -122,7 +122,21 @@ jobs:
     env:
       DOTNET_SKIP_FIRST_TIME_EXPERIENCE: $(DotNetSkipFirstTimeExperience)
       DOTNET_CLI_TELEMETRY_OPTOUT: $(DotNetCliTelemetryOptOut)
-      COREHOST_TRACE: $(CoreHostTrace)    
+      COREHOST_TRACE: $(CoreHostTrace)  
+
+  # Publish unit test results inside the build 'Tests' tab.
+  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=azure-devops&tabs=yaml.
+  - task: PublishTestResults@2
+    displayName: Publish unit test results
+    name: publish_unit_test_results
+    condition: succeededOrFailed()
+    enabled: True
+    inputs:
+      testResultsFormat: 'NUnit'
+      testResultsFiles: '**/UnitTests/**/TestResults/*'
+      mergeTestResults: True
+      buildConfiguration: ${{ parameters.build.configuration }}
+      publishRunAttachments: True  
 
   # Run integration tests and collect code coverage metrics.
   # Decorate the AssemblyInfo.cs found inside each integration test related project with:
@@ -153,6 +167,20 @@ jobs:
         Username=satrapu;
         Password=;
 
+  # Publish integration test results inside the build 'Tests' tab.
+  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=azure-devops&tabs=yaml.
+  - task: PublishTestResults@2
+    displayName: Publish integration test results
+    name: publish_integration_test_results
+    condition: succeededOrFailed()
+    enabled: True
+    inputs:
+      testResultsFormat: 'NUnit'
+      testResultsFiles: '**/IntegrationTests/**/TestResults/*'
+      mergeTestResults: True
+      buildConfiguration: ${{ parameters.build.configuration }}
+      publishRunAttachments: True  
+
   # Publish test results as pipeline artifacts.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/artifacts/pipeline-artifacts?view=azure-devops&tabs=yaml#publish-a-pipeline-artifact.
   #
@@ -170,20 +198,6 @@ jobs:
     inputs:
       artifactName: 'test-results-$(Agent.OS)-$(Agent.OSArchitecture)'
       targetPath: '$(Build.SourcesDirectory)/Tests'
-
-  # Publish test results inside the build 'Tests' tab.
-  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=azure-devops&tabs=yaml.
-  - task: PublishTestResults@2
-    displayName: Publish test results
-    name: publish_test_results
-    condition: succeededOrFailed()
-    enabled: True
-    inputs:
-      testResultsFormat: 'NUnit'
-      testResultsFiles: '**/TestResults/*'
-      mergeTestResults: True
-      buildConfiguration: ${{ parameters.build.configuration }}
-      publishRunAttachments: True
 
   # Install reportgenerator tool to be able to generate code coverage related reports.
   - script: >-
