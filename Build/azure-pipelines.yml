@@ -130,20 +130,20 @@ jobs:
         enabled: False
     publishPipelineArtifacts: True
 
-- template: './azure-pipelines.job-template.yml'
-  parameters:
-    job:
-      name: 'macOS'
-      displayName: 'Build on macOS'
-    pool:
-      vmImage: 'macOS-10.14'
-    services:
-      db4it: 'postgres_linux_container_for_integration_tests'
-    sonar:
-      enabled: False
-      buildBreaker:
-        enabled: False
-    publishPipelineArtifacts: True
+#- template: './azure-pipelines.job-template.yml'
+#  parameters:
+#    job:
+#      name: 'macOS'
+#      displayName: 'Build on macOS'
+#    pool:
+#      vmImage: 'macOS-10.14'
+#    services:
+#      db4it: 'postgres_linux_container_for_integration_tests'
+#    sonar:
+#      enabled: False
+#      buildBreaker:
+#        enabled: False
+#    publishPipelineArtifacts: True
 
 - template: './azure-pipelines.job-template.yml'
   parameters:
