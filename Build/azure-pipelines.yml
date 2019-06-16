@@ -72,11 +72,11 @@ variables:
     value: 'aspnet-core-logging'
 
   # Specifies the name of the database to be targeted by integration tests.
-  - name: DB4IT_DatabaseName
+  - name: 'DB4IT_DatabaseName'
     value: 'todo'
 
   # Specifies the user who owns the database to be targeted by integration tests. 
-  - name: DB4IT_Username
+  - name: 'DB4IT_Username'
     value: 'satrapu'
 
 # Define multiple jobs, one per supported operating system (Linux, macOS and Windows).
@@ -99,6 +99,12 @@ jobs:
     db4it:
       dockerImage: 'postgres'
       dockerTag: '11.3-alpine'
+      dockerContainerName: 'db4it'
+      dockerHostPort: 5432
+      dockerContainerPort: 5432
+      dockerContainerEnvironmentVariables: >-
+        --env "POSTGRES_DB=$(DB4IT_Name)" 
+        --env "POSTGRES_USER=$(DB4IT_Username)"
 
 - template: './azure-pipelines.job-template.yml'
   parameters:
@@ -110,6 +116,12 @@ jobs:
     db4it:
       dockerImage: 'postgres'
       dockerTag: '11.3-alpine'
+      dockerContainerName: 'db4it'
+      dockerHostPort: 5432
+      dockerContainerPort: 5432
+      dockerContainerEnvironmentVariables: >-
+        --env "POSTGRES_DB=$(DB4IT_Name)" 
+        --env "POSTGRES_USER=$(DB4IT_Username)"  
 
 - template: './azure-pipelines.job-template.yml'
   parameters:
@@ -121,6 +133,12 @@ jobs:
     db4it:
       dockerImage: 'stellirin/postgres-windows'
       dockerTag: '11.3'
+      dockerContainerName: 'db4it'
+      dockerHostPort: 5432
+      dockerContainerPort: 5432
+      dockerContainerEnvironmentVariables: >-
+        --env "POSTGRES_DB=$(DB4IT_Name)" 
+        --env "POSTGRES_USER=$(DB4IT_Username)"
     sonar:
       enabled: True
       buildBreaker:

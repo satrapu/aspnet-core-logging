@@ -13,12 +13,10 @@ parameters:
   db4it:
     dockerImage: ''
     dockerTag: ''
-    dockerContainerName: 'db4it'
-    dockerHostPort: 5432
-    dockerContainerPort: 5432
-    dockerContainerEnvironmentVariablesString: >-
-      --env "POSTGRES_DB=$(DB4IT_DatabaseName)" 
-      --env "POSTGRES_USER=$(DB4IT_Username)"
+    dockerContainerName: ''
+    dockerHostPort: ''
+    dockerContainerPort: ''
+    dockerContainerEnvironmentVariables: ''
 
 jobs:
 - job: ${{ parameters.job.name }}
