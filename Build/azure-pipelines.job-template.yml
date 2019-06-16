@@ -5,9 +5,6 @@ parameters:
   pool: ''
   build:
     configuration: 'Release'
-  docker:
-    install: False
-    commandPrefix: ''
   sonar:
     enabled: False
     buildBreaker:
@@ -66,38 +63,23 @@ jobs:
       DOTNET_CLI_TELEMETRY_OPTOUT: $(DotNetCliTelemetryOptOut)
       COREHOST_TRACE: $(CoreHostTrace)
 
-  # Install Docker which is used when running integration tests.
-  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/tool/docker-installer?view=azure-devops.
-  - task: DockerInstaller@0
-    displayName: Install Docker
-    inputs:
-      dockerVersion: $(Docker_Version)
-      releaseType: stable
-    condition: |
-      and
-      (
-          succeeded()
-        , eq( ${{ parameters.docker.install }}, True)
-      )
-
-  # Ensure Docker daemon has been started.
-  # See more here: https://stackoverflow.com/a/35979292.
+  # Manually install Docker on macOS using Homebrew.
   - script: |
-      ${{ parameters.docker.commandPrefix }} chmod +x $(Build.SourcesDirectory)/Build/start-docker-on-macOS.sh 
-      ${{ parameters.docker.commandPrefix }} $(Build.SourcesDirectory)/Build/start-docker-on-macOS.sh
-    name: start_docker_daemon
-    displayName: Start Docker daemon
+      brew install docker
+      docker version
+      docker container run hello-world
+    name: install_docker_on_macos
+    displayName: Install Docker on macOS
     condition: |
       and
       (
           succeeded()
-        , eq( ${{ parameters.docker.install }}, True)
+        , eq( $(Agent.OS), 'Darwin')
       )
 
   # Pull the appropriate Docker image used for running the database to be targeted by the integration tests.
   # See more about 'docker image pull' command here: https://docs.docker.com/engine/reference/commandline/image_pull/. 
   - script: >-
-      ${{ parameters.docker.commandPrefix }} 
       docker image pull 
       ${{ parameters.db4it.dockerImage }}:${{ parameters.db4it.dockerTag }}
     name: pull_db4it_docker_image
@@ -107,7 +89,6 @@ jobs:
   # Start the Docker container hosting the database to be targeted by the integration tests.
   # See more about 'docker container run' command here: https://docs.docker.com/engine/reference/commandline/container_run/.
   - script: >-
-      ${{ parameters.docker.commandPrefix }} 
       docker container run 
       --name ${{ parameters.db4it.dockerContainerName }}
       --detach
@@ -230,7 +211,6 @@ jobs:
   # Remove the Docker container hosting the database targeted by the integration tests.
   # See more about 'docker container rm' command here: https://docs.docker.com/engine/reference/commandline/container_rm/.
   - script: >-
-      ${{ parameters.docker.commandPrefix }} 
       docker container rm 
       --force
       ${{ parameters.db4it.dockerContainerName }}
