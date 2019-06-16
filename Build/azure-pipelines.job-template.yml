@@ -74,7 +74,7 @@ jobs:
       and
       (
           succeeded()
-        , eq( $(Agent.OS), 'Darwin')
+        , eq( variables['Agent.OS'], 'Darwin')
       )
 
   # Pull the appropriate Docker image used for running the database to be targeted by the integration tests.
