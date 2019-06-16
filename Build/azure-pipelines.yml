@@ -105,6 +105,12 @@ jobs:
     db4it:
       dockerImage: 'postgres'
       dockerTag: '11.3-alpine'
+      dockerContainerName: 'db4it'
+      dockerHostPort: 5432
+      dockerContainerPort: 5432
+      dockerContainerEnvironmentVariablesString: >-
+        --env "POSTGRES_DB=$(DB4IT_Name)" 
+        --env "POSTGRES_USER=$(DB4IT_Username)"
 
 - template: './azure-pipelines.job-template.yml'
   parameters:
@@ -118,7 +124,13 @@ jobs:
       install: True
     db4it:
       dockerImage: 'postgres'
-      dockerTag: '11.3-alpine'    
+      dockerTag: '11.3-alpine'
+      dockerContainerName: 'db4it'
+      dockerHostPort: 5432
+      dockerContainerPort: 5432
+      dockerContainerEnvironmentVariablesString: >-
+        --env "POSTGRES_DB=$(DB4IT_Name)" 
+        --env "POSTGRES_USER=$(DB4IT_Username)"  
 
 - template: './azure-pipelines.job-template.yml'
   parameters:
@@ -130,6 +142,12 @@ jobs:
     db4it:
       dockerImage: 'stellirin/postgres-windows'
       dockerTag: '11.3'
+      dockerContainerName: 'db4it'
+      dockerHostPort: 5432
+      dockerContainerPort: 5432
+      dockerContainerEnvironmentVariablesString: >-
+        --env "POSTGRES_DB=$(DB4IT_Name)" 
+        --env "POSTGRES_USER=$(DB4IT_Username)"
     sonar:
       enabled: True
       buildBreaker:
