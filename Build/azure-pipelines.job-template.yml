@@ -61,42 +61,6 @@ jobs:
       DOTNET_CLI_TELEMETRY_OPTOUT: $(DotNetCliTelemetryOptOut)
       COREHOST_TRACE: $(CoreHostTrace)
 
-  # Install and start Docker Engine on macOS.
-  # See more here: https://github.com/Microsoft/azure-pipelines-image-generation/issues/738#issuecomment-496211237.
-  - script: |
-      chmod +x $(Build.SourcesDirectory)/Build/start-docker-on-macOS.sh
-      $(Build.SourcesDirectory)/Build/start-docker-on-macOS.sh
-    name: install_and_start_docker_on_macos
-    displayName: Install and start Docker on macOS
-    condition: |
-      and
-      (
-          succeeded()
-        , eq( variables['Agent.OS'], 'Darwin')
-      )
-
-  # Pull the appropriate Docker image used for running the database to be targeted by the integration tests.
-  # See more about 'docker image pull' command here: https://docs.docker.com/engine/reference/commandline/image_pull/. 
-  - script: >-
-      docker image pull 
-      ${{ parameters.db4it.dockerImage }}:${{ parameters.db4it.dockerTag }}
-    name: pull_db4it_docker_image
-    displayName: Pull DB4IT Docker image
-    enabled: True
-
-  # Start the Docker container hosting the database to be targeted by the integration tests.
-  # See more about 'docker container run' command here: https://docs.docker.com/engine/reference/commandline/container_run/.
-  - script: >-
-      docker container run 
-      --name ${{ parameters.db4it.dockerContainerName }}
-      --detach
-      --publish ${{ parameters.db4it.dockerHostPort }}:${{ parameters.db4it.dockerContainerPort }}
-      ${{ parameters.db4it.dockerContainerEnvironmentVariables }}
-      ${{ parameters.db4it.dockerImage }}:${{ parameters.db4it.dockerTag }} 
-    name: run_db4it_docker_container
-    displayName: Run DB4IT Docker container  
-    enabled: True
-
   # Prepare SonarQube analysis.
   # See more here: https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner+for+MSBuild.
   #
@@ -176,6 +140,42 @@ jobs:
       mergeTestResults: True
       buildConfiguration: ${{ parameters.build.configuration }}
       publishRunAttachments: True
+
+  # Install and start Docker Engine on macOS.
+  # See more here: https://github.com/Microsoft/azure-pipelines-image-generation/issues/738#issuecomment-496211237.
+  - script: |
+      chmod +x $(Build.SourcesDirectory)/Build/start-docker-on-macOS.sh
+      $(Build.SourcesDirectory)/Build/start-docker-on-macOS.sh
+    name: install_and_start_docker_on_macos
+    displayName: Install and start Docker on macOS
+    condition: |
+      and
+      (
+          succeeded()
+        , eq( variables['Agent.OS'], 'Darwin')
+      )
+
+  # Pull the appropriate Docker image used for running the database to be targeted by the integration tests.
+  # See more about 'docker image pull' command here: https://docs.docker.com/engine/reference/commandline/image_pull/. 
+  - script: >-
+      docker image pull 
+      ${{ parameters.db4it.dockerImage }}:${{ parameters.db4it.dockerTag }}
+    name: pull_db4it_docker_image
+    displayName: Pull DB4IT Docker image
+    enabled: True
+
+  # Start the Docker container hosting the database to be targeted by the integration tests.
+  # See more about 'docker container run' command here: https://docs.docker.com/engine/reference/commandline/container_run/.
+  - script: >-
+      docker container run 
+      --name ${{ parameters.db4it.dockerContainerName }}
+      --detach
+      --publish ${{ parameters.db4it.dockerHostPort }}:${{ parameters.db4it.dockerContainerPort }}
+      ${{ parameters.db4it.dockerContainerEnvironmentVariables }}
+      ${{ parameters.db4it.dockerImage }}:${{ parameters.db4it.dockerTag }} 
+    name: run_db4it_docker_container
+    displayName: Run DB4IT Docker container  
+    enabled: True
 
   # Run integration tests and collect code coverage metrics.
   # Decorate the AssemblyInfo.cs found inside each integration test related project with:
