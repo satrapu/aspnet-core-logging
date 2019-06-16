@@ -91,7 +91,7 @@ jobs:
       --name ${{ parameters.db4it.dockerContainerName }}
       --detach
       --publish ${{ parameters.db4it.dockerHostPort }}:${{ parameters.db4it.dockerContainerPort }}
-      ${{ parameters.db4it.dockerContainerEnvironmentVariablesString }}
+      ${{ parameters.db4it.dockerContainerEnvironmentVariables }}
       ${{ parameters.db4it.dockerImage }}:${{ parameters.db4it.dockerTag }} 
     name: run_db4it_docker_container
     displayName: Run DB4IT Docker container  
