@@ -63,14 +63,26 @@ jobs:
       DOTNET_CLI_TELEMETRY_OPTOUT: $(DotNetCliTelemetryOptOut)
       COREHOST_TRACE: $(CoreHostTrace)
 
-  # Manually install and start Docker Engine on macOS using Homebrew.
+  # Install Docker Engine on macOS using Homebrew.
   # See more here: https://stackoverflow.com/a/40523608.
-  - script: |
+  - script:
       brew cask install docker
-      chmod +x $(Build.SourcesDirectory)/Build/start-docker-on-macOS.sh
-      $(Build.SourcesDirectory)/Build/start-docker-on-macOS.sh
     name: install_docker_on_macos
     displayName: Install Docker on macOS
+    condition: |
+      and
+      (
+          succeeded()
+        , eq( variables['Agent.OS'], 'Darwin')
+      )
+
+  # Start Docker Engine on macOS.
+  # See more here: https://stackoverflow.com/a/35979292.
+  - script: |
+      chmod +x $(Build.SourcesDirectory)/Build/start-docker-on-macOS.sh
+      $(Build.SourcesDirectory)/Build/start-docker-on-macOS.sh
+    name: start_docker_on_macos
+    displayName: Start Docker on macOS
     condition: |
       and
       (
