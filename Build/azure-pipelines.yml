@@ -99,7 +99,7 @@ jobs:
   parameters:
     job:
       name: 'linux'
-      displayName: 'Build on Linux'
+      displayName: 'Linux'
     pool:
       vmImage: 'ubuntu-16.04'
     db4it:
@@ -116,12 +116,14 @@ jobs:
   parameters:
     job:
       name: 'macOS'
-      displayName: 'Build on macOS'
+      displayName: 'macOS'
     pool:
       vmImage: 'macOS-10.14'
     docker:
       # Linux and Windows virtual machines already have Docker installed, so only the one running macOS must install it.
       install: True
+      # Ensure Docker commands can be run on macOS by running them with elevated privileges.
+      commandPrefix: 'sudo'
     db4it:
       dockerImage: 'postgres'
       dockerTag: '11.3-alpine'
@@ -136,7 +138,7 @@ jobs:
   parameters:
     job:
       name: 'windows'
-    displayName: 'Build on Windows'
+    displayName: 'Windows'
     pool:
       vmImage: 'windows-2019'
     db4it:
