@@ -69,7 +69,7 @@ jobs:
       chmod +x $(Build.SourcesDirectory)/Build/start-docker-on-macOS.sh
       $(Build.SourcesDirectory)/Build/start-docker-on-macOS.sh
     name: run_docker_on_macos
-    displayName: INstall & start Docker on macOS
+    displayName: Install & start Docker on macOS
     condition: |
       and
       (
