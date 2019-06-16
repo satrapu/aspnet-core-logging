@@ -65,7 +65,7 @@ jobs:
 
   # Manually install Docker on macOS using Homebrew.
   - script: |
-      sudo brew cask install docker
+      brew cask install docker
       sudo docker version
       sudo docker container run hello-world
     name: install_docker_on_macos
