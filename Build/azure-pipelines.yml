@@ -7,39 +7,6 @@
 name: '$(SourceBranchName)_$(Date:yyyyMMdd).$(Rev:rrr)'
 
 resources:
-  containers:
-  # Specify the Docker container hosting the database to be used when running integration tests.
-  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/service-containers?view=azure-devops&tabs=yaml#single-job.
-  - container: 'postgres_linux_container_for_integration_tests'
-    # PostgreSQL Docker image (Linux container): https://hub.docker.com/_/postgres.
-    image: 'postgres:11.3-alpine'
-    ports:
-    - 5432/tcp
-    env:
-      POSTGRES_DB: 'todo'
-      POSTGRES_USER: 'satrapu'
-
-  - container: 'postgres_windows_container_for_integration_tests'
-    # PostgreSQL Docker image (Windows container): https://hub.docker.com/r/stellirin/postgres-windows.
-    #
-    # Do *not* use 'POSTGRES_PASSWORD' environment variable as this will cause the Windows container to stop due to an error
-    # which has been captured by running a PowerShell script: 
-    # - powershell: 'docker container ls --all --format "{{ .ID }}" | ForEach-Object { docker logs $_  }'
-    #   workingDirectory: $(Build.SourcesDirectory)
-    #   displayName: Show db4it service log
-    #   failOnStderr: False
-    #   errorActionPreference: continue
-    #   ignoreLASTEXITCODE: True
-    # The output of the above task is: 'initdb: could not open file "C:\.pgpass" for reading: No such file or directory'.
-    # The "offending" line inside the Docker ENTRYPOINT can be seen here: 
-    # https://github.com/stellirin/docker-postgres-windows/blob/master/docker-entrypoint.cmd#L76.
-    image: 'stellirin/postgres-windows:11.3'
-    ports:
-    - 5432/tcp
-    env:
-      POSTGRES_DB: 'todo'
-      POSTGRES_USER: 'satrapu'
-
   repositories: 
   # See more about repositories here: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=vsts&tabs=schema#repository.
   - repository: 'aspnet_core_logging'
@@ -86,6 +53,10 @@ variables:
   - name: 'SonarScanner_Version'
     value: '4.6.2'
 
+  # Specify the Docker version to install used for running the databases targeted by the integration tests.
+  - name: 'Docker_Version'
+    value: '18.09.6-ce'
+
   # Avoid caching NuGet packages each time a build runs on an Azure DevOps agent.
   # See more here: http://donovanbrown.com/post/Stop-wasting-time-during-NET-Core-builds.
   - name: 'DotNetSkipFirstTimeExperience'
@@ -100,9 +71,17 @@ variables:
   - name: 'CoreHostTrace'
     value: 0
 
-  # Represents the key of the project hosted on SonarCloud
+  # Represents the key of the project hosted on SonarCloud.
   - name: 'CurrentProject.Sonar.ProjectKey'
     value: 'aspnet-core-logging'
+
+  # Specifies the name of the database to be targeted by integration tests.
+  - name: DB4IT_Name
+    value: 'todo'
+
+  # Specifies the user who owns the database to be targeted by integration tests. 
+  - name: DB4IT_Username
+    value: 'satrapu'
 
 # Define multiple jobs, one per supported operating system (Linux, macOS and Windows).
 # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/multiple-phases?tabs=yaml&view=azure-devops.
@@ -120,15 +99,10 @@ jobs:
       name: 'linux'
       displayName: 'Build on Linux'
     pool:
-      # Need a VM capable of running Linux containers
       vmImage: 'ubuntu-16.04'
-    services:
-      db4it: 'postgres_linux_container_for_integration_tests'
-    sonar:
-      enabled: False
-      buildBreaker:
-        enabled: False
-    publishPipelineArtifacts: True
+    db4it:
+      dockerImage: 'postgres'
+      dockerTag: '11.3-alpine'
 
 - template: './azure-pipelines.job-template.yml'
   parameters:
@@ -137,26 +111,24 @@ jobs:
       displayName: 'Build on macOS'
     pool:
       vmImage: 'macOS-10.14'
-    services:
-      db4it: 'postgres_linux_container_for_integration_tests'
-    sonar:
-      enabled: False
-      buildBreaker:
-        enabled: False
-    publishPipelineArtifacts: True
+    docker:
+      # Linux and Windows virtual machines already have Docker installed, so only the one running macOS must install it.
+      install: True
+    db4it:
+      dockerImage: 'postgres'
+      dockerTag: '11.3-alpine'    
 
 - template: './azure-pipelines.job-template.yml'
   parameters:
     job:
       name: 'windows'
-      displayName: 'Build on Windows'
+    displayName: 'Build on Windows'
     pool:
-      # Need a VM capable of running Windows containers
       vmImage: 'windows-2019'
-    services:
-      db4it: 'postgres_windows_container_for_integration_tests'
+    db4it:
+      dockerImage: 'stellirin/postgres-windows'
+      dockerTag: '11.3'
     sonar:
       enabled: True
       buildBreaker:
         enabled: True
-    publishPipelineArtifacts: True
