@@ -80,6 +80,20 @@ jobs:
         , eq( ${{ parameters.docker.install }}, True)
       )
 
+  # Ensure Docker daemon has been started.
+  # See more here: https://stackoverflow.com/a/35979292.
+  - script: |
+      ${{ parameters.docker.commandPrefix }} chmod +x $(Build.SourcesDirectory)/Build/start-docker-on-macOS.sh 
+      ${{ parameters.docker.commandPrefix }} $(Build.SourcesDirectory)/Build/start-docker-on-macOS.sh
+    name: start_docker_daemon
+    displayName: Start Docker daemon
+    condition: |
+      and
+      (
+          succeeded()
+        , eq( ${{ parameters.docker.install }}, True)
+      )
+
   # Pull the appropriate Docker image used for running the database to be targeted by the integration tests.
   # See more about 'docker image pull' command here: https://docs.docker.com/engine/reference/commandline/image_pull/. 
   - script: >-
