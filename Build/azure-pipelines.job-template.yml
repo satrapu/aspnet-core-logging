@@ -17,7 +17,7 @@ parameters:
     dockerHostPort: 5432
     dockerContainerPort: 5432
     dockerContainerEnvironmentVariablesString: >-
-      --env "POSTGRES_DB=$(DB4IT_Name)" 
+      --env "POSTGRES_DB=$(DB4IT_DatabaseName)" 
       --env "POSTGRES_USER=$(DB4IT_Username)"
 
 jobs:
@@ -204,7 +204,7 @@ jobs:
       CONNECTIONSTRINGS__TODO: >-
         Host=localhost;
         Port=${{ parameters.db4it.dockerHostPort }};
-        Database=$(DB4IT_Name);
+        Database=$(DB4IT_DatabaseName);
         Username=$(DB4IT_Username);
         Password=;
 
