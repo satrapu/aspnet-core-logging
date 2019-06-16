@@ -54,8 +54,10 @@ variables:
     value: '4.6.2'
 
   # Specify the Docker version to install used for running the databases targeted by the integration tests.
+  # The stable versions can be found here: https://download.docker.com; mac OS related stable versions 
+  # can be found here: https://download.docker.com/mac/static/stable/x86_64/.
   - name: 'Docker_Version'
-    value: '18.09.6-ce'
+    value: '18.09.6'
 
   # Avoid caching NuGet packages each time a build runs on an Azure DevOps agent.
   # See more here: http://donovanbrown.com/post/Stop-wasting-time-during-NET-Core-builds.
