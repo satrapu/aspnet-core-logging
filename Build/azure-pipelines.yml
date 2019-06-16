@@ -103,7 +103,7 @@ jobs:
       dockerHostPort: 5432
       dockerContainerPort: 5432
       dockerContainerEnvironmentVariables: >-
-        --env "POSTGRES_DB=$(DB4IT_Name)" 
+        --env "POSTGRES_DB=$(DB4IT_DatabaseName)" 
         --env "POSTGRES_USER=$(DB4IT_Username)"
 
 - template: './azure-pipelines.job-template.yml'
@@ -120,7 +120,7 @@ jobs:
       dockerHostPort: 5432
       dockerContainerPort: 5432
       dockerContainerEnvironmentVariables: >-
-        --env "POSTGRES_DB=$(DB4IT_Name)" 
+        --env "POSTGRES_DB=$(DB4IT_DatabaseName)" 
         --env "POSTGRES_USER=$(DB4IT_Username)"  
 
 - template: './azure-pipelines.job-template.yml'
@@ -137,7 +137,7 @@ jobs:
       dockerHostPort: 5432
       dockerContainerPort: 5432
       dockerContainerEnvironmentVariables: >-
-        --env "POSTGRES_DB=$(DB4IT_Name)" 
+        --env "POSTGRES_DB=$(DB4IT_DatabaseName)" 
         --env "POSTGRES_USER=$(DB4IT_Username)"
     sonar:
       enabled: True
