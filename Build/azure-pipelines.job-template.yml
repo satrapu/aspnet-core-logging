@@ -63,9 +63,12 @@ jobs:
       DOTNET_CLI_TELEMETRY_OPTOUT: $(DotNetCliTelemetryOptOut)
       COREHOST_TRACE: $(CoreHostTrace)
 
-  # Manually install Docker on macOS using Homebrew.
+  # Manually install and start Docker Engine on macOS using Homebrew.
+  # See more here: https://stackoverflow.com/a/40523608.
   - script: |
       brew cask install docker
+      chmod +x $(Build.SourcesDirectory)/Build/start-docker-on-macOS.sh
+      $(Build.SourcesDirectory)/Build/start-docker-on-macOS.sh
     name: install_docker_on_macos
     displayName: Install Docker on macOS
     condition: |
