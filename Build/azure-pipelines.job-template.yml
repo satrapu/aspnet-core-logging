@@ -48,7 +48,7 @@ jobs:
   # See more about 'docker image pull' command here: https://docs.docker.com/engine/reference/commandline/image_pull/. 
   - script: >-
       docker image pull 
-      ${{ parameters.job.db4it.dockerImage }}:${{ parameters.job.db4it.dockerTag }}
+      ${{ parameters.db4it.dockerImage }}:${{ parameters.db4it.dockerTag }}
     name: pull_db4it_docker_image
     displayName: Pull DB4IT Docker image
     enabled: True
@@ -57,11 +57,11 @@ jobs:
   # See more about 'docker container run' command here: https://docs.docker.com/engine/reference/commandline/container_run/.
   - script: >-
       docker container run 
-      --name ${{ parameters.job.db4it.dockerContainerName }}
+      --name ${{ parameters.db4it.dockerContainerName }}
       --detach
-      --publish ${{ parameters.job.db4it.dockerHostPort }}:${{ parameters.job.db4it.dockerContainerPort }}
-      ${{ parameters.job.db4it.dockerContainerEnvironmentVariablesString }}
-      ${{ parameters.job.db4it.dockerImage }}:${{ parameters.job.db4it.dockerTag }} 
+      --publish ${{ parameters.db4it.dockerHostPort }}:${{ parameters.db4it.dockerContainerPort }}
+      ${{ parameters.db4it.dockerContainerEnvironmentVariablesString }}
+      ${{ parameters.db4it.dockerImage }}:${{ parameters.db4it.dockerTag }} 
     name: run_db4it_docker_container
     displayName: Run DB4IT Docker container  
     enabled: True
@@ -205,7 +205,7 @@ jobs:
       # TODO: satrapu 2019-05-01 Find a way to replace hard-coded sensitive data with something more secure. 
       CONNECTIONSTRINGS__TODO: >-
         Host=localhost;
-        Port=${{ parameters.job.db4it.dockerHostPort }};
+        Port=${{ parameters.db4it.dockerHostPort }};
         Database=$(DB4IT_Name);
         Username=$(DB4IT_Username);
         Password=;
@@ -215,7 +215,7 @@ jobs:
   - script: >-
       docker container rm 
       --force
-      ${{ parameters.job.db4it.dockerContainerName }}
+      ${{ parameters.db4it.dockerContainerName }}
     name: remove_db4it_docker_container
     displayName: Remove DB4IT Docker container  
     enabled: True
