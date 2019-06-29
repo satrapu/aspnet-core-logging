@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# This script installs the latest version of Docker on macOS.
+# See more here: https://github.com/Microsoft/azure-pipelines-image-generation/issues/738.
+
 brew cask install docker
 sudo /Applications/Docker.app/Contents/MacOS/Docker --quit-after-install --unattended
 /Applications/Docker.app/Contents/MacOS/Docker --unattended &

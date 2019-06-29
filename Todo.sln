@@ -11,6 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{398FFE78
 		Directory.Build.targets = Directory.Build.targets
 		Build\SonarBuildBreaker.ps1 = Build\SonarBuildBreaker.ps1
 		Build\SonarQubeAnalysis.xml = Build\SonarQubeAnalysis.xml
+		Build\start-docker-on-macOS.sh = Build\start-docker-on-macOS.sh
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sources", "Sources", "{ED7A5363-C21A-4D47-A2A5-67DEB1E0DDE3}"
@@ -42,7 +43,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Todo.WebApi.IntegrationTest
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Todo.WebApi.UnitTests", "Tests\UnitTests\Todo.WebApi.UnitTests\Todo.WebApi.UnitTests.csproj", "{4F848C0D-74D8-46A0-831A-85D39375B89C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.Services.IntegrationTests", "Tests\IntegrationTests\Todo.Services.IntegrationTests\Todo.Services.IntegrationTests.csproj", "{0C017B2C-B852-45E8-BEF4-2F04E371B2CE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Todo.Services.IntegrationTests", "Tests\IntegrationTests\Todo.Services.IntegrationTests\Todo.Services.IntegrationTests.csproj", "{0C017B2C-B852-45E8-BEF4-2F04E371B2CE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
