@@ -4,7 +4,9 @@ parameters:
     displayName: ''
   pool: ''
   services:
-    db4it: ''
+    db4it:
+      name: ''
+      port:
   build:
     configuration: 'Release'
   sonar:
