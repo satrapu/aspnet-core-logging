@@ -14,7 +14,7 @@ resources:
     # PostgreSQL Docker image (Linux container): https://hub.docker.com/_/postgres.
     image: 'postgres:11.3-alpine'
     ports:
-    - 5432/tcp
+    - 9999:5432/tcp
     env:
       POSTGRES_DB: 'todo'
       POSTGRES_USER: 'satrapu'
@@ -123,7 +123,9 @@ jobs:
       # Need a VM capable of running Linux containers
       vmImage: 'ubuntu-16.04'
     services:
-      db4it: 'postgres_linux_container_for_integration_tests'
+      db4it: 
+        name: 'postgres_linux_container_for_integration_tests'
+        port: 9999
     sonar:
       enabled: False
       buildBreaker:
@@ -138,7 +140,9 @@ jobs:
 #    pool:
 #      vmImage: 'macOS-10.14'
 #    services:
-#      db4it: 'postgres_linux_container_for_integration_tests'
+#      db4it: 
+#        name: 'postgres_linux_container_for_integration_tests'
+#        port: 9999
 #    sonar:
 #      enabled: False
 #      buildBreaker:
@@ -154,7 +158,9 @@ jobs:
       # Need a VM capable of running Windows containers
       vmImage: 'windows-2019'
     services:
-      db4it: 'postgres_windows_container_for_integration_tests'
+      db4it: 
+        name: 'postgres_windows_container_for_integration_tests'
+        port: $(Agent.Services.db4it.Ports.5432)
     sonar:
       enabled: True
       buildBreaker:
