@@ -137,6 +137,7 @@ jobs:
     services:
       db4it: 
         containerName: 'postgres_linux_container_for_integration_tests'
+        databaseHost: 'localhost'
         databasePort: 9999
         databaseName: $(IntegrationTests.Database.Todo.Name)
         username: $(IntegrationTests.Database.Todo.Username)
@@ -157,6 +158,7 @@ jobs:
 #    services:
 #      db4it: 
 #        containerName: 'postgres_linux_container_for_integration_tests'
+#        databaseHost: 'localhost'
 #        databasePort: 9999
 #        databaseName: $(IntegrationTests.Database.Todo.Name)
 #        username: $(IntegrationTests.Database.Todo.Username)
@@ -178,6 +180,7 @@ jobs:
     services:
       db4it: 
         containerName: 'postgres_windows_container_for_integration_tests'
+        databaseHost: 'localhost'
         databasePort: $(Agent.Services.db4it.Ports.5432)
         databaseName: $(IntegrationTests.Database.Todo.Name)
         username: $(IntegrationTests.Database.Todo.Username)

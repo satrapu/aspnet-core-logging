@@ -7,6 +7,7 @@ parameters:
     db4it:
       containerName: ''
       databaseName: ''
+      databaseHost:
       databasePort:
       username: ''
       password: ''
@@ -107,7 +108,7 @@ jobs:
       COREHOST_TRACE: $(CoreHostTrace)
 
   # Run unit tests and collect code coverage metrics.
-  # See more about running selective tests here: https://docs.microsoft.com/en-us/dotnet/core/testing/selective-unit-tests#xunit.
+  # See more about running selective tests here: https://docs.microsoft.com/en-us/dotnet/core/testing/selective-unit-tests#nunit.
   # Decorate the AssemblyInfo.cs found inside each unit test related project with:
   #     [assembly: NUnit.Framework.Category("IntegrationTests")]
   - script: >-
@@ -165,7 +166,7 @@ jobs:
       DOTNET_CLI_TELEMETRY_OPTOUT: $(DotNetCliTelemetryOptOut)
       COREHOST_TRACE: $(CoreHostTrace) 
       CONNECTIONSTRINGS__TODO: >-
-        Host=localhost;
+        Host=${{ parameters.services.db4it.databaseHost }};
         Port=${{ parameters.services.db4it.databasePort }};
         Database=${{ parameters.services.db4it.databaseName }};
         Username=${{ parameters.services.db4it.username }};
