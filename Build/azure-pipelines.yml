@@ -16,8 +16,8 @@ resources:
     ports:
     - 9999:5432/tcp
     env:
-      POSTGRES_DB: 'todo'
-      POSTGRES_USER: 'satrapu'
+      POSTGRES_DB: $(IntegrationTests.Database.Todo.Name)
+      POSTGRES_USER: $(IntegrationTests.Database.Todo.Username)
 
   - container: 'postgres_windows_container_for_integration_tests'
     # PostgreSQL Docker image (Windows container): https://hub.docker.com/r/stellirin/postgres-windows.
@@ -37,8 +37,8 @@ resources:
     ports:
     - 5432/tcp
     env:
-      POSTGRES_DB: 'todo'
-      POSTGRES_USER: 'satrapu'
+      POSTGRES_DB: $(IntegrationTests.Database.Todo.Name)
+      POSTGRES_USER: $(IntegrationTests.Database.Todo.Username)
 
   repositories: 
   # See more about repositories here: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=vsts&tabs=schema#repository.
@@ -104,6 +104,15 @@ variables:
   - name: 'CurrentProject.Sonar.ProjectKey'
     value: 'aspnet-core-logging'
 
+  - name: 'IntegrationTests.Database.Todo.Name'
+    value: 'todo-db4it'
+
+  - name: 'IntegrationTests.Database.Todo.Username'
+    value: 'satrapu'
+
+  - name: 'IntegrationTests.Database.Todo.Password'
+    value: ''
+
 # Define multiple jobs, one per supported operating system (Linux, macOS and Windows).
 # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/multiple-phases?tabs=yaml&view=azure-devops.
 #
@@ -124,8 +133,11 @@ jobs:
       vmImage: 'ubuntu-16.04'
     services:
       db4it: 
-        name: 'postgres_linux_container_for_integration_tests'
-        port: 9999
+        containerName: 'postgres_linux_container_for_integration_tests'
+        databasePort: 9999
+        databaseName: $(IntegrationTests.Database.Todo.Name)
+        username: $(IntegrationTests.Database.Todo.Username)
+        password: $(IntegrationTests.Database.Todo.Password)  
     sonar:
       enabled: False
       buildBreaker:
@@ -141,8 +153,11 @@ jobs:
 #      vmImage: 'macOS-10.14'
 #    services:
 #      db4it: 
-#        name: 'postgres_linux_container_for_integration_tests'
-#        port: 9999
+#        containerName: 'postgres_linux_container_for_integration_tests'
+#        databasePort: 9999
+#        databaseName: $(IntegrationTests.Database.Todo.Name)
+#        username: $(IntegrationTests.Database.Todo.Username)
+#        password: $(IntegrationTests.Database.Todo.Password)  
 #    sonar:
 #      enabled: False
 #      buildBreaker:
@@ -159,8 +174,11 @@ jobs:
       vmImage: 'windows-2019'
     services:
       db4it: 
-        name: 'postgres_windows_container_for_integration_tests'
-        port: $(Agent.Services.db4it.Ports.5432)
+        containerName: 'postgres_windows_container_for_integration_tests'
+        databasePort: $(Agent.Services.db4it.Ports.5432)
+        databaseName: $(IntegrationTests.Database.Todo.Name)
+        username: $(IntegrationTests.Database.Todo.Username)
+        password: $(IntegrationTests.Database.Todo.Password)       
     sonar:
       enabled: True
       buildBreaker:

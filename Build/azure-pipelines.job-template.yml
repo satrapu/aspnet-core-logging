@@ -5,8 +5,11 @@ parameters:
   pool: ''
   services:
     db4it:
-      name: ''
-      port:
+      containerName: ''
+      databaseName: ''
+      databasePort:
+      username: ''
+      password: ''
   build:
     configuration: 'Release'
   sonar:
@@ -24,7 +27,7 @@ jobs:
     clean: all
   services:
     # The right side name has been declared in the 'containers' section found inside the 'azure-pipelines.yml' file.
-    db4it: ${{ parameters.services.db4it.name }}
+    db4it: ${{ parameters.services.db4it.containerName }}
   steps:
   # Install specific .NET Core SDK version.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/tool/dotnet-core-tool-installer?view=azure-devops.
@@ -161,13 +164,12 @@ jobs:
       DOTNET_SKIP_FIRST_TIME_EXPERIENCE: $(DotNetSkipFirstTimeExperience)
       DOTNET_CLI_TELEMETRY_OPTOUT: $(DotNetCliTelemetryOptOut)
       COREHOST_TRACE: $(CoreHostTrace) 
-      # TODO: satrapu 2019-05-01 Find a way to replace hard-coded sensitive data with something more secure. 
       CONNECTIONSTRINGS__TODO: >-
         Host=localhost;
-        Port=${{ parameters.services.db4it.port }};
-        Database=todo;
-        Username=satrapu;
-        Password=;
+        Port=${{ parameters.services.db4it.databasePort }};
+        Database=${{ parameters.services.db4it.databaseName }};
+        Username=${{ parameters.services.db4it.username }};
+        Password=${{ parameters.services.db4it.password }};
 
   # Publish integration test results inside the build 'Tests' tab.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=azure-devops&tabs=yaml.
