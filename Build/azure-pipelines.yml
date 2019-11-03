@@ -89,22 +89,22 @@ variables:
 # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=azure-devops&tabs=example#job-templates
 # and here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/templates?view=azure-devops.
 jobs:
-- template: './azure-pipelines.job-template.yml'
-  parameters:
-    job:
-      name: 'linux'
-      displayName: 'Run on Linux'
-    pool:
-      vmImage: 'ubuntu-16.04'
-    db4it:
-      dockerImage: 'postgres'
-      dockerTag: '11.3-alpine'
-      dockerContainerName: 'db4it'
-      dockerHostPort: 5432
-      dockerContainerPort: 5432
-      dockerContainerEnvironmentVariables: >-
-        --env "POSTGRES_DB=$(DB4IT_DatabaseName)" 
-        --env "POSTGRES_USER=$(DB4IT_Username)"
+# - template: './azure-pipelines.job-template.yml'
+#   parameters:
+#     job:
+#       name: 'linux'
+#       displayName: 'Run on Linux'
+#     pool:
+#       vmImage: 'ubuntu-16.04'
+#     db4it:
+#       dockerImage: 'postgres'
+#       dockerTag: '11.3-alpine'
+#       dockerContainerName: 'db4it'
+#       dockerHostPort: 5432
+#       dockerContainerPort: 5432
+#       dockerContainerEnvironmentVariables: >-
+#         --env "POSTGRES_DB=$(DB4IT_DatabaseName)" 
+#         --env "POSTGRES_USER=$(DB4IT_Username)"
 
 - template: './azure-pipelines.job-template.yml'
   parameters:
@@ -123,23 +123,23 @@ jobs:
         --env "POSTGRES_DB=$(DB4IT_DatabaseName)" 
         --env "POSTGRES_USER=$(DB4IT_Username)"  
 
-- template: './azure-pipelines.job-template.yml'
-  parameters:
-    job:
-      name: 'windows'
-      displayName: 'Run on Windows'
-    pool:
-      vmImage: 'windows-2019'
-    db4it:
-      dockerImage: 'stellirin/postgres-windows'
-      dockerTag: '11.3'
-      dockerContainerName: 'db4it'
-      dockerHostPort: 5432
-      dockerContainerPort: 5432
-      dockerContainerEnvironmentVariables: >-
-        --env "POSTGRES_DB=$(DB4IT_DatabaseName)" 
-        --env "POSTGRES_USER=$(DB4IT_Username)"
-    sonar:
-      enabled: True
-      buildBreaker:
-        enabled: True
+# - template: './azure-pipelines.job-template.yml'
+#   parameters:
+#     job:
+#       name: 'windows'
+#       displayName: 'Run on Windows'
+#     pool:
+#       vmImage: 'windows-2019'
+#     db4it:
+#       dockerImage: 'stellirin/postgres-windows'
+#       dockerTag: '11.3'
+#       dockerContainerName: 'db4it'
+#       dockerHostPort: 5432
+#       dockerContainerPort: 5432
+#       dockerContainerEnvironmentVariables: >-
+#         --env "POSTGRES_DB=$(DB4IT_DatabaseName)" 
+#         --env "POSTGRES_USER=$(DB4IT_Username)"
+#     sonar:
+#       enabled: True
+#       buildBreaker:
+#         enabled: True
