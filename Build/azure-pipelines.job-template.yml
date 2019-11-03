@@ -27,7 +27,7 @@ jobs:
     clean: all
   steps:
   # Install and start Docker Engine on macOS.
-  # See more here: https://github.com/Microsoft/azure-pipelines-image-generation/issues/738#issuecomment-496211237.
+  # See more here: https://github.com/microsoft/azure-pipelines-image-generation/issues/738#issuecomment-527013065.
   - script: |
       chmod +x $(Build.SourcesDirectory)/Build/start-docker-on-macOS.sh
       $(Build.SourcesDirectory)/Build/start-docker-on-macOS.sh
