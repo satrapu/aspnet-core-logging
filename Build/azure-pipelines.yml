@@ -32,7 +32,7 @@ resources:
     #   ignoreLASTEXITCODE: True
     # The output of the above task is: 'initdb: could not open file "C:\.pgpass" for reading: No such file or directory'.
     # The "offending" line inside the Docker ENTRYPOINT can be seen here: 
-    # https://github.com/stellirin/docker-postgres-windows/blob/master/docker-entrypoint.cmd#L76.
+    # https://github.com/stellirin/docker-postgres-windows/blob/ce93ac0042f003c5c162a4e0c8c3eb859a140629/docker-entrypoint.cmd#L76.
     image: 'stellirin/postgres-windows:11.3'
     ports:
     - 5432/tcp
