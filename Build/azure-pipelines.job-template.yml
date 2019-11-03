@@ -6,11 +6,6 @@ parameters:
   services:
     db4it:
       containerName: ''
-      databaseName: ''
-      databaseHost:
-      databasePort:
-      username: ''
-      password: ''
       databaseConnectionString: ''
   build:
     configuration: 'Release'
