@@ -136,12 +136,13 @@ jobs:
       vmImage: 'ubuntu-16.04'
     services:
       db4it: 
-        containerName: 'postgres_linux_container_for_integration_tests'
-        databaseHost: 'localhost'
-        databasePort: 9999
-        databaseName: $(IntegrationTests.Database.Todo.Name)
-        username: $(IntegrationTests.Database.Todo.Username)
-        password: $(IntegrationTests.Database.Todo.Password)  
+        containerName: 'postgres_linux_container_for_integration_tests'  
+        databaseConnectionString: >-
+          Host=localhost; 
+          Port=9999; 
+          Database=$(IntegrationTests.Database.Todo.Name);
+          Username=$(IntegrationTests.Database.Todo.Username);
+          Password=$(IntegrationTests.Database.Todo.Password); 
     sonar:
       enabled: False
       buildBreaker:
@@ -158,11 +159,12 @@ jobs:
 #    services:
 #      db4it: 
 #        containerName: 'postgres_linux_container_for_integration_tests'
-#        databaseHost: 'localhost'
-#        databasePort: 9999
-#        databaseName: $(IntegrationTests.Database.Todo.Name)
-#        username: $(IntegrationTests.Database.Todo.Username)
-#        password: $(IntegrationTests.Database.Todo.Password)  
+#        databaseConnectionString: >-
+#          Host=localhost; 
+#          Port=9999; 
+#          Database=$(IntegrationTests.Database.Todo.Name);
+#          Username=$(IntegrationTests.Database.Todo.Username);
+#          Password=$(IntegrationTests.Database.Todo.Password);  
 #    sonar:
 #      enabled: False
 #      buildBreaker:
@@ -180,11 +182,12 @@ jobs:
     services:
       db4it: 
         containerName: 'postgres_windows_container_for_integration_tests'
-        databaseHost: 'localhost'
-        databasePort: $(Agent.Services.db4it.Ports.5432)
-        databaseName: $(IntegrationTests.Database.Todo.Name)
-        username: $(IntegrationTests.Database.Todo.Username)
-        password: $(IntegrationTests.Database.Todo.Password)       
+        databaseConnectionString: >-
+          Host=localhost; 
+          Port=$(Agent.Services.db4it.Ports.5432); 
+          Database=$(IntegrationTests.Database.Todo.Name);
+          Username=$(IntegrationTests.Database.Todo.Username);
+          Password=$(IntegrationTests.Database.Todo.Password);     
     sonar:
       enabled: True
       buildBreaker:
