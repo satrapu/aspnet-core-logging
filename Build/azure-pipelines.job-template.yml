@@ -17,6 +17,7 @@ parameters:
     dockerHostPort: ''
     dockerContainerPort: ''
     dockerContainerEnvironmentVariables: ''
+    databaseConnectionString: ''
 
 jobs:
 - job: ${{ parameters.job.name }}
@@ -67,7 +68,7 @@ jobs:
   # Installing a specific .NET Core SDK version is needed to avoid installing a .NET Core global tool in a following task and 
   # then have Azure DevOps complain that it cannot find it.
   # This issue is documented here: https://github.com/Microsoft/azure-pipelines-tasks/issues/8291.
-  - task: DotNetCoreInstaller@0
+  - task: UseDotNet@2
     name: install_dotnetcore_sdk
     displayName: Install .NET Core SDK
     enabled: True
@@ -198,13 +199,7 @@ jobs:
       DOTNET_SKIP_FIRST_TIME_EXPERIENCE: $(DotNetSkipFirstTimeExperience)
       DOTNET_CLI_TELEMETRY_OPTOUT: $(DotNetCliTelemetryOptOut)
       COREHOST_TRACE: $(CoreHostTrace) 
-      # TODO: satrapu 2019-05-01 Find a way to replace hard-coded sensitive data with something more secure. 
-      CONNECTIONSTRINGS__TODO: >-
-        Host=localhost;
-        Port=${{ parameters.db4it.dockerHostPort }};
-        Database=$(DB4IT_DatabaseName);
-        Username=$(DB4IT_Username);
-        Password=;
+      CONNECTIONSTRINGS__TODO: ${{ parameters.db4it.databaseConnectionString }}
 
   # Remove the Docker container hosting the database targeted by the integration tests.
   # See more about 'docker container rm' command here: https://docs.docker.com/engine/reference/commandline/container_rm/.
