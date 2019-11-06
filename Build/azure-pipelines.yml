@@ -93,29 +93,29 @@ variables:
 # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=azure-devops&tabs=example#job-templates
 # and here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/templates?view=azure-devops.
 jobs:
-# - template: './azure-pipelines.job-template.yml'
-#   parameters:
-#     job:
-#       name: 'linux'
-#       displayName: 'Run on Linux'
-#     pool:
-#       vmImage: 'ubuntu-16.04'
-#     db4it:
-#       dockerImage: 'postgres'
-#       dockerTag: '11.3-alpine'
-#       dockerContainerName: 'db4it'
-#       dockerHostPort: 5432
-#       dockerContainerPort: 5432
-#       dockerContainerEnvironmentVariables: >-
-#         --env "POSTGRES_DB=$(IntegrationTests.Database.Todo.Name)" 
-#         --env "POSTGRES_USER=$(IntegrationTests.Database.Todo.Username)" 
-#         --env "POSTGRES_PASSWORD=$(IntegrationTests.Database.Todo.Password)"  
-#       databaseConnectionString: >-
-#         Host=localhost;
-#         Port=5432;
-#         Database=$(IntegrationTests.Database.Todo.Name);
-#         Username=$(IntegrationTests.Database.Todo.Username);
-#         Password=$(IntegrationTests.Database.Todo.Password);
+- template: './azure-pipelines.job-template.yml'
+  parameters:
+    job:
+      name: 'linux'
+      displayName: 'Run on Linux'
+    pool:
+      vmImage: 'ubuntu-16.04'
+    db4it:
+      dockerImage: 'postgres'
+      dockerTag: '11.3-alpine'
+      dockerContainerName: 'db4it'
+      dockerHostPort: 5432
+      dockerContainerPort: 5432
+      dockerContainerEnvironmentVariables: >-
+        --env "POSTGRES_DB=$(IntegrationTests.Database.Todo.Name)" 
+        --env "POSTGRES_USER=$(IntegrationTests.Database.Todo.Username)" 
+        --env "POSTGRES_PASSWORD=$(IntegrationTests.Database.Todo.Password)"  
+      databaseConnectionString: >-
+        Host=localhost;
+        Port=5432;
+        Database=$(IntegrationTests.Database.Todo.Name);
+        Username=$(IntegrationTests.Database.Todo.Username);
+        Password=$(IntegrationTests.Database.Todo.Password);
 
 - template: './azure-pipelines.job-template.yml'
   parameters:
@@ -141,30 +141,30 @@ jobs:
           Username=$(IntegrationTests.Database.Todo.Username);
           Password=$(IntegrationTests.Database.Todo.Password);
 
-# - template: './azure-pipelines.job-template.yml'
-#   parameters:
-#     job:
-#       name: 'windows'
-#       displayName: 'Run on Windows'
-#     pool:
-#       vmImage: 'windows-2019'
-#     db4it:
-#       dockerImage: 'stellirin/postgres-windows'
-#       dockerTag: '11.3'
-#       dockerContainerName: 'db4it'
-#       dockerHostPort: 5432
-#       dockerContainerPort: 5432
-#       dockerContainerEnvironmentVariables: >-
-#         --env "POSTGRES_DB=$(IntegrationTests.Database.Todo.Name)" 
-#         --env "POSTGRES_USER=$(IntegrationTests.Database.Todo.Username)" 
-#         --env "POSTGRES_PASSWORD=$(IntegrationTests.Database.Todo.Password)"  
-#       databaseConnectionString: >-
-#         Host=localhost;
-#         Port=5432;
-#         Database=$(IntegrationTests.Database.Todo.Name);
-#         Username=$(IntegrationTests.Database.Todo.Username);
-#         Password=$(IntegrationTests.Database.Todo.Password);
-#     sonar:
-#       enabled: True
-#       buildBreaker:
-#         enabled: True
+- template: './azure-pipelines.job-template.yml'
+  parameters:
+    job:
+      name: 'windows'
+      displayName: 'Run on Windows'
+    pool:
+      vmImage: 'windows-2019'
+    db4it:
+      dockerImage: 'stellirin/postgres-windows'
+      dockerTag: '11.3'
+      dockerContainerName: 'db4it'
+      dockerHostPort: 5432
+      dockerContainerPort: 5432
+      dockerContainerEnvironmentVariables: >-
+        --env "POSTGRES_DB=$(IntegrationTests.Database.Todo.Name)" 
+        --env "POSTGRES_USER=$(IntegrationTests.Database.Todo.Username)" 
+        --env "POSTGRES_PASSWORD=$(IntegrationTests.Database.Todo.Password)"  
+      databaseConnectionString: >-
+        Host=localhost;
+        Port=5432;
+        Database=$(IntegrationTests.Database.Todo.Name);
+        Username=$(IntegrationTests.Database.Todo.Username);
+        Password=$(IntegrationTests.Database.Todo.Password);
+    sonar:
+      enabled: True
+      buildBreaker:
+        enabled: True
