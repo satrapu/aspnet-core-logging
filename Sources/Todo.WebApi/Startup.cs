@@ -45,7 +45,8 @@ namespace Todo.WebApi
             services.AddDbContext<TodoDbContext>((serviceProvider, dbContextOptionsBuilder) =>
             {
                 var connectionString = Configuration.GetConnectionString("Todo");
-                dbContextOptionsBuilder.UseNpgsql(connectionString)
+                dbContextOptionsBuilder.UseNpgsql(connectionString
+                                                , options => options.EnableRetryOnFailure())
                                        .EnableSensitiveDataLogging()
                                        .UseLoggerFactory(serviceProvider.GetRequiredService<ILoggerFactory>());
             });
