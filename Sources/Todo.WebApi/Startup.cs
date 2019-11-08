@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -46,7 +48,13 @@ namespace Todo.WebApi
             {
                 var connectionString = Configuration.GetConnectionString("Todo");
                 dbContextOptionsBuilder.UseNpgsql(connectionString
-                                                , options => options.EnableRetryOnFailure())
+                                                , options => 
+                                                {
+                                                    // See more here: https://www.npgsql.org/efcore/miscellaneous.html#execution-strategy
+                                                    options.EnableRetryOnFailure(20, TimeSpan.FromSeconds(30), errorCodesToAdd: new List<string>());
+                                                    // See more here: https://www.npgsql.org/efcore/miscellaneous.html#database-creation
+                                                    options.UseAdminDatabase("admin_db");
+                                                })
                                        .EnableSensitiveDataLogging()
                                        .UseLoggerFactory(serviceProvider.GetRequiredService<ILoggerFactory>());
             });
