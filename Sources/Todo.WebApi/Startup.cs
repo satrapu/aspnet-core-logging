@@ -47,14 +47,7 @@ namespace Todo.WebApi
             services.AddDbContext<TodoDbContext>((serviceProvider, dbContextOptionsBuilder) =>
             {
                 var connectionString = Configuration.GetConnectionString("Todo");
-                dbContextOptionsBuilder.UseNpgsql(connectionString
-                                                , options => 
-                                                {
-                                                    // See more here: https://www.npgsql.org/efcore/miscellaneous.html#execution-strategy
-                                                    options.EnableRetryOnFailure(20, TimeSpan.FromSeconds(30), errorCodesToAdd: new List<string>());
-                                                    // See more here: https://www.npgsql.org/efcore/miscellaneous.html#database-creation
-                                                    options.UseAdminDatabase("admin_db");
-                                                })
+                dbContextOptionsBuilder.UseNpgsql(connectionString)
                                        .EnableSensitiveDataLogging()
                                        .UseLoggerFactory(serviceProvider.GetRequiredService<ILoggerFactory>());
             });
