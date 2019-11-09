@@ -43,6 +43,8 @@ Do {
     Start-Sleep -Milliseconds $sleepingTimeInMillis
 
     $inspectOutput = docker inspect $ContainerName | ConvertFrom-Json 
+    Write-Output $inspectOutput
+    
     $containerDetails = $inspectOutput[0]
     $containerStatus = $containerDetails.State.Status
 
