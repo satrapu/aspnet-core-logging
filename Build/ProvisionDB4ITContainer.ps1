@@ -31,6 +31,7 @@ Param (
 )
 
 $ErrorActionPreference = 'Stop'
+Write-Output "ContainerEnvironmentVariables=$ContainerEnvironmentVariables"
 
 docker image pull ${DockerImageName}:${DockerImageTag}
 docker container run --name $ContainerName --detach --publish ${HostPort}:${ContainerPort} $ContainerEnvironmentVariables ${DockerImageName}:${DockerImageTag}
