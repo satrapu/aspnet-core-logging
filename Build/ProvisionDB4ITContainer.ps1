@@ -2,20 +2,23 @@
 
 Param (
     # Represents the name of the Docker image to use for provisioning the database 
-    # to be targeted by the integration tests
+    # to be targeted by the integration tests.
     $DockerImageName,
 
     # Represents the tag associated with the Docker image to use for provisioning the database 
-    # to be targeted by the integration tests
+    # to be targeted by the integration tests.
     $DockerImageTag,
 
     # Represents the name of the Docker container to check whtether is running.
     $ContainerName,
 
+    # Represents the Docker host port to use when publishing the database port.
     $HostPort,
 
+    # Represents the database port to publish to the Docker host.
     $ContainerPort,
 
+    # Represents the environment variables used when running the Docker container.
     $ContainerEnvironmentVariables,
 
     # Represents the number of milliseconds to wait before checking again whether 
@@ -30,12 +33,12 @@ Param (
 $ErrorActionPreference = 'Stop'
 
 docker image pull ${DockerImageName}:${DockerImageTag}
-docker container run `
-       --name $ContainerName `
-       --detach `
-       --publish ${HostPort}:${ContainerPort} `
-       $ContainerEnvironmentVariables `
-       ${DockerImageName}:${DockerImageTag}
+&"docker container run `
+         --name $ContainerName `
+         --detach `
+         --publish ${HostPort}:${ContainerPort} `
+         $ContainerEnvironmentVariables `
+         ${DockerImageName}:${DockerImageTag}"
 
 $numberOfTries = 1
 $hasContainerStarted = $false
