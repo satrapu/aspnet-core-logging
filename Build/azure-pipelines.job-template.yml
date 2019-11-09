@@ -178,6 +178,22 @@ jobs:
     displayName: Run DB4IT Docker container  
     enabled: True
 
+  # Runs a PowerShell script to check whether the Docker container hosting the database 
+  # to be targeted by the integration tests is running.
+  - task: PowerShell@2
+    name: check_db4it_docker_container_is_running
+    displayName: Check DB4IT Docker container is running
+    inputs:
+      targetType: 'filePath'
+      filePath: '$(Build.SourcesDirectory)/Build/CheckContainerRunningStatus.ps1'
+      arguments: >-
+        -ContainerName ${{ parameters.db4it.dockerContainerName }}
+        -SleepingTimeInMillis 1000
+        -MaxNumberOfTries 30
+      errorActionPreference: stop
+      failOnStderr: True
+      workingDirectory: $(Build.SourcesDirectory)
+
   # Run integration tests and collect code coverage metrics.
   # Decorate the AssemblyInfo.cs found inside each integration test related project with:
   #     [assembly: NUnit.Framework.Category("IntegrationTests")]
