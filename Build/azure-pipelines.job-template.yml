@@ -204,12 +204,12 @@ jobs:
       targetType: 'filePath'
       filePath: '$(Build.SourcesDirectory)/Build/ProvisionDB4ITContainer.ps1'
       arguments: >-
-        -DockerImageName "${{ parameters.db4it.dockerImage }}"
-        -DockerImageTag "${{ parameters.db4it.dockerTag }}"
-        -ContainerName "${{ parameters.db4it.dockerContainerName }}"
-        -HostPort "${{ parameters.db4it.dockerHostPort }}"
-        -ContainerPort "${{ parameters.db4it.dockerContainerPort }}"
-        -ContainerEnvironmentVariables "${{ parameters.db4it.dockerContainerEnvironmentVariables }}"
+        -DockerImageName '${{ parameters.db4it.dockerImage }}'
+        -DockerImageTag '${{ parameters.db4it.dockerTag }}'
+        -ContainerName '${{ parameters.db4it.dockerContainerName }}'
+        -HostPort ${{ parameters.db4it.dockerHostPort }}
+        -ContainerPort ${{ parameters.db4it.dockerContainerPort }}
+        -ContainerEnvironmentVariables '${{ parameters.db4it.dockerContainerEnvironmentVariables }}'
         -SleepingTimeInMillis 250
         -MaxNumberOfTries 120
       errorActionPreference: stop
