@@ -43,9 +43,10 @@ Do {
     Start-Sleep -Milliseconds $sleepingTimeInMillis
 
     $inspectOutput = docker inspect $ContainerName | ConvertFrom-Json 
-    Write-Output $inspectOutput
-    
     $containerDetails = $inspectOutput[0]
+    $containerDetails.Config.Env | ForEach-Object {
+        Write-Output "$_"
+    }
     $containerStatus = $containerDetails.State.Status
 
     if ($containerStatus -eq 'running') {
