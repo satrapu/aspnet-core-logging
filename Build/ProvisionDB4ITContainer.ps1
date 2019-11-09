@@ -23,22 +23,17 @@ Param (
 
     # Represents the number of milliseconds to wait before checking again whether 
     # the given container is running.
-    $SleepingTimeInMillis = 1000,
+    $SleepingTimeInMillis = 500,
 
     # The maximum amount of retries before giving up and considering that the given 
     # Docker container is not running.
-    $MaxNumberOfTries = 30
+    $MaxNumberOfTries = 60
 )
 
 $ErrorActionPreference = 'Stop'
 
 docker image pull ${DockerImageName}:${DockerImageTag}
-&"docker container run `
-         --name $ContainerName `
-         --detach `
-         --publish ${HostPort}:${ContainerPort} `
-         $ContainerEnvironmentVariables `
-         ${DockerImageName}:${DockerImageTag}"
+docker container run --name $ContainerName --detach --publish ${HostPort}:${ContainerPort} $ContainerEnvironmentVariables ${DockerImageName}:${DockerImageTag}
 
 $numberOfTries = 1
 $hasContainerStarted = $false
