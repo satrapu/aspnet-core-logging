@@ -163,7 +163,7 @@ jobs:
       ${{ parameters.db4it.dockerImage }}:${{ parameters.db4it.dockerTag }}
     name: pull_db4it_docker_image
     displayName: Pull DB4IT Docker image
-    enabled: True
+    enabled: False
 
   # Start the Docker container hosting the database to be targeted by the integration tests.
   # See more about 'docker container run' command here: https://docs.docker.com/engine/reference/commandline/container_run/.
@@ -176,7 +176,7 @@ jobs:
       ${{ parameters.db4it.dockerImage }}:${{ parameters.db4it.dockerTag }} 
     name: run_db4it_docker_container
     displayName: Run DB4IT Docker container  
-    enabled: True
+    enabled: False
 
   # Runs a PowerShell script to check whether the Docker container hosting the database 
   # to be targeted by the integration tests is running.
@@ -188,11 +188,34 @@ jobs:
       filePath: '$(Build.SourcesDirectory)/Build/CheckContainerRunningStatus.ps1'
       arguments: >-
         -ContainerName ${{ parameters.db4it.dockerContainerName }}
-        -SleepingTimeInMillis 100
-        -MaxNumberOfTries 100
+        -SleepingTimeInMillis 250
+        -MaxNumberOfTries 120
       errorActionPreference: stop
       failOnStderr: True
       workingDirectory: $(Build.SourcesDirectory)
+    enabled: False
+
+  # Runs a PowerShell script to provision the Docker container hosting the database 
+  # to be targeted by the integration tests.
+  - task: PowerShell@2
+    name: provision_db4it
+    displayName: Provision DB4IT
+    inputs:
+      targetType: 'filePath'
+      filePath: '$(Build.SourcesDirectory)/Build/ProvisionDB4ITContainer.ps1'
+      arguments: >-
+        -DockerImageName ${{ parameters.db4it.dockerImage }}
+        -DockerImageTag ${{ parameters.db4it.dockerTag }}
+        -ContainerName ${{ parameters.db4it.dockerContainerName }}
+        -HostPort ${{ parameters.db4it.dockerHostPort }}
+        -ContainerPort ${{ parameters.db4it.dockerContainerPort }}
+        -ContainerEnvironmentVariables ${{ parameters.db4it.dockerContainerEnvironmentVariables }}
+        -SleepingTimeInMillis 250
+        -MaxNumberOfTries 120
+      errorActionPreference: stop
+      failOnStderr: True
+      workingDirectory: $(Build.SourcesDirectory)
+    enabled: True
 
   # Run integration tests and collect code coverage metrics.
   # Decorate the AssemblyInfo.cs found inside each integration test related project with:
