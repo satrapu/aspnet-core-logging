@@ -209,7 +209,9 @@ jobs:
         -ContainerName ${{ parameters.db4it.dockerContainerName }}
         -HostPort ${{ parameters.db4it.dockerHostPort }}
         -ContainerPort ${{ parameters.db4it.dockerContainerPort }}
-        -ContainerEnvironmentVariables ${{ parameters.db4it.dockerContainerEnvironmentVariables }}
+        # Single quotes are necessary since ${{ parameters.db4it.dockerContainerEnvironmentVariables }} contains "-e ..." 
+        # which will be interpreted by PowerShell as a parameter, which, of course, is not correct
+        -ContainerEnvironmentVariables '${{ parameters.db4it.dockerContainerEnvironmentVariables }}'
         -SleepingTimeInMillis 250
         -MaxNumberOfTries 120
       errorActionPreference: stop
