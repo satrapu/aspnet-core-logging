@@ -107,9 +107,9 @@ jobs:
       dockerHostPort: 5432
       dockerContainerPort: 5432
       dockerContainerEnvironmentVariables: >-
-        --env "POSTGRES_DB=$(IntegrationTests.Database.Todo.Name)" 
-        --env "POSTGRES_USER=$(IntegrationTests.Database.Todo.Username)" 
-        --env "POSTGRES_PASSWORD=$(IntegrationTests.Database.Todo.Password)"  
+        -e "POSTGRES_DB=$(IntegrationTests.Database.Todo.Name)" 
+        -e "POSTGRES_USER=$(IntegrationTests.Database.Todo.Username)" 
+        -e "POSTGRES_PASSWORD=$(IntegrationTests.Database.Todo.Password)"  
       databaseConnectionString: >-
         Host=localhost;
         Port=5432;
@@ -131,9 +131,9 @@ jobs:
       dockerHostPort: 5432
       dockerContainerPort: 5432
       dockerContainerEnvironmentVariables: >-
-        --env "POSTGRES_DB=$(IntegrationTests.Database.Todo.Name)" 
-        --env "POSTGRES_USER=$(IntegrationTests.Database.Todo.Username)" 
-        --env "POSTGRES_PASSWORD=$(IntegrationTests.Database.Todo.Password)"  
+        -e "POSTGRES_DB=$(IntegrationTests.Database.Todo.Name)" 
+        -e "POSTGRES_USER=$(IntegrationTests.Database.Todo.Username)" 
+        -e "POSTGRES_PASSWORD=$(IntegrationTests.Database.Todo.Password)"  
       databaseConnectionString: >-
           Host=localhost;
           Port=5432;
@@ -155,9 +155,9 @@ jobs:
       dockerHostPort: 5432
       dockerContainerPort: 5432
       dockerContainerEnvironmentVariables: >-
-        --env "POSTGRES_DB=$(IntegrationTests.Database.Todo.Name)" 
-        --env "POSTGRES_USER=$(IntegrationTests.Database.Todo.Username)" 
-        --env "POSTGRES_PASSWORD=$(IntegrationTests.Database.Todo.Password)"  
+        -e "POSTGRES_DB=$(IntegrationTests.Database.Todo.Name)" 
+        -e "POSTGRES_USER=$(IntegrationTests.Database.Todo.Username)" 
+        -e "POSTGRES_PASSWORD=$(IntegrationTests.Database.Todo.Password)"  
       databaseConnectionString: >-
         Host=localhost;
         Port=5432;
