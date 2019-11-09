@@ -197,6 +197,8 @@ jobs:
 
   # Runs a PowerShell script to provision the Docker container hosting the database 
   # to be targeted by the integration tests.
+  # The single quotes around ${{ parameters.db4it.dockerContainerEnvironmentVariables }} are necessary since this parameter
+  # contains several entries starting with "-e ..." which will be interpreted by PowerShell as standalone parameters, which, of course, is not correct
   - task: PowerShell@2
     name: provision_db4it
     displayName: Provision DB4IT
@@ -209,8 +211,6 @@ jobs:
         -ContainerName ${{ parameters.db4it.dockerContainerName }}
         -HostPort ${{ parameters.db4it.dockerHostPort }}
         -ContainerPort ${{ parameters.db4it.dockerContainerPort }}
-        # Single quotes are necessary since ${{ parameters.db4it.dockerContainerEnvironmentVariables }} contains "-e ..." 
-        # which will be interpreted by PowerShell as a parameter, which, of course, is not correct
         -ContainerEnvironmentVariables '${{ parameters.db4it.dockerContainerEnvironmentVariables }}'
         -SleepingTimeInMillis 250
         -MaxNumberOfTries 120
