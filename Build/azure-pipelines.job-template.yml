@@ -188,8 +188,8 @@ jobs:
       filePath: '$(Build.SourcesDirectory)/Build/CheckContainerRunningStatus.ps1'
       arguments: >-
         -ContainerName ${{ parameters.db4it.dockerContainerName }}
-        -SleepingTimeInMillis 1000
-        -MaxNumberOfTries 30
+        -SleepingTimeInMillis 100
+        -MaxNumberOfTries 100
       errorActionPreference: stop
       failOnStderr: True
       workingDirectory: $(Build.SourcesDirectory)
