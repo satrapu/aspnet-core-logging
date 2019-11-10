@@ -33,8 +33,8 @@ Param (
 $ErrorActionPreference = 'Stop'
 Write-Output "ContainerEnvironmentVariables=$ContainerEnvironmentVariables"
 
-docker image pull ${DockerImageName}:${DockerImageTag}
-docker container run --name "$ContainerName" --detach --publish "${HostPort}:${ContainerPort}" $ContainerEnvironmentVariables "${DockerImageName}:${DockerImageTag}"
+Invoke-Expression -Command "docker image pull ${DockerImageName}:${DockerImageTag}"
+Invoke-Expression -Command "docker container run --name ${ContainerName} --detach --publish ${HostPort}:${ContainerPort} ${ContainerEnvironmentVariables} ${DockerImageName}:${DockerImageTag}"
 
 $numberOfTries = 1
 $hasContainerStarted = $false
