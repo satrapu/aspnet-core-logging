@@ -1,4 +1,5 @@
-# Runs a Docker container hosting the database to be targeted by the integration tests.
+# Runs a Docker container hosting the database to be targeted by the integration tests and periodically 
+# checks for a given amount of tries whether the database is ready to accept incoming connections.
 
 Param (
     # Represents the name of the Docker image to use for provisioning the database 
@@ -21,46 +22,56 @@ Param (
     # Represents the environment variables used when running the Docker container.
     $ContainerEnvironmentVariables,
 
+    # Represents the string which occurs inside the container log signaling that 
+    # the database is ready to accept incoming connections.
+    $DatabaseReadyPattern,
+
     # Represents the number of milliseconds to wait before checking again whether 
     # the given container is running.
-    $SleepingTimeInMillis = 500,
+    $SleepingTimeInMillis = 250,
 
     # The maximum amount of retries before giving up and considering that the given 
     # Docker container is not running.
-    $MaxNumberOfTries = 60
+    $MaxNumberOfTries = 120
 )
 
 $ErrorActionPreference = 'Stop'
-Write-Output "ContainerEnvironmentVariables=$ContainerEnvironmentVariables"
 
-Invoke-Expression -Command "docker image pull ${DockerImageName}:${DockerImageTag}"
-Invoke-Expression -Command "docker container run --name ${ContainerName} --detach --publish ${HostPort}:${ContainerPort} ${ContainerEnvironmentVariables} ${DockerImageName}:${DockerImageTag}"
+docker image pull ${DockerImageName}:${DockerImageTag}
+Invoke-Expression -Command "docker container run --name $ContainerName --detach --publish ${HostPort}:${ContainerPort} $ContainerEnvironmentVariables ${DockerImageName}:${DockerImageTag}"
 
-$numberOfTries = 1
-$hasContainerStarted = $false
+$numberOfTries = 0
+$isDatabaseReady = $false
 
-Do {
+do {
     Start-Sleep -Milliseconds $sleepingTimeInMillis
 
     $inspectOutput = docker inspect $ContainerName | ConvertFrom-Json 
     $containerDetails = $inspectOutput[0]
-    $containerDetails.Config.Env | ForEach-Object {
-        Write-Output "$_"
-    }
     $containerStatus = $containerDetails.State.Status
 
     if ($containerStatus -eq 'running') {
-        Write-Output "Container ""$ContainerName"" is running"
-        $hasContainerStarted = $true
-        break
+        $isDatabaseReady = docker logs --tail 10 $ContainerName | Select-String -Pattern $DatabaseReadyPattern -SimpleMatch -Quiet
+        
+        if ($isDatabaseReady) {
+            Write-Output "`n`nDatabase running inside container ""$ContainerName"" is ready to accept incoming connections"
+            break
+        }
     }
 
-    Write-Output "#${numberOfTries}: Container ""$ContainerName"" isn't running yet; will check again in $sleepingTimeInMillis milliseconds"
+    $progressMessage = "${numberOfTries}: Container ""$ContainerName"" isn't running yet"
+
+    if ($numberOfTries -lt $maxNumberOfTries - 1) {
+        $progressMessage += "; will check again in $sleepingTimeInMillis milliseconds"
+    }
+        
+    Write-Output "$progressMessage`n`n"
     $numberOfTries++
 }
-Until ($numberOfTries -gt $maxNumberOfTries)
+until ($numberOfTries -eq $maxNumberOfTries)
 
-if (!$hasContainerStarted) {
-        Write-Output "##vso[task.LogIssue type=error;] Container $ContainerName is not running yet; will stop here"
-        Write-Output "##vso[task.complete result=Failed;]"
+if (!$isDatabaseReady) {
+    Write-Output "##vso[task.LogIssue type=error;] Container $ContainerName is still not running after checking for $numberOfTries times; will stop here"
+    Write-Output "##vso[task.complete result=Failed;]"
+    exit
 }
