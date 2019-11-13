@@ -17,6 +17,7 @@ parameters:
     dockerHostPort: ''
     dockerContainerPort: ''
     dockerContainerEnvironmentVariables: ''
+    dockerContainerLogPatternForDatabaseReady: ''
     databaseConnectionString: ''
 
 jobs:
@@ -212,6 +213,7 @@ jobs:
         -HostPort ${{ parameters.db4it.dockerHostPort }}
         -ContainerPort ${{ parameters.db4it.dockerContainerPort }}
         -ContainerEnvironmentVariables '${{ parameters.db4it.dockerContainerEnvironmentVariables }}'
+        -ContainerLogPatternForDatabaseReady '${{ parameters.db4it.dockerContainerLogPatternForDatabaseReady }}'
         -SleepingTimeInMillis 250
         -MaxNumberOfTries 120
       errorActionPreference: stop

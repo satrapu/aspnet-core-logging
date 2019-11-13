@@ -24,7 +24,7 @@ Param (
 
     # Represents the string which occurs inside the container log signaling that 
     # the database is ready to accept incoming connections.
-    $DatabaseReadyPattern,
+    $ContainerLogPatternForDatabaseReady,
 
     # Represents the number of milliseconds to wait before checking again whether 
     # the given container is running.
@@ -51,7 +51,7 @@ do {
     $containerStatus = $containerDetails.State.Status
 
     if ($containerStatus -eq 'running') {
-        $isDatabaseReady = docker logs --tail 10 $ContainerName | Select-String -Pattern $DatabaseReadyPattern -SimpleMatch -Quiet
+        $isDatabaseReady = docker logs --tail 10 $ContainerName | Select-String -Pattern $ContainerLogPatternForDatabaseReady -SimpleMatch -Quiet
         
         if ($isDatabaseReady) {
             Write-Output "`n`nDatabase running inside container ""$ContainerName"" is ready to accept incoming connections"
