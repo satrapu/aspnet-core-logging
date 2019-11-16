@@ -37,8 +37,15 @@ Param (
 
 $ErrorActionPreference = 'Continue'
 
-docker image pull ${DockerImageName}:${DockerImageTag}
-Invoke-Expression -Command "docker container run --name $ContainerName --detach --publish ${HostPort}:${ContainerPort} $ContainerEnvironmentVariables ${DockerImageName}:${DockerImageTag}"
+Write-Output "Pulling Docker image ${DockerImageName}:${DockerImageTag} ..."
+# Success stream is redirected to null to ensure the output of the Docker command below is not printed to console
+docker image pull ${DockerImageName}:${DockerImageTag} 1>$null
+Write-Output "Docker image ${DockerImageName}:${DockerImageTag} has been pulled`n"
+
+Write-Output "Starting Docker container '$ContainerName' ..."
+# Success stream is redirected to null to ensure the output of the Docker command below is not printed to console
+Invoke-Expression -Command "docker container run --name $ContainerName --detach --publish ${HostPort}:${ContainerPort} $ContainerEnvironmentVariables ${DockerImageName}:${DockerImageTag}" 1>$null
+Write-Output "Docker container '$ContainerName' has been started"
 
 $numberOfTries = 0
 $isDatabaseReady = $false
