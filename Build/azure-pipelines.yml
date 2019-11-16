@@ -160,7 +160,7 @@ jobs:
         -e "POSTGRES_DB=$(IntegrationTests.Database.Todo.Name)"
         -e "POSTGRES_USER=$(IntegrationTests.Database.Todo.Username)"
         -e "POSTGRES_PASSWORD=$(IntegrationTests.Database.Todo.Password)"
-      dockerContainerLogPatternForDatabaseReady: 'database system is ready to accept connections'
+      dockerContainerLogPatternForDatabaseReady: 'PostgreSQL init process complete; ready for start up.'
       databaseConnectionString: >-
         Host=localhost;
         Port=5432;
