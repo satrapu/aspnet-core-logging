@@ -55,7 +55,7 @@ do {
         
         if ($isDatabaseReady) {
             Write-Output "`n`nDatabase running inside container ""$ContainerName"" is ready to accept incoming connections"
-            exit 0
+            break
         }
     }
 
@@ -73,5 +73,4 @@ until ($numberOfTries -eq $maxNumberOfTries)
 if (!$isDatabaseReady) {
     Write-Output "##vso[task.LogIssue type=error;] Container $ContainerName is still not running after checking for $numberOfTries times; will stop here"
     Write-Output "##vso[task.complete result=Failed;]"
-    exit 1
 }
