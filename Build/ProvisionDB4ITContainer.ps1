@@ -35,7 +35,7 @@ Param (
     $MaxNumberOfTries = 120
 )
 
-$ErrorActionPreference = 'Stop'
+$ErrorActionPreference = 'Continue'
 
 docker image pull ${DockerImageName}:${DockerImageTag}
 Invoke-Expression -Command "docker container run --name $ContainerName --detach --publish ${HostPort}:${ContainerPort} $ContainerEnvironmentVariables ${DockerImageName}:${DockerImageTag}"
@@ -51,7 +51,10 @@ do {
     $containerStatus = $containerDetails.State.Status
 
     if ($containerStatus -eq 'running') {
-        $isDatabaseReady = docker logs --tail 10 $ContainerName | Select-String -Pattern $ContainerLogPatternForDatabaseReady -SimpleMatch -Quiet
+        # Redirect error stream to success one and set $ErrorActionPreference = 'Continue' to ensure "docker logs" command does not trick Azure DevOps into
+        # thinking that this script has failed; this avoids the error: "##[error]PowerShell wrote one or more lines to the standard error stream." which
+        # is reported by Azure DevOps even if the database has reached its ready state.
+        $isDatabaseReady = docker logs --tail 10 $ContainerName 2>&1 | Select-String -Pattern $ContainerLogPatternForDatabaseReady -SimpleMatch -Quiet
 
         if ($isDatabaseReady -eq $true) {
             Write-Output "`n`nDatabase running inside container ""$ContainerName"" is ready to accept incoming connections"
@@ -59,13 +62,13 @@ do {
         }
     }
 
-    $progressMessage = "${numberOfTries}: Container ""$ContainerName"" isn't running yet"
+    $progressMessage = "`n${numberOfTries}: Container ""$ContainerName"" isn't running yet"
 
     if ($numberOfTries -lt $maxNumberOfTries - 1) {
         $progressMessage += "; will check again in $sleepingTimeInMillis milliseconds"
     }
         
-    Write-Output "$progressMessage`n`n"
+    Write-Output $progressMessage
     $numberOfTries++
 }
 until ($numberOfTries -eq $maxNumberOfTries)
