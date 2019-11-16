@@ -51,10 +51,11 @@ do {
     $containerStatus = $containerDetails.State.Status
 
     if ($containerStatus -eq 'running') {
-        if (docker logs --tail 10 $ContainerName | Select-String -Pattern $ContainerLogPatternForDatabaseReady -SimpleMatch -Quiet) {
-            $isDatabaseReady = $true       
-            Write-Host "`n`nDatabase running inside container ""$ContainerName"" is ready to accept incoming connections"
-            break
+        $isDatabaseReady = docker logs --tail 10 $ContainerName | Select-String -Pattern $ContainerLogPatternForDatabaseReady -SimpleMatch -Quiet
+
+        if ($isDatabaseReady -eq $true) {
+            Write-Output "`n`nDatabase running inside container ""$ContainerName"" is ready to accept incoming connections"
+            exit 0
         }
     }
 
@@ -64,13 +65,13 @@ do {
         $progressMessage += "; will check again in $sleepingTimeInMillis milliseconds"
     }
         
-    Write-Host "$progressMessage`n`n"
+    Write-Output "$progressMessage`n`n"
     $numberOfTries++
 }
 until ($numberOfTries -eq $maxNumberOfTries)
 
-if ($isDatabaseReady -eq $false) {
-    # Instruct Azure DevOps to consider the current task as failed
-    Write-Host "##vso[task.LogIssue type=error;]Container $ContainerName is still not running after checking for $numberOfTries times; will stop here"
-    Write-Host "##vso[task.complete result=Failed;]"
-}
+# Instruct Azure DevOps to consider the current task as failed.
+# See more about logging commands here: https://github.com/microsoft/azure-pipelines-tasks/blob/master/docs/authoring/commands.md.
+Write-Output "##vso[task.LogIssue type=error;]Container $ContainerName is still not running after checking for $numberOfTries times; will stop here"
+Write-Output "##vso[task.complete result=Failed;]"
+exit 1
