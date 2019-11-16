@@ -53,8 +53,7 @@ do {
     if ($containerStatus -eq 'running') {
         $isDatabaseReady = docker logs --tail 10 $ContainerName | Select-String -Pattern $ContainerLogPatternForDatabaseReady -SimpleMatch -Quiet
         
-        if ($isDatabaseReady) {
-            Write-Output "`n`nDatabase running inside container ""$ContainerName"" is ready to accept incoming connections"
+        if ($isDatabaseReady -eq $true) {
             break
         }
     }
@@ -70,7 +69,11 @@ do {
 }
 until ($numberOfTries -eq $maxNumberOfTries)
 
-if (!$isDatabaseReady) {
+if ($isDatabaseReady -eq $true) {
+    Write-Output "`n`nDatabase running inside container ""$ContainerName"" is ready to accept incoming connections"
+}
+else {
+    // Instruct Azure DevOps to consider the current task as failed
     Write-Output "##vso[task.LogIssue type=error;] Container $ContainerName is still not running after checking for $numberOfTries times; will stop here"
     Write-Output "##vso[task.complete result=Failed;]"
 }
