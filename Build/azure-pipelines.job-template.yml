@@ -206,7 +206,7 @@ jobs:
       and
       (
           succeeded()
-        , eq( ${{ parameters.db4it.databaseReadinessStrategy }}, log-polling)
+        , eq( '${{ parameters.db4it.databaseReadinessStrategy }}', 'log-polling')
       )
 
   # Runs a PowerShell script to check whether the Docker container hosting the database 
@@ -234,7 +234,7 @@ jobs:
       and
       (
           succeeded()
-        , eq( ${{ parameters.db4it.databaseReadinessStrategy }}, healthcheck)
+        , eq( '${{ parameters.db4it.databaseReadinessStrategy }}', 'healthcheck')
       )
 
   # Run integration tests and collect code coverage metrics.
