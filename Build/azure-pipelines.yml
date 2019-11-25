@@ -110,13 +110,14 @@ jobs:
         -e "POSTGRES_DB=$(IntegrationTests.Database.Todo.Name)"
         -e "POSTGRES_USER=$(IntegrationTests.Database.Todo.Username)"
         -e "POSTGRES_PASSWORD=$(IntegrationTests.Database.Todo.Password)"
-      dockerContainerLogPatternForDatabaseReady: 'database system is ready to accept connections'
       databaseConnectionString: >-
         Host=localhost;
         Port=5432;
         Database=$(IntegrationTests.Database.Todo.Name);
         Username=$(IntegrationTests.Database.Todo.Username);
         Password=$(IntegrationTests.Database.Todo.Password);
+      databaseReadinessStrategy: 'log-polling'
+      dockerContainerLogPatternForDatabaseReady: 'database system is ready to accept connections'
 
 - template: './azure-pipelines.job-template.yml'
   parameters:
@@ -142,6 +143,14 @@ jobs:
           Database=$(IntegrationTests.Database.Todo.Name);
           Username=$(IntegrationTests.Database.Todo.Username);
           Password=$(IntegrationTests.Database.Todo.Password);
+      databaseReadinessStrategy: 'healthcheck'
+      dockerContainerHealthcheckCommand: >-
+        pg_isready 
+        --host=localhost 
+        --port=$(DatabasePort) 
+        --dbname=$(DatabaseName) 
+        --username=$(DatabaseUserName) 
+        --quiet
 
 - template: './azure-pipelines.job-template.yml'
   parameters:
@@ -160,13 +169,14 @@ jobs:
         -e "POSTGRES_DB=$(IntegrationTests.Database.Todo.Name)"
         -e "POSTGRES_USER=$(IntegrationTests.Database.Todo.Username)"
         -e "POSTGRES_PASSWORD=$(IntegrationTests.Database.Todo.Password)"
-      dockerContainerLogPatternForDatabaseReady: 'PostgreSQL init process complete; ready for start up.'
       databaseConnectionString: >-
         Host=localhost;
         Port=5432;
         Database=$(IntegrationTests.Database.Todo.Name);
         Username=$(IntegrationTests.Database.Todo.Username);
         Password=$(IntegrationTests.Database.Todo.Password);
+      databaseReadinessStrategy: 'log-polling'
+      dockerContainerLogPatternForDatabaseReady: 'PostgreSQL init process complete; ready for start up.'
     sonar:
       enabled: True
       buildBreaker:

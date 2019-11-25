@@ -18,7 +18,9 @@ parameters:
     dockerContainerPort: ''
     dockerContainerEnvironmentVariables: ''
     dockerContainerLogPatternForDatabaseReady: ''
+    dockerContainerHealthcheckCommand: ''
     databaseConnectionString: ''
+    databaseReadinessStrategy: ''
 
 jobs:
 - job: ${{ parameters.job.name }}
@@ -182,30 +184,11 @@ jobs:
   # Runs a PowerShell script to check whether the Docker container hosting the database 
   # to be targeted by the integration tests is running.
   - task: PowerShell@2
-    name: check_db4it_docker_container_is_running
-    displayName: Check DB4IT Docker container is running
+    name: provision_db4it_docker_container_using_log_polling
+    displayName: Provision DB4IT Docker container using log-polling
     inputs:
       targetType: 'filePath'
-      filePath: '$(Build.SourcesDirectory)/Build/CheckContainerRunningStatus.ps1'
-      arguments: >-
-        -ContainerName ${{ parameters.db4it.dockerContainerName }}
-        -SleepingTimeInMillis 250
-        -MaxNumberOfTries 120
-      errorActionPreference: stop
-      failOnStderr: True
-      workingDirectory: $(Build.SourcesDirectory)
-    enabled: False
-
-  # Runs a PowerShell script to provision the Docker container hosting the database 
-  # to be targeted by the integration tests.
-  # The single quotes around ${{ parameters.db4it.dockerContainerEnvironmentVariables }} are necessary since this parameter
-  # contains several entries starting with "-e ..." which will be interpreted by PowerShell as standalone parameters, which, of course, is not correct
-  - task: PowerShell@2
-    name: provision_db4it
-    displayName: Provision DB4IT
-    inputs:
-      targetType: 'filePath'
-      filePath: '$(Build.SourcesDirectory)/Build/ProvisionDB4ITContainer.ps1'
+      filePath: '$(Build.SourcesDirectory)/Build/Provision-db4it-docker-container-using-log-polling.ps1'
       arguments: >-
         -DockerImageName '${{ parameters.db4it.dockerImage }}'
         -DockerImageTag '${{ parameters.db4it.dockerTag }}'
@@ -219,7 +202,40 @@ jobs:
       errorActionPreference: stop
       failOnStderr: True
       workingDirectory: $(Build.SourcesDirectory)
-    enabled: True
+    condition: |
+      and
+      (
+          succeeded()
+        , eq( ${{ parameters.databaseReadinessStrategy }}, 'log-polling')
+      )
+
+  # Runs a PowerShell script to check whether the Docker container hosting the database 
+  # to be targeted by the integration tests is running.
+  - task: PowerShell@2
+    name: provision_db4it_docker_container_using_healthcheck
+    displayName: Provision DB4IT Docker container using healthcheck
+    inputs:
+      targetType: 'filePath'
+      filePath: '$(Build.SourcesDirectory)/Build/Provision-db4it-docker-container-using-healthcheck.ps1'
+      arguments: >-
+        -DockerImageName '${{ parameters.db4it.dockerImage }}'
+        -DockerImageTag '${{ parameters.db4it.dockerTag }}'
+        -ContainerName '${{ parameters.db4it.dockerContainerName }}'
+        -HostPort ${{ parameters.db4it.dockerHostPort }}
+        -ContainerPort ${{ parameters.db4it.dockerContainerPort }}
+        -ContainerEnvironmentVariables '${{ parameters.db4it.dockerContainerEnvironmentVariables }}'
+        -HealthCheckCommand '${{ parameters.db4it.dockerContainerHealthcheckCommand }}'
+        -HealthCheckIntervalInMilliseconds 250
+        -MaxNumberOfTries 120
+      errorActionPreference: stop
+      failOnStderr: True
+      workingDirectory: $(Build.SourcesDirectory)
+    condition: |
+      and
+      (
+          succeeded()
+        , eq( ${{ parameters.databaseReadinessStrategy }}, 'healthcheck')
+      )
 
   # Run integration tests and collect code coverage metrics.
   # Decorate the AssemblyInfo.cs found inside each integration test related project with:
