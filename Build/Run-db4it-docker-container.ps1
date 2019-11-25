@@ -1,4 +1,4 @@
-# Runs 'ProvisionDB4ITContainer.ps1' script with some hard-coded values for debugging purposes.
+# Runs 'Provision-db4it-docker-container-using-XYZ.ps1' script with some hard-coded values for debugging purposes.
 
 $ErrorActionPreference = 'Stop'
 
