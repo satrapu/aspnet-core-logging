@@ -147,7 +147,7 @@ jobs:
       dockerContainerHealthcheckCommand: >-
         pg_isready 
         --host=localhost 
-        --port=$(DatabasePort) 
+        --port=5432 
         --dbname=$(DatabaseName) 
         --username=$(DatabaseUserName) 
         --quiet
@@ -179,7 +179,7 @@ jobs:
       dockerContainerHealthcheckCommand: >-
         pg_isready 
         --host=localhost 
-        --port=$(DatabasePort) 
+        --port=5432
         --dbname=$(DatabaseName) 
         --username=$(DatabaseUserName) 
         --quiet
