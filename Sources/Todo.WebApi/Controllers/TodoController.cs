@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -10,7 +9,7 @@ using Todo.WebApi.Models;
 namespace Todo.WebApi.Controllers
 {
     [Route("api/[controller]")]
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     [ApiController]
     public class TodoController : ControllerBase
     {
@@ -28,17 +27,17 @@ namespace Todo.WebApi.Controllers
         {
             var todoItemQuery = new TodoItemQuery
             {
-                Id = todoItemQueryModel.Id
-              , IsComplete = todoItemQueryModel.IsComplete
-              , NamePattern = todoItemQueryModel.NamePattern
-              , User = User
+                Id = todoItemQueryModel.Id,
+                IsComplete = todoItemQueryModel.IsComplete,
+                NamePattern = todoItemQueryModel.NamePattern,
+                User = User
             };
             var todoItemInfoList = todoService.GetByQuery(todoItemQuery);
             var models = todoItemInfoList.Select(x => new TodoItemModel
             {
-                Id = x.Id
-              , IsComplete = x.IsComplete
-              , Name = x.Name
+                Id = x.Id,
+                IsComplete = x.IsComplete,
+                Name = x.Name
             }).ToList();
 
             return models;
@@ -49,9 +48,9 @@ namespace Todo.WebApi.Controllers
         {
             var newTodoItemInfo = new NewTodoItemInfo
             {
-                IsComplete = newTodoItemModel.IsComplete
-              , Name = newTodoItemModel.Name
-              , User = User
+                IsComplete = newTodoItemModel.IsComplete,
+                Name = newTodoItemModel.Name,
+                User = User
             };
 
             var newlyCreatedEntityId = todoService.Add(newTodoItemInfo);
@@ -60,8 +59,8 @@ namespace Todo.WebApi.Controllers
 
             var query = new TodoItemQuery
             {
-                Id = newlyCreatedEntityId
-              , User = User
+                Id = newlyCreatedEntityId,
+                User = User
             };
             var todoItemInfo = todoService.GetByQuery(query).Single();
             return Created(string.Empty, todoItemInfo);
@@ -72,10 +71,10 @@ namespace Todo.WebApi.Controllers
         {
             var updateTodoItemInfo = new UpdateTodoItemInfo
             {
-                Id = id
-              , IsComplete = updateTodoItemModel.IsComplete
-              , Name = updateTodoItemModel.Name
-              , User = User
+                Id = id,
+                IsComplete = updateTodoItemModel.IsComplete,
+                Name = updateTodoItemModel.Name,
+                User = User
             };
 
             todoService.Update(updateTodoItemInfo);
@@ -90,7 +89,8 @@ namespace Todo.WebApi.Controllers
         {
             var deleteTodoItemInfo = new DeleteTodoItemInfo
             {
-                Id = id, User = User
+                Id = id,
+                User = User
             };
 
             todoService.Delete(deleteTodoItemInfo);
