@@ -5,15 +5,16 @@ namespace Todo.Services
 {
     public static class ClaimPrincipalExtensions
     {
-        public  static string GetUserId(this ClaimsPrincipal claimsPrincipal)
+        public static string GetUserId(this ClaimsPrincipal claimsPrincipal)
         {
             if (claimsPrincipal == null)
             {
                 throw new ArgumentNullException(nameof(claimsPrincipal));
             }
 
-            var result = claimsPrincipal.FindFirst(ClaimTypes.NameIdentifier).Value;
-            return result;
+            Claim nameIdentifierClaim = claimsPrincipal.FindFirst(ClaimTypes.NameIdentifier);
+            string userId = nameIdentifierClaim?.Value;
+            return userId;
         }
     }
 }
