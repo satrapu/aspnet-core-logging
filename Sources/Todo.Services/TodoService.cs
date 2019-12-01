@@ -54,9 +54,9 @@ namespace Todo.Services
 
             var result = matchingTodoItems.Select(todoItem => new TodoItemInfo
             {
-                Id = todoItem.Id
-              , IsComplete = todoItem.IsComplete
-              , Name = todoItem.Name
+                Id = todoItem.Id,
+                IsComplete = todoItem.IsComplete,
+                Name = todoItem.Name
             }).ToList();
 
             return result;
@@ -71,10 +71,10 @@ namespace Todo.Services
 
             var todoItem = new TodoItem
             {
-                IsComplete = newTodoItemInfo.IsComplete
-              , Name = newTodoItemInfo.Name
-              , CreatedBy = newTodoItemInfo.User.GetUserId()
-              , CreatedOn = DateTime.Now
+                IsComplete = newTodoItemInfo.IsComplete,
+                Name = newTodoItemInfo.Name,
+                CreatedBy = newTodoItemInfo.User.GetUserId(),
+                CreatedOn = DateTime.Now
             };
 
             todoDbContext.TodoItems.Add(todoItem);
@@ -92,7 +92,7 @@ namespace Todo.Services
             {
                 throw new ArgumentNullException(nameof(updateTodoItemInfo));
             }
-           
+
             var todoItem = todoDbContext.TodoItems.SingleOrDefault(x => x.Id == updateTodoItemInfo.Id);
 
             if (todoItem == null)
@@ -105,7 +105,7 @@ namespace Todo.Services
             todoItem.Name = updateTodoItemInfo.Name;
             todoItem.LastUpdatedBy = updateTodoItemInfo.User.GetUserId();
             todoItem.LastUpdatedOn = DateTime.Now;
-            
+
             todoDbContext.TodoItems.Update(todoItem);
             todoDbContext.SaveChanges();
 
