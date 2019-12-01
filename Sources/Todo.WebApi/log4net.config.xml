@@ -15,8 +15,8 @@
     </layout>
   </appender>
 
-  <logger name="TodoWebApp">
-    <level value="ALL" />
+  <logger name="Todo">
+    <level value="DEBUG" />
   </logger>
 
   <logger name="Microsoft">
@@ -24,7 +24,7 @@
   </logger>
 
   <root>
-    <level value="OFF"/>
+    <level value="INFO"/>
     <appender-ref ref="Application"/>
   </root>
 
