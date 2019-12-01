@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
-using Todo.WebApi.Authorization;
 
 namespace Todo.WebApi.Authentication
 {
@@ -42,7 +41,6 @@ namespace Todo.WebApi.Authentication
                   new Claim(ClaimTypes.NameIdentifier, "190A935B-B718-4D1A-90E3-391435718918")
                 , new Claim(ClaimTypes.Name, "satrapu")
                 , new Claim(ClaimTypes.Email, "satrapu@noserver.ro")
-                , new Claim(ClaimTypes.Role, ApplicationRoles.SuperUser.ToString())
             });
             httpContext.User = new ClaimsPrincipal(hardCodedClaimsIdentity);
             await nextRequestDelegate(httpContext).ConfigureAwait(false);
