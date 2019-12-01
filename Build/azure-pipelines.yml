@@ -145,11 +145,11 @@ jobs:
           Password=$(IntegrationTests.Database.Todo.Password);
       databaseReadinessStrategy: 'healthcheck'
       dockerContainerHealthcheckCommand: >-
-        pg_isready 
-        --host=localhost 
-        --port=5432 
-        --dbname=$(DatabaseName) 
-        --username=$(DatabaseUserName) 
+        pg_isready
+        --host=localhost
+        --port=5432
+        --dbname=$(IntegrationTests.Database.Todo.Name)
+        --username=$(IntegrationTests.Database.Todo.Username)
         --quiet
 
 - template: './azure-pipelines.job-template.yml'
@@ -177,11 +177,11 @@ jobs:
         Password=$(IntegrationTests.Database.Todo.Password);
       databaseReadinessStrategy: 'healthcheck'
       dockerContainerHealthcheckCommand: >-
-        pg_isready 
-        --host=localhost 
+        pg_isready
+        --host=localhost
         --port=5432
-        --dbname=$(DatabaseName) 
-        --username=$(DatabaseUserName) 
+        --dbname=$(IntegrationTests.Database.Todo.Name)
+        --username=$(IntegrationTests.Database.Todo.Username)
         --quiet
     sonar:
       enabled: True
