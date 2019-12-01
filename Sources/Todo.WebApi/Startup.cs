@@ -5,8 +5,10 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using System;
 using Todo.Persistence;
 using Todo.Services;
+using Todo.WebApi.Authentication;
 using Todo.WebApi.Logging;
 
 namespace Todo.WebApi
@@ -22,7 +24,7 @@ namespace Todo.WebApi
         /// <param name="configuration">The configuration to be used for setting up this application.</param>
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
         }
 
         private IConfiguration Configuration { get; }
@@ -52,7 +54,7 @@ namespace Todo.WebApi
 
             // Configure ASP.NET Web API
             services.AddMvc(options =>
-                    {
+                    { 
                         // In case the client requests data in an unsupported format, respond with 406 status code
                         options.ReturnHttpNotAcceptable = true;
                     })
@@ -65,17 +67,23 @@ namespace Todo.WebApi
             // Register service with 2 interfaces.
             // See more here: https://andrewlock.net/how-to-register-a-service-with-multiple-interfaces-for-in-asp-net-core-di/.
             services.AddSingleton<LoggingService>();
-            services.AddSingleton<IHttpObjectConverter>(x => x.GetRequiredService<LoggingService>());
-            services.AddSingleton<IHttpContextLoggingHandler>(x => x.GetRequiredService<LoggingService>());
+            services.AddSingleton<IHttpObjectConverter>(serviceProvider => serviceProvider.GetRequiredService<LoggingService>());
+            services.AddSingleton<IHttpContextLoggingHandler>(serviceProvider => serviceProvider.GetRequiredService<LoggingService>());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder applicationBuilder, IHostingEnvironment environment)
+        public void Configure(IApplicationBuilder applicationBuilder, IHostingEnvironment hostingEnvironment)
         {
-            // Ensure logging middleware is invoked as early as possible
+            bool isDevelopmentEnvironment = hostingEnvironment.IsDevelopment();
+
+            if (isDevelopmentEnvironment)
+            {
+                applicationBuilder.UseHardCodedUser();
+            }
+
             applicationBuilder.UseHttpLogging();
 
-            if (environment.IsDevelopment())
+            if (isDevelopmentEnvironment)
             {
                 applicationBuilder.UseDeveloperExceptionPage();
                 applicationBuilder.UseDatabaseErrorPage();
