@@ -175,14 +175,8 @@ jobs:
         Database=$(IntegrationTests.Database.Todo.Name);
         Username=$(IntegrationTests.Database.Todo.Username);
         Password=$(IntegrationTests.Database.Todo.Password);
-      databaseReadinessStrategy: 'healthcheck'
-      dockerContainerHealthcheckCommand: >-
-        pg_isready
-        --host=localhost
-        --port=5432
-        --dbname=$(IntegrationTests.Database.Todo.Name)
-        --username=$(IntegrationTests.Database.Todo.Username)
-        --quiet
+      databaseReadinessStrategy: 'log-polling'
+      dockerContainerLogPatternForDatabaseReady: 'PostgreSQL init process complete; ready for start up.'
     sonar:
       enabled: True
       buildBreaker:
