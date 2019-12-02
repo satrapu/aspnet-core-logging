@@ -4,8 +4,7 @@
 retries=0
 
 #brew cask install https://raw.githubusercontent.com/Homebrew/homebrew-cask/8ce4e89d10716666743b28c5a46cd54af59a9cc2/Casks/docker.rb
-brew search docker
-brew cask install docker@2.1.0.5
+brew cask install docker
 sudo /Applications/Docker.app/Contents/MacOS/Docker --quit-after-install --unattended
 /Applications/Docker.app/Contents/MacOS/Docker --unattended &
 
