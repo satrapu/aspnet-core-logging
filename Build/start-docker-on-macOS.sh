@@ -28,7 +28,3 @@ while ! docker info 2>/dev/null ; do
 done
 
 echo "Docker service is now running"
-
-brew install docker-compose
-docker-compose --version
-echo "Docker Compose works"
