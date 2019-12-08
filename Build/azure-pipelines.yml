@@ -104,15 +104,14 @@ jobs:
       dockerImage: 'postgres'
       dockerTag: '11.3-alpine'
       dockerContainerName: 'db4it'
-      dockerHostPort: 5432
-      dockerContainerPort: 5432
+      dockerPortMapping: '9876:5432/tcp'
       dockerContainerEnvironmentVariables: >-
         -e "POSTGRES_DB=$(IntegrationTests.Database.Todo.Name)"
         -e "POSTGRES_USER=$(IntegrationTests.Database.Todo.Username)"
         -e "POSTGRES_PASSWORD=$(IntegrationTests.Database.Todo.Password)"
       databaseConnectionString: >-
         Host=localhost;
-        Port=5432;
+        Port=9876;
         Database=$(IntegrationTests.Database.Todo.Name);
         Username=$(IntegrationTests.Database.Todo.Username);
         Password=$(IntegrationTests.Database.Todo.Password);
@@ -130,8 +129,7 @@ jobs:
       dockerImage: 'postgres'
       dockerTag: '11.3-alpine'
       dockerContainerName: 'db4it'
-      dockerHostPort: 5432
-      dockerContainerPort: 5432
+      dockerPortMapping: '5432/tcp'
       dockerContainerEnvironmentVariables: >-
         -e "POSTGRES_DB=$(IntegrationTests.Database.Todo.Name)"
         -e "POSTGRES_USER=$(IntegrationTests.Database.Todo.Username)"
@@ -163,8 +161,7 @@ jobs:
       dockerImage: 'stellirin/postgres-windows'
       dockerTag: '11.3'
       dockerContainerName: 'db4it'
-      dockerHostPort: 5432
-      dockerContainerPort: 5432
+      dockerPortMapping: '5432'
       dockerContainerEnvironmentVariables: >-
         -e "POSTGRES_DB=$(IntegrationTests.Database.Todo.Name)"
         -e "POSTGRES_USER=$(IntegrationTests.Database.Todo.Username)"

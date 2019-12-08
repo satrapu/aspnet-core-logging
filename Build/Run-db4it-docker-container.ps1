@@ -22,33 +22,31 @@ $ScriptPath = Split-Path $MyInvocation.InvocationName
 Write-Output "Will check database readiness using '$checkReadinessStrategy' strategy"
 
 if ($checkReadinessStrategy -eq 'log-polling') {
-    & $ScriptPath\Provision-db4it-container-using-log-polling.ps1 `
+    & $ScriptPath\Provision-db4it-docker-container-using-log-polling.ps1 `
         -ContainerName $ContainerName `
-        -HostPort 9999 `
-        -ContainerPort $DatabasePort `
+        -PortMapping '5432/tcp' `
         -ContainerEnvironmentVariables "--env `"POSTGRES_DB=$DatabaseName`" --env `"POSTGRES_USER=$DatabaseUserName`" --env `"POSTGRES_PASSWORD=$DatabasePassword`"" `
-        -DockerImageName 'stellirin/postgres-windows' `
-        -DockerImageTag '11.2' `
-        -ContainerLogPatternForDatabaseReady 'PostgreSQL init process complete; ready for start up.' `
+        -DockerImageName 'postgres' `
+        -DockerImageTag '11.2-alpine' `
+        -ContainerLogPatternForDatabaseReady 'database system is ready to accept connections' `
         -SleepingTimeInMillis 500 `
         -MaxNumberOfTries 20
-    # -DockerImageName 'postgres' `
-    # -DockerImageTag '12.0-alpine' `
-    #-ContainerLogPatternForDatabaseReady 'database system is ready to accept connections' `
+        #-DockerImageName 'stellirin/postgres-windows' `
+        #-DockerImageTag '11.2' `
+        #-ContainerLogPatternForDatabaseReady 'PostgreSQL init process complete; ready for start up.'
 }
 else {
-    & $ScriptPath\Provision-db4it-container-using-healthcheck.ps1 `
+    & $ScriptPath\Provision-db4it-docker-container-using-healthcheck.ps1 `
         -ContainerName $ContainerName `
-        -HostPort 9999 `
-        -ContainerPort $DatabasePort `
+        -PortMapping '5432/tcp' `
         -ContainerEnvironmentVariables "--env `"POSTGRES_DB=$DatabaseName`" --env `"POSTGRES_USER=$DatabaseUserName`" --env `"POSTGRES_PASSWORD=$DatabasePassword`"" `
-        -DockerImageName 'stellirin/postgres-windows' `
-        -DockerImageTag '11.2' `
+        -DockerImageName 'postgres' `
+        -DockerImageTag '11.2-alpine' `
         -HealthCheckCommand "pg_isready --host=localhost --port=${DatabasePort} --dbname=${DatabaseName} --username=${DatabaseUserName} --quiet" `
         -HealthCheckIntervalInMilliseconds 500 `
         -MaxNumberOfTries 20
-    # -DockerImageName 'postgres' `
-    # -DockerImageTag '12.0-alpine' `
+        #-DockerImageName 'stellirin/postgres-windows' `
+        #-DockerImageTag '11.2' `
 }
 
 Write-Output "Last exit code = $LastExitCode"

@@ -14,11 +14,14 @@ Param (
     # Represents the name of the Docker container to check whtether is running.
     $ContainerName,
 
-    # Represents the Docker host port to use when publishing the database port.
-    $HostPort,
-
-    # Represents the database port to publish to the Docker host.
-    $ContainerPort,
+    # Represents the mapping between the Docker host port and container port used for exposing 
+    # the service running inside the container to the outside world.
+    # Supported values: 
+    #   - host_port:container_port/network_protocol, e.g. 1234:9876/tcp, which means the host port is static
+    #   - host_port:container_port, e.g. 1234:9876, which means the host port is static
+    #   - container_port/network_protocol, e.g. 9876/tcp, which means the host port will be dynamically allocated
+    #   - container_port, e.g. 9876, which means the host port will be dynamically allocated
+    $PortMapping,
 
     # Represents the environment variables used when running the Docker container.
     # Example: -e "key1=value1" -e "key2=value2".
@@ -45,7 +48,7 @@ docker image pull ${DockerImageName}:${DockerImageTag} 1>$null
 Write-Output "Docker image ${DockerImageName}:${DockerImageTag} has been pulled`n"
 
 Write-Output "Starting Docker container '$ContainerName' ..."
-Invoke-Expression -Command "docker container run --name $ContainerName --detach --publish ${HostPort}:${ContainerPort} $ContainerEnvironmentVariables ${DockerImageName}:${DockerImageTag}" 1>$null
+Invoke-Expression -Command "docker container run --name $ContainerName --detach --publish ${PortMapping} $ContainerEnvironmentVariables ${DockerImageName}:${DockerImageTag}" 1>$null
 Write-Output "Docker container '$ContainerName' has been started"
 
 $numberOfTries = 0
@@ -61,6 +64,16 @@ do {
 
     if ($isDatabaseReady -eq $true) {
         Write-Output "`n`nDatabase running inside container ""$ContainerName"" is ready to accept incoming connections"
+        $dockerContainerPort = $PortMapping
+
+        if ($PortMapping -like '*:*') {
+            $dockerContainerPort = $PortMapping -split ':' | Select-Object -Skip 1
+        }
+        
+        $dockerHostPort = docker port $ContainerName $dockerContainerPort
+        $dockerHostPort = $dockerHostPort -split ':' | Select-Object -Skip 1
+        Write-Output "Host port is: $dockerHostPort"
+        Write-Output "#vso[task.setvariable variable=$ContainerName.Ports.$dockerContainerPort]$dockerHostPort"
         exit 0
     }
 

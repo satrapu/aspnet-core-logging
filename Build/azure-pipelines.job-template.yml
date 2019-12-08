@@ -14,8 +14,7 @@ parameters:
     dockerImage: ''
     dockerTag: ''
     dockerContainerName: ''
-    dockerHostPort: ''
-    dockerContainerPort: ''
+    dockerPortMapping: ''
     dockerContainerEnvironmentVariables: ''
     dockerContainerLogPatternForDatabaseReady: ''
     dockerContainerHealthcheckCommand: ''
@@ -174,7 +173,7 @@ jobs:
       docker container run
       --name ${{ parameters.db4it.dockerContainerName }}
       --detach
-      --publish ${{ parameters.db4it.dockerHostPort }}:${{ parameters.db4it.dockerContainerPort }}
+      --publish ${{ parameters.db4it.dockerPortMapping }}
       ${{ parameters.db4it.dockerContainerEnvironmentVariables }}
       ${{ parameters.db4it.dockerImage }}:${{ parameters.db4it.dockerTag }}
     name: run_db4it_docker_container
@@ -193,8 +192,7 @@ jobs:
         -DockerImageName '${{ parameters.db4it.dockerImage }}'
         -DockerImageTag '${{ parameters.db4it.dockerTag }}'
         -ContainerName '${{ parameters.db4it.dockerContainerName }}'
-        -HostPort ${{ parameters.db4it.dockerHostPort }}
-        -ContainerPort ${{ parameters.db4it.dockerContainerPort }}
+        -PortMapping '${{ parameters.db4it.dockerPortMapping }}'
         -ContainerEnvironmentVariables '${{ parameters.db4it.dockerContainerEnvironmentVariables }}'
         -ContainerLogPatternForDatabaseReady '${{ parameters.db4it.dockerContainerLogPatternForDatabaseReady }}'
         -SleepingTimeInMillis 250
@@ -221,8 +219,7 @@ jobs:
         -DockerImageName '${{ parameters.db4it.dockerImage }}'
         -DockerImageTag '${{ parameters.db4it.dockerTag }}'
         -ContainerName '${{ parameters.db4it.dockerContainerName }}'
-        -HostPort ${{ parameters.db4it.dockerHostPort }}
-        -ContainerPort ${{ parameters.db4it.dockerContainerPort }}
+        -PortMapping '${{ parameters.db4it.dockerPortMapping }}'
         -ContainerEnvironmentVariables '${{ parameters.db4it.dockerContainerEnvironmentVariables }}'
         -HealthCheckCommand '${{ parameters.db4it.dockerContainerHealthcheckCommand }}'
         -HealthCheckIntervalInMilliseconds 250
@@ -236,6 +233,12 @@ jobs:
           succeeded()
         , eq( '${{ parameters.db4it.databaseReadinessStrategy }}', 'healthcheck')
       )
+
+  - script: 
+      echo "db4it host port is: $(db4it.Ports.5432)"
+    name: display_db4it_host_port
+    displayName: Display db4it host port
+    enabled: True
 
   # Run integration tests and collect code coverage metrics.
   # Decorate the AssemblyInfo.cs found inside each integration test related project with:
