@@ -234,7 +234,8 @@ jobs:
         , eq( '${{ parameters.db4it.databaseReadinessStrategy }}', 'healthcheck')
       )
 
-  - script: echo The dynamically allocated Docker host port for container ${{ parameters.db4it.dockerContainerName }} is $(db4it_Ports_5432)
+  - script: >-
+      echo The dynamically allocated Docker host port for container '${{ parameters.db4it.dockerContainerName }}' is '$(db4it_Ports_5432)'
     name: display_db4it_host_port
     displayName: Display db4it host port
     enabled: True
