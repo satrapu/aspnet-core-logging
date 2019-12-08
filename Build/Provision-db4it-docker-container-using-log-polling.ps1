@@ -45,7 +45,7 @@ docker image pull ${DockerImageName}:${DockerImageTag} 1>$null
 Write-Output "Docker image ${DockerImageName}:${DockerImageTag} has been pulled`n"
 
 Write-Output "Starting Docker container '$ContainerName' ..."
-Invoke-Expression -Command "docker container run --name $ContainerName --health-cmd 'pg_isready -U satrapu' --health-interval 1s --detach --publish ${HostPort}:${ContainerPort} $ContainerEnvironmentVariables ${DockerImageName}:${DockerImageTag}" 1>$null
+Invoke-Expression -Command "docker container run --name $ContainerName --detach --publish ${HostPort}:${ContainerPort} $ContainerEnvironmentVariables ${DockerImageName}:${DockerImageTag}" 1>$null
 Write-Output "Docker container '$ContainerName' has been started"
 
 $numberOfTries = 0
