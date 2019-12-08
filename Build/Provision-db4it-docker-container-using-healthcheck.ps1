@@ -70,7 +70,7 @@ do {
         $dockerHostPort = docker port $ContainerName $dockerContainerPort
         $dockerHostPort = $dockerHostPort -split ':' | Select-Object -Skip 1
         Write-Output "Host port is: $dockerHostPort"
-        Write-Output "#vso[task.setvariable variable=$ContainerName_Ports_$dockerContainerPort]$dockerHostPort"
+        Write-Output "##vso[task.setvariable variable=$ContainerName_Ports_$dockerContainerPort]$dockerHostPort"
         exit 0
     }
 
