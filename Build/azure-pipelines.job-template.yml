@@ -234,8 +234,7 @@ jobs:
         , eq( '${{ parameters.db4it.databaseReadinessStrategy }}', 'healthcheck')
       )
 
-  - script: 
-      echo "db4it host port is: $(db4it.Ports.5432)"
+  - script: "echo db4it host port is: $(db4it.Ports.5432)"
     name: display_db4it_host_port
     displayName: Display db4it host port
     enabled: True
