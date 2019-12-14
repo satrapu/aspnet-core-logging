@@ -244,9 +244,18 @@ jobs:
         Write-Host "The Docker host port mapped to container '${{ parameters.db4it.dockerContainerName }}' is: $(db4it_HostPort)"
         $normalizedDatabaseConnectionString = "${{ parameters.db4it.databaseConnectionString.value }}" -replace '${{ parameters.db4it.databaseConnectionString.portPlaceholder }}', $(db4it_HostPort)
         Write-Host "##vso[task.setvariable variable=db4it.normalizedDatabaseConnectionString]$normalizedDatabaseConnectionString"
-        Write-Host "Normalized db4it connection string is: $(db4it.normalizedDatabaseConnectionString)"
     name: normalize_db4it_connection_string
     displayName: Normalize db4it connection string
+    enabled: True
+
+  - task: PowerShell@2
+    inputs:
+      targetType: 'inline'
+      errorActionPreference: 'stop'
+      script: |
+        Write-Host "Normalized db4it connection string is: $(db4it.normalizedDatabaseConnectionString)"
+    name: display_normalized_db4it_connection_string
+    displayName: Display normalized db4it connection string
     enabled: True
 
   # Run integration tests and collect code coverage metrics.
