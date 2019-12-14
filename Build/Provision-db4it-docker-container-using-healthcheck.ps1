@@ -70,8 +70,8 @@ do {
         $dockerHostPort = docker port $ContainerName $dockerContainerPort
         $dockerHostPort = $dockerHostPort -split ':' | Select-Object -Skip 1
         $environmentVariableStoringDockerHostPort = $ContainerName + '_HostPort'
-        [Environment]::SetEnvironmentVariable($environmentVariableStoringDockerHostPort, $dockerHostPort, "Machine")
-        $hostPort = [Environment]::GetEnvironmentVariable($environmentVariableStoringDockerHostPort)
+        [Environment]::SetEnvironmentVariable($environmentVariableStoringDockerHostPort, $dockerHostPort, 'User')
+        $hostPort = [Environment]::GetEnvironmentVariable($environmentVariableStoringDockerHostPort, 'User')
         Write-Output "Docker host port used by $ContainerName container is: $hostPort"
         exit 0
     }
