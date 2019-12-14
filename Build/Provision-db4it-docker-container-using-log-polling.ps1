@@ -42,14 +42,14 @@ Param (
 
 $ErrorActionPreference = 'Continue'
 
-Write-Output "Pulling Docker image ${DockerImageName}:${DockerImageTag} ..."
+Write-Host "Pulling Docker image ${DockerImageName}:${DockerImageTag} ..."
 # Success stream is redirected to null to ensure the output of the Docker command below is not printed to console
 docker image pull ${DockerImageName}:${DockerImageTag} 1>$null
-Write-Output "Docker image ${DockerImageName}:${DockerImageTag} has been pulled`n"
+Write-Host "Docker image ${DockerImageName}:${DockerImageTag} has been pulled`n"
 
-Write-Output "Starting Docker container '$ContainerName' ..."
+Write-Host "Starting Docker container '$ContainerName' ..."
 Invoke-Expression -Command "docker container run --name $ContainerName --detach --publish ${PortMapping} $ContainerEnvironmentVariables ${DockerImageName}:${DockerImageTag}" 1>$null
-Write-Output "Docker container '$ContainerName' has been started"
+Write-Host "Docker container '$ContainerName' has been started"
 
 $numberOfTries = 0
 $isDatabaseReady = $false
@@ -63,7 +63,7 @@ do {
     $isDatabaseReady = docker logs --tail 50 $ContainerName 2>&1 | Select-String -Pattern $ContainerLogPatternForDatabaseReady -SimpleMatch -Quiet
 
     if ($isDatabaseReady -eq $true) {
-        Write-Output "`n`nDatabase running inside container ""$ContainerName"" is ready to accept incoming connections"
+        Write-Host "`n`nDatabase running inside container ""$ContainerName"" is ready to accept incoming connections"
         $dockerContainerPort = $PortMapping
 
         if ($PortMapping -like '*:*') {
@@ -73,9 +73,10 @@ do {
         $dockerHostPort = docker port $ContainerName $dockerContainerPort
         $dockerHostPort = $dockerHostPort -split ':' | Select-Object -Skip 1
         $environmentVariableStoringDockerHostPort = "${ContainerName}_HostPort"
-        [Environment]::SetEnvironmentVariable($environmentVariableStoringDockerHostPort, "${dockerHostPort}", 'User')
+        Write-Host "environmentVariableStoringDockerHostPort=$environmentVariableStoringDockerHostPort"
+        [Environment]::SetEnvironmentVariable($environmentVariableStoringDockerHostPort, "$dockerHostPort", 'User')
         $dockerHostPort = [Environment]::GetEnvironmentVariable($environmentVariableStoringDockerHostPort, 'User')
-        Write-Output "Docker host port used by $ContainerName container is: $dockerHostPort"
+        Write-Host "Docker host port used by $ContainerName container is: $dockerHostPort"
         exit 0
     }
 
@@ -85,13 +86,13 @@ do {
         $progressMessage += "; will check again in $sleepingTimeInMillis milliseconds"
     }
         
-    Write-Output $progressMessage
+    Write-Host $progressMessage
     $numberOfTries++
 }
 until ($numberOfTries -eq $maxNumberOfTries)
 
 # Instruct Azure DevOps to consider the current task as failed.
 # See more about logging commands here: https://github.com/microsoft/azure-pipelines-tasks/blob/master/docs/authoring/commands.md.
-Write-Output "##vso[task.LogIssue type=error;]Container $ContainerName is still not running after checking for $numberOfTries times; will stop here"
-Write-Output "##vso[task.complete result=Failed;]"
+Write-Host "##vso[task.LogIssue type=error;]Container $ContainerName is still not running after checking for $numberOfTries times; will stop here"
+Write-Host "##vso[task.complete result=Failed;]"
 exit 1
