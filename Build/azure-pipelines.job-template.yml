@@ -240,7 +240,7 @@ jobs:
       errorActionPreference: 'stop'
       script: |
         Write-Host "The Docker host port for container '${{ parameters.db4it.dockerContainerName }}' 
-        is $([Environment]::GetEnvironmentVariable(`"${{ parameters.db4it.dockerContainerName }}_HostPort`"))"
+        is: " + [Environment]::GetEnvironmentVariable(`"${{ parameters.db4it.dockerContainerName }}_HostPort`"))
     name: display_db4it_host_port
     displayName: Display db4it host port
     enabled: True
