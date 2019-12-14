@@ -71,7 +71,6 @@ do {
         $dockerHostPort = $dockerHostPort -split ':' | Select-Object -Skip 1
         $environmentVariableStoringDockerHostPort = "${ContainerName}_HostPort"
         Write-Host "##vso[task.setvariable variable=$environmentVariableStoringDockerHostPort]$dockerHostPort"
-        Write-Host "Docker host port used by $ContainerName container is: $dockerHostPort"
         exit 0
     }
 

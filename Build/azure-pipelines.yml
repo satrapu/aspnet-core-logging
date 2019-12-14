@@ -109,12 +109,13 @@ jobs:
         -e "POSTGRES_DB=$(IntegrationTests.Database.Todo.Name)"
         -e "POSTGRES_USER=$(IntegrationTests.Database.Todo.Username)"
         -e "POSTGRES_PASSWORD=$(IntegrationTests.Database.Todo.Password)"
-      databaseConnectionString: >-
-        Host=localhost;
-        Port=9876;
-        Database=$(IntegrationTests.Database.Todo.Name);
-        Username=$(IntegrationTests.Database.Todo.Username);
-        Password=$(IntegrationTests.Database.Todo.Password);
+      databaseConnectionString: 
+        value: >-
+          Host=localhost;
+          Port=9876;
+          Database=$(IntegrationTests.Database.Todo.Name);
+          Username=$(IntegrationTests.Database.Todo.Username);
+          Password=$(IntegrationTests.Database.Todo.Password);
       databaseReadinessStrategy: 'log-polling'
       dockerContainerLogPatternForDatabaseReady: 'database system is ready to accept connections'
 
@@ -135,12 +136,14 @@ jobs:
         -e "POSTGRES_USER=$(IntegrationTests.Database.Todo.Username)"
         -e "POSTGRES_PASSWORD=$(IntegrationTests.Database.Todo.Password)"
       dockerContainerLogPatternForDatabaseReady: 'database system is ready to accept connections'
-      databaseConnectionString: >-
+      databaseConnectionString: 
+        value: >-
           Host=localhost;
           Port=__DockerHostPort__;
           Database=$(IntegrationTests.Database.Todo.Name);
           Username=$(IntegrationTests.Database.Todo.Username);
           Password=$(IntegrationTests.Database.Todo.Password);
+        portPlaceholder: '__DockerHostPort__'
       databaseReadinessStrategy: 'healthcheck'
       dockerContainerHealthcheckCommand: >-
         pg_isready
@@ -166,12 +169,14 @@ jobs:
         -e "POSTGRES_DB=$(IntegrationTests.Database.Todo.Name)"
         -e "POSTGRES_USER=$(IntegrationTests.Database.Todo.Username)"
         -e "POSTGRES_PASSWORD=$(IntegrationTests.Database.Todo.Password)"
-      databaseConnectionString: >-
-        Host=localhost;
-        Port=__DockerHostPort__;
-        Database=$(IntegrationTests.Database.Todo.Name);
-        Username=$(IntegrationTests.Database.Todo.Username);
-        Password=$(IntegrationTests.Database.Todo.Password);
+      databaseConnectionString: 
+        value: >-
+          Host=localhost;
+          Port=__DockerHostPort__;
+          Database=$(IntegrationTests.Database.Todo.Name);
+          Username=$(IntegrationTests.Database.Todo.Username);
+          Password=$(IntegrationTests.Database.Todo.Password);
+        portPlaceholder: '__DockerHostPort__'
       databaseReadinessStrategy: 'log-polling'
       dockerContainerLogPatternForDatabaseReady: 'PostgreSQL init process complete; ready for start up.'
     sonar:

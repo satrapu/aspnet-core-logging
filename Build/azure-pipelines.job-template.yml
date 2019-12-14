@@ -18,7 +18,9 @@ parameters:
     dockerContainerEnvironmentVariables: ''
     dockerContainerLogPatternForDatabaseReady: ''
     dockerContainerHealthcheckCommand: ''
-    databaseConnectionString: ''
+    databaseConnectionString:
+      value: ''
+      portPlaceHolder: ''
     databaseReadinessStrategy: ''
 
 jobs:
@@ -239,11 +241,11 @@ jobs:
       targetType: 'inline'
       errorActionPreference: 'stop'
       script: |
-        Write-Host "The Docker host port for container '${{ parameters.db4it.dockerContainerName }}' is: $(db4it_HostPort)"
-        $normalizedDatabaseConnectionString = "${{ parameters.db4it.databaseConnectionString }}" -replace '__DockerHostPort__', $(db4it_HostPort)
+        Write-Host "The Docker host port mapped to container '${{ parameters.db4it.dockerContainerName }}' is: $(db4it_HostPort)"
+        $normalizedDatabaseConnectionString = "${{ parameters.db4it.databaseConnectionString.value }}" -replace '${{ parameters.db4it.databaseConnectionString.portPlaceholder }}', $(db4it_HostPort)
         Write-Host "##vso[task.setvariable variable=db4it.normalizedDatabaseConnectionString]$normalizedDatabaseConnectionString"
-    name: set_db4it_port
-    displayName: Set db4it host port
+    name: normalize_db4it_connection_string
+    displayName: Normalize db4it connection string
     enabled: True
 
   # Run integration tests and collect code coverage metrics.
