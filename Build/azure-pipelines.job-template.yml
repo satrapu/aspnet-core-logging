@@ -197,7 +197,7 @@ jobs:
         -ContainerLogPatternForDatabaseReady '${{ parameters.db4it.dockerContainerLogPatternForDatabaseReady }}'
         -SleepingTimeInMillis 250
         -MaxNumberOfTries 120
-      errorActionPreference: stop
+      errorActionPreference: 'stop'
       failOnStderr: True
       workingDirectory: $(Build.SourcesDirectory)
     condition: |
@@ -224,7 +224,7 @@ jobs:
         -HealthCheckCommand '${{ parameters.db4it.dockerContainerHealthcheckCommand }}'
         -HealthCheckIntervalInMilliseconds 250
         -MaxNumberOfTries 120
-      errorActionPreference: stop
+      errorActionPreference: 'stop'
       failOnStderr: True
       workingDirectory: $(Build.SourcesDirectory)
     condition: |
@@ -236,10 +236,11 @@ jobs:
 
   - task: PowerShell@2
     inputs:
-      errorActionPreference: stop
+      targetType: 'inline'
+      errorActionPreference: 'stop'
       script: |
         Write-Host "The Docker host port for container '${{ parameters.db4it.dockerContainerName }}' 
-        is $env:${{ parameters.db4it.dockerContainerName }}_HostPort"
+        is $(env:${{ parameters.db4it.dockerContainerName }}_HostPort)"
     name: display_db4it_host_port
     displayName: Display db4it host port
     enabled: True
