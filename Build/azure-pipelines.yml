@@ -137,7 +137,7 @@ jobs:
       dockerContainerLogPatternForDatabaseReady: 'database system is ready to accept connections'
       databaseConnectionString: >-
           Host=localhost;
-          Port=5432;
+          Port=__DockerHostPort__;
           Database=$(IntegrationTests.Database.Todo.Name);
           Username=$(IntegrationTests.Database.Todo.Username);
           Password=$(IntegrationTests.Database.Todo.Password);
@@ -168,7 +168,7 @@ jobs:
         -e "POSTGRES_PASSWORD=$(IntegrationTests.Database.Todo.Password)"
       databaseConnectionString: >-
         Host=localhost;
-        Port=5432;
+        Port=__DockerHostPort__;
         Database=$(IntegrationTests.Database.Todo.Name);
         Username=$(IntegrationTests.Database.Todo.Username);
         Password=$(IntegrationTests.Database.Todo.Password);

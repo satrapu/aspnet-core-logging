@@ -239,9 +239,11 @@ jobs:
       targetType: 'inline'
       errorActionPreference: 'stop'
       script: |
-        Write-Host "The Docker host port for container '${{ parameters.db4it.dockerContainerName }}' is: $(db4it_HostPort)" 
-    name: display_db4it_host_port
-    displayName: Display db4it host port
+        Write-Host "The Docker host port for container '${{ parameters.db4it.dockerContainerName }}' is: $(db4it_HostPort)"
+        $normalizedDatabaseConnectionString = "${{ parameters.db4it.databaseConnectionString }}" -replace '__DockerHostPort__','$(db4it_HostPort)'
+        Write-Host "##vso[task.setvariable variable=$NormalizedDatabaseConnectionString]$normalizedDatabaseConnectionString"
+    name: set_db4it_port
+    displayName: Set db4it host port
     enabled: True
 
   # Run integration tests and collect code coverage metrics.
@@ -265,7 +267,7 @@ jobs:
       DOTNET_SKIP_FIRST_TIME_EXPERIENCE: $(DotNetSkipFirstTimeExperience)
       DOTNET_CLI_TELEMETRY_OPTOUT: $(DotNetCliTelemetryOptOut)
       COREHOST_TRACE: $(CoreHostTrace)
-      CONNECTIONSTRINGS__TODO: ${{ parameters.db4it.databaseConnectionString }}
+      CONNECTIONSTRINGS__TODO: $(NormalizedDatabaseConnectionString)
 
   # Remove the Docker container hosting the database targeted by the integration tests.
   # See more about 'docker container rm' command here: https://docs.docker.com/engine/reference/commandline/container_rm/.
