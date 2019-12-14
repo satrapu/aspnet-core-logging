@@ -71,7 +71,7 @@ do {
         $dockerHostPort = $dockerHostPort -split ':' | Select-Object -Skip 1
         $environmentVariableStoringDockerHostPort = $ContainerName + '_HostPort'
         [Environment]::SetEnvironmentVariable($environmentVariableStoringDockerHostPort, $dockerHostPort, "Machine")
-        Write-Output "Host port is: $(env:$(environmentVariableStoringDockerHostPort))"
+        Write-Output "Host port is: $([Environment]::SetEnvironmentVariable($environmentVariableStoringDockerHostPort))"
         exit 0
     }
 
