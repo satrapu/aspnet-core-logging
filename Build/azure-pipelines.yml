@@ -116,7 +116,7 @@ jobs:
           Database=$(IntegrationTests.Database.Todo.Name);
           Username=$(IntegrationTests.Database.Todo.Username);
           Password=$(IntegrationTests.Database.Todo.Password);
-        portPlaceholder: ''
+        portPlaceholder: '__DockerHostPort__'
       databaseReadinessStrategy: 'log-polling'
       dockerContainerLogPatternForDatabaseReady: 'database system is ready to accept connections'
 
