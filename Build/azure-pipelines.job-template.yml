@@ -20,7 +20,7 @@ parameters:
     dockerContainerHealthcheckCommand: ''
     databaseConnectionString:
       value: ''
-      portPlaceholder: ''
+      portPlaceholder: '__DockerHostPort__'
     databaseReadinessStrategy: ''
 
 jobs:
