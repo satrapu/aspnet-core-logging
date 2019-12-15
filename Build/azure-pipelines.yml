@@ -116,6 +116,7 @@ jobs:
           Database=$(IntegrationTests.Database.Todo.Name);
           Username=$(IntegrationTests.Database.Todo.Username);
           Password=$(IntegrationTests.Database.Todo.Password);
+        portPlaceholder: '__DockerHostPort__'
       databaseReadinessStrategy: 'log-polling'
       dockerContainerLogPatternForDatabaseReady: 'database system is ready to accept connections'
 
@@ -143,6 +144,7 @@ jobs:
           Database=$(IntegrationTests.Database.Todo.Name);
           Username=$(IntegrationTests.Database.Todo.Username);
           Password=$(IntegrationTests.Database.Todo.Password);
+        portPlaceholder: '__DockerHostPort__'
       databaseReadinessStrategy: 'healthcheck'
       dockerContainerHealthcheckCommand: >-
         pg_isready
@@ -175,6 +177,7 @@ jobs:
           Database=$(IntegrationTests.Database.Todo.Name);
           Username=$(IntegrationTests.Database.Todo.Username);
           Password=$(IntegrationTests.Database.Todo.Password);
+        portPlaceholder: '__DockerHostPort__'
       databaseReadinessStrategy: 'log-polling'
       dockerContainerLogPatternForDatabaseReady: 'PostgreSQL init process complete; ready for start up.'
     sonar:
