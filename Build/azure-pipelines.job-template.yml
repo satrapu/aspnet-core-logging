@@ -244,10 +244,10 @@ jobs:
       targetType: 'inline'
       errorActionPreference: 'stop'
       script: |
-        Write-Host "The Docker host port mapped to container '${{ parameters.db4it.dockerContainerName }}' is: $(${{ parameters.db4it.dockerHostPortBuildVariableName }})"
+        Write-Output "The Docker host port mapped to container '${{ parameters.db4it.dockerContainerName }}' is: $(${{ parameters.db4it.dockerHostPortBuildVariableName }})"
         $normalizedDatabaseConnectionString = "${{ parameters.db4it.databaseConnectionString.value }}" -replace '${{ parameters.db4it.databaseConnectionString.portPlaceholder }}', $(${{ parameters.db4it.dockerHostPortBuildVariableName }})
-        Write-Host "##vso[task.setvariable variable=DatabaseConnectionStrings.Todo]$normalizedDatabaseConnectionString"
-        Write-Host "The normalized database connection string is: $normalizedDatabaseConnectionString"
+        Write-Output "##vso[task.setvariable variable=DatabaseConnectionStrings.Todo]$normalizedDatabaseConnectionString"
+        Write-Output "The normalized database connection string is: $normalizedDatabaseConnectionString"
     name: normalize_db_connection_string_pointing_to_db4it
     displayName: Normalize database connection string pointing to db4it Docker container
     enabled: True

@@ -45,14 +45,14 @@ Param (
 
 $ErrorActionPreference = 'Continue'
 
-Write-Host "Pulling Docker image ${DockerImageName}:${DockerImageTag} ..."
+Write-Output "Pulling Docker image ${DockerImageName}:${DockerImageTag} ..."
 # Success stream is redirected to null to ensure the output of the Docker command below is not printed to console
 docker image pull ${DockerImageName}:${DockerImageTag} 1>$null
-Write-Host "Docker image ${DockerImageName}:${DockerImageTag} has been pulled`n"
+Write-Output "Docker image ${DockerImageName}:${DockerImageTag} has been pulled`n"
 
-Write-Host "Starting Docker container '$ContainerName' ..."
+Write-Output "Starting Docker container '$ContainerName' ..."
 Invoke-Expression -Command "docker container run --name $ContainerName --detach --publish ${PortMapping} $ContainerEnvironmentVariables ${DockerImageName}:${DockerImageTag}" 1>$null
-Write-Host "Docker container '$ContainerName' has been started"
+Write-Output "Docker container '$ContainerName' has been started"
 
 $numberOfTries = 0
 $isDatabaseReady = $false
@@ -66,7 +66,7 @@ do {
     $isDatabaseReady = docker logs --tail 50 $ContainerName 2>&1 | Select-String -Pattern $ContainerLogPatternForDatabaseReady -SimpleMatch -Quiet
 
     if ($isDatabaseReady -eq $true) {
-        Write-Host "`n`nDatabase running inside container ""$ContainerName"" is ready to accept incoming connections"
+        Write-Output "`n`nDatabase running inside container ""$ContainerName"" is ready to accept incoming connections"
         $dockerContainerPort = $PortMapping
 
         if ($PortMapping -like '*:*') {
@@ -75,7 +75,7 @@ do {
         
         $dockerHostPort = docker port $ContainerName $dockerContainerPort
         $dockerHostPort = $dockerHostPort -split ':' | Select-Object -Skip 1
-        Write-Host "##vso[task.setvariable variable=$DockerHostPortBuildVariableName]$dockerHostPort"
+        Write-Output "##vso[task.setvariable variable=$DockerHostPortBuildVariableName]$dockerHostPort"
         exit 0
     }
 
@@ -85,13 +85,13 @@ do {
         $progressMessage += "; will check again in $sleepingTimeInMillis milliseconds"
     }
         
-    Write-Host $progressMessage
+    Write-Output $progressMessage
     $numberOfTries++
 }
 until ($numberOfTries -eq $maxNumberOfTries)
 
 # Instruct Azure DevOps to consider the current task as failed.
 # See more about logging commands here: https://github.com/microsoft/azure-pipelines-tasks/blob/master/docs/authoring/commands.md.
-Write-Host "##vso[task.LogIssue type=error;]Container $ContainerName is still not running after checking for $numberOfTries times; will stop here"
-Write-Host "##vso[task.complete result=Failed;]"
+Write-Output "##vso[task.LogIssue type=error;]Container $ContainerName is still not running after checking for $numberOfTries times; will stop here"
+Write-Output "##vso[task.complete result=Failed;]"
 exit 1
