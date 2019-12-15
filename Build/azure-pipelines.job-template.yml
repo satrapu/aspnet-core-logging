@@ -15,6 +15,7 @@ parameters:
     dockerTag: ''
     dockerContainerName: ''
     dockerPortMapping: ''
+    dockerHostPortBuildVariableName: ''
     dockerContainerEnvironmentVariables: ''
     dockerContainerLogPatternForDatabaseReady: ''
     dockerContainerHealthcheckCommand: ''
@@ -195,6 +196,7 @@ jobs:
         -DockerImageTag '${{ parameters.db4it.dockerTag }}'
         -ContainerName '${{ parameters.db4it.dockerContainerName }}'
         -PortMapping '${{ parameters.db4it.dockerPortMapping }}'
+        -DockerHostPortBuildVariableName '${{ parameters.db4it.dockerHostPortBuildVariableName}}'
         -ContainerEnvironmentVariables '${{ parameters.db4it.dockerContainerEnvironmentVariables }}'
         -ContainerLogPatternForDatabaseReady '${{ parameters.db4it.dockerContainerLogPatternForDatabaseReady }}'
         -SleepingTimeInMillis 250
@@ -222,6 +224,7 @@ jobs:
         -DockerImageTag '${{ parameters.db4it.dockerTag }}'
         -ContainerName '${{ parameters.db4it.dockerContainerName }}'
         -PortMapping '${{ parameters.db4it.dockerPortMapping }}'
+        -DockerHostPortBuildVariableName '${{ parameters.db4it.dockerHostPortBuildVariableName}}'
         -ContainerEnvironmentVariables '${{ parameters.db4it.dockerContainerEnvironmentVariables }}'
         -HealthCheckCommand '${{ parameters.db4it.dockerContainerHealthcheckCommand }}'
         -HealthCheckIntervalInMilliseconds 250
@@ -241,9 +244,10 @@ jobs:
       targetType: 'inline'
       errorActionPreference: 'stop'
       script: |
-        Write-Host "The Docker host port mapped to container '${{ parameters.db4it.dockerContainerName }}' is: $(db4it.dockerHostPort)"
+        Write-Host "The Docker host port mapped to container '${{ parameters.db4it.dockerContainerName }}' is: $(${{ parameters.db4it.dockerPortMapping }})"
         $normalizedDatabaseConnectionString = "${{ parameters.db4it.databaseConnectionString.value }}" -replace '${{ parameters.db4it.databaseConnectionString.portPlaceholder }}', $(db4it.dockerHostPort)
         Write-Host "##vso[task.setvariable variable=DatabaseConnectionStrings.Todo]$normalizedDatabaseConnectionString"
+        Write-Host "The normalized database connection string is: $normalizedDatabaseConnectionString"
     name: normalize_db_connection_string_pointing_to_db4it
     displayName: Normalize database connection string pointing to db4it Docker container
     enabled: True

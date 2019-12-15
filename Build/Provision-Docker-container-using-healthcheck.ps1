@@ -23,6 +23,9 @@ Param (
     #   - container_port, e.g. 9876, which means the host port will be dynamically allocated
     $PortMapping,
 
+    # Represents the name of the build variable to store the Docker host port mapped to the container port.
+    $DockerHostPortBuildVariableName,
+
     # Represents the environment variables used when running the Docker container.
     # Example: -e "key1=value1" -e "key2=value2".
     $ContainerEnvironmentVariables,
@@ -69,8 +72,7 @@ do {
         
         $dockerHostPort = docker port $ContainerName $dockerContainerPort
         $dockerHostPort = $dockerHostPort -split ':' | Select-Object -Skip 1
-        $environmentVariableStoringDockerHostPort = "${ContainerName}.dockerHostPort"
-        Write-Host "##vso[task.setvariable variable=$environmentVariableStoringDockerHostPort]$dockerHostPort"
+        Write-Host "##vso[task.setvariable variable=$DockerHostPortBuildVariableName]$dockerHostPort"
         exit 0
     }
 

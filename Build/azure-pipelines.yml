@@ -105,6 +105,7 @@ jobs:
       dockerTag: '11.3-alpine'
       dockerContainerName: 'db4it'
       dockerPortMapping: '9876:5432/tcp'
+      dockerHostPortBuildVariableName: 'db4it.dockerHostPort'
       dockerContainerEnvironmentVariables: >-
         -e "POSTGRES_DB=$(IntegrationTests.Database.Todo.Name)"
         -e "POSTGRES_USER=$(IntegrationTests.Database.Todo.Username)"
@@ -132,6 +133,7 @@ jobs:
       dockerTag: '11.3-alpine'
       dockerContainerName: 'db4it'
       dockerPortMapping: '5432/tcp'
+      dockerHostPortBuildVariableName: 'db4it.dockerHostPort'
       dockerContainerEnvironmentVariables: >-
         -e "POSTGRES_DB=$(IntegrationTests.Database.Todo.Name)"
         -e "POSTGRES_USER=$(IntegrationTests.Database.Todo.Username)"
@@ -166,6 +168,7 @@ jobs:
       dockerTag: '11.3'
       dockerContainerName: 'db4it'
       dockerPortMapping: '5432'
+      dockerHostPortBuildVariableName: 'db4it.dockerHostPort'
       dockerContainerEnvironmentVariables: >-
         -e "POSTGRES_DB=$(IntegrationTests.Database.Todo.Name)"
         -e "POSTGRES_USER=$(IntegrationTests.Database.Todo.Username)"
