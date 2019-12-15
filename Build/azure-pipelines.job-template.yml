@@ -248,16 +248,6 @@ jobs:
     displayName: Normalize db4it connection string
     enabled: True
 
-  - task: PowerShell@2
-    inputs:
-      targetType: 'inline'
-      errorActionPreference: 'stop'
-      script: |
-        Write-Host "Normalized db4it connection string is: $(db4it.normalizedDatabaseConnectionString)"
-    name: display_normalized_db4it_connection_string
-    displayName: Display normalized db4it connection string
-    enabled: True
-
   # Run integration tests and collect code coverage metrics.
   # Decorate the AssemblyInfo.cs found inside each integration test related project with:
   #     [assembly: NUnit.Framework.Category("IntegrationTests")]
