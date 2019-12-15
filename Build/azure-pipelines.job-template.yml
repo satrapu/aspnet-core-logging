@@ -189,7 +189,7 @@ jobs:
     displayName: Provision db4it Docker container using log-polling
     inputs:
       targetType: 'filePath'
-      filePath: '$(Build.SourcesDirectory)/Build/Provision-db4it-docker-container-using-log-polling.ps1'
+      filePath: '$(Build.SourcesDirectory)/Build/Provision-Docker-container-using-log-polling.ps1'
       arguments: >-
         -DockerImageName '${{ parameters.db4it.dockerImage }}'
         -DockerImageTag '${{ parameters.db4it.dockerTag }}'
@@ -216,7 +216,7 @@ jobs:
     displayName: Provision db4it Docker container using healthcheck
     inputs:
       targetType: 'filePath'
-      filePath: '$(Build.SourcesDirectory)/Build/Provision-db4it-docker-container-using-healthcheck.ps1'
+      filePath: '$(Build.SourcesDirectory)/Build/Provision-Docker-container-using-healthcheck.ps1'
       arguments: >-
         -DockerImageName '${{ parameters.db4it.dockerImage }}'
         -DockerImageTag '${{ parameters.db4it.dockerTag }}'
