@@ -281,17 +281,6 @@ jobs:
       COREHOST_TRACE: $(CoreHostTrace)
       CONNECTIONSTRINGS__TODO: $(db4it.normalizedDatabaseConnectionString)
 
-  # Remove the Docker container hosting the database targeted by the integration tests.
-  # See more about 'docker container rm' command here: https://docs.docker.com/engine/reference/commandline/container_rm/.
-  - script: >-
-      docker container rm
-      --force
-      ${{ parameters.db4it.dockerContainerName }}
-    name: remove_db4it_docker_container
-    displayName: Remove db4it Docker container
-    enabled: True
-    condition: succeededOrFailed()
-
   # Publish integration test results inside the build 'Tests' tab.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=azure-devops&tabs=yaml.
   - task: PublishTestResults@2
