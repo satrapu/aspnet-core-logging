@@ -161,30 +161,10 @@ jobs:
         , eq( variables['Agent.OS'], 'Darwin')
       )
 
-  # Pull the appropriate Docker image used for running the database to be targeted by the integration tests.
-  # See more about 'docker image pull' command here: https://docs.docker.com/engine/reference/commandline/image_pull/. 
-  - script: >-
-      docker image pull
-      ${{ parameters.db4it.dockerImage }}:${{ parameters.db4it.dockerTag }}
-    name: pull_db4it_docker_image
-    displayName: Pull db4it Docker image
-    enabled: False
-
-  # Start the Docker container hosting the database to be targeted by the integration tests.
-  # See more about 'docker container run' command here: https://docs.docker.com/engine/reference/commandline/container_run/.
-  - script: >-
-      docker container run
-      --name ${{ parameters.db4it.dockerContainerName }}
-      --detach
-      --publish ${{ parameters.db4it.dockerPortMapping }}
-      ${{ parameters.db4it.dockerContainerEnvironmentVariables }}
-      ${{ parameters.db4it.dockerImage }}:${{ parameters.db4it.dockerTag }}
-    name: run_db4it_docker_container
-    displayName: Run db4it Docker container
-    enabled: False
-
-  # Runs a PowerShell script to check whether the Docker container hosting the database 
-  # to be targeted by the integration tests is running.
+  # Runs a PowerShell script to start a Docker container hosting the database 
+  # to be targeted by the integration tests.
+  # Checking whether the database is ready for processing incoming queries is done 
+  # using Docker logs command (https://docs.docker.com/engine/reference/commandline/logs/).
   - task: PowerShell@2
     name: provision_db4it_docker_container_using_log_polling
     displayName: Provision db4it Docker container using log-polling
@@ -211,8 +191,10 @@ jobs:
         , eq( '${{ parameters.db4it.databaseReadinessStrategy }}', 'log-polling')
       )
 
-  # Runs a PowerShell script to check whether the Docker container hosting the database 
-  # to be targeted by the integration tests is running.
+  # Runs a PowerShell script to start a Docker container hosting the database 
+  # to be targeted by the integration tests.
+  # Checking whether the database is ready for processing incoming queries is done 
+  # using Docker healthcheck support (https://docs.docker.com/engine/reference/run/#healthcheck).
   - task: PowerShell@2
     name: provision_db4it_docker_container_using_healthcheck
     displayName: Provision db4it Docker container using healthcheck
@@ -239,6 +221,8 @@ jobs:
         , eq( '${{ parameters.db4it.databaseReadinessStrategy }}', 'healthcheck')
       )
 
+  # Runs a PowerShell script to ensure the connection string pointing to the database 
+  # to be targeted by the integration tests uses the appropriate port.
   - task: PowerShell@2
     inputs:
       targetType: 'inline'
