@@ -36,6 +36,11 @@ variables:
   # Be sure to link this group to this pipeline by selecting the latter -> Edit -> Variables -> Variable Groups!
   - group: 'SonarQube'
 
+  # Load group containing variables applicable to integration tests.
+  # This group contains the password to be used when accessing the dockerized database targeted by the integration tests.
+  # This password is stored as a secret under the name "IntegrationTests.Database.Todo.Password".
+  - group: 'IntegrationTests'
+
   # Specifies the version of the .NET Core SDK to install and use when running this pipeline.
   # All releases can be found here: https://dotnet.microsoft.com/download/dotnet-core.
   - name: 'DotNetCore_SDK_Version'
@@ -78,10 +83,6 @@ variables:
   # Represents the user used for accessing the database to be targeted by integration tests
   - name: 'IntegrationTests.Database.Todo.Username'
     value: 'satrapu'
-
-  # Represents the password used for accessing the database to be targeted by integration tests
-  - name: 'IntegrationTests.Database.Todo.Password'
-    value: 'eS5Sde7cB7MpTvS6V6Tv52HEvX9xtrbb'
 
 # Define multiple jobs, one per supported operating system (Linux, macOS and Windows).
 # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/multiple-phases?tabs=yaml&view=azure-devops.
