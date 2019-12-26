@@ -81,7 +81,7 @@ variables:
 
   # Represents the password used for accessing the database to be targeted by integration tests
   - name: 'IntegrationTests.Database.Todo.Password'
-    value: 'J9W3876J6xpBNsAYmb3UwV4hSNv977y77d2K9TP2M2Yz9tE8J676xs5DV2uQ5a6Pe2t68d2jCU7DvVW4x9GrwTr6B9RKSRaR46DW'
+    value: 'eS5Sde7cB7MpTvS6V6Tv52HEvX9xtrbb'
 
 # Define multiple jobs, one per supported operating system (Linux, macOS and Windows).
 # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/multiple-phases?tabs=yaml&view=azure-devops.
