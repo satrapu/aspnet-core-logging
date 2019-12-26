@@ -18,27 +18,17 @@ resources:
     env:
       POSTGRES_DB: $(IntegrationTests.Database.Todo.Name)
       POSTGRES_USER: $(IntegrationTests.Database.Todo.Username)
+      POSTGRES_PASSWORD: $(IntegrationTests.Database.Todo.Password)
 
   - container: 'postgres_windows_container_for_integration_tests'
     # PostgreSQL Docker image (Windows container): https://hub.docker.com/r/stellirin/postgres-windows.
-    #
-    # Do *not* use 'POSTGRES_PASSWORD' environment variable as this will cause the Windows container to stop due to an error
-    # which has been captured by running a PowerShell script: 
-    # - powershell: 'docker container ls --all --format "{{ .ID }}" | ForEach-Object { docker logs $_  }'
-    #   workingDirectory: $(Build.SourcesDirectory)
-    #   displayName: Show db4it service log
-    #   failOnStderr: False
-    #   errorActionPreference: continue
-    #   ignoreLASTEXITCODE: True
-    # The output of the above task is: 'initdb: could not open file "C:\.pgpass" for reading: No such file or directory'.
-    # The "offending" line inside the Docker ENTRYPOINT can be seen here: 
-    # https://github.com/stellirin/docker-postgres-windows/blob/ce93ac0042f003c5c162a4e0c8c3eb859a140629/docker-entrypoint.cmd#L76.
     image: 'stellirin/postgres-windows:12'
     ports:
     - 5432/tcp
     env:
       POSTGRES_DB: $(IntegrationTests.Database.Todo.Name)
       POSTGRES_USER: $(IntegrationTests.Database.Todo.Username)
+      POSTGRES_PASSWORD: $(IntegrationTests.Database.Todo.Password)
 
   repositories: 
   # See more about repositories here: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=azure-devops&tabs=schema#repository.
@@ -68,6 +58,11 @@ variables:
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/library/variable-groups?view=azure-devops&tabs=yaml#use-a-variable-group.
   # Be sure to link this group to this pipeline by selecting the latter -> Edit -> Variables -> Variable Groups!
   - group: 'SonarQube'
+
+  # Load group containing variables applicable to integration tests.
+  # This group contains the password to be used when accessing the dockerized database targeted by the integration tests.
+  # This password is stored as a secret under the name "IntegrationTests.Database.Todo.Password".
+  - group: 'IntegrationTests'
 
   # Specifies the version of the .NET Core SDK to install and use when running this pipeline.
   # All releases can be found here: https://dotnet.microsoft.com/download/dotnet-core.
@@ -111,10 +106,6 @@ variables:
   # Represents the user used for accessing the database to be targeted by integration tests
   - name: 'IntegrationTests.Database.Todo.Username'
     value: 'satrapu'
-
-  # Represents the password used for accessing the database to be targeted by integration tests
-  - name: 'IntegrationTests.Database.Todo.Password'
-    value: ''
 
 # Define multiple jobs, one per supported operating system (Linux, macOS and Windows).
 # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/multiple-phases?tabs=yaml&view=azure-devops.
