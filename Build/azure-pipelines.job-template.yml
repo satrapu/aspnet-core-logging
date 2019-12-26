@@ -12,7 +12,7 @@ parameters:
   publishPipelineArtifacts: True
   db4it:
     dockerImage: ''
-    dockerTag: ''
+    dockerImageTag: ''
     dockerContainerName: ''
     dockerPortMapping: ''
     dockerHostPortBuildVariableName: ''
@@ -173,7 +173,7 @@ jobs:
       filePath: '$(Build.SourcesDirectory)/Build/Provision-Docker-container-using-log-polling.ps1'
       arguments: >-
         -DockerImageName '${{ parameters.db4it.dockerImage }}'
-        -DockerImageTag '${{ parameters.db4it.dockerTag }}'
+        -DockerImageTag '${{ parameters.db4it.dockerImageTag }}'
         -ContainerName '${{ parameters.db4it.dockerContainerName }}'
         -PortMapping '${{ parameters.db4it.dockerPortMapping }}'
         -DockerHostPortBuildVariableName '${{ parameters.db4it.dockerHostPortBuildVariableName}}'
@@ -203,7 +203,7 @@ jobs:
       filePath: '$(Build.SourcesDirectory)/Build/Provision-Docker-container-using-healthcheck.ps1'
       arguments: >-
         -DockerImageName '${{ parameters.db4it.dockerImage }}'
-        -DockerImageTag '${{ parameters.db4it.dockerTag }}'
+        -DockerImageTag '${{ parameters.db4it.dockerImageTag }}'
         -ContainerName '${{ parameters.db4it.dockerContainerName }}'
         -PortMapping '${{ parameters.db4it.dockerPortMapping }}'
         -DockerHostPortBuildVariableName '${{ parameters.db4it.dockerHostPortBuildVariableName}}'
