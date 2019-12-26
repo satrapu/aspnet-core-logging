@@ -102,7 +102,7 @@ jobs:
       vmImage: 'ubuntu-16.04'
     db4it:
       dockerImage: 'postgres'
-      dockerTag: '11.3-alpine'
+      dockerTag: '12-alpine'
       dockerContainerName: 'db4it'
       dockerPortMapping: '9876:5432/tcp'
       dockerHostPortBuildVariableName: 'db4it.dockerHostPort'
@@ -130,7 +130,7 @@ jobs:
       vmImage: 'macOS-10.14'
     db4it:
       dockerImage: 'postgres'
-      dockerTag: '11.3-alpine'
+      dockerTag: '12-alpine'
       dockerContainerName: 'db4it'
       dockerPortMapping: '5432/tcp'
       dockerHostPortBuildVariableName: 'db4it.dockerHostPort'
@@ -165,7 +165,7 @@ jobs:
       vmImage: 'windows-2019'
     db4it:
       dockerImage: 'stellirin/postgres-windows'
-      dockerTag: '11.3'
+      dockerTag: '12'
       dockerContainerName: 'db4it'
       dockerPortMapping: '5432'
       dockerHostPortBuildVariableName: 'db4it.dockerHostPort'
