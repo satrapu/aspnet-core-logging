@@ -3,17 +3,26 @@ parameters:
     name: ''
     displayName: ''
   pool: ''
-  services:
-    db4it:
-      containerName: ''
-      databaseConnectionString: ''
   build:
     configuration: 'Release'
   sonar:
-    enabled: True
+    enabled: False
     buildBreaker:
-      enabled: True
-  publishPipelineArtifacts: False
+      enabled: False
+  publishPipelineArtifacts: True
+  db4it:
+    dockerImage: ''
+    dockerImageTag: ''
+    dockerContainerName: ''
+    dockerPortMapping: ''
+    dockerHostPortBuildVariableName: ''
+    dockerContainerEnvironmentVariables: ''
+    dockerContainerLogPatternForDatabaseReady: ''
+    dockerContainerHealthcheckCommand: ''
+    databaseConnectionString:
+      value: ''
+      portPlaceholder: ''
+    databaseReadinessStrategy: ''
 
 jobs:
 - job: ${{ parameters.job.name }}
@@ -22,13 +31,11 @@ jobs:
   pool: ${{ parameters.pool }}
   workspace:
     clean: all
-  services:
-    # The right side name has been declared in the 'containers' section found inside the 'azure-pipelines.yml' file.
-    db4it: ${{ parameters.services.db4it.containerName }}
   steps:
   # Install specific .NET Core SDK version.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/tool/dotnet-core-tool-installer?view=azure-devops.
-  # Installing a specific .NET Core SDK version is needed to avoid installing a .NET Core global tool in a following task and then have Azure DevOps complain that it cannot find it.
+  # Installing a specific .NET Core SDK version is needed to avoid installing a .NET Core global tool in a following task and 
+  # then have Azure DevOps complain that it cannot find it.
   # This issue is documented here: https://github.com/Microsoft/azure-pipelines-tasks/issues/8291.
   - task: UseDotNet@2
     name: install_dotnetcore_sdk
@@ -44,7 +51,7 @@ jobs:
   # and here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/command-line?view=azure-devops&tabs=yaml#yaml-snippet.
   # The long YAML line has been split using "block chomping indicator", as documented here: https://stackoverflow.com/a/3790497.
   - script: >-
-      dotnet tool install dotnet-sonarscanner 
+      dotnet tool install dotnet-sonarscanner
       --global 
       --version $(SonarScanner_Version)
     name: install_sonarscanner
@@ -71,11 +78,11 @@ jobs:
   # The analysis will make use of the branch name via the "sonar.branch.name" command parameter.
   # See more here: https://sonarcloud.io/documentation/branches/overview/#analysis.
   - script: >-
-      dotnet-sonarscanner begin 
-      /k:"$(CurrentProject.Sonar.ProjectKey)" 
+      dotnet-sonarscanner begin
+      /k:"$(CurrentProject.Sonar.ProjectKey)"
       /v:"$(CurrentProject.Version)"
-      /s:"$(Build.SourcesDirectory)/Build/SonarQubeAnalysis.xml" 
-      /d:sonar.login="$(CurrentProject.Sonar.Token)" 
+      /s:"$(Build.SourcesDirectory)/Build/SonarQubeAnalysis.xml"
+      /d:sonar.login="$(CurrentProject.Sonar.Token)"
       /d:sonar.branch.name="$(Build.SourceBranchName)"
     name: prepare_sonarqube_analysis
     displayName: Prepare SonarQube analysis
@@ -88,12 +95,12 @@ jobs:
     env:
       DOTNET_SKIP_FIRST_TIME_EXPERIENCE: $(DotNetSkipFirstTimeExperience)
       DOTNET_CLI_TELEMETRY_OPTOUT: $(DotNetCliTelemetryOptOut)
-      COREHOST_TRACE: $(CoreHostTrace)    
+      COREHOST_TRACE: $(CoreHostTrace)
 
   # Compile source code.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/dotnet-core-cli?view=azure-devops.
   - script: >-
-      dotnet build $(Build.SourcesDirectory)/Todo.sln 
+      dotnet build $(Build.SourcesDirectory)/Todo.sln
       --configuration ${{ parameters.build.configuration }}
     name: build_sources
     displayName: Build sources
@@ -104,18 +111,18 @@ jobs:
       COREHOST_TRACE: $(CoreHostTrace)
 
   # Run unit tests and collect code coverage metrics.
-  # See more about running selective tests here: https://docs.microsoft.com/en-us/dotnet/core/testing/selective-unit-tests#nunit.
+  # See more about running selective tests here: https://docs.microsoft.com/en-us/dotnet/core/testing/selective-unit-tests#xunit.
   # Decorate the AssemblyInfo.cs found inside each unit test related project with:
   #     [assembly: NUnit.Framework.Category("IntegrationTests")]
   - script: >-
-      dotnet test $(Build.SourcesDirectory)/Todo.sln 
+      dotnet test $(Build.SourcesDirectory)/Todo.sln
       --no-build
-      --configuration ${{ parameters.build.configuration }} 
-      --filter "Category=UnitTests" 
+      --configuration ${{ parameters.build.configuration }}
+      --filter "Category=UnitTests"
       --test-adapter-path "."
-      --logger "nunit" 
-      /p:CollectCoverage=True 
-      /p:CoverletOutputFormat=opencover 
+      --logger "nunit"
+      /p:CollectCoverage=True
+      /p:CoverletOutputFormat=opencover
       /p:Include="[Todo.*]*"
       /p:Exclude="[Todo.*.*Tests]*"
     name: run_unit_tests
@@ -124,7 +131,7 @@ jobs:
     env:
       DOTNET_SKIP_FIRST_TIME_EXPERIENCE: $(DotNetSkipFirstTimeExperience)
       DOTNET_CLI_TELEMETRY_OPTOUT: $(DotNetCliTelemetryOptOut)
-      COREHOST_TRACE: $(CoreHostTrace)  
+      COREHOST_TRACE: $(CoreHostTrace)
 
   # Publish unit test results inside the build 'Tests' tab.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=azure-devops&tabs=yaml.
@@ -138,20 +145,109 @@ jobs:
       testResultsFiles: '**/UnitTests/**/TestResults/*'
       mergeTestResults: True
       buildConfiguration: ${{ parameters.build.configuration }}
-      publishRunAttachments: True  
+      publishRunAttachments: True
+
+  # Install and start Docker Engine on macOS.
+  # See more here: https://github.com/microsoft/azure-pipelines-image-generation/issues/738#issuecomment-527013065.
+  - script: |
+      chmod +x $(Build.SourcesDirectory)/Build/start-docker-on-macOS.sh
+      $(Build.SourcesDirectory)/Build/start-docker-on-macOS.sh
+    name: install_and_start_docker
+    displayName: Install and start Docker
+    condition: |
+      and
+      (
+          succeeded()
+        , eq( variables['Agent.OS'], 'Darwin')
+      )
+
+  # Runs a PowerShell script to start a Docker container hosting the database 
+  # to be targeted by the integration tests.
+  # Checking whether the database is ready for processing incoming queries is done 
+  # using Docker logs command (https://docs.docker.com/engine/reference/commandline/logs/).
+  - task: PowerShell@2
+    name: provision_db4it_docker_container_using_log_polling
+    displayName: Provision db4it Docker container using log-polling
+    inputs:
+      targetType: 'filePath'
+      filePath: '$(Build.SourcesDirectory)/Build/Provision-Docker-container-using-log-polling.ps1'
+      arguments: >-
+        -DockerImageName '${{ parameters.db4it.dockerImage }}'
+        -DockerImageTag '${{ parameters.db4it.dockerImageTag }}'
+        -ContainerName '${{ parameters.db4it.dockerContainerName }}'
+        -PortMapping '${{ parameters.db4it.dockerPortMapping }}'
+        -DockerHostPortBuildVariableName '${{ parameters.db4it.dockerHostPortBuildVariableName}}'
+        -ContainerEnvironmentVariables '${{ parameters.db4it.dockerContainerEnvironmentVariables }}'
+        -ContainerLogPatternForDatabaseReady '${{ parameters.db4it.dockerContainerLogPatternForDatabaseReady }}'
+        -SleepingTimeInMillis 250
+        -MaxNumberOfTries 120
+      errorActionPreference: 'stop'
+      failOnStderr: True
+      workingDirectory: $(Build.SourcesDirectory)
+    condition: |
+      and
+      (
+          succeeded()
+        , eq( '${{ parameters.db4it.databaseReadinessStrategy }}', 'log-polling')
+      )
+
+  # Runs a PowerShell script to start a Docker container hosting the database 
+  # to be targeted by the integration tests.
+  # Checking whether the database is ready for processing incoming queries is done 
+  # using Docker healthcheck support (https://docs.docker.com/engine/reference/run/#healthcheck).
+  - task: PowerShell@2
+    name: provision_db4it_docker_container_using_healthcheck
+    displayName: Provision db4it Docker container using healthcheck
+    inputs:
+      targetType: 'filePath'
+      filePath: '$(Build.SourcesDirectory)/Build/Provision-Docker-container-using-healthcheck.ps1'
+      arguments: >-
+        -DockerImageName '${{ parameters.db4it.dockerImage }}'
+        -DockerImageTag '${{ parameters.db4it.dockerImageTag }}'
+        -ContainerName '${{ parameters.db4it.dockerContainerName }}'
+        -PortMapping '${{ parameters.db4it.dockerPortMapping }}'
+        -DockerHostPortBuildVariableName '${{ parameters.db4it.dockerHostPortBuildVariableName}}'
+        -ContainerEnvironmentVariables '${{ parameters.db4it.dockerContainerEnvironmentVariables }}'
+        -HealthCheckCommand '${{ parameters.db4it.dockerContainerHealthcheckCommand }}'
+        -HealthCheckIntervalInMilliseconds 250
+        -MaxNumberOfTries 120
+      errorActionPreference: 'stop'
+      failOnStderr: True
+      workingDirectory: $(Build.SourcesDirectory)
+    condition: |
+      and
+      (
+          succeeded()
+        , eq( '${{ parameters.db4it.databaseReadinessStrategy }}', 'healthcheck')
+      )
+
+  # Runs a PowerShell script to ensure the connection string pointing to the database 
+  # to be targeted by the integration tests uses the appropriate port.
+  - task: PowerShell@2
+    inputs:
+      targetType: 'inline'
+      errorActionPreference: 'stop'
+      script: |
+        Write-Output "The Docker host port mapped to container '${{ parameters.db4it.dockerContainerName }}' is: $(${{ parameters.db4it.dockerHostPortBuildVariableName }})"
+        $normalizedDatabaseConnectionString = "${{ parameters.db4it.databaseConnectionString.value }}" -replace '${{ parameters.db4it.databaseConnectionString.portPlaceholder }}', $(${{ parameters.db4it.dockerHostPortBuildVariableName }})
+        Write-Output "##vso[task.setvariable variable=DatabaseConnectionStrings.Todo]$normalizedDatabaseConnectionString"
+        Write-Output "The normalized database connection string is: $normalizedDatabaseConnectionString"
+    name: normalize_db_connection_string_pointing_to_db4it
+    displayName: Normalize database connection string pointing to db4it Docker container
+    enabled: True
 
   # Run integration tests and collect code coverage metrics.
   # Decorate the AssemblyInfo.cs found inside each integration test related project with:
   #     [assembly: NUnit.Framework.Category("IntegrationTests")]
   - script: >-
-      dotnet test $(Build.SourcesDirectory)/Todo.sln 
+      dotnet test $(Build.SourcesDirectory)/Todo.sln
       --no-build
-      --configuration ${{ parameters.build.configuration }} 
-      --filter "Category=IntegrationTests" 
+      --configuration ${{ parameters.build.configuration }}
+      --filter "Category=IntegrationTests"
       --test-adapter-path "."
-      --logger "nunit" 
-      /p:CollectCoverage=True 
-      /p:CoverletOutputFormat=opencover 
+      --logger "nunit"
+      /p:CollectCoverage=True
+      /p:CoverletOutputFormat=opencover
       /p:Include="[Todo.*]*"
       /p:Exclude="[Todo.*.*Tests]*"
     name: run_integration_tests
@@ -160,8 +256,8 @@ jobs:
     env:
       DOTNET_SKIP_FIRST_TIME_EXPERIENCE: $(DotNetSkipFirstTimeExperience)
       DOTNET_CLI_TELEMETRY_OPTOUT: $(DotNetCliTelemetryOptOut)
-      COREHOST_TRACE: $(CoreHostTrace) 
-      CONNECTIONSTRINGS__TODO: ${{ parameters.services.db4it.databaseConnectionString }}
+      COREHOST_TRACE: $(CoreHostTrace)
+      CONNECTIONSTRINGS__TODO: $(DatabaseConnectionStrings.Todo)
 
   # Publish integration test results inside the build 'Tests' tab.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=azure-devops&tabs=yaml.
@@ -175,7 +271,7 @@ jobs:
       testResultsFiles: '**/IntegrationTests/**/TestResults/*'
       mergeTestResults: True
       buildConfiguration: ${{ parameters.build.configuration }}
-      publishRunAttachments: True  
+      publishRunAttachments: True
 
   # Publish test results as pipeline artifacts.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/artifacts/pipeline-artifacts?view=azure-devops&tabs=yaml#publish-a-pipeline-artifact.
@@ -198,7 +294,7 @@ jobs:
   # Install reportgenerator tool to be able to generate code coverage related reports.
   - script: >-
       dotnet tool install dotnet-reportgenerator-globaltool 
-      --global 
+      --global
       --version $(ReportGenerator_Version)
     name: install_code_coverage_report_generator
     displayName: Install code coverage report generator tool
@@ -206,7 +302,7 @@ jobs:
     env:
       DOTNET_SKIP_FIRST_TIME_EXPERIENCE: $(DotNetSkipFirstTimeExperience)
       DOTNET_CLI_TELEMETRY_OPTOUT: $(DotNetCliTelemetryOptOut)
-      COREHOST_TRACE: $(CoreHostTrace)    
+      COREHOST_TRACE: $(CoreHostTrace)
 
   # Generate code coverage report:
   #   - combine several OpenCover coverage data files into one single file in Cobertura format
@@ -218,8 +314,8 @@ jobs:
   # enable Azure Boards for your project, as documented here: https://developercommunity.visualstudio.com/solutions/403137/view.html.
   - script: >-
       reportgenerator 
-      "-reports:$(Build.SourcesDirectory)/Tests/**/coverage.opencover.xml" 
-      "-targetdir:$(Build.SourcesDirectory)/.CodeCoverageReport" 
+      "-reports:$(Build.SourcesDirectory)/Tests/**/coverage.opencover.xml"
+      "-targetdir:$(Build.SourcesDirectory)/.CodeCoverageReport"
       "-reporttypes:Cobertura;Badges"
     name: generate_code_coverage_report
     displayName: Generate code coverage report
@@ -239,7 +335,7 @@ jobs:
   # Upload SonarQube report to external service, SonarCloud.
   # See more here: https://docs.sonarqube.org/display/SCAN/Analyzing+with+SonarQube+Scanner+for+MSBuild.
   - script: >-
-      dotnet-sonarscanner end  
+      dotnet-sonarscanner end
       /d:sonar.login="$(CurrentProject.Sonar.Token)"
     name: upload_sonarqube_report
     displayName: Upload SonarQube report
@@ -252,7 +348,7 @@ jobs:
     env:
       DOTNET_SKIP_FIRST_TIME_EXPERIENCE: $(DotNetSkipFirstTimeExperience)
       DOTNET_CLI_TELEMETRY_OPTOUT: $(DotNetCliTelemetryOptOut)
-      COREHOST_TRACE: $(CoreHostTrace)    
+      COREHOST_TRACE: $(CoreHostTrace)
 
   # Runs a PowerShell script to break the build in case Sonar quality gate has failed.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/powershell?view=azure-devops.

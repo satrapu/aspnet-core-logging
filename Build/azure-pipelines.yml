@@ -7,31 +7,8 @@
 name: '$(SourceBranchName)_$(Date:yyyyMMdd).$(Rev:rrr)'
 
 resources:
-  containers:
-  # Specify the Docker container hosting the database to be used when running integration tests.
-  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/service-containers?view=azure-devops&tabs=yaml#single-job.
-  - container: 'postgres_linux_container_for_integration_tests'
-    # PostgreSQL Docker image (Linux container): https://hub.docker.com/_/postgres.
-    image: 'postgres:12-alpine'
-    ports:
-    - 9999:5432/tcp
-    env:
-      POSTGRES_DB: $(IntegrationTests.Database.Todo.Name)
-      POSTGRES_USER: $(IntegrationTests.Database.Todo.Username)
-      POSTGRES_PASSWORD: $(IntegrationTests.Database.Todo.Password)
-
-  - container: 'postgres_windows_container_for_integration_tests'
-    # PostgreSQL Docker image (Windows container): https://hub.docker.com/r/stellirin/postgres-windows.
-    image: 'stellirin/postgres-windows:12'
-    ports:
-    - 5432/tcp
-    env:
-      POSTGRES_DB: $(IntegrationTests.Database.Todo.Name)
-      POSTGRES_USER: $(IntegrationTests.Database.Todo.Username)
-      POSTGRES_PASSWORD: $(IntegrationTests.Database.Todo.Password)
-
   repositories: 
-  # See more about repositories here: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=azure-devops&tabs=schema#repository.
+  # See more about repositories here: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=vsts&tabs=schema#repository.
   - repository: 'aspnet_core_logging'
     type: 'github'
     name: 'satrapu/aspnet-core-logging'
@@ -41,7 +18,7 @@ resources:
     endpoint: 'satrapu'
 
 # Build multiple branches.
-# See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/build/ci-build-git?view=azure-devops&tabs=yaml.
+# See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/build/ci-build-git?view=vsts&tabs=yaml.
 trigger:
  - master
  - feature/*
@@ -49,13 +26,13 @@ trigger:
  - hotfix/*
  - release/*
 
-# See more about Azure Pipelines variables here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&tabs=yaml.
+# See more about Azure Pipelines variables here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=vsts.
 variables:
   # Load group containing variables applicable to all pipelines belonging to this project.
   - group: 'GlobalVariables'
 
   # Load SonarQube related variable group.
-  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/library/variable-groups?view=azure-devops&tabs=yaml#use-a-variable-group.
+  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/library/variable-groups?view=vsts&tabs=yaml#use-a-variable-group.
   # Be sure to link this group to this pipeline by selecting the latter -> Edit -> Variables -> Variable Groups!
   - group: 'SonarQube'
 
@@ -95,7 +72,7 @@ variables:
   - name: 'CoreHostTrace'
     value: 0
 
-  # Represents the key of the project hosted on SonarCloud
+  # Represents the key of the project hosted on SonarCloud.
   - name: 'CurrentProject.Sonar.ProjectKey'
     value: 'aspnet-core-logging'
 
@@ -121,66 +98,93 @@ jobs:
   parameters:
     job:
       name: 'linux'
-      displayName: 'Build on Linux'
+      displayName: 'Run on Linux'
     pool:
-      # Need a VM capable of running Linux containers
       vmImage: 'ubuntu-16.04'
-    services:
-      db4it: 
-        containerName: 'postgres_linux_container_for_integration_tests'  
-        databaseConnectionString: >-
+    db4it:
+      dockerImage: 'postgres'
+      dockerImageTag: '12-alpine'
+      dockerContainerName: 'db4it'
+      dockerPortMapping: '9876:5432/tcp'
+      dockerHostPortBuildVariableName: 'db4it.dockerHostPort'
+      dockerContainerEnvironmentVariables: >-
+        -e "POSTGRES_DB=$(IntegrationTests.Database.Todo.Name)"
+        -e "POSTGRES_USER=$(IntegrationTests.Database.Todo.Username)"
+        -e "POSTGRES_PASSWORD=$(IntegrationTests.Database.Todo.Password)"
+      databaseConnectionString: 
+        value: >-
           Host=localhost;
-          Port=9999;
+          Port=9876;
           Database=$(IntegrationTests.Database.Todo.Name);
           Username=$(IntegrationTests.Database.Todo.Username);
-          Password=$(IntegrationTests.Database.Todo.Password); 
-    sonar:
-      enabled: False
-      buildBreaker:
-        enabled: False
-    publishPipelineArtifacts: True
+          Password=$(IntegrationTests.Database.Todo.Password);
+        portPlaceholder: '__DockerHostPort__'
+      databaseReadinessStrategy: 'log-polling'
+      dockerContainerLogPatternForDatabaseReady: 'database system is ready to accept connections'
 
-#- template: './azure-pipelines.job-template.yml'
-#  parameters:
-#    job:
-#      name: 'macOS'
-#      displayName: 'Build on macOS'
-#    pool:
-#      vmImage: 'macOS-10.14'
-#    services:
-#      db4it: 
-#        containerName: 'postgres_linux_container_for_integration_tests'
-#        databaseConnectionString: >-
-#          Host=localhost;
-#          Port=9999;
-#          Database=$(IntegrationTests.Database.Todo.Name);
-#          Username=$(IntegrationTests.Database.Todo.Username);
-#          Password=$(IntegrationTests.Database.Todo.Password);
-#    sonar:
-#      enabled: False
-#      buildBreaker:
-#        enabled: False
-#    publishPipelineArtifacts: True
+- template: './azure-pipelines.job-template.yml'
+  parameters:
+    job:
+      name: 'macOS'
+      displayName: 'Run on macOS'
+    pool:
+      vmImage: 'macOS-10.14'
+    db4it:
+      dockerImage: 'postgres'
+      dockerImageTag: '12-alpine'
+      dockerContainerName: 'db4it'
+      dockerPortMapping: '5432/tcp'
+      dockerHostPortBuildVariableName: 'db4it.dockerHostPort'
+      dockerContainerEnvironmentVariables: >-
+        -e "POSTGRES_DB=$(IntegrationTests.Database.Todo.Name)"
+        -e "POSTGRES_USER=$(IntegrationTests.Database.Todo.Username)"
+        -e "POSTGRES_PASSWORD=$(IntegrationTests.Database.Todo.Password)"
+      dockerContainerLogPatternForDatabaseReady: 'database system is ready to accept connections'
+      databaseConnectionString: 
+        value: >-
+          Host=localhost;
+          Port=__DockerHostPort__;
+          Database=$(IntegrationTests.Database.Todo.Name);
+          Username=$(IntegrationTests.Database.Todo.Username);
+          Password=$(IntegrationTests.Database.Todo.Password);
+        portPlaceholder: '__DockerHostPort__'
+      databaseReadinessStrategy: 'healthcheck'
+      dockerContainerHealthcheckCommand: >-
+        pg_isready
+        --host=localhost
+        --port=5432
+        --dbname=$(IntegrationTests.Database.Todo.Name)
+        --username=$(IntegrationTests.Database.Todo.Username)
+        --quiet
 
 - template: './azure-pipelines.job-template.yml'
   parameters:
     job:
       name: 'windows'
-      displayName: 'Build on Windows'
+      displayName: 'Run on Windows'
     pool:
-      # Need a VM capable of running Windows containers
       vmImage: 'windows-2019'
-    services:
-      db4it: 
-        containerName: 'postgres_windows_container_for_integration_tests'
-        databaseConnectionString: >-
+    db4it:
+      dockerImage: 'stellirin/postgres-windows'
+      dockerImageTag: '12'
+      dockerContainerName: 'db4it'
+      dockerPortMapping: '5432'
+      dockerHostPortBuildVariableName: 'db4it.dockerHostPort'
+      dockerContainerEnvironmentVariables: >-
+        -e "POSTGRES_DB=$(IntegrationTests.Database.Todo.Name)"
+        -e "POSTGRES_USER=$(IntegrationTests.Database.Todo.Username)"
+        -e "POSTGRES_PASSWORD=$(IntegrationTests.Database.Todo.Password)"
+      databaseConnectionString: 
+        value: >-
           Host=localhost;
-          Port=$(Agent.Services.db4it.Ports.5432);
+          Port=__DockerHostPort__;
           Database=$(IntegrationTests.Database.Todo.Name);
           Username=$(IntegrationTests.Database.Todo.Username);
-          Password=$(IntegrationTests.Database.Todo.Password);  
+          Password=$(IntegrationTests.Database.Todo.Password);
+        portPlaceholder: '__DockerHostPort__'
+      databaseReadinessStrategy: 'log-polling'
+      dockerContainerLogPatternForDatabaseReady: 'PostgreSQL init process complete; ready for start up.'
     sonar:
       enabled: True
       buildBreaker:
         enabled: True
-    publishPipelineArtifacts: True
