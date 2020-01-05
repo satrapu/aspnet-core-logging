@@ -111,7 +111,7 @@ jobs:
       COREHOST_TRACE: $(CoreHostTrace)
 
   # Run unit tests and collect code coverage metrics.
-  # See more about running selective tests here: https://docs.microsoft.com/en-us/dotnet/core/testing/selective-unit-tests#xunit.
+  # See more about running selective tests here: https://docs.microsoft.com/en-us/dotnet/core/testing/selective-unit-tests#nunit.
   # Decorate the AssemblyInfo.cs found inside each unit test related project with:
   #     [assembly: NUnit.Framework.Category("UnitTests")]
   - script: >-
