@@ -1,7 +1,7 @@
-using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Todo.Persistence;
 
 namespace Todo.Services

@@ -52,13 +52,28 @@ namespace Todo.Services
 
             using (var todoDbContext = new TodoDbContext(dbContextOptions))
             {
-                todoDbContext.TodoItems.Add(new TodoItem());
+                todoDbContext.TodoItems.Add(new TodoItem
+                {
+                    Name = Guid.NewGuid().ToString("N"),
+                    CreatedBy = "integration-tests",
+                    CreatedOn = DateTime.Now,
+                    IsComplete = false
+                });
                 todoDbContext.SaveChanges();
+            }
 
+            using (var todoDbContext = new TodoDbContext(dbContextOptions))
+            {
                 var loggerFactory = new NullLoggerFactory();
                 var logger = loggerFactory.CreateLogger<DatabaseSeeder>();
                 var databaseSeeder = new DatabaseSeeder(logger);
-                var seedingData = Enumerable.Range(1, 5).Select(index => new TodoItem { Id = index });
+                var seedingData = Enumerable.Range(1, 5).Select(index => new TodoItem
+                {
+                    Name = $"{Guid.NewGuid():N}",
+                    CreatedBy = "integration-tests",
+                    CreatedOn = DateTime.Now,
+                    IsComplete = false
+                });
 
                 // Act 
                 var hasSeededSucceeded = databaseSeeder.Seed(todoDbContext, seedingData);

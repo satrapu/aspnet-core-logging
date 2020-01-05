@@ -1,5 +1,6 @@
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Todo.Persistence
 {
@@ -13,6 +14,8 @@ namespace Todo.Persistence
         /// </summary>
         [Required]
         [Range(1, long.MaxValue)]
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public long Id { get; set; }
 
         /// <summary>
