@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 namespace Todo.WebApi.Logging
 {
@@ -54,13 +54,18 @@ namespace Todo.WebApi.Logging
             return result;
         }
 
-        public async Task<string> ToLogMessageAsync(HttpRequest httpRequest)
+        public Task<string> ToLogMessageAsync(HttpRequest httpRequest)
         {
             if (httpRequest == null)
             {
                 throw new ArgumentNullException(nameof(httpRequest));
             }
 
+            return InternalToLogMessageAsync(httpRequest);
+        }
+
+        private async Task<string> InternalToLogMessageAsync(HttpRequest httpRequest)
+        {
             if (logger.IsEnabled(LogLevel.Debug))
             {
                 // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
@@ -87,13 +92,18 @@ namespace Todo.WebApi.Logging
             return result;
         }
 
-        public async Task<string> ToLogMessageAsync(HttpResponse httpResponse)
+        public Task<string> ToLogMessageAsync(HttpResponse httpResponse)
         {
             if (httpResponse == null)
             {
                 throw new ArgumentNullException(nameof(httpResponse));
             }
 
+            return InternalToLogMessageAsync(httpResponse);
+        }
+
+        private async Task<string> InternalToLogMessageAsync(HttpResponse httpResponse)
+        {
             if (logger.IsEnabled(LogLevel.Debug))
             {
                 // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
