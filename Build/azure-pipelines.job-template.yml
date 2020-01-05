@@ -114,17 +114,21 @@ jobs:
   # See more about running selective tests here: https://docs.microsoft.com/en-us/dotnet/core/testing/selective-unit-tests#nunit.
   # Decorate the AssemblyInfo.cs found inside each unit test related project with:
   #     [assembly: NUnit.Framework.Category("UnitTests")]
+  # 
+  # After migrating application from .NET Core 2.2 to 3.1, the --filter "Category=IntegrationTests" argument 
+  # no longer works, but this ones does work: -- NUnit.Where="cat == UnitTests".
+  # See more here: http://blog.prokrams.com/2019/12/16/nunit3-filter-dotnet/#tldr.
   - script: >-
       dotnet test $(Build.SourcesDirectory)/Todo.sln
       --no-build
       --configuration ${{ parameters.build.configuration }}
-      --filter "Category=UnitTests"
       --test-adapter-path "."
       --logger "nunit"
       /p:CollectCoverage=True
       /p:CoverletOutputFormat=opencover
       /p:Include="[Todo.*]*"
       /p:Exclude="[Todo.*.*Tests]*"
+      -- NUnit.Where="cat == UnitTests"
     name: run_unit_tests
     displayName: Run unit tests
     enabled: True
@@ -243,13 +247,13 @@ jobs:
       dotnet test $(Build.SourcesDirectory)/Todo.sln
       --no-build
       --configuration ${{ parameters.build.configuration }}
-      --filter "Category=IntegrationTests"
       --test-adapter-path "."
       --logger "nunit"
       /p:CollectCoverage=True
       /p:CoverletOutputFormat=opencover
       /p:Include="[Todo.*]*"
       /p:Exclude="[Todo.*.*Tests]*"
+      -- NUnit.Where="cat == IntegrationTests"
     name: run_integration_tests
     displayName: Run integration tests
     enabled: True
