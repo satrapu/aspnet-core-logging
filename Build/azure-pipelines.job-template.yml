@@ -113,7 +113,7 @@ jobs:
   # Run unit tests and collect code coverage metrics.
   # See more about running selective tests here: https://docs.microsoft.com/en-us/dotnet/core/testing/selective-unit-tests#xunit.
   # Decorate the AssemblyInfo.cs found inside each unit test related project with:
-  #     [assembly: NUnit.Framework.Category("IntegrationTests")]
+  #     [assembly: NUnit.Framework.Category("UnitTests")]
   - script: >-
       dotnet test $(Build.SourcesDirectory)/Todo.sln
       --no-build
