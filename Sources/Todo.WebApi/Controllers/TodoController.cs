@@ -23,7 +23,7 @@ namespace Todo.WebApi.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IList<TodoItemModel>> GetByQuery([FromQuery]TodoItemQueryModel todoItemQueryModel)
+        public ActionResult<IList<TodoItemModel>> GetByQuery([FromQuery] TodoItemQueryModel todoItemQueryModel)
         {
             var todoItemQuery = new TodoItemQuery
             {
@@ -55,7 +55,7 @@ namespace Todo.WebApi.Controllers
 
             var newlyCreatedEntityId = todoService.Add(newTodoItemInfo);
             logger.LogInformation("User with id {UserId} has created a new item with id {ItemId}"
-                                , User.GetUserId(), newlyCreatedEntityId);
+                , User.GetUserId(), newlyCreatedEntityId);
 
             var query = new TodoItemQuery
             {
@@ -67,7 +67,7 @@ namespace Todo.WebApi.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(long id, [FromBody]UpdateTodoItemModel updateTodoItemModel)
+        public IActionResult Update(long id, [FromBody] UpdateTodoItemModel updateTodoItemModel)
         {
             var updateTodoItemInfo = new UpdateTodoItemInfo
             {
@@ -79,7 +79,7 @@ namespace Todo.WebApi.Controllers
 
             todoService.Update(updateTodoItemInfo);
             logger.LogInformation("User with id {UserId} has updated an existing item with id {ItemId}"
-                                , User.GetUserId(), id);
+                , User.GetUserId(), id);
 
             return NoContent();
         }
@@ -95,7 +95,7 @@ namespace Todo.WebApi.Controllers
 
             todoService.Delete(deleteTodoItemInfo);
             logger.LogInformation("User with id {UserId} has deleted item with id {ItemId}"
-                                , User.GetUserId(), id);
+                , User.GetUserId(), id);
 
             return NoContent();
         }

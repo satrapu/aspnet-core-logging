@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Todo.WebApi.Logging
 {
@@ -16,7 +17,7 @@ namespace Todo.WebApi.Logging
         /// </summary>
         /// <param name="stream">The <see cref="Stream"/> to read and reset.</param>
         /// <returns>The <see cref="Stream"/> contents as a <see cref="Encoding.UTF8"/> string.</returns>
-        public static string ReadAndReset(this Stream stream)
+        public static async Task<string> ReadAndResetAsync(this Stream stream)
         {
             if (stream == null)
             {
@@ -28,7 +29,7 @@ namespace Todo.WebApi.Logging
 
             using (var streamReader = new StreamReader(stream, Encoding.UTF8, true, BUFFER_SIZE, true))
             {
-                result = streamReader.ReadToEnd();
+                result = await streamReader.ReadToEndAsync();
             }
 
             stream.Seek(0, SeekOrigin.Begin);

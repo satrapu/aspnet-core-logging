@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
 using Todo.Persistence;
@@ -48,17 +49,20 @@ namespace Todo.WebApi
             {
                 var connectionString = Configuration.GetConnectionString("Todo");
                 dbContextOptionsBuilder.UseNpgsql(connectionString)
-                                       .EnableSensitiveDataLogging()
-                                       .UseLoggerFactory(serviceProvider.GetRequiredService<ILoggerFactory>());
+                    .EnableSensitiveDataLogging()
+                    .UseLoggerFactory(serviceProvider.GetRequiredService<ILoggerFactory>());
             });
 
             // Configure ASP.NET Web API
             services.AddMvc(options =>
-                    { 
-                        // In case the client requests data in an unsupported format, respond with 406 status code
-                        options.ReturnHttpNotAcceptable = true;
-                    })
-                    .SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+                {
+                    // In case the client requests data in an unsupported format, respond with 406 status code
+                    options.ReturnHttpNotAcceptable = true;
+
+                    // Needed after migrating ASP.NET Core 2.2 to 3.1
+                    options.EnableEndpointRouting = false;
+                })
+                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             // Configure application services
             services.AddScoped<ITodoService, TodoService>();
@@ -67,14 +71,16 @@ namespace Todo.WebApi
             // Register service with 2 interfaces.
             // See more here: https://andrewlock.net/how-to-register-a-service-with-multiple-interfaces-for-in-asp-net-core-di/.
             services.AddSingleton<LoggingService>();
-            services.AddSingleton<IHttpObjectConverter>(serviceProvider => serviceProvider.GetRequiredService<LoggingService>());
-            services.AddSingleton<IHttpContextLoggingHandler>(serviceProvider => serviceProvider.GetRequiredService<LoggingService>());
+            services.AddSingleton<IHttpObjectConverter>(serviceProvider =>
+                serviceProvider.GetRequiredService<LoggingService>());
+            services.AddSingleton<IHttpContextLoggingHandler>(serviceProvider =>
+                serviceProvider.GetRequiredService<LoggingService>());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder applicationBuilder, IHostingEnvironment hostingEnvironment)
+        public void Configure(IApplicationBuilder applicationBuilder, IWebHostEnvironment webHostEnvironment)
         {
-            bool isDevelopmentEnvironment = hostingEnvironment.IsDevelopment();
+            bool isDevelopmentEnvironment = webHostEnvironment.IsDevelopment();
 
             if (isDevelopmentEnvironment)
             {
@@ -94,7 +100,7 @@ namespace Todo.WebApi
             }
 
             applicationBuilder.UseHttpsRedirection()
-                              .UseMvc();
+                .UseMvc();
         }
     }
 }

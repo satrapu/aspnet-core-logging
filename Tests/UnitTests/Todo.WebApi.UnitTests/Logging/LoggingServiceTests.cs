@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using System;
+using System.Threading.Tasks;
 
 namespace Todo.WebApi.Logging
 {
@@ -58,7 +59,7 @@ namespace Todo.WebApi.Logging
         /// Tests the <see cref="LoggingService.ToLogMessage(HttpRequest)"/> method.
         /// </summary>
         [Test]
-        public void ToLogMessage_UsingNullHttpRequest_MustThrowException()
+        public async Task ToLogMessageAsync_UsingNullHttpRequest_MustThrowException()
         {
             HttpRequest httpRequest = null;
 
@@ -67,7 +68,7 @@ namespace Todo.WebApi.Logging
                 var loggerMock = new Mock<ILogger<LoggingService>>();
                 var loggingService = new LoggingService(loggerMock.Object);
                 // ReSharper disable once ExpressionIsAlwaysNull
-                loggingService.ToLogMessage(httpRequest);
+                await loggingService.ToLogMessageAsync(httpRequest);
                 Assert.Fail("Must not create log message using null HTTP request");
             }
             catch (Exception expectedException)
@@ -83,7 +84,7 @@ namespace Todo.WebApi.Logging
         /// Tests the <see cref="LoggingService.ToLogMessage(HttpResponse)"/> method.
         /// </summary>
         [Test]
-        public void ToLogMessage_UsingNullHttpResponse_MustThrowException()
+        public async Task ToLogMessageAsync_UsingNullHttpResponse_MustThrowException()
         {
             HttpResponse httpResponse = null;
 
@@ -92,7 +93,7 @@ namespace Todo.WebApi.Logging
                 var loggerMock = new Mock<ILogger<LoggingService>>();
                 var loggingService = new LoggingService(loggerMock.Object);
                 // ReSharper disable once ExpressionIsAlwaysNull
-                loggingService.ToLogMessage(httpResponse);
+                await loggingService.ToLogMessageAsync(httpResponse);
                 Assert.Fail("Must not create log message using null HTTP response");
             }
             catch (Exception expectedException)

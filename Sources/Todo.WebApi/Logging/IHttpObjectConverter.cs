@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
 namespace Todo.WebApi.Logging
@@ -13,13 +14,13 @@ namespace Todo.WebApi.Logging
         /// </summary>
         /// <param name="httpRequest">The <see cref="HttpRequest"/> instance to be converted.</param>
         /// <returns>The string representation of an <see cref="HttpRequest"/> instance.</returns>
-        string ToLogMessage(HttpRequest httpRequest);
+        Task<string> ToLogMessageAsync(HttpRequest httpRequest);
 
         /// <summary>
         /// Converts the given <paramref name="httpResponse"/> to a string.
         /// </summary>
         /// <param name="httpResponse">The <see cref="HttpResponse"/> instance to be converted.</param>
         /// <returns>The string representation of an <see cref="HttpResponse"/> instance.</returns>
-        string ToLogMessage(HttpResponse httpResponse);
+        Task<string> ToLogMessageAsync(HttpResponse httpResponse);
     }
 }

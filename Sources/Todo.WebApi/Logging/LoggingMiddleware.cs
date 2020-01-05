@@ -1,5 +1,4 @@
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
@@ -67,10 +66,10 @@ namespace Todo.WebApi.Logging
         private async Task Log(HttpContext httpContext)
         {
             // Ensure the current HTTP request is seekable and thus can be read and reset many times, including for logging purposes
-            httpContext.Request.EnableRewind();
+            httpContext.Request.EnableBuffering();
 
             // Logs the current HTTP request
-            var httpRequestAsLogMessage = httpObjectConverter.ToLogMessage(httpContext.Request);
+            var httpRequestAsLogMessage = await httpObjectConverter.ToLogMessageAsync(httpContext.Request);
             // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
             logger.LogDebug(httpRequestAsLogMessage);
 
@@ -86,7 +85,7 @@ namespace Todo.WebApi.Logging
                 await nextRequestDelegate(httpContext).ConfigureAwait(false);
 
                 // Logs the current HTTP response
-                var httpResponseAsLogMessage = httpObjectConverter.ToLogMessage(httpContext.Response);
+                var httpResponseAsLogMessage = await httpObjectConverter.ToLogMessageAsync(httpContext.Response);
                 // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
                 logger.LogDebug(httpResponseAsLogMessage);
 

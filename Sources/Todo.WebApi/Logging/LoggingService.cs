@@ -4,6 +4,7 @@ using System;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Todo.WebApi.Logging
 {
@@ -53,7 +54,7 @@ namespace Todo.WebApi.Logging
             return result;
         }
 
-        public string ToLogMessage(HttpRequest httpRequest)
+        public async Task<string> ToLogMessageAsync(HttpRequest httpRequest)
         {
             if (httpRequest == null)
             {
@@ -79,14 +80,14 @@ namespace Todo.WebApi.Logging
             }
 
             stringBuilder.AppendLine();
-            stringBuilder.AppendLine(httpRequest.Body.ReadAndReset());
+            stringBuilder.AppendLine(await httpRequest.Body.ReadAndResetAsync());
             stringBuilder.AppendLine($"--- REQUEST {httpRequest.HttpContext.TraceIdentifier}: END ---");
 
             var result = stringBuilder.ToString();
             return result;
         }
 
-        public string ToLogMessage(HttpResponse httpResponse)
+        public async Task<string> ToLogMessageAsync(HttpResponse httpResponse)
         {
             if (httpResponse == null)
             {
@@ -112,7 +113,7 @@ namespace Todo.WebApi.Logging
             }
 
             stringBuilder.AppendLine();
-            stringBuilder.AppendLine(httpResponse.Body.ReadAndReset());
+            stringBuilder.AppendLine(await httpResponse.Body.ReadAndResetAsync());
             stringBuilder.AppendLine($"--- RESPONSE {httpResponse.HttpContext.TraceIdentifier}: END ---");
 
             var result = stringBuilder.ToString();
