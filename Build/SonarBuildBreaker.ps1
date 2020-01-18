@@ -70,14 +70,13 @@ do {
         Write-Output "`n${NumbersOfTries}: Failed to fetch Sonar analysis results; will check again in $SleepingTimeInMillis milliseconds"
         continue
     }
-    elseif (($Response.projectStatus.status -ne 'OK') -and ($Response.projectStatus.status -ne 'NONE')) {
-        break
-    }
-    elseif (($Response.projectStatus.status -eq 'OK') -and ($Response.projectStatus.status -eq 'NONE')) {
+    elseif ($Response.projectStatus.status -eq 'OK') {
         Write-Output "`n`nOK: Quality gate PASSED - please check it here: $ServerUrl/dashboard?id=$ProjectKey"
         exit 0
     }
-    
+    else {
+        break
+    }
 } while ($NumbersOfTries -lt $MaxNumberOfTries)
 
 Write-Output "##vso[task.LogIssue type=error;]`n`n NOTOK: Quality gate FAILED - please check it here: $ServerUrl/dashboard?id=$ProjectKey"
