@@ -49,21 +49,25 @@ $Headers = @{
     AcceptType    = "application/json"  
 }
 
-$Response = Invoke-WebRequest -Uri $CeTaskUrl -Headers $Headers -UseBasicParsing | ConvertFrom-Json
+$Response = Invoke-WebRequest -Uri $CeTaskUrl -Headers $Headers | ConvertFrom-Json
+
+# See more about the below Sonar Web API call here: https://sonarcloud.io/web_api/api/qualitygates/project_status.
 $AnalysisUrl = "{0}/api/qualitygates/project_status?analysisId={1}" -f $ServerUrl, $Response.task.analysisId
+
 $NumbersOfTries = 0
 
 do {
     Start-Sleep -Milliseconds $SleepingTimeInMillis
 
-    $Response = try { 
+    $RawResponse = try { 
         (Invoke-WebRequest -Uri $AnalysisUrl -Headers $Headers).BaseResponse
     }
     catch [System.Net.WebException] { 
         $_.Exception.Response 
     } 
-
-    $StatusCodeAsInt = [int]$Response.BaseResponse.StatusCode
+    
+    $StatusCodeAsInt = [int]$RawResponse.BaseResponse.StatusCode
+    $Response = $RawResponse | ConvertFrom-Json
 
     if ($StatusCodeAsInt -ne 200) {
         $NumbersOfTries++
@@ -75,6 +79,7 @@ do {
         exit 0
     }
     else {
+        Write-Output "Sonar response is: `n`n $RawResponse"
         break
     }
 } while ($NumbersOfTries -lt $MaxNumberOfTries)
