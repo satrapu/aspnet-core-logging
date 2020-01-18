@@ -71,11 +71,15 @@ do {
         continue
     }
     elseif (($Response.projectStatus.status -ne 'OK') -and ($Response.projectStatus.status -ne 'NONE')) {
-        Write-Output "##vso[task.LogIssue type=error;]`n`n NOTOK: Quality gate FAILED - please check it here: $ServerUrl/dashboard?id=$ProjectKey"
-        Write-Output "##vso[task.complete result=Failed;]"
-        exit 1
+        break
     }
+    elseif (($Response.projectStatus.status -eq 'OK') -and ($Response.projectStatus.status -eq 'NONE')) {
+        Write-Output "`n`nOK: Quality gate PASSED - please check it here: $ServerUrl/dashboard?id=$ProjectKey"
+        exit 0
+    }
+    
 } while ($NumbersOfTries -lt $MaxNumberOfTries)
 
-Write-Output "`n`nOK: Quality gate PASSED - please check it here: $ServerUrl/dashboard?id=$ProjectKey"
-exit 0
+Write-Output "##vso[task.LogIssue type=error;]`n`n NOTOK: Quality gate FAILED - please check it here: $ServerUrl/dashboard?id=$ProjectKey"
+Write-Output "##vso[task.complete result=Failed;]"
+exit 1
