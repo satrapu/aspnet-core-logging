@@ -60,28 +60,32 @@ do {
     Start-Sleep -Milliseconds $SleepingTimeInMillis
 
     $RawResponse = try { 
-        (Invoke-WebRequest -Uri $AnalysisUrl -Headers $Headers).BaseResponse
+        (Invoke-WebRequest -Uri $AnalysisUrl -Headers $Headers -ErrorAction Stop).BaseResponse
     }
     catch [System.Net.WebException] { 
         $_.Exception.Response 
     } 
     
     $StatusCodeAsInt = [int]$RawResponse.BaseResponse.StatusCode
-    $Response = ConvertFrom-Json $([String]::new($RawResponse.Content))
 
     if ($StatusCodeAsInt -ne 200) {
         $NumbersOfTries++
         Write-Output "`n${NumbersOfTries}: Failed to fetch Sonar analysis results; will check again in $SleepingTimeInMillis milliseconds"
         continue
     }
-    elseif ($Response.projectStatus.status -eq 'OK') {
-        Write-Output "`n`nOK: Quality gate PASSED - please check it here: $ServerUrl/dashboard?id=$ProjectKey"
-        exit 0
-    }
     else {
-        Write-Output "Sonar response is: `n`n $RawResponse"
-        break
+        $Response = $RawResponse.Content | ConvertFrom-Json
+
+        if ($Response.projectStatus.status -eq 'OK') {
+            Write-Output "`n`nOK: Quality gate PASSED - please check it here: $ServerUrl/dashboard?id=$ProjectKey"
+            exit 0
+        }
+        else {
+            Write-Output "Sonar response is: `n`n $RawResponse"
+            break
+        }
     }
+   
 } while ($NumbersOfTries -lt $MaxNumberOfTries)
 
 Write-Output "##vso[task.LogIssue type=error;]`n`n NOTOK: Quality gate FAILED - please check it here: $ServerUrl/dashboard?id=$ProjectKey"
