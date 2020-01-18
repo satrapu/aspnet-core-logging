@@ -67,7 +67,7 @@ do {
     } 
     
     $StatusCodeAsInt = [int]$RawResponse.BaseResponse.StatusCode
-    $Response = $RawResponse | ConvertFrom-Json
+    $Response = ConvertFrom-Json $([String]::new($RawResponse.Content))
 
     if ($StatusCodeAsInt -ne 200) {
         $NumbersOfTries++
