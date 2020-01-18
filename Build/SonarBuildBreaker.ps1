@@ -49,7 +49,7 @@ $Headers = @{
     AcceptType    = "application/json"  
 }
 
-$Response = Invoke-WebRequest -Uri $CeTaskUrl -Headers $Headers | ConvertFrom-Json
+$Response = Invoke-WebRequest -Uri $CeTaskUrl -Headers $Headers -ErrorAction Stop | ConvertFrom-Json
 
 # See more about the below Sonar Web API call here: https://sonarcloud.io/web_api/api/qualitygates/project_status.
 $AnalysisUrl = "{0}/api/qualitygates/project_status?analysisId={1}" -f $ServerUrl, $Response.task.analysisId
@@ -59,22 +59,8 @@ $NumbersOfTries = 0
 do {
     Start-Sleep -Milliseconds $SleepingTimeInMillis
 
-    $RawResponse = try { 
-        (Invoke-WebRequest -Uri $AnalysisUrl -Headers $Headers -ErrorAction Stop).BaseResponse
-    }
-    catch [System.Net.WebException] { 
-        $_.Exception.Response 
-    } 
-    
-    $StatusCodeAsInt = [int]$RawResponse.BaseResponse.StatusCode
-
-    if ($StatusCodeAsInt -ne 200) {
-        $NumbersOfTries++
-        Write-Output "`n${NumbersOfTries}: Failed to fetch Sonar analysis results; will check again in $SleepingTimeInMillis milliseconds"
-        continue
-    }
-    else {
-        $Response = $RawResponse.Content | ConvertFrom-Json
+    try { 
+        $Response = Invoke-WebRequest -Uri $AnalysisUrl -Headers $Headers -ErrorAction Stop | ConvertFrom-Json
 
         if ($Response.projectStatus.status -eq 'OK') {
             Write-Output "`n`nOK: Quality gate PASSED - please check it here: $ServerUrl/dashboard?id=$ProjectKey"
@@ -85,7 +71,11 @@ do {
             break
         }
     }
-   
+    catch [System.Net.WebException] { 
+        $NumbersOfTries++
+        Write-Output "`n${NumbersOfTries}: Failed to fetch Sonar analysis results; will check again in $SleepingTimeInMillis milliseconds"
+        continue
+    } 
 } while ($NumbersOfTries -lt $MaxNumberOfTries)
 
 Write-Output "##vso[task.LogIssue type=error;]`n`n NOTOK: Quality gate FAILED - please check it here: $ServerUrl/dashboard?id=$ProjectKey"
