@@ -373,8 +373,8 @@ jobs:
       arguments: >-
         -SonarToken "$(CurrentProject.Sonar.Token)"
         -DotSonarQubeFolder "$(Agent.BuildDirectory)/.sonarqube"
-        -MaxNumberOfTries 30
-        -SleepingTimeInMillis 2000
+        -MaxNumberOfTries 60
+        -SleepingTimeInMillis 5000
       errorActionPreference: stop
       failOnStderr: True
       workingDirectory: $(Build.SourcesDirectory)
