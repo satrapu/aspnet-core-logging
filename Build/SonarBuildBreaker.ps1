@@ -26,24 +26,47 @@ $ServerUrl = $ServerUrl.Split('=')[1]
 $CeTaskUrl = Get-Content -Path $SonarTaskFile | Where-Object { $_ -Match 'ceTaskUrl=' }
 $CeTaskUrl = $CeTaskUrl -replace "ceTaskUrl=" -replace ""
 
-$DashboardUrl  = Get-Content -Path $SonarTaskFile | Where-Object { $_ -Match 'dashboardUrl=' }
-$DashboardUrl  = $DashboardUrl.Split('=')[1]
+$DashboardUrl = Get-Content -Path $SonarTaskFile | Where-Object { $_ -Match 'dashboardUrl=' }
+$DashboardUrl = $DashboardUrl.Split('=')[1]
 
 $TokenAsBytes = [System.Text.Encoding]::UTF8.GetBytes(("$SonarToken" + ":"))
 $Base64Token = [System.Convert]::ToBase64String($TokenAsBytes)
-$AuthorizationHeaderValue =  [String]::Format("Basic {0}", $Base64Token)
+$AuthorizationHeaderValue = [String]::Format("Basic {0}", $Base64Token)
 $Headers = @{ 
     Authorization = $AuthorizationHeaderValue; 
-    AcceptType = "application/json"  
+    AcceptType    = "application/json"  
 }
 
 $Response = Invoke-WebRequest -Uri $CeTaskUrl -Headers $Headers -UseBasicParsing | ConvertFrom-Json
-
 $AnalysisUrl = "{0}/api/qualitygates/project_status?analysisId={1}" -f $ServerUrl, $Response.task.analysisId
-$Response = Invoke-WebRequest -Uri $AnalysisUrl -Headers $Headers -UseBasicParsing | ConvertFrom-Json
 
-if (($Response.projectStatus.status -ne 'OK') -and ($Response.projectStatus.status -ne 'NONE')) {
-      $ErrorMsg = "##vso[task.LogIssue type=error;] Quality gate FAILED. Please check it here: {0}/dashboard?id={1}" -f $ServerUrl, $ProjectKey
-      Write-Output $ErrorMsg
-      Write-Output "##vso[task.complete result=Failed;]"
-}
+$SleepingTimeInMillis = 3000
+$MaxNumberOfTries = 30
+$NumbersOfTries = 0
+
+do {
+    Start-Sleep -Milliseconds $SleepingTimeInMillis
+
+    $Response = try { 
+        (Invoke-WebRequest -Uri $AnalysisUrl -Headers $Headers).BaseResponse
+    }
+    catch [System.Net.WebException] { 
+        $_.Exception.Response 
+    } 
+
+    $StatusCodeAsInt = [int]$Response.BaseResponse.StatusCode
+
+    if ($StatusCodeAsInt -ne 200) {
+        $NumbersOfTries++
+        continue
+    }
+    elseif (($Response.projectStatus.status -ne 'OK') -and ($Response.projectStatus.status -ne 'NONE')) {
+        $ErrorMsg = "##vso[task.LogIssue type=error;] NOTOK: Quality gate FAILED - please check it here: {0}/dashboard?id={1}" -f $ServerUrl, $ProjectKey
+        Write-Output $ErrorMsg
+        Write-Output "##vso[task.complete result=Failed;]"
+        exit 1
+    }
+} while ($NumbersOfTries -lt $MaxNumberOfTries)
+
+Write-Output "OK: Quality gate PASSED - please check it here: {0}/dashboard?id={1}" -f $ServerUrl, $ProjectKey
+exit 0
