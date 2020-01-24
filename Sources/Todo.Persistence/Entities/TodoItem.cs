@@ -1,8 +1,6 @@
 using System;
-using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Todo.Persistence
+namespace Todo.Persistence.Entities
 {
     /// <summary>
     /// Represents an action to be performed at some point in the future.
@@ -12,39 +10,35 @@ namespace Todo.Persistence
         /// <summary>
         /// Gets or sets the identifier of this action.
         /// </summary>
-        [Required]
-        [Range(1, long.MaxValue)]
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public long Id { get; set; }
+        public long Id { get; }
 
         /// <summary>
         /// Gets or sets the name of this action.
         /// </summary>
-        [Required(AllowEmptyStrings = false)]
-        [MinLength(2)]
-        [MaxLength(100)]
         public string Name { get; set; }
 
         /// <summary>
         /// Gets or sets whether this action has been completed.
         /// </summary>
-        [Required]
         public bool IsComplete { get; set; }
 
-        [Required]
-        [MinLength(2)]
-        [MaxLength(100)]
-        public string CreatedBy { get; set; }
+        public string CreatedBy { get; }
 
-        [Required]
-        public DateTime CreatedOn { get; set; }
+        public DateTime CreatedOn { get; }
 
-        [MinLength(2)]
-        [MaxLength(100)]
         public string LastUpdatedBy { get; set; }
 
         public DateTime? LastUpdatedOn { get; set; }
+
+        public TodoItem(string name, string createdBy)
+        {
+            Name = name;
+            CreatedBy = createdBy;
+            CreatedOn = DateTime.UtcNow;
+            LastUpdatedBy = CreatedBy;
+            LastUpdatedOn = CreatedOn;
+            IsComplete = false;
+        }
 
         /// <summary>
         /// Gets the string representation of this action.
@@ -52,7 +46,13 @@ namespace Todo.Persistence
         /// <returns></returns>
         public override string ToString()
         {
-            return $"[{nameof(Id)}: {Id}, {nameof(Name)}: {Name}, {nameof(IsComplete)}: {IsComplete}]";
+            return $"[{nameof(Id)}: {Id}, " +
+                   $"{nameof(Name)}: {Name}, " +
+                   $"{nameof(IsComplete)}: {IsComplete}, " +
+                   $"{nameof(CreatedBy)}: {CreatedBy}" +
+                   $"{nameof(CreatedOn)}: {CreatedOn:u}" +
+                   $"{nameof(LastUpdatedBy)}: {LastUpdatedBy}" +
+                   $"{nameof(LastUpdatedOn)}: {LastUpdatedOn:u}]";
         }
     }
 }
