@@ -1,14 +1,11 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using System;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using Todo.Persistence;
-using Todo.Persistence.Entities;
-using Todo.Services;
 
 namespace Todo.WebApi.Infrastructure
 {
@@ -18,6 +15,7 @@ namespace Todo.WebApi.Infrastructure
         protected override TestServer CreateServer(IWebHostBuilder builder)
         {
             var testServer = base.CreateServer(builder);
+            MigrateDatabase(testServer.Host.Services);
             return testServer;
         }
 
@@ -31,6 +29,15 @@ namespace Todo.WebApi.Infrastructure
                     options.Filters.Add(new InjectTestUserFilter());
                 });
             });
+        }
+
+        private static void MigrateDatabase(IServiceProvider serviceProvider)
+        {
+            using (var serviceScope = serviceProvider.CreateScope())
+            {
+                var todoDbContext = serviceScope.ServiceProvider.GetRequiredService<TodoDbContext>();
+                todoDbContext.Database.Migrate();
+            }
         }
     }
 }
