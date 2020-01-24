@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Todo.Persistence;
+using Todo.Persistence.Entities;
 using Todo.Services;
 
 namespace Todo.WebApi.Infrastructure
@@ -17,7 +18,6 @@ namespace Todo.WebApi.Infrastructure
         protected override TestServer CreateServer(IWebHostBuilder builder)
         {
             var testServer = base.CreateServer(builder);
-            SeedDatabase(testServer.Host.Services);
             return testServer;
         }
 
@@ -31,36 +31,6 @@ namespace Todo.WebApi.Infrastructure
                     options.Filters.Add(new InjectTestUserFilter());
                 });
             });
-        }
-
-        private static void SeedDatabase(IServiceProvider serviceProvider)
-        {
-            using (var serviceScope = serviceProvider.CreateScope())
-            {
-                var todoDbContext = serviceScope.ServiceProvider.GetRequiredService<TodoDbContext>();
-                var databaseSeeder = serviceScope.ServiceProvider.GetRequiredService<IDatabaseSeeder>();
-                databaseSeeder.Seed(todoDbContext,GetItems(0));
-            }
-        }
-
-        private static IEnumerable<TodoItem> GetItems(int count)
-        {
-            if (count <= 0)
-            {
-                return Enumerable.Empty<TodoItem>().ToList();
-            }
-
-            var result = Enumerable.Range(1, count)
-                                   .Select(index => new TodoItem
-                                   {
-                                       IsComplete = true
-                                     , Name = $"TodoItem #{index}"
-                                     , CreatedBy = TestUserSettings.UserId
-                                     , CreatedOn = DateTime.Now
-                                   })
-                                   .ToList();
-
-            return result;
         }
     }
 }

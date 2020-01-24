@@ -66,7 +66,6 @@ namespace Todo.WebApi
 
             // Configure application services
             services.AddScoped<ITodoService, TodoService>();
-            services.AddScoped<IDatabaseSeeder, DatabaseSeeder>();
 
             // Register service with 2 interfaces.
             // See more here: https://andrewlock.net/how-to-register-a-service-with-multiple-interfaces-for-in-asp-net-core-di/.
