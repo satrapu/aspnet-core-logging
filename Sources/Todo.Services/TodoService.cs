@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Todo.Persistence;
+using Todo.Persistence.Entities;
 
 namespace Todo.Services
 {
@@ -35,7 +36,8 @@ namespace Todo.Services
                 throw new ArgumentNullException(nameof(todoItemQuery));
             }
 
-            var matchingTodoItems = todoDbContext.TodoItems.Where(x => x.CreatedBy == todoItemQuery.User.GetUserId());
+            var matchingTodoItems =
+                todoDbContext.TodoItems.Where(x => x.CreatedBy == todoItemQuery.User.GetUserId());
 
             if (todoItemQuery.Id.HasValue)
             {
@@ -44,20 +46,23 @@ namespace Todo.Services
 
             if (!string.IsNullOrWhiteSpace(todoItemQuery.NamePattern))
             {
-                matchingTodoItems = matchingTodoItems.Where(x => EF.Functions.Like(x.Name, todoItemQuery.NamePattern));
+                matchingTodoItems = matchingTodoItems.Where(x =>
+                    EF.Functions.Like(x.Name, todoItemQuery.NamePattern));
             }
 
             if (todoItemQuery.IsComplete.HasValue)
             {
-                matchingTodoItems = matchingTodoItems.Where(x => x.IsComplete == todoItemQuery.IsComplete.Value);
+                matchingTodoItems = matchingTodoItems.Where(x =>
+                    x.IsComplete == todoItemQuery.IsComplete.Value);
             }
 
-            var result = matchingTodoItems.Select(todoItem => new TodoItemInfo
-            {
-                Id = todoItem.Id,
-                IsComplete = todoItem.IsComplete,
-                Name = todoItem.Name
-            }).ToList();
+            var result = matchingTodoItems.Select(todoItem =>
+                new TodoItemInfo
+                {
+                    Id = todoItem.Id,
+                    IsComplete = todoItem.IsComplete,
+                    Name = todoItem.Name
+                }).ToList();
 
             return result;
         }
@@ -69,19 +74,16 @@ namespace Todo.Services
                 throw new ArgumentNullException(nameof(newTodoItemInfo));
             }
 
-            var todoItem = new TodoItem
+            var todoItem = new TodoItem(newTodoItemInfo.Name, newTodoItemInfo.User.GetUserId())
             {
                 IsComplete = newTodoItemInfo.IsComplete,
-                Name = newTodoItemInfo.Name,
-                CreatedBy = newTodoItemInfo.User.GetUserId(),
-                CreatedOn = DateTime.Now
             };
 
             todoDbContext.TodoItems.Add(todoItem);
             todoDbContext.SaveChanges();
 
             logger.LogDebug("Item with id {TodoItemId} has been added by user {UserId}"
-                          , todoItem.Id, todoItem.CreatedBy);
+                , todoItem.Id, todoItem.CreatedBy);
 
             return todoItem.Id;
         }
@@ -98,7 +100,7 @@ namespace Todo.Services
             if (todoItem == null)
             {
                 throw new ArgumentException($"Could not find {nameof(TodoItem)} by id {updateTodoItemInfo.Id}"
-                                          , nameof(updateTodoItemInfo));
+                    , nameof(updateTodoItemInfo));
             }
 
             todoItem.IsComplete = updateTodoItemInfo.IsComplete;
@@ -110,7 +112,7 @@ namespace Todo.Services
             todoDbContext.SaveChanges();
 
             logger.LogDebug("Item with id {TodoItemId} has been updated by user {UserId}"
-                          , todoItem.Id, todoItem.LastUpdatedBy);
+                , todoItem.Id, todoItem.LastUpdatedBy);
         }
 
         public void Delete(DeleteTodoItemInfo deleteTodoItemInfo)
@@ -125,14 +127,14 @@ namespace Todo.Services
             if (todoItem == null)
             {
                 throw new ArgumentException($"Could not find {nameof(TodoItem)} by id {deleteTodoItemInfo.Id}"
-                                          , nameof(deleteTodoItemInfo));
+                    , nameof(deleteTodoItemInfo));
             }
 
             todoDbContext.TodoItems.Remove(todoItem);
             todoDbContext.SaveChanges();
 
             logger.LogDebug("Item with id {TodoItemId} has been deleted by user {UserId}"
-                          , deleteTodoItemInfo.Id, deleteTodoItemInfo.User.GetUserId());
+                , deleteTodoItemInfo.Id, deleteTodoItemInfo.User.GetUserId());
         }
     }
 }

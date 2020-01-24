@@ -11,6 +11,7 @@
     <PackageReference Update="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.1"/>
     <PackageReference Update="Microsoft.AspNetCore.Mvc.Testing" Version="3.1.1" />
     <PackageReference Update="Microsoft.EntityFrameworkCore" Version="3.1.1" />
+    <PackageReference Update="Microsoft.EntityFrameworkCore.Design" Version="3.1.1" />
     <PackageReference Update="Microsoft.EntityFrameworkCore.InMemory" Version="3.1.1" />
     <PackageReference Update="Microsoft.Extensions.Configuration" Version="3.1.1" />
     <PackageReference Update="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="3.1.1" />
