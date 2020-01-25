@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Todo.Persistence;
+using Todo.Persistence.Entities;
 
 namespace Todo.Services
 {
