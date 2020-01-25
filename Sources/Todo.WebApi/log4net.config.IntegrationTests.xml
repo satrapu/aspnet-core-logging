@@ -2,7 +2,7 @@
 <log4net>
 
   <appender name="IntegrationTests" type="log4net.Appender.FileAppender">
-    <file value="Logs/todo.integrationtests.log" />
+    <file value="Logs/todo.IntegrationTests.log" />
     <appendToFile value="true"/>
     <layout type="log4net.Layout.PatternLayout">
       <conversionPattern value="%date [%thread] %-5level %logger %newline %message %newline"/>
