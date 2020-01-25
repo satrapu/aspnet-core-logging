@@ -1,4 +1,4 @@
-# Based on: https://github.com/michaelcostabr/SonarQubeBuildBreaker/blob/master/SonarQubeBuildBreaker.ps1
+# Checks whether the given Git branch has passed SonarCloud quality gate via an web API call.
 # 
 # SonarCloud Web API
 #       Methods: https://sonarcloud.io/web_api/api/
