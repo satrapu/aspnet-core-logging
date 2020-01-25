@@ -22,8 +22,8 @@ namespace Todo.WebApi.Logging
         {
             try
             {
-                // ReSharper disable once UnusedVariable
-                var loggingService = new LoggingService(null);
+                // ReSharper disable once ObjectCreationAsStatement
+                new LoggingService(null);
                 Assert.Fail("Must not create instance using null argument");
             }
             catch (Exception expectedException)
@@ -56,7 +56,7 @@ namespace Todo.WebApi.Logging
         }
 
         /// <summary>
-        /// Tests the <see cref="LoggingService.ToLogMessage(HttpRequest)"/> method.
+        /// Tests the <see cref="LoggingService.ToLogMessageAsync(HttpRequest)"/> method.
         /// </summary>
         [Test]
         public async Task ToLogMessageAsync_UsingNullHttpRequest_MustThrowException()
@@ -68,7 +68,7 @@ namespace Todo.WebApi.Logging
                 var loggerMock = new Mock<ILogger<LoggingService>>();
                 var loggingService = new LoggingService(loggerMock.Object);
                 // ReSharper disable once ExpressionIsAlwaysNull
-                await loggingService.ToLogMessageAsync(httpRequest);
+                await loggingService.ToLogMessageAsync(httpRequest).ConfigureAwait(false);
                 Assert.Fail("Must not create log message using null HTTP request");
             }
             catch (Exception expectedException)
@@ -81,7 +81,7 @@ namespace Todo.WebApi.Logging
         }
 
         /// <summary>
-        /// Tests the <see cref="LoggingService.ToLogMessage(HttpResponse)"/> method.
+        /// Tests the <see cref="LoggingService.ToLogMessageAsync(HttpRequest)"/> method.
         /// </summary>
         [Test]
         public async Task ToLogMessageAsync_UsingNullHttpResponse_MustThrowException()
@@ -93,7 +93,7 @@ namespace Todo.WebApi.Logging
                 var loggerMock = new Mock<ILogger<LoggingService>>();
                 var loggingService = new LoggingService(loggerMock.Object);
                 // ReSharper disable once ExpressionIsAlwaysNull
-                await loggingService.ToLogMessageAsync(httpResponse);
+                await loggingService.ToLogMessageAsync(httpResponse).ConfigureAwait(false);
                 Assert.Fail("Must not create log message using null HTTP response");
             }
             catch (Exception expectedException)

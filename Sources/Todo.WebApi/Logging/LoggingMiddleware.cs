@@ -15,7 +15,7 @@ namespace Todo.WebApi.Logging
         /// <summary>
         /// Represents the response buffer size.
         /// </summary>
-        private const int BUFFER_SIZE_IN_BYTES = 1024 * 1024;
+        private const int BufferSizeInBytes = 1024 * 1024;
 
         private readonly RequestDelegate nextRequestDelegate;
         private readonly IHttpContextLoggingHandler httpContextLoggingHandler;
@@ -69,14 +69,14 @@ namespace Todo.WebApi.Logging
             httpContext.Request.EnableBuffering();
 
             // Logs the current HTTP request
-            var httpRequestAsLogMessage = await httpObjectConverter.ToLogMessageAsync(httpContext.Request);
+            var httpRequestAsLogMessage = await httpObjectConverter.ToLogMessageAsync(httpContext.Request).ConfigureAwait(false);
             // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
             logger.LogDebug(httpRequestAsLogMessage);
 
             // Saves the original response body stream for latter purposes
             var originalResponseBodyStream = httpContext.Response.Body;
 
-            using (var stream = new MemoryStream(BUFFER_SIZE_IN_BYTES))
+            using (var stream = new MemoryStream(BufferSizeInBytes))
             {
                 // Replace response body stream with a seekable one, like a MemoryStream, to allow logging it
                 httpContext.Response.Body = stream;
@@ -85,7 +85,7 @@ namespace Todo.WebApi.Logging
                 await nextRequestDelegate(httpContext).ConfigureAwait(false);
 
                 // Logs the current HTTP response
-                var httpResponseAsLogMessage = await httpObjectConverter.ToLogMessageAsync(httpContext.Response);
+                var httpResponseAsLogMessage = await httpObjectConverter.ToLogMessageAsync(httpContext.Response).ConfigureAwait(false);
                 // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
                 logger.LogDebug(httpResponseAsLogMessage);
 

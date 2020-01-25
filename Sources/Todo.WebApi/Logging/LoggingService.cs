@@ -1,10 +1,10 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using System;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 
 namespace Todo.WebApi.Logging
 {
@@ -13,11 +13,11 @@ namespace Todo.WebApi.Logging
     /// </summary>
     public class LoggingService : IHttpContextLoggingHandler, IHttpObjectConverter
     {
-        private const int BUFFER_SIZE = 1000;
+        private const int BufferSize = 1000;
 
-        private static readonly string[] textBasedHeaderNames = { "Accept", "Content-Type" };
-        private static readonly string[] textBasedHeaderValues = { "application/json", "application/xml", "text/" };
-        private const string ACCEPTABLE_REQUEST_URL_PREFIX = "/api/";
+        private static readonly string[] TextBasedHeaderNames = { "Accept", "Content-Type" };
+        private static readonly string[] TextBasedHeaderValues = { "application/json", "application/xml", "text/" };
+        private const string AcceptableRequestUrlPrefix = "/api/";
         private readonly ILogger logger;
 
         /// <summary>
@@ -64,6 +64,16 @@ namespace Todo.WebApi.Logging
             return InternalToLogMessageAsync(httpRequest);
         }
 
+        public Task<string> ToLogMessageAsync(HttpResponse httpResponse)
+        {
+            if (httpResponse == null)
+            {
+                throw new ArgumentNullException(nameof(httpResponse));
+            }
+
+            return InternalToLogMessageAsync(httpResponse);
+        }
+
         private async Task<string> InternalToLogMessageAsync(HttpRequest httpRequest)
         {
             if (logger.IsEnabled(LogLevel.Debug))
@@ -72,7 +82,7 @@ namespace Todo.WebApi.Logging
                 logger.LogDebug($"Converting HTTP request {httpRequest.HttpContext.TraceIdentifier} ...");
             }
 
-            var stringBuilder = new StringBuilder(BUFFER_SIZE);
+            var stringBuilder = new StringBuilder(BufferSize);
             stringBuilder.AppendLine($"--- REQUEST {httpRequest.HttpContext.TraceIdentifier}: BEGIN ---");
             stringBuilder.AppendLine($"{httpRequest.Method} {httpRequest.Path}{httpRequest.QueryString.ToUriComponent()} {httpRequest.Protocol}");
 
@@ -85,21 +95,11 @@ namespace Todo.WebApi.Logging
             }
 
             stringBuilder.AppendLine();
-            stringBuilder.AppendLine(await httpRequest.Body.ReadAndResetAsync());
+            stringBuilder.AppendLine(await httpRequest.Body.ReadAndResetAsync().ConfigureAwait(false));
             stringBuilder.AppendLine($"--- REQUEST {httpRequest.HttpContext.TraceIdentifier}: END ---");
 
             var result = stringBuilder.ToString();
             return result;
-        }
-
-        public Task<string> ToLogMessageAsync(HttpResponse httpResponse)
-        {
-            if (httpResponse == null)
-            {
-                throw new ArgumentNullException(nameof(httpResponse));
-            }
-
-            return InternalToLogMessageAsync(httpResponse);
         }
 
         private async Task<string> InternalToLogMessageAsync(HttpResponse httpResponse)
@@ -110,7 +110,7 @@ namespace Todo.WebApi.Logging
                 logger.LogDebug($"Converting HTTP response {httpResponse.HttpContext.TraceIdentifier} ...");
             }
 
-            var stringBuilder = new StringBuilder(BUFFER_SIZE);
+            var stringBuilder = new StringBuilder(BufferSize);
             stringBuilder.AppendLine($"--- RESPONSE {httpResponse.HttpContext.TraceIdentifier}: BEGIN ---");
             stringBuilder.AppendLine($"{httpResponse.HttpContext.Request.Protocol} {httpResponse.StatusCode} {((HttpStatusCode)httpResponse.StatusCode).ToString()}");
 
@@ -123,7 +123,7 @@ namespace Todo.WebApi.Logging
             }
 
             stringBuilder.AppendLine();
-            stringBuilder.AppendLine(await httpResponse.Body.ReadAndResetAsync());
+            stringBuilder.AppendLine(await httpResponse.Body.ReadAndResetAsync().ConfigureAwait(false));
             stringBuilder.AppendLine($"--- RESPONSE {httpResponse.HttpContext.TraceIdentifier}: END ---");
 
             var result = stringBuilder.ToString();
@@ -132,14 +132,14 @@ namespace Todo.WebApi.Logging
 
         private static bool IsTextBased(HttpRequest httpRequest)
         {
-            return textBasedHeaderNames.Any(headerName => IsTextBased(httpRequest, headerName))
-                || httpRequest.Path.ToUriComponent().StartsWith(ACCEPTABLE_REQUEST_URL_PREFIX);
+            return TextBasedHeaderNames.Any(headerName => IsTextBased(httpRequest, headerName))
+                || httpRequest.Path.ToUriComponent().StartsWith(AcceptableRequestUrlPrefix);
         }
 
         private static bool IsTextBased(HttpRequest httpRequest, string headerName)
         {
             return httpRequest.Headers.TryGetValue(headerName, out var headerValues)
-                && textBasedHeaderValues.Any(acceptedHeaderValue => headerValues.Any(headerValue => headerValue.StartsWith(acceptedHeaderValue)));
+                && TextBasedHeaderValues.Any(acceptedHeaderValue => headerValues.Any(headerValue => headerValue.StartsWith(acceptedHeaderValue)));
         }
     }
 }
