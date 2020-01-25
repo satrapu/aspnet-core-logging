@@ -23,12 +23,16 @@ namespace Todo.WebApi
         /// Creates a new instance of the <see cref="Startup"/> class.
         /// </summary>
         /// <param name="configuration">The configuration to be used for setting up this application.</param>
-        public Startup(IConfiguration configuration)
+        /// /// <param name="webHostEnvironment">The environment where this application is hosted.</param>
+        public Startup(IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
         {
             Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            WebHostingEnvironment = webHostEnvironment ?? throw new ArgumentNullException(nameof(webHostEnvironment));
         }
 
         private IConfiguration Configuration { get; }
+
+        private IWebHostEnvironment WebHostingEnvironment { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -49,20 +53,25 @@ namespace Todo.WebApi
             {
                 var connectionString = Configuration.GetConnectionString("Todo");
                 dbContextOptionsBuilder.UseNpgsql(connectionString)
-                    .EnableSensitiveDataLogging()
                     .UseLoggerFactory(serviceProvider.GetRequiredService<ILoggerFactory>());
+
+                if (WebHostingEnvironment.IsDevelopment())
+                {
+                    dbContextOptionsBuilder.EnableSensitiveDataLogging();
+                    dbContextOptionsBuilder.EnableDetailedErrors();
+                }
             });
 
             // Configure ASP.NET Web API
             services.AddMvc(options =>
-                {
-                    // In case the client requests data in an unsupported format, respond with 406 status code
-                    options.ReturnHttpNotAcceptable = true;
+            {
+                // In case the client requests data in an unsupported format, respond with 406 status code
+                options.ReturnHttpNotAcceptable = true;
 
-                    // Needed after migrating ASP.NET Core 2.2 to 3.1
-                    options.EnableEndpointRouting = false;
-                })
-                .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+                // Needed after migrating ASP.NET Core 2.2 to 3.1
+                options.EnableEndpointRouting = false;
+            })
+            .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
 
             // Configure application services
             services.AddScoped<ITodoService, TodoService>();
@@ -77,9 +86,9 @@ namespace Todo.WebApi
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder applicationBuilder, IWebHostEnvironment webHostEnvironment)
+        public void Configure(IApplicationBuilder applicationBuilder)
         {
-            bool isDevelopmentEnvironment = webHostEnvironment.IsDevelopment();
+            bool isDevelopmentEnvironment = WebHostingEnvironment.IsDevelopment();
 
             if (isDevelopmentEnvironment)
             {
