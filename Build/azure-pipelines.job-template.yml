@@ -320,3 +320,26 @@ jobs:
         , eq( ${{ parameters.sonar.enabled }}, True)
         , eq( ${{ parameters.sonar.buildBreaker.enabled }}, True)
       )
+
+  # Runs a PowerShell script to break the build in case Sonar quality gate has failed.
+  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/powershell?view=azure-devops.
+  - task: PowerShell@2
+    name: sonar_build_breaker
+    displayName: Run Sonar build breaker
+    # See more about conditions here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/conditions?view=azure-devops&tabs=yaml.
+    condition: |
+      and
+      (
+          succeeded()
+        , eq( ${{ parameters.sonar.enabled }}, True)
+        , eq( ${{ parameters.sonar.buildBreaker.enabled }}, True)
+      )
+    inputs:
+      targetType: 'filePath'
+      filePath: '$(Build.SourcesDirectory)/Build/SonarBuildBreaker.ps1'
+      arguments: >-
+        -SonarToken "$(CurrentProject.Sonar.Token)" 
+        -DotSonarQubeFolder "$(Agent.BuildDirectory)/.sonarqube"
+      errorActionPreference: stop
+      failOnStderr: True
+      workingDirectory: $(Build.SourcesDirectory)
