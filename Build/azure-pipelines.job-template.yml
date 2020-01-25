@@ -338,8 +338,10 @@ jobs:
       targetType: 'filePath'
       filePath: '$(Build.SourcesDirectory)/Build/SonarBuildBreaker.ps1'
       arguments: >-
+        -SonarProjectKey 'aspnet-core-logging'
+        -SonarServerBaseUrl 'https://sonarcloud.io'
         -SonarToken "$(CurrentProject.Sonar.Token)" 
-        -DotSonarQubeFolder "$(Agent.BuildDirectory)/.sonarqube"
+        -GitBranchName "$(Build.SourceBranchName)"
       errorActionPreference: stop
       failOnStderr: True
       workingDirectory: $(Build.SourcesDirectory)
