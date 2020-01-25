@@ -30,6 +30,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="log4net.config.IntegrationTests.xml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="log4net.config.IntegrationTests.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="log4net.config.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

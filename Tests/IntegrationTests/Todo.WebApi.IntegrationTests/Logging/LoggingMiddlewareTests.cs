@@ -13,12 +13,12 @@ namespace Todo.WebApi.Logging
     [TestFixture]
     public class LoggingMiddlewareTests
     {
-        private TodoWebApplicationFactory testFactory;
+        private TestWebApplicationFactory testWebApplicationFactory;
 
         [OneTimeSetUp]
         public void GivenAnHttpRequestIsToBePerformed()
         {
-            testFactory = new TodoWebApplicationFactory();
+            testWebApplicationFactory = new TestWebApplicationFactory();
         }
 
         /// <summary>
@@ -28,7 +28,7 @@ namespace Todo.WebApi.Logging
         public async Task Invoke_WithTextHeaderNotTriggeringRequestBeingLogged_MustFail()
         {
             // Arrange
-            using (var client = testFactory.CreateClient())
+            using (var client = testWebApplicationFactory.CreateClient())
             {
                 var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, "qwerty/123456");
                 httpRequestMessage.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("qwerty/123456"));
@@ -48,7 +48,7 @@ namespace Todo.WebApi.Logging
         public async Task Invoke_WithTextHeaderTriggeringRequestBeingLogged_MustSucceed()
         {
             // Arrange
-            using (var client = testFactory.CreateClient())
+            using (var client = testWebApplicationFactory.CreateClient())
             {
                 var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, "api/todo");
                 httpRequestMessage.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json"));

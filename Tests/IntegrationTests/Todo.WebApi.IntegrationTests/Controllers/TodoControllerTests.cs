@@ -21,12 +21,12 @@ namespace Todo.WebApi.Controllers
     [TestFixture]
     public class TodoControllerTests
     {
-        private TodoWebApplicationFactory testFactory;
+        private TestWebApplicationFactory testWebApplicationFactory;
 
         [OneTimeSetUp]
         public void GivenAnHttpRequestIsToBePerformed()
         {
-            testFactory = new TodoWebApplicationFactory();
+            testWebApplicationFactory = new TestWebApplicationFactory();
         }
 
         /// <summary>
@@ -37,7 +37,7 @@ namespace Todo.WebApi.Controllers
         public async Task Create_UsingValidTodoItem_ReturnsTheSameInstance()
         {
             // Arrange
-            using (var client = testFactory.CreateClient())
+            using (var client = testWebApplicationFactory.CreateClient())
             {
                 long? id = null;
 
@@ -50,13 +50,13 @@ namespace Todo.WebApi.Controllers
                     };
 
                     // Act
-                    var response = await client.PostAsJsonAsync("api/todo", newTodoItemModel);
+                    var response = await client.PostAsJsonAsync("api/todo", newTodoItemModel).ConfigureAwait(false);
 
                     // Assert
                     response.IsSuccessStatusCode.Should().BeTrue();
                     response.StatusCode.Should().Be(HttpStatusCode.Created);
 
-                    var todoItemModel = await response.Content.ReadAsAsync<TodoItemModel>();
+                    var todoItemModel = await response.Content.ReadAsAsync<TodoItemModel>().ConfigureAwait(false);
                     id = todoItemModel.Id;
                     todoItemModel.IsComplete.Should().Be(newTodoItemModel.IsComplete);
                     todoItemModel.Name.Should().Be(newTodoItemModel.Name);
@@ -66,7 +66,7 @@ namespace Todo.WebApi.Controllers
                 {
                     if (id.HasValue)
                     {
-                        var response = await client.DeleteAsync($"api/todo/{id}");
+                        var response = await client.DeleteAsync($"api/todo/{id}").ConfigureAwait(false);
                         response.IsSuccessStatusCode.Should().BeTrue("cleanup must succeed");
                     }
                 }
@@ -81,7 +81,7 @@ namespace Todo.WebApi.Controllers
         public async Task GetByQuery_UsingDefaults_ReturnsExpectedResult()
         {
             // Arrange
-            using (var client = testFactory.CreateClient())
+            using (var client = testWebApplicationFactory.CreateClient())
             {
                 long? id = null;
 
@@ -95,10 +95,10 @@ namespace Todo.WebApi.Controllers
                         IsComplete = DateTime.UtcNow.Ticks % 2 == 0, Name = name
                     };
 
-                    var response = await client.PostAsJsonAsync("api/todo", newTodoItemModel);
+                    var response = await client.PostAsJsonAsync("api/todo", newTodoItemModel).ConfigureAwait(false);
                     response.IsSuccessStatusCode.Should().BeTrue();
                     response.StatusCode.Should().Be(HttpStatusCode.Created);
-                    var todoItemModel = await response.Content.ReadAsAsync<TodoItemModel>();
+                    var todoItemModel = await response.Content.ReadAsAsync<TodoItemModel>().ConfigureAwait(false);
                     id = todoItemModel.Id;
 
                     var parametersToAdd = new Dictionary<string, string>
@@ -111,13 +111,13 @@ namespace Todo.WebApi.Controllers
                     var requestUri = QueryHelpers.AddQueryString("api/todo", parametersToAdd);
 
                     // Act
-                    response = await client.GetAsync(requestUri);
+                    response = await client.GetAsync(requestUri).ConfigureAwait(false);
 
                     // Assert
                     response.IsSuccessStatusCode.Should().BeTrue();
                     response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-                    var todoItemModels = await response.Content.ReadAsAsync<List<TodoItemModel>>();
+                    var todoItemModels = await response.Content.ReadAsAsync<List<TodoItemModel>>().ConfigureAwait(false);
                     todoItemModels.Should().HaveCount(1);
 
                     todoItemModel = todoItemModels.Single();
@@ -129,7 +129,7 @@ namespace Todo.WebApi.Controllers
                 {
                     if (id.HasValue)
                     {
-                        var response = await client.DeleteAsync($"api/todo/{id}");
+                        var response = await client.DeleteAsync($"api/todo/{id}").ConfigureAwait(false);
                         response.IsSuccessStatusCode.Should().BeTrue("cleanup must succeed");
                     }
                 }
@@ -144,7 +144,7 @@ namespace Todo.WebApi.Controllers
         public async Task Update_UsingNewlyCreatedTodoItem_MustSucceed()
         {
             // Arrange
-            using (var client = testFactory.CreateClient())
+            using (var client = testWebApplicationFactory.CreateClient())
             {
                 long? id = null;
 
@@ -158,10 +158,10 @@ namespace Todo.WebApi.Controllers
                         Name = name, IsComplete = isComplete
                     };
 
-                    var response = await client.PostAsJsonAsync("api/todo", newTodoItemInfo);
+                    var response = await client.PostAsJsonAsync("api/todo", newTodoItemInfo).ConfigureAwait(false);
                     response.IsSuccessStatusCode.Should().BeTrue("a new entity has been created");
 
-                    var todoItemModel = await response.Content.ReadAsAsync<TodoItemModel>();
+                    var todoItemModel = await response.Content.ReadAsAsync<TodoItemModel>().ConfigureAwait(false);
                     id = todoItemModel.Id;
 
                     var updateTodoItemModel = new UpdateTodoItemModel
@@ -170,7 +170,7 @@ namespace Todo.WebApi.Controllers
                     };
 
                     // Act
-                    response = await client.PutAsJsonAsync($"api/todo/{id}", updateTodoItemModel);
+                    response = await client.PutAsJsonAsync($"api/todo/{id}", updateTodoItemModel).ConfigureAwait(false);
 
                     // Assert
                     response.IsSuccessStatusCode.Should().BeTrue("an entity has been previously created");
@@ -185,11 +185,11 @@ namespace Todo.WebApi.Controllers
 
                     var requestUri = QueryHelpers.AddQueryString("api/todo", parametersToAdd);
 
-                    response = await client.GetAsync(requestUri);
+                    response = await client.GetAsync(requestUri).ConfigureAwait(false);
                     response.IsSuccessStatusCode.Should().BeTrue("an entity has been previously update");
                     response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-                    var todoItemModels = await response.Content.ReadAsAsync<List<TodoItemModel>>();
+                    var todoItemModels = await response.Content.ReadAsAsync<List<TodoItemModel>>().ConfigureAwait(false);
                     todoItemModels.Should().HaveCount(1, "the query is using id only");
 
                     todoItemModel = todoItemModels.Single();
@@ -201,7 +201,7 @@ namespace Todo.WebApi.Controllers
                 {
                     if (id.HasValue)
                     {
-                        var response = await client.DeleteAsync($"api/todo/{id}");
+                        var response = await client.DeleteAsync($"api/todo/{id}").ConfigureAwait(false);
                         response.IsSuccessStatusCode.Should().BeTrue("cleanup must succeed");
                     }
                 }
