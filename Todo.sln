@@ -11,8 +11,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{398FFE78
 		Directory.Build.targets = Directory.Build.targets
 		Build\Provision-Docker-container-using-healthcheck.ps1 = Build\Provision-Docker-container-using-healthcheck.ps1
 		Build\Provision-Docker-container-using-log-polling.ps1 = Build\Provision-Docker-container-using-log-polling.ps1
-		Build\SonarBuildBreaker.ps1 = Build\SonarBuildBreaker.ps1
-		Build\SonarQubeAnalysis.xml = Build\SonarQubeAnalysis.xml
 		Build\start-docker-on-macOS.sh = Build\start-docker-on-macOS.sh
 	EndProjectSection
 EndProject
@@ -47,7 +45,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Todo.WebApi.UnitTests", "Te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Todo.Services.IntegrationTests", "Tests\IntegrationTests\Todo.Services.IntegrationTests\Todo.Services.IntegrationTests.csproj", "{0C017B2C-B852-45E8-BEF4-2F04E371B2CE}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{337C9BBE-F79B-4086-BF5D-46666176EEF9}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".sonarlint", ".sonarlint", "{9F40326A-D20A-40DE-A0D9-6D06EB4C71C5}"
 	ProjectSection(SolutionItems) = preProject
 		.sonarlint\aspnet-core-loggingCSharp.ruleset = .sonarlint\aspnet-core-loggingCSharp.ruleset
 		.sonarlint\Todo.slconfig = .sonarlint\Todo.slconfig
