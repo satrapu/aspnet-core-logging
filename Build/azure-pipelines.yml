@@ -31,6 +31,11 @@ variables:
   # Load group containing variables applicable to all pipelines belonging to this project.
   - group: 'GlobalVariables'
 
+  # Load SonarQube related variable group.
+  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/library/variable-groups?view=vsts&tabs=yaml#use-a-variable-group.
+  # Be sure to link this group to this pipeline by selecting the latter -> Edit -> Variables -> Variable Groups!
+  - group: 'SonarQube'
+
   # Load group containing variables applicable to integration tests.
   # This group contains the password to be used when accessing the dockerized database targeted by the integration tests.
   # This password is stored as a secret under the name "IntegrationTests.Database.Todo.Password".
