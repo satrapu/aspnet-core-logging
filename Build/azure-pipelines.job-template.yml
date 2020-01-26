@@ -55,7 +55,7 @@ jobs:
         sonar.sourceEncoding=UTF-8
         sonar.cs.nunit.reportsPaths=**/TestResults/*.*
         sonar.cs.opencover.reportsPaths=**/coverage.opencover.xml
-        sonar.coverage.exclusions=**/Tests/**/*.cs
+        sonar.coverage.exclusions=**/Tests/**/*.cs,**/Sources/Todo.Persistence/**/TodoDbContextModelSnapshot.cs
     condition: |
       and
       (
