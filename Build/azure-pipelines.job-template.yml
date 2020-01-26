@@ -93,7 +93,7 @@ jobs:
       /p:CollectCoverage=True
       /p:CoverletOutputFormat=opencover
       /p:Include="[Todo.*]*"
-      /p:Exclude="[Todo.*.*Tests]*,[Todo.Persistence]TodoDbContextModelSnapshot"
+      /p:Exclude="[Todo.*.*Tests]*,[Todo.Persistence]*.TodoDbContextModelSnapshot"
       -- NUnit.Where="cat == UnitTests"
     name: run_unit_tests
     displayName: Run unit tests
@@ -218,7 +218,7 @@ jobs:
       /p:CollectCoverage=True
       /p:CoverletOutputFormat=opencover
       /p:Include="[Todo.*]*"
-      /p:Exclude="[Todo.*.*Tests]*,[Todo.Persistence]TodoDbContextModelSnapshot"
+      /p:Exclude="[Todo.*.*Tests]*,[Todo.Persistence]*.TodoDbContextModelSnapshot"
       -- NUnit.Where="cat == IntegrationTests"
     name: run_integration_tests
     displayName: Run integration tests
