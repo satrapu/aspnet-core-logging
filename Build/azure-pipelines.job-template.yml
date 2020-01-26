@@ -53,6 +53,8 @@ jobs:
       projectKey: 'aspnet-core-logging'
       extraProperties: |
         sonar.sourceEncoding=UTF-8
+        sonar.sources=**/Sources,**/Build
+        sonar.tests=**/Tests/UnitTests,**/Tests/IntegrationTests
         sonar.cs.nunit.reportsPaths=**/TestResults/*.*
         sonar.cs.opencover.reportsPaths=**/coverage.opencover.xml
         sonar.coverage.exclusions=**/Tests/**/*.cs,**/Sources/Todo.Persistence/**/TodoDbContextModelSnapshot.cs
