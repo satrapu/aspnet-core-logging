@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -17,6 +18,8 @@ namespace Todo.WebApi.Infrastructure
     {
         private const string EnvironmentName = "IntegrationTests";
         private const string BEFORE_FIRST_DATABASE_MIGRATION = "0";
+        private static bool isDatabaseSetup;
+        private static readonly object padlock = new object();
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
@@ -36,12 +39,12 @@ namespace Todo.WebApi.Infrastructure
                     options.Filters.Add(new InjectTestUserFilter());
                 });
 
-                SetupTestDbContext(services);
-                SetupTestDatabase(services);
+                SetupDbContext(services);
+                SetupDatabase(services);
             });
         }
 
-        private void SetupTestDbContext(IServiceCollection services)
+        private void SetupDbContext(IServiceCollection services)
         {
             ServiceDescriptor dbContextServiceDescriptor = services.SingleOrDefault(serviceDescriptor =>
                 serviceDescriptor.ServiceType == typeof(DbContextOptions<TodoDbContext>));
@@ -62,42 +65,69 @@ namespace Todo.WebApi.Infrastructure
             });
         }
 
-        private static void SetupTestDatabase(IServiceCollection services)
+        private static void SetupDatabase(IServiceCollection services)
         {
-            ServiceProvider serviceProvider = services.BuildServiceProvider();
-
-            using (IServiceScope serviceScope = serviceProvider.CreateScope())
+            if (!isDatabaseSetup)
             {
-                ILogger logger = serviceScope.ServiceProvider.GetRequiredService<ILogger<TestWebApplicationFactory>>();
-                logger.LogInformation("About to delete test database ...");
-                TodoDbContext todoDbContext = serviceScope.ServiceProvider.GetRequiredService<TodoDbContext>();
-                bool hasDeleteDatabase = todoDbContext.Database.EnsureDeleted();
-
-                if (hasDeleteDatabase)
+                lock (padlock)
                 {
-                    logger.LogInformation("Test database has been successfully deleted");
+                    if (!isDatabaseSetup)
+                    {
+                        ServiceProvider serviceProvider = services.BuildServiceProvider();
+
+                        using (IServiceScope serviceScope = serviceProvider.CreateScope())
+                        {
+                            TodoDbContext todoDbContext =
+                                serviceScope.ServiceProvider.GetRequiredService<TodoDbContext>();
+                            ILogger logger = serviceProvider.GetRequiredService<ILogger<TestWebApplicationFactory>>();
+
+                            try
+                            {
+                                RunMigrations(todoDbContext, logger);
+                            }
+                            catch (Exception exception)
+                            {
+                                logger.LogError("Failed to migrate test database", exception);
+                                throw;
+                            }
+
+                            isDatabaseSetup = true;
+                        }
+                    }
                 }
-                else
-                {
-                    logger.LogInformation("Could not find any test database to delete");
-                }
-
-                IMigrator databaseMigrator = todoDbContext.GetInfrastructure().GetService<IMigrator>();
-
-                logger.LogInformation("About to run test database migrations ...");
-                databaseMigrator.Migrate();
-                logger.LogInformation("Test database migrations have been sucessfully run");
-
-                logger.LogInformation("About to revert test database migrations ...");
-                // Revert migrations by using a special migration identifier.
-                // See more here: https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/dotnet#dotnet-ef-database-update.
-                databaseMigrator.Migrate(BEFORE_FIRST_DATABASE_MIGRATION);
-                logger.LogInformation("Test database migrations have been sucessfully reverted");
-
-                logger.LogInformation("About to run test database migrations ...");
-                databaseMigrator.Migrate();
-                logger.LogInformation("Test database migrations have been sucessfully run");
             }
+        }
+
+        private static void RunMigrations(TodoDbContext todoDbContext, ILogger logger)
+        {
+            logger.LogInformation("About to delete test database ...");
+            bool hasDeleteDatabase = todoDbContext.Database.EnsureDeleted();
+
+            if (hasDeleteDatabase)
+            {
+                logger.LogInformation("Test database has been successfully deleted");
+            }
+            else
+            {
+                logger.LogInformation("Could not find any test database to delete");
+            }
+
+            IMigrator databaseMigrator = todoDbContext.GetInfrastructure().GetService<IMigrator>();
+
+            logger.LogInformation("About to run test database migrations (1st time) ...");
+            databaseMigrator.Migrate();
+            logger.LogInformation("Test database migrations have been sucessfully run (1st time)");
+
+            logger.LogInformation("About to revert test database migrations ...");
+            // Revert migrations by using a special migration identifier.
+            // See more here: https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/dotnet#dotnet-ef-database-update.
+            databaseMigrator.Migrate(BEFORE_FIRST_DATABASE_MIGRATION);
+            logger.LogInformation("Test database migrations have been sucessfully reverted");
+
+            logger.LogInformation("About to run test database migrations (2nd time) ...");
+            databaseMigrator.Migrate();
+            logger.LogInformation("Test database migrations have been sucessfully run (2nd time)");
+            logger.LogInformation("Test database has been successfully setup");
         }
     }
 }
