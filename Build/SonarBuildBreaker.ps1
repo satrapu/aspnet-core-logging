@@ -39,7 +39,7 @@ $Response = Invoke-WebRequest -Uri $SonarWebApiUrl -Headers $Headers -UseBasicPa
 
 if ($Response.projectStatus.status -eq 'OK')
 {
-    Write-Output "Quality gate PASSED. Please check it here: {0}/dashboard?id={1}" -f $SonarServerBaseUrl, $SonarProjectKey
+    Write-Output "Quality gate PASSED. Please check it here: $SonarServerBaseUrl/dashboard?id=$SonarProjectKey"
     exit 0
 }
 elseif ($Response.projectStatus.status -eq 'NONE')
@@ -48,7 +48,6 @@ elseif ($Response.projectStatus.status -eq 'NONE')
     exit 0
 }
 
-$ErrorMsg = "##vso[task.LogIssue type=error;] Quality gate FAILED. Please check it here: {0}/dashboard?id={1}" -f $SonarServerBaseUrl, $SonarProjectKey
-Write-Output $ErrorMsg
+Write-Output "##vso[task.LogIssue type=error;] Quality gate FAILED. Please check it here: $SonarServerBaseUrl/dashboard?id=$SonarProjectKey"
 Write-Output "##vso[task.complete result=Failed;]"
 exit 1
