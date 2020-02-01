@@ -112,7 +112,7 @@ namespace Todo.WebApi.Infrastructure
                 logger.LogInformation("Could not find any test database to delete");
             }
 
-            IMigrator databaseMigrator = todoDbContext.GetInfrastructure().GetService<IMigrator>();
+            IMigrator databaseMigrator = todoDbContext.GetInfrastructure().GetRequiredService<IMigrator>();
 
             logger.LogInformation("About to run test database migrations (1st time) ...");
             databaseMigrator.Migrate();
