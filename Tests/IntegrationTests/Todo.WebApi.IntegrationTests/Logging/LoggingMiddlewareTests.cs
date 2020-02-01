@@ -1,8 +1,8 @@
-﻿using FluentAssertions;
-using NUnit.Framework;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using FluentAssertions;
+using NUnit.Framework;
 using Todo.WebApi.Infrastructure;
 
 namespace Todo.WebApi.Logging
@@ -28,13 +28,13 @@ namespace Todo.WebApi.Logging
         public async Task Invoke_WithTextHeaderNotTriggeringRequestBeingLogged_MustFail()
         {
             // Arrange
-            using (var client = testWebApplicationFactory.CreateClient())
+            using (HttpClient httpClient = testWebApplicationFactory.CreateClient())
             {
                 var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, "qwerty/123456");
                 httpRequestMessage.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("qwerty/123456"));
 
                 // Act
-                var httpResponseMessage = await client.SendAsync(httpRequestMessage).ConfigureAwait(false);
+                var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
 
                 // Assert
                 httpResponseMessage.IsSuccessStatusCode.Should().BeFalse();
@@ -48,13 +48,13 @@ namespace Todo.WebApi.Logging
         public async Task Invoke_WithTextHeaderTriggeringRequestBeingLogged_MustSucceed()
         {
             // Arrange
-            using (var client = testWebApplicationFactory.CreateClient())
+            using (HttpClient httpClient = testWebApplicationFactory.CreateClient())
             {
                 var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, "api/todo");
                 httpRequestMessage.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
                 // Act
-                var httpResponseMessage = await client.SendAsync(httpRequestMessage).ConfigureAwait(false);
+                var httpResponseMessage = await httpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
 
                 // Assert
                 httpResponseMessage.IsSuccessStatusCode.Should().BeTrue();

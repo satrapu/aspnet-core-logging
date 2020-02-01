@@ -1,12 +1,12 @@
-﻿using FluentAssertions;
-using Microsoft.AspNetCore.WebUtilities;
-using NUnit.Framework;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
+using FluentAssertions;
+using Microsoft.AspNetCore.WebUtilities;
+using NUnit.Framework;
 using Todo.WebApi.Infrastructure;
 using Todo.WebApi.Models;
 
@@ -37,7 +37,7 @@ namespace Todo.WebApi.Controllers
         public async Task Create_UsingValidTodoItem_ReturnsTheSameInstance()
         {
             // Arrange
-            using (var client = testWebApplicationFactory.CreateClient())
+            using (HttpClient httpClient = testWebApplicationFactory.CreateClient())
             {
                 long? id = null;
 
@@ -50,7 +50,7 @@ namespace Todo.WebApi.Controllers
                     };
 
                     // Act
-                    var response = await client.PostAsJsonAsync("api/todo", newTodoItemModel).ConfigureAwait(false);
+                    var response = await httpClient.PostAsJsonAsync("api/todo", newTodoItemModel).ConfigureAwait(false);
 
                     // Assert
                     response.IsSuccessStatusCode.Should().BeTrue();
@@ -66,7 +66,7 @@ namespace Todo.WebApi.Controllers
                 {
                     if (id.HasValue)
                     {
-                        var response = await client.DeleteAsync($"api/todo/{id}").ConfigureAwait(false);
+                        var response = await httpClient.DeleteAsync($"api/todo/{id}").ConfigureAwait(false);
                         response.IsSuccessStatusCode.Should().BeTrue("cleanup must succeed");
                     }
                 }
@@ -81,7 +81,7 @@ namespace Todo.WebApi.Controllers
         public async Task GetByQuery_UsingDefaults_ReturnsExpectedResult()
         {
             // Arrange
-            using (var client = testWebApplicationFactory.CreateClient())
+            using (HttpClient httpClient = testWebApplicationFactory.CreateClient())
             {
                 long? id = null;
 
@@ -95,7 +95,7 @@ namespace Todo.WebApi.Controllers
                         IsComplete = DateTime.UtcNow.Ticks % 2 == 0, Name = name
                     };
 
-                    var response = await client.PostAsJsonAsync("api/todo", newTodoItemModel).ConfigureAwait(false);
+                    var response = await httpClient.PostAsJsonAsync("api/todo", newTodoItemModel).ConfigureAwait(false);
                     response.IsSuccessStatusCode.Should().BeTrue();
                     response.StatusCode.Should().Be(HttpStatusCode.Created);
                     var todoItemModel = await response.Content.ReadAsAsync<TodoItemModel>().ConfigureAwait(false);
@@ -111,7 +111,7 @@ namespace Todo.WebApi.Controllers
                     var requestUri = QueryHelpers.AddQueryString("api/todo", parametersToAdd);
 
                     // Act
-                    response = await client.GetAsync(requestUri).ConfigureAwait(false);
+                    response = await httpClient.GetAsync(requestUri).ConfigureAwait(false);
 
                     // Assert
                     response.IsSuccessStatusCode.Should().BeTrue();
@@ -129,7 +129,7 @@ namespace Todo.WebApi.Controllers
                 {
                     if (id.HasValue)
                     {
-                        var response = await client.DeleteAsync($"api/todo/{id}").ConfigureAwait(false);
+                        var response = await httpClient.DeleteAsync($"api/todo/{id}").ConfigureAwait(false);
                         response.IsSuccessStatusCode.Should().BeTrue("cleanup must succeed");
                     }
                 }
@@ -144,7 +144,7 @@ namespace Todo.WebApi.Controllers
         public async Task Update_UsingNewlyCreatedTodoItem_MustSucceed()
         {
             // Arrange
-            using (var client = testWebApplicationFactory.CreateClient())
+            using (HttpClient httpClient = testWebApplicationFactory.CreateClient())
             {
                 long? id = null;
 
@@ -158,7 +158,7 @@ namespace Todo.WebApi.Controllers
                         Name = name, IsComplete = isComplete
                     };
 
-                    var response = await client.PostAsJsonAsync("api/todo", newTodoItemInfo).ConfigureAwait(false);
+                    var response = await httpClient.PostAsJsonAsync("api/todo", newTodoItemInfo).ConfigureAwait(false);
                     response.IsSuccessStatusCode.Should().BeTrue("a new entity has been created");
 
                     var todoItemModel = await response.Content.ReadAsAsync<TodoItemModel>().ConfigureAwait(false);
@@ -170,7 +170,7 @@ namespace Todo.WebApi.Controllers
                     };
 
                     // Act
-                    response = await client.PutAsJsonAsync($"api/todo/{id}", updateTodoItemModel).ConfigureAwait(false);
+                    response = await httpClient.PutAsJsonAsync($"api/todo/{id}", updateTodoItemModel).ConfigureAwait(false);
 
                     // Assert
                     response.IsSuccessStatusCode.Should().BeTrue("an entity has been previously created");
@@ -185,7 +185,7 @@ namespace Todo.WebApi.Controllers
 
                     var requestUri = QueryHelpers.AddQueryString("api/todo", parametersToAdd);
 
-                    response = await client.GetAsync(requestUri).ConfigureAwait(false);
+                    response = await httpClient.GetAsync(requestUri).ConfigureAwait(false);
                     response.IsSuccessStatusCode.Should().BeTrue("an entity has been previously update");
                     response.StatusCode.Should().Be(HttpStatusCode.OK);
 
@@ -201,7 +201,7 @@ namespace Todo.WebApi.Controllers
                 {
                     if (id.HasValue)
                     {
-                        var response = await client.DeleteAsync($"api/todo/{id}").ConfigureAwait(false);
+                        var response = await httpClient.DeleteAsync($"api/todo/{id}").ConfigureAwait(false);
                         response.IsSuccessStatusCode.Should().BeTrue("cleanup must succeed");
                     }
                 }
