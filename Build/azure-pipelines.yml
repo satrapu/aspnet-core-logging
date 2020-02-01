@@ -91,6 +91,10 @@ jobs:
       displayName: 'Run on Linux'
     pool:
       vmImage: 'ubuntu-16.04'
+    sonar:
+      enabled: True
+      buildBreaker:
+        enabled: True
     db4it:
       dockerImage: 'postgres'
       dockerImageTag: '12-alpine'
@@ -174,7 +178,3 @@ jobs:
         portPlaceholder: '__DockerHostPort__'
       databaseReadinessStrategy: 'log-polling'
       dockerContainerLogPatternForDatabaseReady: 'PostgreSQL init process complete; ready for start up.'
-    sonar:
-      enabled: True
-      buildBreaker:
-        enabled: True
