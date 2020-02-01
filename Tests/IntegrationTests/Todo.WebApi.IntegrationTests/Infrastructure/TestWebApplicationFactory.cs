@@ -17,9 +17,9 @@ namespace Todo.WebApi.Infrastructure
     public class TestWebApplicationFactory : WebApplicationFactory<Startup>
     {
         private const string EnvironmentName = "IntegrationTests";
-        private const string BEFORE_FIRST_DATABASE_MIGRATION = "0";
+        private const string BeforeFirstDatabaseMigration = "0";
         private static bool isDatabaseSetup;
-        private static readonly object padlock = new object();
+        private static readonly object Padlock = new object();
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
@@ -69,7 +69,7 @@ namespace Todo.WebApi.Infrastructure
         {
             if (!isDatabaseSetup)
             {
-                lock (padlock)
+                lock (Padlock)
                 {
                     if (!isDatabaseSetup)
                     {
@@ -116,17 +116,17 @@ namespace Todo.WebApi.Infrastructure
 
             logger.LogInformation("About to run test database migrations (1st time) ...");
             databaseMigrator.Migrate();
-            logger.LogInformation("Test database migrations have been sucessfully run (1st time)");
+            logger.LogInformation("Test database migrations have been successfully run (1st time)");
 
             logger.LogInformation("About to revert test database migrations ...");
             // Revert migrations by using a special migration identifier.
             // See more here: https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/dotnet#dotnet-ef-database-update.
-            databaseMigrator.Migrate(BEFORE_FIRST_DATABASE_MIGRATION);
-            logger.LogInformation("Test database migrations have been sucessfully reverted");
+            databaseMigrator.Migrate(BeforeFirstDatabaseMigration);
+            logger.LogInformation("Test database migrations have been successfully reverted");
 
             logger.LogInformation("About to run test database migrations (2nd time) ...");
             databaseMigrator.Migrate();
-            logger.LogInformation("Test database migrations have been sucessfully run (2nd time)");
+            logger.LogInformation("Test database migrations have been successfully run (2nd time)");
             logger.LogInformation("Test database has been successfully setup");
         }
     }
