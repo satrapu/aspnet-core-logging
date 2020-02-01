@@ -38,12 +38,26 @@ jobs:
   # then have Azure DevOps complain that it cannot find it.
   # This issue is documented here: https://github.com/Microsoft/azure-pipelines-tasks/issues/8291.
   - task: UseDotNet@2
-    name: install_dotnetcore_sdk
-    displayName: Install .NET Core SDK
+    name: install_dotnetcore_sdk_required_by_application
+    displayName: Install .NET Core SDK required by application
     enabled: True
     inputs:
       packageType: 'sdk'
       version: $(DotNetCore_SDK_Version)
+      
+  - task: UseDotNet@2
+    name: install_dotnetcore_sdk_required_by_sonarsource_extension
+    displayName: Install .NET Core SDK required by SonarCloud Azure DevOps extension
+    enabled: True
+    inputs:
+      packageType: 'sdk'
+      version: 2.1.803
+    condition: |
+      and
+      (
+          succeeded()
+        , eq( ${{ parameters.sonar.enabled }}, True)
+      )
 
   - task: SonarSource.sonarcloud.14d9cde6-c1da-4d55-aa01-2965cd301255.SonarCloudPrepare@1
     displayName: 'Prepare Analysis on SonarCloud'
