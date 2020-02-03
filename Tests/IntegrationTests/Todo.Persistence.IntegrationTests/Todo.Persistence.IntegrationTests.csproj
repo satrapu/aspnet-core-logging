@@ -14,7 +14,9 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
         <PackageReference Include="FluentAssertions" />
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+        <PackageReference Include="Microsoft.Extensions.Configuration" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" />
         <PackageReference Include="NUnit" />
         <PackageReference Include="NUnit3TestAdapter" />
@@ -23,7 +25,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\..\Sources\Todo.Persistence\Todo.Persistence.csproj" />
-        <ProjectReference Include="..\Todo.IntegrationTests.Infrastructure\Todo.IntegrationTests.Infrastructure.csproj" />
+        <ProjectReference Include="..\..\..\Sources\Todo.WebApi\Todo.WebApi.csproj" />
     </ItemGroup>
 
     <ItemGroup>

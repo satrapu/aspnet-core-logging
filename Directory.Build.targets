@@ -15,6 +15,7 @@
     <PackageReference Update="Microsoft.EntityFrameworkCore.InMemory" Version="3.1.1" />
     <PackageReference Update="Microsoft.Extensions.Configuration" Version="3.1.1" />
     <PackageReference Update="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="3.1.1" />
+    <PackageReference Update="Microsoft.Extensions.Configuration.Json" Version="3.1.1" />
     <PackageReference Update="Microsoft.Extensions.Logging.Log4Net.AspNetCore" Version="3.0.3" />
     <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.4.0" />
     <PackageReference Update="Moq" Version="4.13.1" />
