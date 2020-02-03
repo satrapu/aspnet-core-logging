@@ -1,9 +1,10 @@
 ﻿using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Reflection;
 using System.Threading.Tasks;
 using FluentAssertions;
 using NUnit.Framework;
-using Todo.WebApi.Infrastructure;
+using Todo.IntegrationTests.Infrastructure;
 
 namespace Todo.WebApi.Logging
 {
@@ -18,7 +19,14 @@ namespace Todo.WebApi.Logging
         [OneTimeSetUp]
         public void GivenAnHttpRequestIsToBePerformed()
         {
-            testWebApplicationFactory = new TestWebApplicationFactory();
+            testWebApplicationFactory =
+                new TestWebApplicationFactory(MethodBase.GetCurrentMethod().DeclaringType?.Name);
+        }
+
+        [OneTimeTearDown]
+        public void Cleanup()
+        {
+            testWebApplicationFactory?.Dispose();
         }
 
         /// <summary>

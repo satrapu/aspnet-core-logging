@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Sources\Todo.WebApi\Todo.WebApi.csproj" />
+    <ProjectReference Include="..\Todo.IntegrationTests.Infrastructure\Todo.IntegrationTests.Infrastructure.csproj" />
   </ItemGroup>
 
   <ItemGroup>

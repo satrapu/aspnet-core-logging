@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Reflection;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.WebUtilities;
 using NUnit.Framework;
-using Todo.WebApi.Infrastructure;
+using Todo.IntegrationTests.Infrastructure;
 using Todo.WebApi.Models;
 
 namespace Todo.WebApi.Controllers
@@ -26,7 +27,14 @@ namespace Todo.WebApi.Controllers
         [OneTimeSetUp]
         public void GivenAnHttpRequestIsToBePerformed()
         {
-            testWebApplicationFactory = new TestWebApplicationFactory();
+            testWebApplicationFactory =
+                new TestWebApplicationFactory(MethodBase.GetCurrentMethod().DeclaringType?.Name);
+        }
+
+        [OneTimeTearDown]
+        public void Cleanup()
+        {
+            testWebApplicationFactory?.Dispose();
         }
 
         /// <summary>
@@ -45,8 +53,8 @@ namespace Todo.WebApi.Controllers
                 {
                     var newTodoItemModel = new NewTodoItemModel
                     {
-                        Name = $"it--{nameof(Create_UsingValidTodoItem_ReturnsTheSameInstance)}--{Guid.NewGuid():N}"
-                      , IsComplete = DateTime.UtcNow.Ticks % 2 == 0
+                        Name = $"it--{nameof(Create_UsingValidTodoItem_ReturnsTheSameInstance)}--{Guid.NewGuid():N}",
+                        IsComplete = DateTime.UtcNow.Ticks % 2 == 0
                     };
 
                     // Act
@@ -117,7 +125,8 @@ namespace Todo.WebApi.Controllers
                     response.IsSuccessStatusCode.Should().BeTrue();
                     response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-                    var todoItemModels = await response.Content.ReadAsAsync<List<TodoItemModel>>().ConfigureAwait(false);
+                    var todoItemModels =
+                        await response.Content.ReadAsAsync<List<TodoItemModel>>().ConfigureAwait(false);
                     todoItemModels.Should().HaveCount(1);
 
                     todoItemModel = todoItemModels.Single();
@@ -170,7 +179,8 @@ namespace Todo.WebApi.Controllers
                     };
 
                     // Act
-                    response = await httpClient.PutAsJsonAsync($"api/todo/{id}", updateTodoItemModel).ConfigureAwait(false);
+                    response = await httpClient.PutAsJsonAsync($"api/todo/{id}", updateTodoItemModel)
+                        .ConfigureAwait(false);
 
                     // Assert
                     response.IsSuccessStatusCode.Should().BeTrue("an entity has been previously created");
@@ -189,7 +199,8 @@ namespace Todo.WebApi.Controllers
                     response.IsSuccessStatusCode.Should().BeTrue("an entity has been previously update");
                     response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-                    var todoItemModels = await response.Content.ReadAsAsync<List<TodoItemModel>>().ConfigureAwait(false);
+                    var todoItemModels =
+                        await response.Content.ReadAsAsync<List<TodoItemModel>>().ConfigureAwait(false);
                     todoItemModels.Should().HaveCount(1, "the query is using id only");
 
                     todoItemModel = todoItemModels.Single();

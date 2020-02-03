@@ -52,6 +52,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".sonarlint", ".sonarlint", 
 		.sonarlint\Todo.slconfig = .sonarlint\Todo.slconfig
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.Persistence.IntegrationTests", "Tests\IntegrationTests\Todo.Persistence.IntegrationTests\Todo.Persistence.IntegrationTests.csproj", "{606F50E6-9C93-4764-81E5-85D05768A546}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.IntegrationTests.Infrastructure", "Tests\IntegrationTests\Todo.IntegrationTests.Infrastructure\Todo.IntegrationTests.Infrastructure.csproj", "{509081E5-DFCA-49F8-945A-9CD16DDC1F8D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -86,6 +90,14 @@ Global
 		{0C017B2C-B852-45E8-BEF4-2F04E371B2CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C017B2C-B852-45E8-BEF4-2F04E371B2CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C017B2C-B852-45E8-BEF4-2F04E371B2CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{606F50E6-9C93-4764-81E5-85D05768A546}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{606F50E6-9C93-4764-81E5-85D05768A546}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{606F50E6-9C93-4764-81E5-85D05768A546}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{606F50E6-9C93-4764-81E5-85D05768A546}.Release|Any CPU.Build.0 = Release|Any CPU
+		{509081E5-DFCA-49F8-945A-9CD16DDC1F8D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{509081E5-DFCA-49F8-945A-9CD16DDC1F8D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{509081E5-DFCA-49F8-945A-9CD16DDC1F8D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{509081E5-DFCA-49F8-945A-9CD16DDC1F8D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -100,6 +112,8 @@ Global
 		{EA09F015-51B5-4BB0-9F88-16CCDEA03E9D} = {0CB85FDE-074B-45ED-9FB3-C76A20C9B346}
 		{4F848C0D-74D8-46A0-831A-85D39375B89C} = {D084DD17-3480-4A70-8296-92FB55BAD433}
 		{0C017B2C-B852-45E8-BEF4-2F04E371B2CE} = {0CB85FDE-074B-45ED-9FB3-C76A20C9B346}
+		{606F50E6-9C93-4764-81E5-85D05768A546} = {0CB85FDE-074B-45ED-9FB3-C76A20C9B346}
+		{509081E5-DFCA-49F8-945A-9CD16DDC1F8D} = {0CB85FDE-074B-45ED-9FB3-C76A20C9B346}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {74318BEF-DB50-4852-A16D-E2FB8671BE7F}
