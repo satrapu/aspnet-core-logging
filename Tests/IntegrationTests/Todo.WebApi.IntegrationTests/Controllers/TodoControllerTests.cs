@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.WebUtilities;
 using NUnit.Framework;
-using Todo.IntegrationTests.Infrastructure;
+using Todo.WebApi.Infrastructure;
 using Todo.WebApi.Models;
 
 namespace Todo.WebApi.Controllers

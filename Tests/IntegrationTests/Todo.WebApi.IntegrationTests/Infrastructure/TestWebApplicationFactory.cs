@@ -12,9 +12,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Npgsql;
 using Todo.Persistence;
-using Todo.WebApi;
 
-namespace Todo.IntegrationTests.Infrastructure
+namespace Todo.WebApi.Infrastructure
 {
     public class TestWebApplicationFactory : WebApplicationFactory<Startup>
     {
@@ -41,7 +40,7 @@ namespace Todo.IntegrationTests.Infrastructure
                 services.AddMvc(options =>
                 {
                     options.Filters.Add(new AllowAnonymousFilter());
-                    options.Filters.Add(new InjectTestUserFilter());
+                    options.Filters.Add(new WebApi.Infrastructure.InjectTestUserFilter());
                 });
 
                 SetupDbContext(services);

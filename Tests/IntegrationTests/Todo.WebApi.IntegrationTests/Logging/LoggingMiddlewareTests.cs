@@ -4,7 +4,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using FluentAssertions;
 using NUnit.Framework;
-using Todo.IntegrationTests.Infrastructure;
+using Todo.WebApi.Infrastructure;
 
 namespace Todo.WebApi.Logging
 {
