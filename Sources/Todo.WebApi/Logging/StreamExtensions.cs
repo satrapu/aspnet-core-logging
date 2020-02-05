@@ -34,7 +34,7 @@ namespace Todo.WebApi.Logging
 
             using (var streamReader = new StreamReader(stream, Encoding.UTF8, true, BufferSize, true))
             {
-                result = await streamReader.ReadToEndAsync();
+                result = await streamReader.ReadToEndAsync().ConfigureAwait(false);
             }
 
             stream.Seek(0, SeekOrigin.Begin);
