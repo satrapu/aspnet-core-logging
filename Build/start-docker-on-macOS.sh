@@ -10,7 +10,7 @@ sudo /Applications/Docker.app/Contents/MacOS/Docker --quit-after-install --unatt
 
 while ! docker info 2>/dev/null ; do
     sleep 5
-    retries=`expr ${retries} + 1`
+    retries=[[expr ${retries} + 1]]
     
     if pgrep -xq -- "Docker"; then
         echo 'Docker still running'
