@@ -17,14 +17,14 @@ namespace Todo.WebApi.Logging
         /// </summary>
         /// <param name="stream">The <see cref="Stream"/> to read and reset.</param>
         /// <returns>The <see cref="Stream"/> contents as a <see cref="Encoding.UTF8"/> string.</returns>
-        public static async Task<string> ReadAndResetAsync(this Stream stream)
+        public static Task<string> ReadAndResetAsync(this Stream stream)
         {
             if (stream == null)
             {
                 throw new ArgumentNullException(nameof(stream));
             }
 
-            return await ReadAndResetInternalAsync(stream);
+            return ReadAndResetInternalAsync(stream);
         }
 
         private static async Task<string> ReadAndResetInternalAsync(this Stream stream)
