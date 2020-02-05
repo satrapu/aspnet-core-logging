@@ -10,7 +10,7 @@ namespace Todo.WebApi.Logging
     /// </summary>
     public static class StreamExtensions
     {
-        private const int BUFFER_SIZE = 1024;
+        private const int BufferSize = 1024;
 
         /// <summary>
         /// Reads the whole content of a given <see cref="Stream"/> instance and then sets its position to the beginning.
@@ -24,10 +24,15 @@ namespace Todo.WebApi.Logging
                 throw new ArgumentNullException(nameof(stream));
             }
 
+            return await ReadAndResetInternalAsync(stream);
+        }
+
+        private static async Task<string> ReadAndResetInternalAsync(this Stream stream)
+        {
             string result;
             stream.Seek(0, SeekOrigin.Begin);
 
-            using (var streamReader = new StreamReader(stream, Encoding.UTF8, true, BUFFER_SIZE, true))
+            using (var streamReader = new StreamReader(stream, Encoding.UTF8, true, BufferSize, true))
             {
                 result = await streamReader.ReadToEndAsync();
             }
