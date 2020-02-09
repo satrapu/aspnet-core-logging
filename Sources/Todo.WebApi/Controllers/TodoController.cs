@@ -1,15 +1,16 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Todo.Services;
 using Todo.WebApi.Models;
 
 namespace Todo.WebApi.Controllers
 {
     [Route("api/[controller]")]
-    //[Authorize(Roles = "Admin")]
+    [Authorize]
     [ApiController]
     public class TodoController : ControllerBase
     {
@@ -23,6 +24,7 @@ namespace Todo.WebApi.Controllers
         }
 
         [HttpGet]
+        [Authorize("get:todo")]
         public ActionResult<IList<TodoItemModel>> GetByQuery([FromQuery] TodoItemQueryModel todoItemQueryModel)
         {
             var todoItemQuery = new TodoItemQuery
@@ -44,6 +46,7 @@ namespace Todo.WebApi.Controllers
         }
 
         [HttpPost]
+        [Authorize("create:todo")]
         public ActionResult<TodoItemModel> Create(NewTodoItemModel newTodoItemModel)
         {
             var newTodoItemInfo = new NewTodoItemInfo
@@ -67,6 +70,7 @@ namespace Todo.WebApi.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize("update:todo")]
         public IActionResult Update(long id, [FromBody] UpdateTodoItemModel updateTodoItemModel)
         {
             var updateTodoItemInfo = new UpdateTodoItemInfo
@@ -85,6 +89,7 @@ namespace Todo.WebApi.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize("delete:todo")]
         public IActionResult Delete(long id)
         {
             var deleteTodoItemInfo = new DeleteTodoItemInfo
