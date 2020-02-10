@@ -33,7 +33,7 @@ namespace Todo.WebApi.Logging
         /// Tests <see cref="LoggingMiddleware.Invoke"/> method.
         /// </summary>
         [Test]
-        public async Task Invoke_WithTextHeaderNotTriggeringRequestBeingLogged_MustFail()
+        public async Task Invoke_AgainstUnknownEndpointWithTextHeaderNotTriggeringRequestBeingLogged_MustFail()
         {
             // Arrange
             using (HttpClient httpClient = testWebApplicationFactory.CreateClient())
@@ -53,7 +53,7 @@ namespace Todo.WebApi.Logging
         /// Tests <see cref="LoggingMiddleware.Invoke"/> method.
         /// </summary>
         [Test]
-        public async Task Invoke_WithTextHeaderTriggeringRequestBeingLogged_MustSucceed()
+        public async Task Invoke_AgainstKnownEndpointWithTextHeaderTriggeringRequestBeingLogged_MustSucceed()
         {
             // Arrange
             using (HttpClient httpClient = testWebApplicationFactory.CreateClient())
