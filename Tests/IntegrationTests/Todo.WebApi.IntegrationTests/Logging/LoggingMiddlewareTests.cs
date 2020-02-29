@@ -36,7 +36,7 @@ namespace Todo.WebApi.Logging
         public async Task Invoke_AgainstUnknownEndpointWithTextHeaderNotTriggeringRequestBeingLogged_MustFail()
         {
             // Arrange
-            using (HttpClient httpClient = testWebApplicationFactory.CreateClient())
+            using (HttpClient httpClient = await testWebApplicationFactory.CreateClientWithJwtToken().ConfigureAwait(false))
             {
                 var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, "qwerty/123456");
                 httpRequestMessage.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("qwerty/123456"));
@@ -56,7 +56,7 @@ namespace Todo.WebApi.Logging
         public async Task Invoke_AgainstKnownEndpointWithTextHeaderTriggeringRequestBeingLogged_MustSucceed()
         {
             // Arrange
-            using (HttpClient httpClient = testWebApplicationFactory.CreateClient())
+            using (HttpClient httpClient = await testWebApplicationFactory.CreateClientWithJwtToken().ConfigureAwait(false))
             {
                 var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, "api/todo");
                 httpRequestMessage.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json"));

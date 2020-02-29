@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Todo.Services;
+using Todo.WebApi.Authorization;
 using Todo.WebApi.Models;
 
 namespace Todo.WebApi.Controllers
@@ -15,16 +15,14 @@ namespace Todo.WebApi.Controllers
     public class TodoController : ControllerBase
     {
         private readonly ITodoService todoService;
-        private readonly ILogger logger;
 
-        public TodoController(ITodoService todoService, ILogger<TodoController> logger)
+        public TodoController(ITodoService todoService)
         {
             this.todoService = todoService ?? throw new ArgumentNullException(nameof(todoService));
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         [HttpGet]
-        [Authorize("get:todo")]
+        [Authorize(Policy = Policies.TodoItems.GetTodoItems)]
         public ActionResult<IList<TodoItemModel>> GetByQuery([FromQuery] TodoItemQueryModel todoItemQueryModel)
         {
             var todoItemQuery = new TodoItemQuery
@@ -34,20 +32,47 @@ namespace Todo.WebApi.Controllers
                 NamePattern = todoItemQueryModel.NamePattern,
                 User = User
             };
-            var todoItemInfoList = todoService.GetByQuery(todoItemQuery);
-            var models = todoItemInfoList.Select(x => new TodoItemModel
+
+            IList<TodoItemInfo> todoItemInfoList = todoService.GetByQuery(todoItemQuery);
+            IList<TodoItemModel> todoItemModelList = todoItemInfoList.Select(todoItemInfo => new TodoItemModel
             {
-                Id = x.Id,
-                IsComplete = x.IsComplete,
-                Name = x.Name
+                Id = todoItemInfo.Id,
+                IsComplete = todoItemInfo.IsComplete,
+                Name = todoItemInfo.Name
             }).ToList();
 
-            return models;
+            return Ok(todoItemModelList);
+        }
+
+        [HttpGet("{id:long}")]
+        [Authorize(Policy = Policies.TodoItems.GetTodoItems)]
+        public ActionResult<TodoItemModel> GetById(long id)
+        {
+            var todoItemQuery = new TodoItemQuery
+            {
+                Id = id,
+                User = User
+            };
+
+            IList<TodoItemInfo> todoItemInfoList = todoService.GetByQuery(todoItemQuery);
+            TodoItemModel model = todoItemInfoList.Select(todoItemInfo => new TodoItemModel
+            {
+                Id = todoItemInfo.Id,
+                IsComplete = todoItemInfo.IsComplete,
+                Name = todoItemInfo.Name
+            }).FirstOrDefault();
+
+            if (model == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(model);
         }
 
         [HttpPost]
-        [Authorize("create:todo")]
-        public ActionResult<TodoItemModel> Create(NewTodoItemModel newTodoItemModel)
+        [Authorize(Policy = Policies.TodoItems.CreateTodoItem)]
+        public IActionResult Create(NewTodoItemModel newTodoItemModel)
         {
             var newTodoItemInfo = new NewTodoItemInfo
             {
@@ -56,21 +81,12 @@ namespace Todo.WebApi.Controllers
                 User = User
             };
 
-            var newlyCreatedEntityId = todoService.Add(newTodoItemInfo);
-            logger.LogInformation("User with id {UserId} has created a new item with id {ItemId}"
-                , User.GetUserId(), newlyCreatedEntityId);
-
-            var query = new TodoItemQuery
-            {
-                Id = newlyCreatedEntityId,
-                User = User
-            };
-            var todoItemInfo = todoService.GetByQuery(query).Single();
-            return Created(string.Empty, todoItemInfo);
+            long newlyCreatedEntityId = todoService.Add(newTodoItemInfo);
+            return Created($"api/todo/{newlyCreatedEntityId}", newlyCreatedEntityId);
         }
 
-        [HttpPut("{id}")]
-        [Authorize("update:todo")]
+        [HttpPut("{id:long}")]
+        [Authorize(Policy = Policies.TodoItems.UpdateTodoItem)]
         public IActionResult Update(long id, [FromBody] UpdateTodoItemModel updateTodoItemModel)
         {
             var updateTodoItemInfo = new UpdateTodoItemInfo
@@ -82,14 +98,12 @@ namespace Todo.WebApi.Controllers
             };
 
             todoService.Update(updateTodoItemInfo);
-            logger.LogInformation("User with id {UserId} has updated an existing item with id {ItemId}"
-                , User.GetUserId(), id);
 
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
-        [Authorize("delete:todo")]
+        [HttpDelete("{id:long}")]
+        [Authorize(Policy = Policies.TodoItems.DeleteTodoItem)]
         public IActionResult Delete(long id)
         {
             var deleteTodoItemInfo = new DeleteTodoItemInfo
@@ -99,8 +113,6 @@ namespace Todo.WebApi.Controllers
             };
 
             todoService.Delete(deleteTodoItemInfo);
-            logger.LogInformation("User with id {UserId} has deleted item with id {ItemId}"
-                , User.GetUserId(), id);
 
             return NoContent();
         }

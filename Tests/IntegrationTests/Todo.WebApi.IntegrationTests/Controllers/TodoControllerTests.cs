@@ -45,7 +45,8 @@ namespace Todo.WebApi.Controllers
         public async Task Create_UsingValidTodoItem_ReturnsTheSameInstance()
         {
             // Arrange
-            using (HttpClient httpClient = testWebApplicationFactory.CreateClient())
+            using (HttpClient httpClient =
+                await testWebApplicationFactory.CreateClientWithJwtToken().ConfigureAwait(false))
             {
                 long? id = null;
 
@@ -64,11 +65,8 @@ namespace Todo.WebApi.Controllers
                     response.IsSuccessStatusCode.Should().BeTrue();
                     response.StatusCode.Should().Be(HttpStatusCode.Created);
 
-                    var todoItemModel = await response.Content.ReadAsAsync<TodoItemModel>().ConfigureAwait(false);
-                    id = todoItemModel.Id;
-                    todoItemModel.IsComplete.Should().Be(newTodoItemModel.IsComplete);
-                    todoItemModel.Name.Should().Be(newTodoItemModel.Name);
-                    todoItemModel.Id.Should().BeGreaterOrEqualTo(1);
+                    id = await response.Content.ReadAsAsync<long>().ConfigureAwait(false);
+                    id.Should().BeGreaterOrEqualTo(1);
                 }
                 finally
                 {
@@ -89,7 +87,8 @@ namespace Todo.WebApi.Controllers
         public async Task GetByQuery_UsingDefaults_ReturnsExpectedResult()
         {
             // Arrange
-            using (HttpClient httpClient = testWebApplicationFactory.CreateClient())
+            using (HttpClient httpClient =
+                await testWebApplicationFactory.CreateClientWithJwtToken().ConfigureAwait(false))
             {
                 long? id = null;
 
@@ -100,14 +99,14 @@ namespace Todo.WebApi.Controllers
 
                     var newTodoItemModel = new NewTodoItemModel
                     {
-                        IsComplete = DateTime.UtcNow.Ticks % 2 == 0, Name = name
+                        IsComplete = DateTime.UtcNow.Ticks % 2 == 0,
+                        Name = name
                     };
 
                     var response = await httpClient.PostAsJsonAsync("api/todo", newTodoItemModel).ConfigureAwait(false);
                     response.IsSuccessStatusCode.Should().BeTrue();
                     response.StatusCode.Should().Be(HttpStatusCode.Created);
-                    var todoItemModel = await response.Content.ReadAsAsync<TodoItemModel>().ConfigureAwait(false);
-                    id = todoItemModel.Id;
+                    id = await response.Content.ReadAsAsync<long>().ConfigureAwait(false);
 
                     var parametersToAdd = new Dictionary<string, string>
                     {
@@ -129,7 +128,7 @@ namespace Todo.WebApi.Controllers
                         await response.Content.ReadAsAsync<List<TodoItemModel>>().ConfigureAwait(false);
                     todoItemModels.Should().HaveCount(1);
 
-                    todoItemModel = todoItemModels.Single();
+                    TodoItemModel todoItemModel = todoItemModels.Single();
                     todoItemModel.Should().NotBeNull();
                     todoItemModel.Name.Should().Be(newTodoItemModel.Name);
                     todoItemModel.IsComplete.Should().Be(newTodoItemModel.IsComplete);
@@ -153,7 +152,8 @@ namespace Todo.WebApi.Controllers
         public async Task Update_UsingNewlyCreatedTodoItem_MustSucceed()
         {
             // Arrange
-            using (HttpClient httpClient = testWebApplicationFactory.CreateClient())
+            using (HttpClient httpClient =
+                await testWebApplicationFactory.CreateClientWithJwtToken().ConfigureAwait(false))
             {
                 long? id = null;
 
@@ -170,8 +170,7 @@ namespace Todo.WebApi.Controllers
                     var response = await httpClient.PostAsJsonAsync("api/todo", newTodoItemInfo).ConfigureAwait(false);
                     response.IsSuccessStatusCode.Should().BeTrue("a new entity has been created");
 
-                    var todoItemModel = await response.Content.ReadAsAsync<TodoItemModel>().ConfigureAwait(false);
-                    id = todoItemModel.Id;
+                    id = await response.Content.ReadAsAsync<long>().ConfigureAwait(false);
 
                     var updateTodoItemModel = new UpdateTodoItemModel
                     {
@@ -203,7 +202,7 @@ namespace Todo.WebApi.Controllers
                         await response.Content.ReadAsAsync<List<TodoItemModel>>().ConfigureAwait(false);
                     todoItemModels.Should().HaveCount(1, "the query is using id only");
 
-                    todoItemModel = todoItemModels.Single();
+                    TodoItemModel todoItemModel = todoItemModels.Single();
                     todoItemModel.Id.Should().Be(id);
                     todoItemModel.IsComplete.Should().Be(updateTodoItemModel.IsComplete);
                     todoItemModel.Name.Should().Be(updateTodoItemModel.Name);

@@ -96,13 +96,13 @@ namespace Todo.WebApi
             });
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("get:todo",
+                options.AddPolicy(Policies.TodoItems.GetTodoItems,
                     policy => policy.Requirements.Add(new HasScopeRequirement("get:todo", authZeroDomain)));
-                options.AddPolicy("create:todo",
+                options.AddPolicy(Policies.TodoItems.CreateTodoItem,
                     policy => policy.Requirements.Add(new HasScopeRequirement("create:todo", authZeroDomain)));
-                options.AddPolicy("update:todo",
+                options.AddPolicy(Policies.TodoItems.UpdateTodoItem,
                     policy => policy.Requirements.Add(new HasScopeRequirement("update:todo", authZeroDomain)));
-                options.AddPolicy("delete:todo",
+                options.AddPolicy(Policies.TodoItems.DeleteTodoItem,
                     policy => policy.Requirements.Add(new HasScopeRequirement("delete:todo", authZeroDomain)));
             });
             services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();

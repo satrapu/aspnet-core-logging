@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -10,6 +13,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
 using Npgsql;
 using Todo.Persistence;
 
@@ -37,6 +41,9 @@ namespace Todo.WebApi.Infrastructure
             builder.UseEnvironment(EnvironmentName);
             builder.ConfigureTestServices(services =>
             {
+                // Ensure an implementation of IHttpClientFactory interface can be injected at a later time
+                services.AddHttpClient();
+
                 services.AddMvc(options =>
                 {
                     options.Filters.Add(new AllowAnonymousFilter());
@@ -46,6 +53,49 @@ namespace Todo.WebApi.Infrastructure
                 SetupDbContext(services);
                 SetupDatabase(services);
             });
+        }
+
+        public async Task<HttpClient> CreateClientWithJwtToken()
+        {
+            string accessToken = await GetAccessToken().ConfigureAwait(false);
+            HttpClient httpClient = CreateClient();
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
+            return httpClient;
+        }
+
+        private async Task<string> GetAccessToken()
+        {
+            IConfiguration configuration = base.Services.GetRequiredService<IConfiguration>();
+            string requestUri = $"https://{configuration["Auth0:Domain"]}/oauth/token";
+            string audience = configuration["Auth0:Audience"];
+            string clientId = configuration["Auth0:ClientId"];
+            string clientSecret = configuration["Auth0:ClientSecret"];
+
+            using (HttpClient httpClient = base.Services.GetRequiredService<IHttpClientFactory>().CreateClient())
+            {
+                var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, requestUri)
+                {
+                    Content = new FormUrlEncodedContent(new List<KeyValuePair<string, string>>
+                    {
+                        new KeyValuePair<string, string>("grant_type", "client_credentials"),
+                        new KeyValuePair<string, string>("client_id", clientId),
+                        new KeyValuePair<string, string>("client_secret", clientSecret),
+                        new KeyValuePair<string, string>("audience", audience)
+                    })
+                };
+                HttpResponseMessage httpResponseMessage =
+                    await httpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
+
+                if (!httpResponseMessage.IsSuccessStatusCode)
+                {
+                    throw new Exception(
+                        $"Failed to get an access token for testing purposes due to: {httpResponseMessage.ReasonPhrase}");
+                }
+
+                JObject content = await httpResponseMessage.Content.ReadAsAsync<JObject>().ConfigureAwait(false);
+                string accessToken = content.Value<string>("access_token");
+                return accessToken;
+            }
         }
 
         private void SetupDbContext(IServiceCollection services)
@@ -115,9 +165,8 @@ namespace Todo.WebApi.Infrastructure
                 logger.LogInformation("Could not find any test database {TestDatabaseName} to delete", databaseName);
             }
 
-            IMigrator databaseMigrator = todoDbContext.GetInfrastructure().GetRequiredService<IMigrator>();
-
             logger.LogInformation("About to run migrations against test database {TestDatabaseName} ...", databaseName);
+            IMigrator databaseMigrator = todoDbContext.GetInfrastructure().GetRequiredService<IMigrator>();
             databaseMigrator.Migrate();
             logger.LogInformation("Migrations have been successfully run against test database {TestDatabaseName}",
                 databaseName);
