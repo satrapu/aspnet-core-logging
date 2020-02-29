@@ -242,6 +242,8 @@ jobs:
       DOTNET_CLI_TELEMETRY_OPTOUT: $(DotNetCliTelemetryOptOut)
       COREHOST_TRACE: $(CoreHostTrace)
       CONNECTIONSTRINGS__TODOFORINTEGRATIONTESTS: $(DatabaseConnectionStrings.Todo)
+      AUTH0__CLIENTID: $(IntegrationTests.Auth0.ClientId)
+      AUTH0__CLIENTSECRET: $(IntegrationTests.Auth0.ClientSecret)
 
   # Publish integration test results inside the build 'Tests' tab.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=azure-devops&tabs=yaml.
