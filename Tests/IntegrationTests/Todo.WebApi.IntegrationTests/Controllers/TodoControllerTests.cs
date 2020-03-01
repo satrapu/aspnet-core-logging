@@ -145,6 +145,108 @@ namespace Todo.WebApi.Controllers
         }
 
         /// <summary>
+        /// Ensures method <see cref="TodoController.GetById" /> works as expected.
+        /// </summary>
+        /// <returns></returns>
+        [Test]
+        public async Task GetById_UsingNewlyCreatedItem_ReturnsExpectedResult()
+        {
+            // Arrange
+            using (HttpClient httpClient =
+                await testWebApplicationFactory.CreateClientWithJwtToken().ConfigureAwait(false))
+            {
+                long? id = null;
+
+                try
+                {
+                    var nameSuffix = Guid.NewGuid().ToString("N");
+                    var name = $"it--{nameof(GetById_UsingNewlyCreatedItem_ReturnsExpectedResult)}--{nameSuffix}";
+
+                    var newTodoItemModel = new NewTodoItemModel
+                    {
+                        IsComplete = DateTime.UtcNow.Ticks % 2 == 0,
+                        Name = name
+                    };
+
+                    var response = await httpClient.PostAsJsonAsync("api/todo", newTodoItemModel).ConfigureAwait(false);
+                    response.IsSuccessStatusCode.Should().BeTrue();
+                    response.StatusCode.Should().Be(HttpStatusCode.Created);
+                    id = await response.Content.ReadAsAsync<long>().ConfigureAwait(false);
+
+                    // Act
+                    response = await httpClient.GetAsync($"api/todo/{id}").ConfigureAwait(false);
+
+                    // Assert
+                    response.IsSuccessStatusCode.Should().BeTrue();
+                    response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+                    TodoItemModel todoItemModel =
+                        await response.Content.ReadAsAsync<TodoItemModel>().ConfigureAwait(false);
+                    todoItemModel.Should().NotBeNull();
+                    todoItemModel.Id.Should().Be(id);
+                    todoItemModel.Name.Should().Be(newTodoItemModel.Name);
+                    todoItemModel.IsComplete.Should().Be(newTodoItemModel.IsComplete);
+                }
+                finally
+                {
+                    if (id.HasValue)
+                    {
+                        var response = await httpClient.DeleteAsync($"api/todo/{id}").ConfigureAwait(false);
+                        response.IsSuccessStatusCode.Should().BeTrue("cleanup must succeed");
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Ensures method <see cref="TodoController.GetById" /> works as expected.
+        /// </summary>
+        /// <returns></returns>
+        [Test]
+        public async Task GetById_UsingNonExistingId_ReturnsNotFoundStatusCode()
+        {
+            // Arrange
+            using (HttpClient httpClient =
+                await testWebApplicationFactory.CreateClientWithJwtToken().ConfigureAwait(false))
+            {
+                long? id = null;
+
+                try
+                {
+                    var nameSuffix = Guid.NewGuid().ToString("N");
+                    var name = $"it--{nameof(GetById_UsingNewlyCreatedItem_ReturnsExpectedResult)}--{nameSuffix}";
+
+                    var newTodoItemModel = new NewTodoItemModel
+                    {
+                        IsComplete = DateTime.UtcNow.Ticks % 2 == 0,
+                        Name = name
+                    };
+
+                    var response = await httpClient.PostAsJsonAsync("api/todo", newTodoItemModel).ConfigureAwait(false);
+                    response.IsSuccessStatusCode.Should().BeTrue();
+                    response.StatusCode.Should().Be(HttpStatusCode.Created);
+                    id = await response.Content.ReadAsAsync<long>().ConfigureAwait(false);
+                    long nonExistentId = long.MinValue;
+
+                    // Act
+                    response = await httpClient.GetAsync($"api/todo/{nonExistentId}").ConfigureAwait(false);
+
+                    // Assert
+                    response.StatusCode.Should().Be(HttpStatusCode.NotFound,
+                        "must not find something which does not exist");
+                }
+                finally
+                {
+                    if (id.HasValue)
+                    {
+                        var response = await httpClient.DeleteAsync($"api/todo/{id}").ConfigureAwait(false);
+                        response.IsSuccessStatusCode.Should().BeTrue("cleanup must succeed");
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Ensures method <see cref="TodoController.Update" /> works as expected.
         /// </summary>
         /// <returns></returns>
