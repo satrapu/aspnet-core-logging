@@ -30,7 +30,9 @@ namespace Todo.WebApi.Controllers
                 Id = todoItemQueryModel.Id,
                 IsComplete = todoItemQueryModel.IsComplete,
                 NamePattern = todoItemQueryModel.NamePattern,
-                User = User
+                User = User,
+                PageIndex = todoItemQueryModel.PageIndex,
+                PageSize = todoItemQueryModel.PageSize
             };
 
             IList<TodoItemInfo> todoItemInfoList = todoService.GetByQuery(todoItemQuery);
@@ -38,7 +40,11 @@ namespace Todo.WebApi.Controllers
             {
                 Id = todoItemInfo.Id,
                 IsComplete = todoItemInfo.IsComplete,
-                Name = todoItemInfo.Name
+                Name = todoItemInfo.Name,
+                CreatedBy = todoItemInfo.CreatedBy,
+                CreatedOn = todoItemInfo.CreatedOn,
+                LastUpdatedBy = todoItemInfo.LastUpdatedBy,
+                LastUpdatedOn = todoItemInfo.LastUpdatedOn
             }).ToList();
 
             return Ok(todoItemModelList);
@@ -59,7 +65,11 @@ namespace Todo.WebApi.Controllers
             {
                 Id = todoItemInfo.Id,
                 IsComplete = todoItemInfo.IsComplete,
-                Name = todoItemInfo.Name
+                Name = todoItemInfo.Name,
+                CreatedBy = todoItemInfo.CreatedBy,
+                CreatedOn = todoItemInfo.CreatedOn,
+                LastUpdatedBy = todoItemInfo.LastUpdatedBy,
+                LastUpdatedOn = todoItemInfo.LastUpdatedOn
             }).FirstOrDefault();
 
             if (model == null)

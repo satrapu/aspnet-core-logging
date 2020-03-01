@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -31,10 +32,7 @@ namespace Todo.Services
 
         public IList<TodoItemInfo> GetByQuery(TodoItemQuery todoItemQuery)
         {
-            if (todoItemQuery == null)
-            {
-                throw new ArgumentNullException(nameof(todoItemQuery));
-            }
+            Validator.ValidateObject(todoItemQuery, new ValidationContext(todoItemQuery), true);
 
             IQueryable<TodoItem> matchingTodoItems =
                 todoDbContext.TodoItems.Where(todoItem => todoItem.CreatedBy == todoItemQuery.User.GetUserId());
@@ -57,28 +55,30 @@ namespace Todo.Services
             }
 
             IList<TodoItemInfo> result = matchingTodoItems.Select(todoItem =>
-                new TodoItemInfo
-                {
-                    Id = todoItem.Id,
-                    IsComplete = todoItem.IsComplete,
-                    Name = todoItem.Name,
-                    CreatedBy = todoItem.CreatedBy,
-                    CreatedOn = todoItem.CreatedOn
-                }).ToList();
+                    new TodoItemInfo
+                    {
+                        Id = todoItem.Id,
+                        IsComplete = todoItem.IsComplete,
+                        Name = todoItem.Name,
+                        CreatedBy = todoItem.CreatedBy,
+                        CreatedOn = todoItem.CreatedOn,
+                        LastUpdatedBy = todoItem.LastUpdatedBy,
+                        LastUpdatedOn = todoItem.LastUpdatedOn
+                    })
+                .Skip(todoItemQuery.PageIndex)
+                .Take(todoItemQuery.PageSize)
+                .ToList();
 
             return result;
         }
 
         public long Add(NewTodoItemInfo newTodoItemInfo)
         {
-            if (newTodoItemInfo == null)
-            {
-                throw new ArgumentNullException(nameof(newTodoItemInfo));
-            }
+            Validator.ValidateObject(newTodoItemInfo, new ValidationContext(newTodoItemInfo), true);
 
             var todoItem = new TodoItem(newTodoItemInfo.Name, newTodoItemInfo.User.GetUserId())
             {
-                IsComplete = newTodoItemInfo.IsComplete,
+                IsComplete = newTodoItemInfo.IsComplete
             };
 
             todoDbContext.TodoItems.Add(todoItem);
@@ -92,13 +92,11 @@ namespace Todo.Services
 
         public void Update(UpdateTodoItemInfo updateTodoItemInfo)
         {
-            if (updateTodoItemInfo == null)
-            {
-                throw new ArgumentNullException(nameof(updateTodoItemInfo));
-            }
+            Validator.ValidateObject(updateTodoItemInfo, new ValidationContext(updateTodoItemInfo), true);
 
-            TodoItem todoItem =
-                todoDbContext.TodoItems.SingleOrDefault(localTodoItem => localTodoItem.Id == updateTodoItemInfo.Id);
+            TodoItem todoItem = todoDbContext.TodoItems.SingleOrDefault(myTodoItem =>
+                myTodoItem.Id == updateTodoItemInfo.Id &&
+                myTodoItem.CreatedBy == updateTodoItemInfo.User.GetUserId());
 
             if (todoItem == null)
             {
@@ -120,13 +118,12 @@ namespace Todo.Services
 
         public void Delete(DeleteTodoItemInfo deleteTodoItemInfo)
         {
-            if (deleteTodoItemInfo == null)
-            {
-                throw new ArgumentNullException(nameof(deleteTodoItemInfo));
-            }
+            Validator.ValidateObject(deleteTodoItemInfo, new ValidationContext(deleteTodoItemInfo), true);
 
             TodoItem todoItem =
-                todoDbContext.TodoItems.SingleOrDefault(myTodoItem => myTodoItem.Id == deleteTodoItemInfo.Id);
+                todoDbContext.TodoItems.SingleOrDefault(myTodoItem =>
+                    myTodoItem.Id == deleteTodoItemInfo.Id &&
+                    myTodoItem.CreatedBy == deleteTodoItemInfo.User.GetUserId());
 
             if (todoItem == null)
             {
