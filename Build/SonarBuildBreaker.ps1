@@ -33,8 +33,13 @@ $Headers = @{
     AcceptType = "application/json"
 }
 
-# See mor about the HTTP request below here: https://sonarcloud.io/web_api/api/qualitygates/project_status.
-$SonarWebApiUrl = "{0}/api/qualitygates/project_status?projectKey={1}&branch={2}" -f $SonarServerBaseUrl, $SonarProjectKey, $GitBranchName
+# Normalize Git branch name since Azure DevOps is sending a full or short name.
+# See more here: https://stackoverflow.com/questions/59956206/how-to-get-a-branch-name-with-a-slash-in-azure-devops
+# and here: https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml#build-variables.
+$NormalizedGitBranchName = $GitBranchName -Replace "refs/heads/", ""
+
+# See more about the HTTP request below here: https://sonarcloud.io/web_api/api/qualitygates/project_status.
+$SonarWebApiUrl = "{0}/api/qualitygates/project_status?projectKey={1}&branch={2}" -f $SonarServerBaseUrl, $SonarProjectKey, $NormalizedGitBranchName
 $Response = Invoke-WebRequest -Uri $SonarWebApiUrl -Headers $Headers -UseBasicParsing -ErrorAction Stop | ConvertFrom-Json
 
 if ($Response.projectStatus.status -eq 'OK')
