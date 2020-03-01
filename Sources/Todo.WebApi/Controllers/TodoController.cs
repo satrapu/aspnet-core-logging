@@ -32,7 +32,9 @@ namespace Todo.WebApi.Controllers
                 NamePattern = todoItemQueryModel.NamePattern,
                 User = User,
                 PageIndex = todoItemQueryModel.PageIndex,
-                PageSize = todoItemQueryModel.PageSize
+                PageSize = todoItemQueryModel.PageSize,
+                IsSortAscending = todoItemQueryModel.IsSortAscending,
+                SortBy = todoItemQueryModel.SortBy
             };
 
             IList<TodoItemInfo> todoItemInfoList = todoService.GetByQuery(todoItemQuery);

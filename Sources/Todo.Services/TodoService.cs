@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Todo.Persistence;
@@ -52,6 +53,33 @@ namespace Todo.Services
             {
                 matchingTodoItems = matchingTodoItems.Where(todoItem =>
                     todoItem.IsComplete == todoItemQuery.IsComplete.Value);
+            }
+
+            Expression<Func<TodoItem, object>> keySelector;
+            
+            switch (todoItemQuery.SortBy)
+            {
+                case nameof(TodoItem.CreatedOn):
+                    keySelector = todoItem => todoItem.CreatedOn;
+                    break;
+                case nameof(TodoItem.LastUpdatedOn):
+                    keySelector = todoItem => todoItem.LastUpdatedOn;
+                    break;
+                case nameof(TodoItem.Name):
+                    keySelector = todoItem => todoItem.Name;
+                    break;
+                default:
+                    keySelector = todoItem => todoItem.Id;
+                    break;
+            }
+
+            if (todoItemQuery.IsSortAscending.HasValue && !todoItemQuery.IsSortAscending.Value)
+            {
+                matchingTodoItems = matchingTodoItems.OrderByDescending(keySelector);
+            }
+            else
+            {
+                matchingTodoItems = matchingTodoItems.OrderBy(keySelector);
             }
 
             IList<TodoItemInfo> result = matchingTodoItems.Select(todoItem =>
