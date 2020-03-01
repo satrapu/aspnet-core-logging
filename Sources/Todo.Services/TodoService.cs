@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Todo.Persistence;
 using Todo.Persistence.Entities;
 
@@ -36,32 +36,34 @@ namespace Todo.Services
                 throw new ArgumentNullException(nameof(todoItemQuery));
             }
 
-            var matchingTodoItems =
-                todoDbContext.TodoItems.Where(x => x.CreatedBy == todoItemQuery.User.GetUserId());
+            IQueryable<TodoItem> matchingTodoItems =
+                todoDbContext.TodoItems.Where(todoItem => todoItem.CreatedBy == todoItemQuery.User.GetUserId());
 
             if (todoItemQuery.Id.HasValue)
             {
-                matchingTodoItems = matchingTodoItems.Where(x => x.Id == todoItemQuery.Id.Value);
+                matchingTodoItems = matchingTodoItems.Where(todoItem => todoItem.Id == todoItemQuery.Id.Value);
             }
 
             if (!string.IsNullOrWhiteSpace(todoItemQuery.NamePattern))
             {
-                matchingTodoItems = matchingTodoItems.Where(x =>
-                    EF.Functions.Like(x.Name, todoItemQuery.NamePattern));
+                matchingTodoItems = matchingTodoItems.Where(todoItem =>
+                    EF.Functions.Like(todoItem.Name, todoItemQuery.NamePattern));
             }
 
             if (todoItemQuery.IsComplete.HasValue)
             {
-                matchingTodoItems = matchingTodoItems.Where(x =>
-                    x.IsComplete == todoItemQuery.IsComplete.Value);
+                matchingTodoItems = matchingTodoItems.Where(todoItem =>
+                    todoItem.IsComplete == todoItemQuery.IsComplete.Value);
             }
 
-            var result = matchingTodoItems.Select(todoItem =>
+            IList<TodoItemInfo> result = matchingTodoItems.Select(todoItem =>
                 new TodoItemInfo
                 {
                     Id = todoItem.Id,
                     IsComplete = todoItem.IsComplete,
-                    Name = todoItem.Name
+                    Name = todoItem.Name,
+                    CreatedBy = todoItem.CreatedBy,
+                    CreatedOn = todoItem.CreatedOn
                 }).ToList();
 
             return result;
@@ -82,7 +84,7 @@ namespace Todo.Services
             todoDbContext.TodoItems.Add(todoItem);
             todoDbContext.SaveChanges();
 
-            logger.LogDebug("Item with id {TodoItemId} has been added by user {UserId}"
+            logger.LogInformation("Item with id {TodoItemId} has been added by user {UserId}"
                 , todoItem.Id, todoItem.CreatedBy);
 
             return todoItem.Id;
@@ -95,7 +97,8 @@ namespace Todo.Services
                 throw new ArgumentNullException(nameof(updateTodoItemInfo));
             }
 
-            var todoItem = todoDbContext.TodoItems.SingleOrDefault(x => x.Id == updateTodoItemInfo.Id);
+            TodoItem todoItem =
+                todoDbContext.TodoItems.SingleOrDefault(localTodoItem => localTodoItem.Id == updateTodoItemInfo.Id);
 
             if (todoItem == null)
             {
@@ -106,12 +109,12 @@ namespace Todo.Services
             todoItem.IsComplete = updateTodoItemInfo.IsComplete;
             todoItem.Name = updateTodoItemInfo.Name;
             todoItem.LastUpdatedBy = updateTodoItemInfo.User.GetUserId();
-            todoItem.LastUpdatedOn = DateTime.Now;
+            todoItem.LastUpdatedOn = DateTime.UtcNow;
 
             todoDbContext.TodoItems.Update(todoItem);
             todoDbContext.SaveChanges();
 
-            logger.LogDebug("Item with id {TodoItemId} has been updated by user {UserId}"
+            logger.LogInformation("Item with id {TodoItemId} has been updated by user {UserId}"
                 , todoItem.Id, todoItem.LastUpdatedBy);
         }
 
@@ -122,7 +125,8 @@ namespace Todo.Services
                 throw new ArgumentNullException(nameof(deleteTodoItemInfo));
             }
 
-            var todoItem = todoDbContext.TodoItems.SingleOrDefault(x => x.Id == deleteTodoItemInfo.Id);
+            TodoItem todoItem =
+                todoDbContext.TodoItems.SingleOrDefault(myTodoItem => myTodoItem.Id == deleteTodoItemInfo.Id);
 
             if (todoItem == null)
             {
@@ -133,7 +137,7 @@ namespace Todo.Services
             todoDbContext.TodoItems.Remove(todoItem);
             todoDbContext.SaveChanges();
 
-            logger.LogDebug("Item with id {TodoItemId} has been deleted by user {UserId}"
+            logger.LogInformation("Item with id {TodoItemId} has been deleted by user {UserId}"
                 , deleteTodoItemInfo.Id, deleteTodoItemInfo.User.GetUserId());
         }
     }
