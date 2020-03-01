@@ -357,7 +357,7 @@ jobs:
         -SonarProjectKey 'aspnet-core-logging'
         -SonarServerBaseUrl 'https://sonarcloud.io'
         -SonarToken "$(CurrentProject.Sonar.Token)" 
-        -GitBranchName "$(Build.SourceBranchName)"
+        -GitBranchName "$(Build.SourceBranch)"
       errorActionPreference: stop
       failOnStderr: True
       workingDirectory: $(Build.SourcesDirectory)
