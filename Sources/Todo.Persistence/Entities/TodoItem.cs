@@ -60,8 +60,6 @@ namespace Todo.Persistence.Entities
             Name = name;
             CreatedBy = createdBy;
             CreatedOn = DateTime.UtcNow;
-            LastUpdatedBy = CreatedBy;
-            LastUpdatedOn = CreatedOn;
             IsComplete = false;
         }
 
