@@ -1,10 +1,10 @@
-﻿using EntityFrameworkCoreMock;
+﻿using System;
+using EntityFrameworkCoreMock;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
-using System;
 using Todo.Persistence;
 
 namespace Todo.Services
@@ -60,7 +60,7 @@ namespace Todo.Services
                                  .NotBeNull()
                                  .And.BeAssignableTo<ArgumentNullException>()
                                  .Subject.As<ArgumentNullException>()
-                                 .ParamName.Should().Be("todoItemQuery");
+                                 .ParamName.Should().Be("instance");
             }
         }
     }
