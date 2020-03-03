@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Todo.Persistence;
@@ -35,54 +36,9 @@ namespace Todo.Services
         {
             Validator.ValidateObject(todoItemQuery, new ValidationContext(todoItemQuery), true);
 
-            IQueryable<TodoItem> matchingTodoItems =
-                todoDbContext.TodoItems.Where(todoItem => todoItem.CreatedBy == todoItemQuery.User.GetUserId());
-
-            if (todoItemQuery.Id.HasValue)
-            {
-                matchingTodoItems = matchingTodoItems.Where(todoItem => todoItem.Id == todoItemQuery.Id.Value);
-            }
-
-            if (!string.IsNullOrWhiteSpace(todoItemQuery.NamePattern))
-            {
-                matchingTodoItems = matchingTodoItems.Where(todoItem =>
-                    EF.Functions.Like(todoItem.Name, todoItemQuery.NamePattern));
-            }
-
-            if (todoItemQuery.IsComplete.HasValue)
-            {
-                matchingTodoItems = matchingTodoItems.Where(todoItem =>
-                    todoItem.IsComplete == todoItemQuery.IsComplete.Value);
-            }
-
-            Expression<Func<TodoItem, object>> keySelector;
-            
-            switch (todoItemQuery.SortBy)
-            {
-                case nameof(TodoItem.CreatedOn):
-                    keySelector = todoItem => todoItem.CreatedOn;
-                    break;
-                case nameof(TodoItem.LastUpdatedOn):
-                    keySelector = todoItem => todoItem.LastUpdatedOn;
-                    break;
-                case nameof(TodoItem.Name):
-                    keySelector = todoItem => todoItem.Name;
-                    break;
-                default:
-                    keySelector = todoItem => todoItem.Id;
-                    break;
-            }
-
-            if (todoItemQuery.IsSortAscending.HasValue && !todoItemQuery.IsSortAscending.Value)
-            {
-                matchingTodoItems = matchingTodoItems.OrderByDescending(keySelector);
-            }
-            else
-            {
-                matchingTodoItems = matchingTodoItems.OrderBy(keySelector);
-            }
-
-            IList<TodoItemInfo> result = matchingTodoItems.Select(todoItem =>
+            IQueryable<TodoItem> todoItems = GetFilteredResults(todoItemQuery);
+            todoItems = GetSortedResults(todoItems, todoItemQuery);
+            IList<TodoItemInfo> result = todoItems.Select(todoItem =>
                     new TodoItemInfo
                     {
                         Id = todoItem.Id,
@@ -104,66 +60,115 @@ namespace Todo.Services
         {
             Validator.ValidateObject(newTodoItemInfo, new ValidationContext(newTodoItemInfo), true);
 
-            var todoItem = new TodoItem(newTodoItemInfo.Name, newTodoItemInfo.User.GetUserId())
+            var newTodoItem = new TodoItem(newTodoItemInfo.Name, newTodoItemInfo.User.GetUserId())
             {
                 IsComplete = newTodoItemInfo.IsComplete
             };
 
-            todoDbContext.TodoItems.Add(todoItem);
+            todoDbContext.TodoItems.Add(newTodoItem);
             todoDbContext.SaveChanges();
 
             logger.LogInformation("Item with id {TodoItemId} has been added by user {UserId}"
-                , todoItem.Id, todoItem.CreatedBy);
+                , newTodoItem.Id, newTodoItem.CreatedBy);
 
-            return todoItem.Id;
+            return newTodoItem.Id;
         }
 
         public void Update(UpdateTodoItemInfo updateTodoItemInfo)
         {
             Validator.ValidateObject(updateTodoItemInfo, new ValidationContext(updateTodoItemInfo), true);
 
-            TodoItem todoItem = todoDbContext.TodoItems.SingleOrDefault(myTodoItem =>
-                myTodoItem.Id == updateTodoItemInfo.Id &&
-                myTodoItem.CreatedBy == updateTodoItemInfo.User.GetUserId());
+            TodoItem existingTodoItem = GetExistingTodoItem(updateTodoItemInfo.Id, updateTodoItemInfo.User);
+            existingTodoItem.IsComplete = updateTodoItemInfo.IsComplete;
+            existingTodoItem.Name = updateTodoItemInfo.Name;
+            existingTodoItem.LastUpdatedBy = updateTodoItemInfo.User.GetUserId();
+            existingTodoItem.LastUpdatedOn = DateTime.UtcNow;
 
-            if (todoItem == null)
-            {
-                throw new ArgumentException($"Could not find {nameof(TodoItem)} by id {updateTodoItemInfo.Id}"
-                    , nameof(updateTodoItemInfo));
-            }
-
-            todoItem.IsComplete = updateTodoItemInfo.IsComplete;
-            todoItem.Name = updateTodoItemInfo.Name;
-            todoItem.LastUpdatedBy = updateTodoItemInfo.User.GetUserId();
-            todoItem.LastUpdatedOn = DateTime.UtcNow;
-
-            todoDbContext.TodoItems.Update(todoItem);
+            todoDbContext.TodoItems.Update(existingTodoItem);
             todoDbContext.SaveChanges();
 
             logger.LogInformation("Item with id {TodoItemId} has been updated by user {UserId}"
-                , todoItem.Id, todoItem.LastUpdatedBy);
+                , existingTodoItem.Id, existingTodoItem.LastUpdatedBy);
         }
 
         public void Delete(DeleteTodoItemInfo deleteTodoItemInfo)
         {
             Validator.ValidateObject(deleteTodoItemInfo, new ValidationContext(deleteTodoItemInfo), true);
+            TodoItem existingTodoItem = GetExistingTodoItem(deleteTodoItemInfo.Id, deleteTodoItemInfo.User);
 
-            TodoItem todoItem =
-                todoDbContext.TodoItems.SingleOrDefault(myTodoItem =>
-                    myTodoItem.Id == deleteTodoItemInfo.Id &&
-                    myTodoItem.CreatedBy == deleteTodoItemInfo.User.GetUserId());
-
-            if (todoItem == null)
-            {
-                throw new ArgumentException($"Could not find {nameof(TodoItem)} by id {deleteTodoItemInfo.Id}"
-                    , nameof(deleteTodoItemInfo));
-            }
-
-            todoDbContext.TodoItems.Remove(todoItem);
+            todoDbContext.TodoItems.Remove(existingTodoItem);
             todoDbContext.SaveChanges();
 
             logger.LogInformation("Item with id {TodoItemId} has been deleted by user {UserId}"
                 , deleteTodoItemInfo.Id, deleteTodoItemInfo.User.GetUserId());
+        }
+
+        private TodoItem GetExistingTodoItem(long? id, ClaimsPrincipal owner)
+        {
+            TodoItem existingTodoItem = todoDbContext.TodoItems.SingleOrDefault(todoItem =>
+                todoItem.Id == id && todoItem.CreatedBy == owner.GetUserId());
+
+            if (existingTodoItem == null)
+            {
+                throw new ArgumentException($"Could not find {nameof(TodoItem)} by id {id}", nameof(id));
+            }
+
+            return existingTodoItem;
+        }
+
+        private IQueryable<TodoItem> GetFilteredResults(TodoItemQuery todoItemQuery)
+        {
+            IQueryable<TodoItem> todoItems =
+                todoDbContext.TodoItems.Where(todoItem => todoItem.CreatedBy == todoItemQuery.User.GetUserId());
+
+            if (todoItemQuery.Id.HasValue)
+            {
+                todoItems = todoItems.Where(todoItem => todoItem.Id == todoItemQuery.Id.Value);
+            }
+
+            if (!string.IsNullOrWhiteSpace(todoItemQuery.NamePattern))
+            {
+                todoItems = todoItems.Where(todoItem => EF.Functions.Like(todoItem.Name, todoItemQuery.NamePattern));
+            }
+
+            if (todoItemQuery.IsComplete.HasValue)
+            {
+                todoItems = todoItems.Where(todoItem => todoItem.IsComplete == todoItemQuery.IsComplete.Value);
+            }
+
+            return todoItems;
+        }
+
+        private IQueryable<TodoItem> GetSortedResults(IQueryable<TodoItem> todoItems, TodoItemQuery todoItemQuery)
+        {
+            Expression<Func<TodoItem, object>> keySelector;
+
+            switch (todoItemQuery.SortBy)
+            {
+                case nameof(TodoItem.CreatedOn):
+                    keySelector = todoItem => todoItem.CreatedOn;
+                    break;
+                case nameof(TodoItem.LastUpdatedOn):
+                    keySelector = todoItem => todoItem.LastUpdatedOn;
+                    break;
+                case nameof(TodoItem.Name):
+                    keySelector = todoItem => todoItem.Name;
+                    break;
+                default:
+                    keySelector = todoItem => todoItem.Id;
+                    break;
+            }
+
+            if (todoItemQuery.IsSortAscending.HasValue && !todoItemQuery.IsSortAscending.Value)
+            {
+                todoItems = todoItems.OrderByDescending(keySelector);
+            }
+            else
+            {
+                todoItems = todoItems.OrderBy(keySelector);
+            }
+
+            return todoItems;
         }
     }
 }
