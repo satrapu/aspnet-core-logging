@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.WebUtilities;
 using NUnit.Framework;
+using Todo.Persistence.Entities;
 using Todo.WebApi.Infrastructure;
 using Todo.WebApi.Models;
 
@@ -108,14 +109,18 @@ namespace Todo.WebApi.Controllers
                     response.StatusCode.Should().Be(HttpStatusCode.Created);
                     id = await response.Content.ReadAsAsync<long>().ConfigureAwait(false);
 
-                    var parametersToAdd = new Dictionary<string, string>
+                    var queryString = new Dictionary<string, string>
                     {
-                        {
-                            "NamePattern", $"%-{nameSuffix}"
-                        }
+                        {nameof(TodoItemQueryModel.Id), id.ToString()},
+                        {nameof(TodoItemQueryModel.IsComplete), newTodoItemModel.IsComplete.ToString()},
+                        {nameof(TodoItemQueryModel.NamePattern), name},
+                        {nameof(TodoItemQueryModel.PageIndex), 0.ToString()},
+                        {nameof(TodoItemQueryModel.PageSize), 5.ToString()},
+                        {nameof(TodoItemQueryModel.SortBy), nameof(TodoItem.CreatedOn)},
+                        {nameof(TodoItemQueryModel.IsSortAscending), bool.FalseString}
                     };
 
-                    var requestUri = QueryHelpers.AddQueryString("api/todo", parametersToAdd);
+                    var requestUri = QueryHelpers.AddQueryString("api/todo", queryString);
 
                     // Act
                     response = await httpClient.GetAsync(requestUri).ConfigureAwait(false);
