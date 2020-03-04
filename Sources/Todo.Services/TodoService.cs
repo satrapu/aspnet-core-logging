@@ -45,6 +45,11 @@ namespace Todo.Services
             todoItems = PaginateItems(todoItems, todoItemQuery);
             IQueryable<TodoItemInfo> todoItemInfos = ProjectItems(todoItems);
             IList<TodoItemInfo> result = todoItemInfos.ToList();
+
+            logger.LogInformation("Fetched {TodoItemsCount} todo item(s) for user {UserId} using query {TodoItemQuery}",
+                result.Count,
+                todoItemQuery.User.GetUserId(), todoItemQuery);
+
             return result;
         }
 
