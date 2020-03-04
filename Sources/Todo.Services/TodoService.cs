@@ -19,6 +19,10 @@ namespace Todo.Services
     {
         private readonly TodoDbContext todoDbContext;
         private readonly ILogger logger;
+        private const string SortByCreatedOn = nameof(TodoItem.CreatedOn);
+        private const string SortById = nameof(TodoItem.Id);
+        private const string SortByLastUpdatedOn = nameof(TodoItem.LastUpdatedOn);
+        private const string SortByName = nameof(TodoItem.Name);
 
         /// <summary>
         /// Creates a new instance of the <see cref="TodoService"/> class.
@@ -36,23 +40,11 @@ namespace Todo.Services
         {
             Validator.ValidateObject(todoItemQuery, new ValidationContext(todoItemQuery), true);
 
-            IQueryable<TodoItem> todoItems = GetFilteredResults(todoItemQuery);
-            todoItems = GetSortedResults(todoItems, todoItemQuery);
-            IList<TodoItemInfo> result = todoItems.Select(todoItem =>
-                    new TodoItemInfo
-                    {
-                        Id = todoItem.Id,
-                        IsComplete = todoItem.IsComplete,
-                        Name = todoItem.Name,
-                        CreatedBy = todoItem.CreatedBy,
-                        CreatedOn = todoItem.CreatedOn,
-                        LastUpdatedBy = todoItem.LastUpdatedBy,
-                        LastUpdatedOn = todoItem.LastUpdatedOn
-                    })
-                .Skip(todoItemQuery.PageIndex)
-                .Take(todoItemQuery.PageSize)
-                .ToList();
-
+            IQueryable<TodoItem> todoItems = FilterItems(todoItemQuery);
+            todoItems = SortItems(todoItems, todoItemQuery);
+            todoItems = PaginateItems(todoItems, todoItemQuery);
+            IQueryable<TodoItemInfo> todoItemInfos = ProjectItems(todoItems);
+            IList<TodoItemInfo> result = todoItemInfos.ToList();
             return result;
         }
 
@@ -116,7 +108,7 @@ namespace Todo.Services
             return existingTodoItem;
         }
 
-        private IQueryable<TodoItem> GetFilteredResults(TodoItemQuery todoItemQuery)
+        private IQueryable<TodoItem> FilterItems(TodoItemQuery todoItemQuery)
         {
             IQueryable<TodoItem> todoItems =
                 todoDbContext.TodoItems.Where(todoItem => todoItem.CreatedBy == todoItemQuery.User.GetUserId());
@@ -139,36 +131,63 @@ namespace Todo.Services
             return todoItems;
         }
 
-        private IQueryable<TodoItem> GetSortedResults(IQueryable<TodoItem> todoItems, TodoItemQuery todoItemQuery)
+        private IQueryable<TodoItem> SortItems(IQueryable<TodoItem> todoItems, TodoItemQuery todoItemQuery)
         {
-            Expression<Func<TodoItem, object>> keySelector;
+            Expression<Func<TodoItem, object>> keySelector = null;
 
-            switch (todoItemQuery.SortBy)
+            if (SortByCreatedOn.Equals(todoItemQuery.SortBy, StringComparison.InvariantCultureIgnoreCase))
             {
-                case nameof(TodoItem.CreatedOn):
-                    keySelector = todoItem => todoItem.CreatedOn;
-                    break;
-                case nameof(TodoItem.LastUpdatedOn):
-                    keySelector = todoItem => todoItem.LastUpdatedOn;
-                    break;
-                case nameof(TodoItem.Name):
-                    keySelector = todoItem => todoItem.Name;
-                    break;
-                default:
-                    keySelector = todoItem => todoItem.Id;
-                    break;
+                keySelector = todoItem => todoItem.CreatedOn;
+            }
+            else if (SortById.Equals(todoItemQuery.SortBy, StringComparison.InvariantCultureIgnoreCase))
+            {
+                keySelector = todoItem => todoItem.Id;
+            }
+            else if (SortByLastUpdatedOn.Equals(todoItemQuery.SortBy, StringComparison.InvariantCultureIgnoreCase))
+            {
+                keySelector = todoItem => todoItem.LastUpdatedOn;
+            }
+            else if (SortByName.Equals(todoItemQuery.SortBy, StringComparison.InvariantCultureIgnoreCase))
+            {
+                keySelector = todoItem => todoItem.Name;
             }
 
-            if (todoItemQuery.IsSortAscending.HasValue && !todoItemQuery.IsSortAscending.Value)
+            if (keySelector != null)
             {
-                todoItems = todoItems.OrderByDescending(keySelector);
-            }
-            else
-            {
-                todoItems = todoItems.OrderBy(keySelector);
+                if (todoItemQuery.IsSortAscending.HasValue && !todoItemQuery.IsSortAscending.Value)
+                {
+                    todoItems = todoItems.OrderByDescending(keySelector);
+                }
+                else
+                {
+                    todoItems = todoItems.OrderBy(keySelector);
+                }
             }
 
             return todoItems;
+        }
+
+        private IQueryable<TodoItemInfo> ProjectItems(IQueryable<TodoItem> todoItems)
+        {
+            IQueryable<TodoItemInfo> result = todoItems.Select(todoItem =>
+                new TodoItemInfo
+                {
+                    Id = todoItem.Id,
+                    IsComplete = todoItem.IsComplete,
+                    Name = todoItem.Name,
+                    CreatedBy = todoItem.CreatedBy,
+                    CreatedOn = todoItem.CreatedOn,
+                    LastUpdatedBy = todoItem.LastUpdatedBy,
+                    LastUpdatedOn = todoItem.LastUpdatedOn
+                });
+            return result;
+        }
+
+        private IQueryable<TodoItem> PaginateItems(IQueryable<TodoItem> todoItems,
+            TodoItemQuery todoItemQuery)
+        {
+            IQueryable<TodoItem> result = todoItems.Skip(todoItemQuery.PageIndex).Take(todoItemQuery.PageSize);
+            return result;
         }
     }
 }
