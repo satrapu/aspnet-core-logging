@@ -4,6 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Todo.Persistence;
@@ -36,7 +37,7 @@ namespace Todo.Services
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public IList<TodoItemInfo> GetByQuery(TodoItemQuery todoItemQuery)
+        public async Task<IList<TodoItemInfo>> GetByQueryAsync(TodoItemQuery todoItemQuery)
         {
             Validator.ValidateObject(todoItemQuery, new ValidationContext(todoItemQuery), true);
 
@@ -44,11 +45,10 @@ namespace Todo.Services
             todoItems = SortItems(todoItems, todoItemQuery);
             todoItems = PaginateItems(todoItems, todoItemQuery);
             IQueryable<TodoItemInfo> todoItemInfos = ProjectItems(todoItems);
-            IList<TodoItemInfo> result = todoItemInfos.ToList();
+            IList<TodoItemInfo> result = await todoItemInfos.ToListAsync().ConfigureAwait(false);
 
             logger.LogInformation("Fetched {TodoItemsCount} todo item(s) for user {UserId} using query {TodoItemQuery}",
-                result.Count,
-                todoItemQuery.User.GetUserId(), todoItemQuery);
+                result.Count, todoItemQuery.User.GetUserId(), todoItemQuery);
 
             return result;
         }

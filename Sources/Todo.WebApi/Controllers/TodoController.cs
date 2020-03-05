@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Todo.Services;
@@ -23,7 +24,7 @@ namespace Todo.WebApi.Controllers
 
         [HttpGet]
         [Authorize(Policy = Policies.TodoItems.GetTodoItems)]
-        public ActionResult<IList<TodoItemModel>> GetByQuery([FromQuery] TodoItemQueryModel todoItemQueryModel)
+        public async IAsyncEnumerable<TodoItemModel> GetByQuery([FromQuery] TodoItemQueryModel todoItemQueryModel)
         {
             var todoItemQuery = new TodoItemQuery
             {
@@ -37,24 +38,26 @@ namespace Todo.WebApi.Controllers
                 SortBy = todoItemQueryModel.SortBy
             };
 
-            IList<TodoItemInfo> todoItemInfoList = todoService.GetByQuery(todoItemQuery);
-            IList<TodoItemModel> todoItemModelList = todoItemInfoList.Select(todoItemInfo => new TodoItemModel
-            {
-                Id = todoItemInfo.Id,
-                IsComplete = todoItemInfo.IsComplete,
-                Name = todoItemInfo.Name,
-                CreatedBy = todoItemInfo.CreatedBy,
-                CreatedOn = todoItemInfo.CreatedOn,
-                LastUpdatedBy = todoItemInfo.LastUpdatedBy,
-                LastUpdatedOn = todoItemInfo.LastUpdatedOn
-            }).ToList();
+            IList<TodoItemInfo> todoItemInfos = await todoService.GetByQueryAsync(todoItemQuery).ConfigureAwait(false);
 
-            return Ok(todoItemModelList);
+            foreach (TodoItemInfo todoItemInfo in todoItemInfos)
+            {
+                yield return new TodoItemModel
+                {
+                    Id = todoItemInfo.Id,
+                    IsComplete = todoItemInfo.IsComplete,
+                    Name = todoItemInfo.Name,
+                    CreatedBy = todoItemInfo.CreatedBy,
+                    CreatedOn = todoItemInfo.CreatedOn,
+                    LastUpdatedBy = todoItemInfo.LastUpdatedBy,
+                    LastUpdatedOn = todoItemInfo.LastUpdatedOn
+                };
+            }
         }
 
         [HttpGet("{id:long}")]
         [Authorize(Policy = Policies.TodoItems.GetTodoItems)]
-        public ActionResult<TodoItemModel> GetById(long id)
+        public async Task<ActionResult<TodoItemModel>> GetById(long id)
         {
             var todoItemQuery = new TodoItemQuery
             {
@@ -62,7 +65,8 @@ namespace Todo.WebApi.Controllers
                 User = User
             };
 
-            IList<TodoItemInfo> todoItemInfoList = todoService.GetByQuery(todoItemQuery);
+            IList<TodoItemInfo> todoItemInfoList =
+                await todoService.GetByQueryAsync(todoItemQuery).ConfigureAwait(false);
             TodoItemModel model = todoItemInfoList.Select(todoItemInfo => new TodoItemModel
             {
                 Id = todoItemInfo.Id,

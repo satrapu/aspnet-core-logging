@@ -85,7 +85,7 @@ namespace Todo.WebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [Test]
-        public async Task GetByQuery_UsingDefaults_ReturnsExpectedResult()
+        public async Task GetByQueryAsync_UsingDefaults_ReturnsExpectedResult()
         {
             // Arrange
             using (HttpClient httpClient =
@@ -96,7 +96,7 @@ namespace Todo.WebApi.Controllers
                 try
                 {
                     var nameSuffix = Guid.NewGuid().ToString("N");
-                    var name = $"it--{nameof(GetByQuery_UsingDefaults_ReturnsExpectedResult)}--{nameSuffix}";
+                    var name = $"it--{nameof(GetByQueryAsync_UsingDefaults_ReturnsExpectedResult)}--{nameSuffix}";
 
                     var newTodoItemModel = new NewTodoItemModel
                     {
