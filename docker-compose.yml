@@ -11,8 +11,8 @@ services:
     networks: 
       - local_postgresql
     environment:
-      - POSTGRES_USER=${aspnet-core-logging-dev.POSTGRES_USER}
-      - POSTGRES_PASSWORD=${aspnet-core-logging-dev.POSTGRES_PASSWORD}
+      - POSTGRES_USER=${DB_DEV_POSTGRES_USER}
+      - POSTGRES_PASSWORD=${DB_DEV_POSTGRES_PASSWORD}
       - POSTGRES_DB=aspnet-core-logging-dev
 
   aspnet-core-logging-it:
@@ -24,9 +24,9 @@ services:
       - "5433:5432/tcp"
     networks: 
       - local_postgresql
-    environment: 
-      - POSTGRES_USER=${aspnet-core-logging-it.POSTGRES_USER}
-      - POSTGRES_PASSWORD=${aspnet-core-logging-it.POSTGRES_PASSWORD}
+    environment:
+      - POSTGRES_USER=${DB_IT_POSTGRES_USER}
+      - POSTGRES_PASSWORD=${DB_IT_POSTGRES_PASSWORD}
       - POSTGRES_DB=aspnet-core-logging-it
 
   pgadmin:
@@ -36,11 +36,11 @@ services:
       - pgadmin_data:/var/lib/pgadmin
     ports:
       - "8080:80/tcp"
-    networks: 
+    networks:
       - local_postgresql
     environment:
-      - PGADMIN_DEFAULT_EMAIL=${pgadmin.PGADMIN_DEFAULT_EMAIL}
-      - PGADMIN_DEFAULT_PASSWORD=${pgadmin.PGADMIN_DEFAULT_PASSWORD}
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
     depends_on:
       - aspnet-core-logging-dev
       - aspnet-core-logging-it
