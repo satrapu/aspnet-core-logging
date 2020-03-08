@@ -39,7 +39,7 @@ services:
     networks: 
       - local_postgresql
     environment:
-      - PGADMIN_DEFAULT_EMAIL=${pgadmin.PGADMIN_DEFAULT_EMAI}
+      - PGADMIN_DEFAULT_EMAIL=${pgadmin.PGADMIN_DEFAULT_EMAIL}
       - PGADMIN_DEFAULT_PASSWORD=${pgadmin.PGADMIN_DEFAULT_PASSWORD}
     depends_on:
       - aspnet-core-logging-dev
