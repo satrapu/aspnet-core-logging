@@ -1,0 +1,57 @@
+version: '3.7'
+
+services:
+  aspnet-core-logging-dev:
+    container_name: aspnet-core-logging-dev
+    image: postgres:12-alpine
+    volumes:
+      - aspnet-core-logging-dev_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432/tcp"
+    networks: 
+      - local_postgresql
+    environment:
+      - POSTGRES_USER=${aspnet-core-logging-dev.POSTGRES_USER}
+      - POSTGRES_PASSWORD=${aspnet-core-logging-dev.POSTGRES_PASSWORD}
+      - POSTGRES_DB=aspnet-core-logging-dev
+
+  aspnet-core-logging-it:
+    container_name: aspnet-core-logging-it
+    image: postgres:12-alpine
+    volumes:
+      - aspnet-core-logging-it_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432/tcp"
+    networks: 
+      - local_postgresql
+    environment: 
+      - POSTGRES_USER=${aspnet-core-logging-it.POSTGRES_USER}
+      - POSTGRES_PASSWORD=${aspnet-core-logging-it.POSTGRES_PASSWORD}
+      - POSTGRES_DB=aspnet-core-logging-it
+
+  pgadmin:
+    container_name: pgadmin
+    image: dpage/pgadmin4:4.19
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+    ports:
+      - "8080:80/tcp"
+    networks: 
+      - local_postgresql
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${pgadmin.PGADMIN_DEFAULT_EMAI}
+      - PGADMIN_DEFAULT_PASSWORD=${pgadmin.PGADMIN_DEFAULT_PASSWORD}
+    depends_on:
+      - aspnet-core-logging-dev
+      - aspnet-core-logging-it
+
+volumes:
+  aspnet-core-logging-dev_data:
+    external: true
+  aspnet-core-logging-it_data:
+    external: true
+  pgadmin_data:
+    external: true
+
+networks:
+  local_postgresql:
