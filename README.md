@@ -9,6 +9,79 @@ This project has several posts associated with it:
 - [Build an ASP.NET Core application using Azure Pipelines](https://crossprogramming.com/2019/03/17/build-asp-net-core-app-using-azure-pipelines.html)
 - [Logging HTTP context in ASP.NET Core](https://crossprogramming.com/2018/12/27/logging-http-context-in-asp-net-core.html)
 
+## Setup local persistence services
+This ASP.NET Core web API uses [PostgreSQL](https://www.postgresql.org/) as persistent storage and [pgadmin](https://www.pgadmin.org/) as database manager, all running locally via [Docker Compose](https://github.com/docker/compose).
+
+### Create Docker volumes
+These volumes are needed to store data outside the Docker containers running the PostgreSQL databases and their manager.
+
+- Volume used by the local development database
+```bash
+docker volume create --name=aspnet-core-logging-dev_data
+```
+
+- Volume to be targeted by the integration tests when run locally
+
+```bash
+docker volume create --name=aspnet-core-logging-it_data
+```
+
+- Volume to be used by pgadmin tool
+```bash
+docker volume create --name=pgadmin_data
+```
+
+### Prepare .env file
+The [.env](https://docs.docker.com/compose/env-file/) file is used by Docker Compose to avoid storing sensitive data inside `docker-compose.yml` file.  
+Create a new file named `.env` inside the folder where you have checked-out this git repository and add the following lines:
+```properties
+# Environment variables used by 'aspnet-core-logging-dev' service
+DB_DEV_POSTGRES_USER=<DB_DEV_USER>
+DB_DEV_POSTGRES_PASSWORD=<DB_DEV_PASSWORD>
+
+# Environment variables used by 'aspnet-core-logging-it' service
+DB_IT_POSTGRES_USER=<DB_IT_USER>
+DB_IT_POSTGRES_PASSWORD=<DB_IT_PASSWORD>
+
+# Environment variables used by 'pgadmin' service
+PGADMIN_DEFAULT_EMAIL=<PGADMIN_EMAIL_ADDRESS>
+PGADMIN_DEFAULT_PASSWORD=<PGADMIN_PASSWORD>
+```
+
+Make sure you replace all of the above `<DB_DEV_USER>`, `<DB_DEV_PASSWORD>`, ..., `<PGADMIN_PASSWORD>` tokens with the appropriate values.
+
+### Compose commands
+All of the commands below must be run from the folder where you have checked-out this git repository.  
+This folder contains a `docker-compose.yml` file describing the compose services mention below.
+
+#### Run compose services
+```bash
+# The -d flag instructs Docker Compose to run services in the background
+docker-compose up -d
+```
+
+#### Stop compose services
+```bash
+docker-compose stop
+```
+
+#### Start compose services
+```bash
+docker-compose start
+```
+
+#### Display compose service log
+```bash
+# The -f flag instructs Docker Compose to display and follow the log entries of the 'pgadmin' service
+docker-compose logs -f pgadmin
+```
+
+#### Destroy compose services
+The command below will **not** delete the Docker volumes!
+```bash 
+docker-compose down
+```
+
 ## Build
 
 | Build Server                                                                    | Operating System | Status                                                                                                                                                                                                                                                          |
