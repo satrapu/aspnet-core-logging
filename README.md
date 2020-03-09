@@ -61,13 +61,14 @@ These volumes are needed to store data outside the Docker containers running the
 docker volume create --name=aspnet-core-logging-dev_data
 ```
 
-- Volume to be targeted by the integration tests when run locally
+- Volume used by the integration tests when run locally
 
 ```bash
 docker volume create --name=aspnet-core-logging-it_data
 ```
 
-- Volume to be used by pgadmin tool
+- Volume used by pgadmin tool
+
 ```bash
 docker volume create --name=pgadmin_data
 ```
@@ -97,22 +98,26 @@ All of the commands below must be run from the folder where you have checked-out
 This folder contains a `docker-compose.yml` file describing the aforementioned compose services.
 
 <h4 id="run-services">Run compose services</h4>
+
 ```bash
 # The -d flag instructs Docker Compose to run services in the background
 docker-compose up -d
 ```
 
 <h4 id="stop-services">Stop compose services</h4>
+
 ```bash
 docker-compose stop
 ```
 
 <h4 id="start-services">Start compose services</h4>
+
 ```bash
 docker-compose start
 ```
 
 <h4 id="display-log">Display compose service log</h4>
+
 ```bash
 # The -f flag instructs Docker Compose to display and follow the log entries of the 'pgadmin' service
 docker-compose logs -f pgadmin
@@ -120,6 +125,7 @@ docker-compose logs -f pgadmin
 
 <h4 id="destroy-services">Destroy compose services</h4>
 The command below will **not** delete the Docker volumes!
+
 ```bash 
 docker-compose down
 ```
