@@ -75,6 +75,7 @@ docker volume create --name=pgadmin_data
 <h3 id="env-file">Create .env file</h3>
 The [.env](https://docs.docker.com/compose/env-file/) file is used by Docker Compose to avoid storing sensitive data inside `docker-compose.yml` file.  
 Create a new file named `.env` inside the folder where you have checked-out this git repository and add the following lines:
+
 ```properties
 # Environment variables used by 'aspnet-core-logging-dev' service
 DB_DEV_POSTGRES_USER=<DB_DEV_USER>
@@ -89,7 +90,7 @@ PGADMIN_DEFAULT_EMAIL=<PGADMIN_EMAIL_ADDRESS>
 PGADMIN_DEFAULT_PASSWORD=<PGADMIN_PASSWORD>
 ```
 
-Make sure you replace all of the above `<DB_DEV_USER>`, `<DB_DEV_PASSWORD>`, ..., `<PGADMIN_PASSWORD>` tokens with the appropriate values.
+Make sure you replace all of the above `<DB_DEV_USER>`, `<DB_DEV_PASSWORD>`, ..., `<PGADMIN_PASSWORD>` tokens with the appropriate values.  
 
 <h3 id="compose-commands">Compose commands</h3>
 All of the commands below must be run from the folder where you have checked-out this git repository.  
