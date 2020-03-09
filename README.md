@@ -8,7 +8,7 @@
   - [Setup Auth0 account](#setup-auth0-account)
   - [Setup local persistence services](#setup-persistence)
     - [Create Docker volumes](#create-volumes)
-    - [Prepare .env file](#env-file)
+    - [Create .env file](#env-file)
     - [Compose commands](#compose-commands)
         - [Run compose services](#run-services)
         - [Stop compose services](#stop-services)
