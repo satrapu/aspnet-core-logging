@@ -337,6 +337,44 @@ jobs:
         , eq( ${{ parameters.sonar.buildBreaker.enabled }}, True)
       )
       
+  # Set the current Git branch name into a variable.
+  # This build step will be run only in case the build was triggered by a pul request.
+  - task: PowerShell@2
+    inputs:
+      targetType: 'inline'
+      errorActionPreference: 'stop'
+      script: |
+        Write-Output "##vso[task.setvariable variable=CurrentGitBranchName]$(System.PullRequest.SourceBranch)"
+    name: load_current_git_branch_name_from_pull_request_info
+    displayName: Load current Git branch name from PR info
+    condition: |
+      and
+      (
+          succeeded()
+        , eq( ${{ parameters.sonar.enabled }}, True)
+        , eq( ${{ parameters.sonar.buildBreaker.enabled }}, True)
+        , eq( $(Build.Reason), 'PullRequest')
+      )
+      
+  # Set the current Git branch name into a variable.
+  # This build step will be run only in case the build was triggered by anything else but a pull request.
+  - task: PowerShell@2
+    inputs:
+      targetType: 'inline'
+      errorActionPreference: 'stop'
+      script: |
+        Write-Output "##vso[task.setvariable variable=CurrentGitBranchName]$(Build.SourceBranch)"
+    name: load_current_git_branch_name_from_commit_info
+    displayName: Load current Git branch name from commit info
+    condition: |
+      and
+      (
+          succeeded()
+        , eq( ${{ parameters.sonar.enabled }}, True)
+        , eq( ${{ parameters.sonar.buildBreaker.enabled }}, True)
+        , ne( $(Build.Reason), 'PullRequest')
+      )
+      
   # Normalize Git branch name since Azure DevOps is sending a full or short name.
   # See more here: https://stackoverflow.com/questions/59956206/how-to-get-a-branch-name-with-a-slash-in-azure-devops
   # and here: https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml#build-variables.
@@ -345,7 +383,7 @@ jobs:
       targetType: 'inline'
       errorActionPreference: 'stop'
       script: |
-        $currentGitBranchName = if ("$(System.PullRequest.SourceBranch)" -eq $null) { "$(Build.SourceBranch)" } else { "$(System.PullRequest.SourceBranch)" }
+        $currentGitBranchName = $(CurrentGitBranchName)
         $normalizedGitBranchName = $currentGitBranchName -Replace 'refs/heads/', ''
         Write-Output "##vso[task.setvariable variable=NormalizedGitBranchName]$normalizedGitBranchName"
         Write-Output "The current Git branch name is: $currentGitBranchName"
