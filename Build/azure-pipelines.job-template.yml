@@ -344,8 +344,8 @@ jobs:
       script: |
         $currentGitBranchName = "$(Build.SourceBranch)"
         Write-Output "##vso[task.setvariable variable=CurrentGitBranchName]$currentGitBranchName"
-        Write-Output "The current Gitbranch name is: $currentGitBranchName"
-    name: normalize_db_connection_string_pointing_to_db4it
+        Write-Output "The current Git branch name is: $currentGitBranchName"
+    name: load_current_git_branch_name
     displayName: Load current Git branch name
     enabled: True
 
