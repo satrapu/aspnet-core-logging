@@ -123,7 +123,7 @@ docker-compose start
 docker-compose logs -f pgadmin
 ```
 
-####  Destroy compose services
+#### Destroy compose services
 The command below will **not** delete the Docker volumes!
 
 ```bash 
