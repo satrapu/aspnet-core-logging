@@ -345,12 +345,20 @@ jobs:
       targetType: 'inline'
       errorActionPreference: 'stop'
       script: |
-        $normalizedGitBranchName = "$(Build.SourceBranch)" -Replace "refs/heads/", ""
+        $currentGitBranchName = if ('$(System.PullRequest.SourceBranch)' -eq $null) { '$(Build.SourceBranch)' } else { '$(System.PullRequest.SourceBranch)' }
+        $normalizedGitBranchName = $currentGitBranchName -Replace 'refs/heads/', ''
         Write-Output "##vso[task.setvariable variable=NormalizedGitBranchName]$normalizedGitBranchName"
-        Write-Output "The normalized Git branch name is: $(NormalizedGitBranchName)"
+        Write-Output "The current Git branch name is: $currentGitBranchName"
+        Write-Output "The normalized Git branch name is: $normalizedGitBranchName"
     name: normalize_current_git_branch_name
     displayName: Normalize current Git branch name
-    enabled: True
+    condition: |
+      and
+      (
+          succeeded()
+        , eq( ${{ parameters.sonar.enabled }}, True)
+        , eq( ${{ parameters.sonar.buildBreaker.enabled }}, True)
+      )
 
   # Runs a PowerShell script to break the build in case Sonar quality gate has failed.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/powershell?view=azure-devops.
