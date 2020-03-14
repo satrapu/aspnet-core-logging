@@ -4,7 +4,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
@@ -44,12 +43,6 @@ namespace Todo.WebApi.Infrastructure
                 // Ensure an implementation of IHttpClientFactory interface can be injected at a later time
                 services.AddHttpClient();
 
-                services.AddMvc(options =>
-                {
-                    options.Filters.Add(new AllowAnonymousFilter());
-                    options.Filters.Add(new WebApi.Infrastructure.InjectTestUserFilter());
-                });
-
                 SetupDbContext(services);
                 SetupDatabase(services);
             });
@@ -66,36 +59,35 @@ namespace Todo.WebApi.Infrastructure
         private async Task<string> GetAccessToken()
         {
             IConfiguration configuration = base.Services.GetRequiredService<IConfiguration>();
+            // ReSharper disable SettingNotFoundInConfiguration
             string requestUri = $"https://{configuration["Auth0:Domain"]}/oauth/token";
             string audience = configuration["Auth0:Audience"];
             string clientId = configuration["Auth0:ClientId"];
             string clientSecret = configuration["Auth0:ClientSecret"];
+            // ReSharper restore SettingNotFoundInConfiguration
 
-            using (HttpClient httpClient = base.Services.GetRequiredService<IHttpClientFactory>().CreateClient())
+            using HttpClient httpClient = base.Services.GetRequiredService<IHttpClientFactory>().CreateClient();
+            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, requestUri)
             {
-                var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, requestUri)
+                Content = new FormUrlEncodedContent(new List<KeyValuePair<string, string>>
                 {
-                    Content = new FormUrlEncodedContent(new List<KeyValuePair<string, string>>
-                    {
-                        new KeyValuePair<string, string>("grant_type", "client_credentials"),
-                        new KeyValuePair<string, string>("client_id", clientId),
-                        new KeyValuePair<string, string>("client_secret", clientSecret),
-                        new KeyValuePair<string, string>("audience", audience)
-                    })
-                };
-                HttpResponseMessage httpResponseMessage =
-                    await httpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
+                    new KeyValuePair<string, string>("grant_type", "client_credentials"),
+                    new KeyValuePair<string, string>("client_id", clientId),
+                    new KeyValuePair<string, string>("client_secret", clientSecret),
+                    new KeyValuePair<string, string>("audience", audience)
+                })
+            };
+            HttpResponseMessage httpResponseMessage =
+                await httpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
 
-                if (!httpResponseMessage.IsSuccessStatusCode)
-                {
-                    throw new Exception(
-                        $"Failed to get an access token for testing purposes due to: {httpResponseMessage.ReasonPhrase}");
-                }
-
-                JObject content = await httpResponseMessage.Content.ReadAsAsync<JObject>().ConfigureAwait(false);
-                string accessToken = content.Value<string>("access_token");
-                return accessToken;
+            if (!httpResponseMessage.IsSuccessStatusCode)
+            {
+                throw new CouldNotGetTokenException(httpResponseMessage);
             }
+
+            JObject content = await httpResponseMessage.Content.ReadAsAsync<JObject>().ConfigureAwait(false);
+            string accessToken = content.Value<string>("access_token");
+            return accessToken;
         }
 
         private void SetupDbContext(IServiceCollection services)
@@ -111,6 +103,7 @@ namespace Todo.WebApi.Infrastructure
             services.AddDbContext<TodoDbContext>((serviceProvider, dbContextOptionsBuilder) =>
             {
                 IConfiguration configuration = serviceProvider.GetRequiredService<IConfiguration>();
+                // ReSharper disable once SettingNotFoundInConfiguration
                 var testConnectionString = configuration.GetConnectionString("TodoForIntegrationTests");
                 var connectionStringBuilder = new NpgsqlConnectionStringBuilder(testConnectionString)
                 {
@@ -126,29 +119,24 @@ namespace Todo.WebApi.Infrastructure
         private static void SetupDatabase(IServiceCollection services)
         {
             ServiceProvider serviceProvider = services.BuildServiceProvider();
+            using IServiceScope serviceScope = serviceProvider.CreateScope();
+            TodoDbContext todoDbContext = serviceScope.ServiceProvider.GetRequiredService<TodoDbContext>();
+            ILogger logger = serviceProvider.GetRequiredService<ILogger<TestWebApplicationFactory>>();
+            string databaseName = todoDbContext.Database.GetDbConnection().Database;
+            logger.LogInformation("About to setup test database {TestDatabaseName} ...", databaseName);
 
-            using (IServiceScope serviceScope = serviceProvider.CreateScope())
+            try
             {
-                TodoDbContext todoDbContext =
-                    serviceScope.ServiceProvider.GetRequiredService<TodoDbContext>();
-                ILogger logger = serviceProvider.GetRequiredService<ILogger<TestWebApplicationFactory>>();
-                string databaseName = todoDbContext.Database.GetDbConnection().Database;
-                logger.LogInformation("About to setup test database {TestDatabaseName} ...",
-                    databaseName);
-
-                try
-                {
-                    RunMigrations(databaseName, todoDbContext, logger);
-                }
-                catch (Exception exception)
-                {
-                    logger.LogError("Failed to run migrations against test database {TestDatabaseName}", exception,
-                        databaseName);
-                    throw;
-                }
-
-                logger.LogInformation("Test database {TestDatabaseName} has been successfully setup", databaseName);
+                RunMigrations(databaseName, todoDbContext, logger);
             }
+            catch (Exception exception)
+            {
+                logger.LogError("Failed to run migrations against test database {TestDatabaseName}", exception,
+                    databaseName);
+                throw;
+            }
+
+            logger.LogInformation("Test database {TestDatabaseName} has been successfully setup", databaseName);
         }
 
         private static void RunMigrations(string databaseName, TodoDbContext todoDbContext, ILogger logger)
@@ -156,14 +144,10 @@ namespace Todo.WebApi.Infrastructure
             logger.LogInformation("About to delete test database {TestDatabaseName} ...", databaseName);
             bool hasDeleteDatabase = todoDbContext.Database.EnsureDeleted();
 
-            if (hasDeleteDatabase)
-            {
-                logger.LogInformation("Test database {TestDatabaseName} has been successfully deleted", databaseName);
-            }
-            else
-            {
-                logger.LogInformation("Could not find any test database {TestDatabaseName} to delete", databaseName);
-            }
+            logger.LogInformation(
+                hasDeleteDatabase
+                    ? "Test database {TestDatabaseName} has been successfully deleted"
+                    : "Could not find any test database {TestDatabaseName} to delete", databaseName);
 
             logger.LogInformation("About to run migrations against test database {TestDatabaseName} ...", databaseName);
             IMigrator databaseMigrator = todoDbContext.GetInfrastructure().GetRequiredService<IMigrator>();
