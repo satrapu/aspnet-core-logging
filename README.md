@@ -1,20 +1,20 @@
 # aspnet-core-logging
 
 **Table of Contents**
-- [Description](#description)  
-- [Build](#build) 
-- [Code Quality](#code-quality)   
-- [Setup Local Development Environment](#local-setup)  
+- [Description](#description)
+- [Build](#build)
+- [Code Quality](#code-quality)
+- [Setup Local Development Environment](#local-setup)
   - [Setup Auth0 account](#setup-auth0-account)
   - [Setup local persistence services](#setup-persistence)
     - [Create Docker volumes](#create-volumes)
     - [Create .env file](#env-file)
     - [Compose commands](#compose-commands)
-        - [Run compose services](#run-services)
-        - [Stop compose services](#stop-services)
-        - [Start compose services](#start-services)
-        - [Display compose service log](#display-log)
-        - [Destroy compose services](#destroy-services)
+      - [Run compose services](#run-services)
+      - [Stop compose services](#stop-services)
+      - [Start compose services](#start-services)
+      - [Display compose service log](#display-log)
+      - [Destroy compose services](#destroy-services)
   - [Setup environment variables](#setup-env-vars)
 
 <h2 id="description">Description</h2>
