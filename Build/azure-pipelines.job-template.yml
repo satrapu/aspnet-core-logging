@@ -353,7 +353,7 @@ jobs:
           succeeded()
         , eq( ${{ parameters.sonar.enabled }}, True)
         , eq( ${{ parameters.sonar.buildBreaker.enabled }}, True)
-        , eq( $(Build.Reason), 'PullRequest')
+        , eq( variables['Build.Reason'], 'PullRequest')
       )
       
   # Set the current Git branch name into a variable.
@@ -372,7 +372,7 @@ jobs:
           succeeded()
         , eq( ${{ parameters.sonar.enabled }}, True)
         , eq( ${{ parameters.sonar.buildBreaker.enabled }}, True)
-        , ne( $(Build.Reason), 'PullRequest')
+        , ne( variables['Build.Reason'], 'PullRequest')
       )
       
   # Normalize Git branch name since Azure DevOps is sending a full or short name.
