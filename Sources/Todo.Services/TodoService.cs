@@ -136,7 +136,7 @@ namespace Todo.Services
             return todoItems;
         }
 
-        private IQueryable<TodoItem> SortItems(IQueryable<TodoItem> todoItems, TodoItemQuery todoItemQuery)
+        private static IQueryable<TodoItem> SortItems(IQueryable<TodoItem> todoItems, TodoItemQuery todoItemQuery)
         {
             Expression<Func<TodoItem, object>> keySelector = null;
 
@@ -172,7 +172,7 @@ namespace Todo.Services
             return todoItems;
         }
 
-        private IQueryable<TodoItemInfo> ProjectItems(IQueryable<TodoItem> todoItems)
+        private static IQueryable<TodoItemInfo> ProjectItems(IQueryable<TodoItem> todoItems)
         {
             IQueryable<TodoItemInfo> result = todoItems.Select(todoItem =>
                 new TodoItemInfo
@@ -188,8 +188,7 @@ namespace Todo.Services
             return result;
         }
 
-        private IQueryable<TodoItem> PaginateItems(IQueryable<TodoItem> todoItems,
-            TodoItemQuery todoItemQuery)
+        private static IQueryable<TodoItem> PaginateItems(IQueryable<TodoItem> todoItems, TodoItemQuery todoItemQuery)
         {
             IQueryable<TodoItem> result = todoItems.Skip(todoItemQuery.PageIndex).Take(todoItemQuery.PageSize);
             return result;
