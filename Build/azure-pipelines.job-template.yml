@@ -337,16 +337,19 @@ jobs:
         , eq( ${{ parameters.sonar.buildBreaker.enabled }}, True)
       )
       
+  # Normalize Git branch name since Azure DevOps is sending a full or short name.
+  # See more here: https://stackoverflow.com/questions/59956206/how-to-get-a-branch-name-with-a-slash-in-azure-devops
+  # and here: https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml#build-variables.
   - task: PowerShell@2
     inputs:
       targetType: 'inline'
       errorActionPreference: 'stop'
       script: |
-        $currentGitBranchName = "$(Build.SourceBranch)"
-        Write-Output "##vso[task.setvariable variable=CurrentGitBranchName]$currentGitBranchName"
-        Write-Output "The current Git branch name is: $currentGitBranchName"
-    name: load_current_git_branch_name
-    displayName: Load current Git branch name
+        $normalizedGitBranchName = "$(Build.SourceBranch)" -Replace "refs/heads/", ""
+        Write-Output "##vso[task.setvariable variable=NormalizedGitBranchName]$normalizedGitBranchName"
+        Write-Output "The normalized Git branch name is: $(NormalizedGitBranchName)"
+    name: normalize_current_git_branch_name
+    displayName: Normalize current Git branch name
     enabled: True
 
   # Runs a PowerShell script to break the build in case Sonar quality gate has failed.
@@ -369,7 +372,7 @@ jobs:
         -SonarProjectKey 'aspnet-core-logging'
         -SonarServerBaseUrl 'https://sonarcloud.io'
         -SonarToken "$(CurrentProject.Sonar.Token)" 
-        -GitBranchName "$(CurrentGitBranchName)"
+        -GitBranchName "$(NormalizedGitBranchName)"
       errorActionPreference: stop
       failOnStderr: True
       workingDirectory: $(Build.SourcesDirectory)

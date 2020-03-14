@@ -33,9 +33,7 @@ $Headers = @{
     AcceptType = "application/json"
 }
 
-# Normalize Git branch name since Azure DevOps is sending a full or short name.
-# See more here: https://stackoverflow.com/questions/59956206/how-to-get-a-branch-name-with-a-slash-in-azure-devops
-# and here: https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml#build-variables.
+
 $NormalizedGitBranchName = $GitBranchName -Replace "refs/heads/", ""
 
 # See more about the HTTP request below here: https://sonarcloud.io/web_api/api/qualitygates/project_status.
