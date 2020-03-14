@@ -27,31 +27,29 @@ namespace Todo.Persistence
             // Arrange
             DbContextOptions<TodoDbContext> dbContextOptions = GetDbContextOptions();
 
-            using (TodoDbContext todoDbContext = new TodoDbContext(dbContextOptions))
+            using TodoDbContext todoDbContext = new TodoDbContext(dbContextOptions);
+            bool isMigrationSuccessful;
+
+            try
             {
-                bool isMigrationSuccessful;
+                todoDbContext.Database.EnsureDeleted();
+                IMigrator databaseMigrator = todoDbContext.GetInfrastructure().GetRequiredService<IMigrator>();
 
-                try
-                {
-                    todoDbContext.Database.EnsureDeleted();
-                    IMigrator databaseMigrator = todoDbContext.GetInfrastructure().GetRequiredService<IMigrator>();
-
-                    // Act
-                    databaseMigrator.Migrate();
-                    // Revert migrations by using a special migration identifier.
-                    // See more here: https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/dotnet#dotnet-ef-database-update.
-                    databaseMigrator.Migrate(BeforeFirstDatabaseMigration);
-                    databaseMigrator.Migrate();
-                    isMigrationSuccessful = true;
-                }
-                catch
-                {
-                    isMigrationSuccessful = false;
-                }
-
-                // Assert
-                isMigrationSuccessful.Should().BeTrue("migrations should work in both directions, up and down");
+                // Act
+                databaseMigrator.Migrate();
+                // Revert migrations by using a special migration identifier.
+                // See more here: https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/dotnet#dotnet-ef-database-update.
+                databaseMigrator.Migrate(BeforeFirstDatabaseMigration);
+                databaseMigrator.Migrate();
+                isMigrationSuccessful = true;
             }
+            catch
+            {
+                isMigrationSuccessful = false;
+            }
+
+            // Assert
+            isMigrationSuccessful.Should().BeTrue("migrations should work in both directions, up and down");
         }
 
         private static DbContextOptions<TodoDbContext> GetDbContextOptions()
