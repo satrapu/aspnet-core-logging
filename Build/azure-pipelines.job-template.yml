@@ -345,7 +345,7 @@ jobs:
       targetType: 'inline'
       errorActionPreference: 'stop'
       script: |
-        $currentGitBranchName = if ('$(System.PullRequest.SourceBranch)' -eq $null) { '$(Build.SourceBranch)' } else { '$(System.PullRequest.SourceBranch)' }
+        $currentGitBranchName = if ("$(System.PullRequest.SourceBranch)" -eq $null) { "$(Build.SourceBranch)" } else { "$(System.PullRequest.SourceBranch)" }
         $normalizedGitBranchName = $currentGitBranchName -Replace 'refs/heads/', ''
         Write-Output "##vso[task.setvariable variable=NormalizedGitBranchName]$normalizedGitBranchName"
         Write-Output "The current Git branch name is: $currentGitBranchName"
