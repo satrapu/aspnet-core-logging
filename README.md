@@ -1,20 +1,21 @@
 # aspnet-core-logging
 
-**Table of Contents**
+## Table of Contents
+
 - [Description](#description)
 - [Build](#build)
 - [Code Quality](#code-quality)
 - [Setup Local Development Environment](#setup-local-development-environment)
   - [Setup Auth0 account](#setup-auth0-account)
   - [Setup local persistence services](#setup-local-persistence-services)
-    - [Create Docker volumes](#create-docker-volumes)
-    - [Create .env file](#create-env-file)
-    - [Compose commands](#compose-commands)
-      - [Run compose services](#run-compose-services)
-      - [Stop compose services](#stop-compose-services)
-      - [Start compose services](#start-compose-services)
-      - [Display compose service log](#display-compose-service-log)
-      - [Destroy compose services](#destroy-compose-services)
+  - [Create Docker volumes](#create-docker-volumes)
+  - [Create .env file](#create-env-file)
+  - [Compose commands](#compose-commands)
+    - [Run compose services](#run-compose-services)
+    - [Stop compose services](#stop-compose-services)
+    - [Start compose services](#start-compose-services)
+    - [Display compose service log](#display-compose-service-log)
+    - [Destroy compose services](#destroy-compose-services)
   - [Setup environment variables](#setup-environment-variables)
 
 ## Description
@@ -43,20 +44,25 @@ This project has several posts associated with it:
 | [SonarCloud](https://sonarcloud.io/about) | [![SonarCloud Status](https://sonarcloud.io/api/project_badges/measure?project=aspnet-core-logging&metric=alert_status)](https://sonarcloud.io/dashboard?id=aspnet-core-logging&branch=master)                         |
 
 ## Setup Local Development Environment
+
 In order to run this application locally, you need to setup some things first.
 
 ### Setup Auth0 account
+
 Ensure you have an [Auth0](https://auth0.com) account; if you don't, sign-up for one [here](https://auth0.com/signup).
 Once you have an account, follow [these steps](https://auth0.com/docs/getting-started/set-up-api) to create an API.
 Once the API has been created, create a machine-to-machine application to get a client ID and a client secret which you can later use to generate a token to be used by the integration tests.
 
 ### Setup local persistence services
+
 This ASP.NET Core web API uses [PostgreSQL](https://www.postgresql.org/) as persistent storage and [pgadmin](https://www.pgadmin.org/) as database manager, all running locally via [Docker Compose](https://github.com/docker/compose).
 
 ### Create Docker volumes
+
 These volumes are needed to store data outside the Docker containers running the PostgreSQL databases and their manager.
 
 - Volume used by the local development database
+
 ```bash
 docker volume create --name=aspnet-core-logging-dev_data
 ```
@@ -74,6 +80,7 @@ docker volume create --name=pgadmin_data
 ```
 
 ### Create .env file
+
 The [.env](https://docs.docker.com/compose/env-file/) file is used by Docker Compose to avoid storing sensitive data inside `docker-compose.yml` file.  
 Create a new file named `.env` inside the folder where you have checked-out this git repository and add the following lines:
 
@@ -94,6 +101,7 @@ PGADMIN_DEFAULT_PASSWORD=<PGADMIN_PASSWORD>
 Make sure you replace all of the above `<DB_DEV_USER>`, `<DB_DEV_PASSWORD>`, ..., `<PGADMIN_PASSWORD>` tokens with the appropriate values.  
 
 ### Compose commands
+
 All of the commands below must be run from the folder where you have checked-out this git repository.  
 This folder contains a `docker-compose.yml` file describing the aforementioned compose services.
 
@@ -124,15 +132,16 @@ docker-compose logs -f pgadmin
 ```
 
 #### Destroy compose services
+
 The command below will **not** delete the Docker volumes!
 
-```bash 
+```bash
 docker-compose down
 ```
 
 ### Setup environment variables
 
-Since storing sensitive data inside configuration file put under source control is not a very good idea, 
+Since storing sensitive data inside configuration file put under source control is not a very good idea,
 the following environment variables must be defined on your local development machine:
 
 | Name                                       | Value                                                                                          | Description                                                      |
