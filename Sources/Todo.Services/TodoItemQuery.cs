@@ -19,7 +19,7 @@ namespace Todo.Services
         public int PageSize { get; set; } = 25;
 
         [Range(0, int.MaxValue)]
-        public int PageIndex { get; set; } = 0;
+        public int PageIndex { get; set; }
 
         public string SortBy { get; set; }
 
