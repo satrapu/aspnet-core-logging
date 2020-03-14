@@ -336,6 +336,18 @@ jobs:
         , eq( ${{ parameters.sonar.enabled }}, True)
         , eq( ${{ parameters.sonar.buildBreaker.enabled }}, True)
       )
+      
+  - task: PowerShell@2
+    inputs:
+      targetType: 'inline'
+      errorActionPreference: 'stop'
+      script: |
+        $currentGitBranchName = "$(Build.SourceBranch)"
+        Write-Output "##vso[task.setvariable variable=CurrentGitBranchName]$currentGitBranchName"
+        Write-Output "The current Gitbranch name is: $currentGitBranchName"
+    name: normalize_db_connection_string_pointing_to_db4it
+    displayName: Load current Git branch name
+    enabled: True
 
   # Runs a PowerShell script to break the build in case Sonar quality gate has failed.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/powershell?view=azure-devops.
@@ -357,7 +369,7 @@ jobs:
         -SonarProjectKey 'aspnet-core-logging'
         -SonarServerBaseUrl 'https://sonarcloud.io'
         -SonarToken "$(CurrentProject.Sonar.Token)" 
-        -GitBranchName "$(Build.SourceBranch)"
+        -GitBranchName "$(CurrentGitBranchName)"
       errorActionPreference: stop
       failOnStderr: True
       workingDirectory: $(Build.SourcesDirectory)
