@@ -1,50 +1,94 @@
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Todo.Services;
+using Todo.WebApi.Authorization;
 using Todo.WebApi.Models;
 
 namespace Todo.WebApi.Controllers
 {
     [Route("api/[controller]")]
-    //[Authorize(Roles = "Admin")]
+    [Authorize]
     [ApiController]
     public class TodoController : ControllerBase
     {
         private readonly ITodoService todoService;
-        private readonly ILogger logger;
 
-        public TodoController(ITodoService todoService, ILogger<TodoController> logger)
+        public TodoController(ITodoService todoService)
         {
             this.todoService = todoService ?? throw new ArgumentNullException(nameof(todoService));
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         [HttpGet]
-        public ActionResult<IList<TodoItemModel>> GetByQuery([FromQuery] TodoItemQueryModel todoItemQueryModel)
+        [Authorize(Policy = Policies.TodoItems.GetTodoItems)]
+        public async IAsyncEnumerable<TodoItemModel> GetByQuery([FromQuery] TodoItemQueryModel todoItemQueryModel)
         {
             var todoItemQuery = new TodoItemQuery
             {
                 Id = todoItemQueryModel.Id,
                 IsComplete = todoItemQueryModel.IsComplete,
                 NamePattern = todoItemQueryModel.NamePattern,
+                User = User,
+                PageIndex = todoItemQueryModel.PageIndex,
+                PageSize = todoItemQueryModel.PageSize,
+                IsSortAscending = todoItemQueryModel.IsSortAscending,
+                SortBy = todoItemQueryModel.SortBy
+            };
+
+            IList<TodoItemInfo> todoItemInfos = await todoService.GetByQueryAsync(todoItemQuery).ConfigureAwait(false);
+
+            foreach (TodoItemInfo todoItemInfo in todoItemInfos)
+            {
+                yield return new TodoItemModel
+                {
+                    Id = todoItemInfo.Id,
+                    IsComplete = todoItemInfo.IsComplete,
+                    Name = todoItemInfo.Name,
+                    CreatedBy = todoItemInfo.CreatedBy,
+                    CreatedOn = todoItemInfo.CreatedOn,
+                    LastUpdatedBy = todoItemInfo.LastUpdatedBy,
+                    LastUpdatedOn = todoItemInfo.LastUpdatedOn
+                };
+            }
+        }
+
+        [HttpGet("{id:long}")]
+        [Authorize(Policy = Policies.TodoItems.GetTodoItems)]
+        public async Task<ActionResult<TodoItemModel>> GetById(long id)
+        {
+            var todoItemQuery = new TodoItemQuery
+            {
+                Id = id,
                 User = User
             };
-            var todoItemInfoList = todoService.GetByQuery(todoItemQuery);
-            var models = todoItemInfoList.Select(x => new TodoItemModel
-            {
-                Id = x.Id,
-                IsComplete = x.IsComplete,
-                Name = x.Name
-            }).ToList();
 
-            return models;
+            IList<TodoItemInfo> todoItemInfoList =
+                await todoService.GetByQueryAsync(todoItemQuery).ConfigureAwait(false);
+            TodoItemModel model = todoItemInfoList.Select(todoItemInfo => new TodoItemModel
+            {
+                Id = todoItemInfo.Id,
+                IsComplete = todoItemInfo.IsComplete,
+                Name = todoItemInfo.Name,
+                CreatedBy = todoItemInfo.CreatedBy,
+                CreatedOn = todoItemInfo.CreatedOn,
+                LastUpdatedBy = todoItemInfo.LastUpdatedBy,
+                LastUpdatedOn = todoItemInfo.LastUpdatedOn
+            }).FirstOrDefault();
+
+            if (model == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(model);
         }
 
         [HttpPost]
-        public ActionResult<TodoItemModel> Create(NewTodoItemModel newTodoItemModel)
+        [Authorize(Policy = Policies.TodoItems.CreateTodoItem)]
+        public IActionResult Create(NewTodoItemModel newTodoItemModel)
         {
             var newTodoItemInfo = new NewTodoItemInfo
             {
@@ -53,20 +97,12 @@ namespace Todo.WebApi.Controllers
                 User = User
             };
 
-            var newlyCreatedEntityId = todoService.Add(newTodoItemInfo);
-            logger.LogInformation("User with id {UserId} has created a new item with id {ItemId}"
-                , User.GetUserId(), newlyCreatedEntityId);
-
-            var query = new TodoItemQuery
-            {
-                Id = newlyCreatedEntityId,
-                User = User
-            };
-            var todoItemInfo = todoService.GetByQuery(query).Single();
-            return Created(string.Empty, todoItemInfo);
+            long newlyCreatedEntityId = todoService.Add(newTodoItemInfo);
+            return Created($"api/todo/{newlyCreatedEntityId}", newlyCreatedEntityId);
         }
 
-        [HttpPut("{id}")]
+        [HttpPut("{id:long}")]
+        [Authorize(Policy = Policies.TodoItems.UpdateTodoItem)]
         public IActionResult Update(long id, [FromBody] UpdateTodoItemModel updateTodoItemModel)
         {
             var updateTodoItemInfo = new UpdateTodoItemInfo
@@ -78,13 +114,12 @@ namespace Todo.WebApi.Controllers
             };
 
             todoService.Update(updateTodoItemInfo);
-            logger.LogInformation("User with id {UserId} has updated an existing item with id {ItemId}"
-                , User.GetUserId(), id);
 
             return NoContent();
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete("{id:long}")]
+        [Authorize(Policy = Policies.TodoItems.DeleteTodoItem)]
         public IActionResult Delete(long id)
         {
             var deleteTodoItemInfo = new DeleteTodoItemInfo
@@ -94,8 +129,6 @@ namespace Todo.WebApi.Controllers
             };
 
             todoService.Delete(deleteTodoItemInfo);
-            logger.LogInformation("User with id {UserId} has deleted item with id {ItemId}"
-                , User.GetUserId(), id);
 
             return NoContent();
         }

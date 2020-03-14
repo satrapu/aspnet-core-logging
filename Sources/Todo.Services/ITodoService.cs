@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Todo.Persistence.Entities;
 
 namespace Todo.Services
@@ -14,7 +15,7 @@ namespace Todo.Services
         /// </summary>
         /// <param name="todoItemQuery"></param>
         /// <returns></returns>
-        IList<TodoItemInfo> GetByQuery(TodoItemQuery todoItemQuery);
+        Task<IList<TodoItemInfo>> GetByQueryAsync(TodoItemQuery todoItemQuery);
 
         /// <summary>
         /// Persists a new <see cref="TodoItem"/> instance.

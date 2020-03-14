@@ -8,6 +8,7 @@ obj/
 
 # Rider IDE artifacts
 .idea/
+mono_crash.mem.*
 
 # Application logs
 Logs/
@@ -23,6 +24,5 @@ Logs/
 # SonarQube scanner artifacts
 .sonarqube/
 
-# Linux artifacts
-/Sources/Todo.WebApi/mono_crash.mem.*
-
+# File containing environment variables used by docker-compose
+*.env

@@ -1,8 +1,8 @@
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 namespace Todo.WebApi.Logging
 {
@@ -76,22 +76,20 @@ namespace Todo.WebApi.Logging
             // Saves the original response body stream for latter purposes
             var originalResponseBodyStream = httpContext.Response.Body;
 
-            using (var stream = new MemoryStream(BufferSizeInBytes))
-            {
-                // Replace response body stream with a seekable one, like a MemoryStream, to allow logging it
-                httpContext.Response.Body = stream;
+            using var stream = new MemoryStream(BufferSizeInBytes);
+            // Replace response body stream with a seekable one, like a MemoryStream, to allow logging it
+            httpContext.Response.Body = stream;
 
-                // Process current request
-                await nextRequestDelegate(httpContext).ConfigureAwait(false);
+            // Process current request
+            await nextRequestDelegate(httpContext).ConfigureAwait(false);
 
-                // Logs the current HTTP response
-                var httpResponseAsLogMessage = await httpObjectConverter.ToLogMessageAsync(httpContext.Response).ConfigureAwait(false);
-                // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
-                logger.LogDebug(httpResponseAsLogMessage);
+            // Logs the current HTTP response
+            var httpResponseAsLogMessage = await httpObjectConverter.ToLogMessageAsync(httpContext.Response).ConfigureAwait(false);
+            // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
+            logger.LogDebug(httpResponseAsLogMessage);
 
-                // Ensure the original HTTP response is sent to the next middleware
-                await stream.CopyToAsync(originalResponseBodyStream).ConfigureAwait(false);
-            }
+            // Ensure the original HTTP response is sent to the next middleware
+            await stream.CopyToAsync(originalResponseBodyStream).ConfigureAwait(false);
         }
     }
 }

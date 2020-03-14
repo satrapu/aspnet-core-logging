@@ -1,15 +1,19 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using System;
+using Microsoft.IdentityModel.Logging;
+using Microsoft.IdentityModel.Tokens;
 using Todo.Persistence;
 using Todo.Services;
-using Todo.WebApi.Authentication;
+using Todo.WebApi.Authorization;
 using Todo.WebApi.Logging;
 
 namespace Todo.WebApi
@@ -62,18 +66,51 @@ namespace Todo.WebApi
                 }
             });
 
-            // Configure ASP.NET Web API
-            services.AddMvc(options =>
+            // Display personally identifiable information only during development
+            if (WebHostingEnvironment.IsDevelopment())
             {
-                // In case the client requests data in an unsupported format, respond with 406 status code
-                options.ReturnHttpNotAcceptable = true;
+                IdentityModelEventSource.ShowPII = true;
+            }
+            else
+            {
+                IdentityModelEventSource.ShowPII = false;
+            }
 
-                // Needed after migrating ASP.NET Core 2.2 to 3.1
-                options.EnableEndpointRouting = false;
-            })
-            .SetCompatibilityVersion(CompatibilityVersion.Version_3_0);
+            // Configure authentication & authorization using JWT tokens
+            string authZeroDomain = $"https://{Configuration["Auth0:Domain"]}/";
 
-            // Configure application services
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.Authority = authZeroDomain;
+                options.Audience = Configuration["Auth0:Audience"];
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    //  Ensures the User.Identity.Name will be set to something in cases the access token does not
+                    // have a "sub" claim - see more here: https://auth0.com/docs/quickstart/backend/aspnet-core-webapi#configure-the-middleware.
+                    NameClaimType = ClaimTypes.NameIdentifier
+                };
+            });
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(Policies.TodoItems.GetTodoItems,
+                    policy => policy.Requirements.Add(new HasScopeRequirement("get:todo", authZeroDomain)));
+                options.AddPolicy(Policies.TodoItems.CreateTodoItem,
+                    policy => policy.Requirements.Add(new HasScopeRequirement("create:todo", authZeroDomain)));
+                options.AddPolicy(Policies.TodoItems.UpdateTodoItem,
+                    policy => policy.Requirements.Add(new HasScopeRequirement("update:todo", authZeroDomain)));
+                options.AddPolicy(Policies.TodoItems.DeleteTodoItem,
+                    policy => policy.Requirements.Add(new HasScopeRequirement("delete:todo", authZeroDomain)));
+            });
+            services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
+
+            // Configure ASP.NET Web API services
+            services.AddControllers();
+
+            // Configure Todo Web API services
             services.AddScoped<ITodoService, TodoService>();
 
             // Register service with 2 interfaces.
@@ -88,27 +125,19 @@ namespace Todo.WebApi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder applicationBuilder)
         {
-            bool isDevelopmentEnvironment = WebHostingEnvironment.IsDevelopment();
-
-            if (isDevelopmentEnvironment)
-            {
-                applicationBuilder.UseHardCodedUser();
-            }
-
             applicationBuilder.UseHttpLogging();
 
-            if (isDevelopmentEnvironment)
+            if (WebHostingEnvironment.IsDevelopment())
             {
                 applicationBuilder.UseDeveloperExceptionPage();
                 applicationBuilder.UseDatabaseErrorPage();
             }
-            else
-            {
-                applicationBuilder.UseHsts();
-            }
 
-            applicationBuilder.UseHttpsRedirection()
-                .UseMvc();
+            applicationBuilder.UseHttpsRedirection();
+            applicationBuilder.UseRouting();
+            applicationBuilder.UseAuthentication();
+            applicationBuilder.UseAuthorization();
+            applicationBuilder.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
     }
 }

@@ -1,10 +1,11 @@
-﻿using EntityFrameworkCoreMock;
+﻿using System;
+using System.Threading.Tasks;
+using EntityFrameworkCoreMock;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
-using System;
 using Todo.Persistence;
 
 namespace Todo.Services
@@ -15,7 +16,8 @@ namespace Todo.Services
     [TestFixture]
     public class TodoServiceTests
     {
-        private DbContextOptions<TodoDbContext> DummyOptions { get; } = new DbContextOptionsBuilder<TodoDbContext>().Options;
+        private DbContextOptions<TodoDbContext> DummyOptions { get; } =
+            new DbContextOptionsBuilder<TodoDbContext>().Options;
 
         /// <summary>
         /// Tests <see cref="TodoService"/> constructor.
@@ -38,10 +40,10 @@ namespace Todo.Services
         }
 
         /// <summary>
-        /// Tests <see cref="TodoService.GetByQuery"/> method.
+        /// Tests <see cref="TodoService.GetByQueryAsync"/> method.
         /// </summary>
         [Test]
-        public void GetByQuery_UsingNullAsQuery_MustThrowException()
+        public async Task GetByQueryAsync_UsingNullAsQuery_MustThrowException()
         {
             var mockTodoDbContext = new DbContextMock<TodoDbContext>(DummyOptions);
             var mockLogger = new Mock<ILogger<TodoService>>();
@@ -51,16 +53,16 @@ namespace Todo.Services
             try
             {
                 // ReSharper disable once ExpressionIsAlwaysNull
-                todoService.GetByQuery(todoItemQuery);
-                Assert.Fail($"Expected to not be able to call method {nameof(todoService.GetByQuery)} using null as argument");
+                await todoService.GetByQueryAsync(todoItemQuery).ConfigureAwait(false);
+                Assert.Fail($"Expected to not be able to call method {nameof(todoService.GetByQueryAsync)} using null as argument");
             }
             catch (Exception expectedException)
             {
                 expectedException.Should()
-                                 .NotBeNull()
-                                 .And.BeAssignableTo<ArgumentNullException>()
-                                 .Subject.As<ArgumentNullException>()
-                                 .ParamName.Should().Be("todoItemQuery");
+                    .NotBeNull()
+                    .And.BeAssignableTo<ArgumentNullException>()
+                    .Subject.As<ArgumentNullException>()
+                    .ParamName.Should().Be("instance");
             }
         }
     }

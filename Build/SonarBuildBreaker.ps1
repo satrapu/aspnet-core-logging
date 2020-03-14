@@ -33,8 +33,11 @@ $Headers = @{
     AcceptType = "application/json"
 }
 
-# See mor about the HTTP request below here: https://sonarcloud.io/web_api/api/qualitygates/project_status.
-$SonarWebApiUrl = "{0}/api/qualitygates/project_status?projectKey={1}&branch={2}" -f $SonarServerBaseUrl, $SonarProjectKey, $GitBranchName
+
+$NormalizedGitBranchName = $GitBranchName -Replace "refs/heads/", ""
+
+# See more about the HTTP request below here: https://sonarcloud.io/web_api/api/qualitygates/project_status.
+$SonarWebApiUrl = "{0}/api/qualitygates/project_status?projectKey={1}&branch={2}" -f $SonarServerBaseUrl, $SonarProjectKey, $NormalizedGitBranchName
 $Response = Invoke-WebRequest -Uri $SonarWebApiUrl -Headers $Headers -UseBasicParsing -ErrorAction Stop | ConvertFrom-Json
 
 if ($Response.projectStatus.status -eq 'OK')
