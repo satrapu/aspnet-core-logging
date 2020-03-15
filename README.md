@@ -49,9 +49,11 @@ In order to run this application locally, you need to setup some things first.
 
 ### Setup Auth0 account
 
-Ensure you have an [Auth0](https://auth0.com) account; if you don't, sign-up for one [here](https://auth0.com/signup).
-Once you have an account, follow [these steps](https://auth0.com/docs/getting-started/set-up-api) to create an API.
-Once the API has been created, create a machine-to-machine application to get a client ID and a client secret which you can later use to generate a token to be used by the integration tests.
+This web API is accessible using JWT tokens provided by [Auth0](https://auth0.com).  
+Follow the steps below to ensure you are able to run integration tests:
+ - Ensure you have an Auth0 account; if you don't have, sign-up for one [here](https://auth0.com/signup)
+ - Create an API as instructed [here](https://auth0.com/docs/getting-started/set-up-api)
+ - Register a machine-to-machine application to get a client ID and a client secret used for generating access tokens when running integration tests, as instructed [here](https://auth0.com/docs/dashboard/guides/applications/register-app-m2m)
 
 ### Setup local persistence services
 
