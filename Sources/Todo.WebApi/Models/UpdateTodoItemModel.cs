@@ -16,6 +16,6 @@ namespace Todo.WebApi.Models
         /// Gets or sets whether this to do item has been completed.
         /// </summary>
         [Required]
-        public bool IsComplete { get; set; }
+        public bool? IsComplete { get; set; }
     }
 }
