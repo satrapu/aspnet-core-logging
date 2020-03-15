@@ -59,7 +59,8 @@ namespace Todo.WebApi.Controllers
                 };
 
                 // Act
-                var response = await httpClient.PostAsJsonAsync("api/todo", newTodoItemModel).ConfigureAwait(false);
+                HttpResponseMessage response =
+                    await httpClient.PostAsJsonAsync("api/todo", newTodoItemModel).ConfigureAwait(false);
 
                 // Assert
                 response.IsSuccessStatusCode.Should().BeTrue();
@@ -72,7 +73,7 @@ namespace Todo.WebApi.Controllers
             {
                 if (id.HasValue)
                 {
-                    var response = await httpClient.DeleteAsync($"api/todo/{id}").ConfigureAwait(false);
+                    HttpResponseMessage response = await httpClient.DeleteAsync($"api/todo/{id}").ConfigureAwait(false);
                     response.IsSuccessStatusCode.Should().BeTrue("cleanup must succeed");
                 }
             }
@@ -92,8 +93,8 @@ namespace Todo.WebApi.Controllers
 
             try
             {
-                var nameSuffix = Guid.NewGuid().ToString("N");
-                var name = $"it--{nameof(GetByQueryAsync_UsingDefaults_ReturnsExpectedResult)}--{nameSuffix}";
+                string nameSuffix = Guid.NewGuid().ToString("N");
+                string name = $"it--{nameof(GetByQueryAsync_UsingDefaults_ReturnsExpectedResult)}--{nameSuffix}";
 
                 var newTodoItemModel = new NewTodoItemModel
                 {
@@ -101,7 +102,8 @@ namespace Todo.WebApi.Controllers
                     Name = name
                 };
 
-                var response = await httpClient.PostAsJsonAsync("api/todo", newTodoItemModel).ConfigureAwait(false);
+                HttpResponseMessage response =
+                    await httpClient.PostAsJsonAsync("api/todo", newTodoItemModel).ConfigureAwait(false);
                 response.IsSuccessStatusCode.Should().BeTrue();
                 response.StatusCode.Should().Be(HttpStatusCode.Created);
                 id = await response.Content.ReadAsAsync<long>().ConfigureAwait(false);
@@ -117,7 +119,7 @@ namespace Todo.WebApi.Controllers
                     {nameof(TodoItemQueryModel.IsSortAscending), bool.FalseString}
                 };
 
-                var requestUri = QueryHelpers.AddQueryString("api/todo", queryString);
+                string requestUri = QueryHelpers.AddQueryString("api/todo", queryString);
 
                 // Act
                 response = await httpClient.GetAsync(requestUri).ConfigureAwait(false);
@@ -126,7 +128,7 @@ namespace Todo.WebApi.Controllers
                 response.IsSuccessStatusCode.Should().BeTrue();
                 response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-                var todoItemModels =
+                List<TodoItemModel> todoItemModels =
                     await response.Content.ReadAsAsync<List<TodoItemModel>>().ConfigureAwait(false);
                 todoItemModels.Should().HaveCount(1);
 
@@ -139,7 +141,7 @@ namespace Todo.WebApi.Controllers
             {
                 if (id.HasValue)
                 {
-                    var response = await httpClient.DeleteAsync($"api/todo/{id}").ConfigureAwait(false);
+                    HttpResponseMessage response = await httpClient.DeleteAsync($"api/todo/{id}").ConfigureAwait(false);
                     response.IsSuccessStatusCode.Should().BeTrue("cleanup must succeed");
                 }
             }
@@ -159,8 +161,8 @@ namespace Todo.WebApi.Controllers
 
             try
             {
-                var nameSuffix = Guid.NewGuid().ToString("N");
-                var name = $"it--{nameof(GetById_UsingNewlyCreatedItem_ReturnsExpectedResult)}--{nameSuffix}";
+                string nameSuffix = Guid.NewGuid().ToString("N");
+                string name = $"it--{nameof(GetById_UsingNewlyCreatedItem_ReturnsExpectedResult)}--{nameSuffix}";
 
                 var newTodoItemModel = new NewTodoItemModel
                 {
@@ -168,7 +170,8 @@ namespace Todo.WebApi.Controllers
                     Name = name
                 };
 
-                var response = await httpClient.PostAsJsonAsync("api/todo", newTodoItemModel).ConfigureAwait(false);
+                HttpResponseMessage response =
+                    await httpClient.PostAsJsonAsync("api/todo", newTodoItemModel).ConfigureAwait(false);
                 response.IsSuccessStatusCode.Should().BeTrue();
                 response.StatusCode.Should().Be(HttpStatusCode.Created);
                 id = await response.Content.ReadAsAsync<long>().ConfigureAwait(false);
@@ -191,7 +194,7 @@ namespace Todo.WebApi.Controllers
             {
                 if (id.HasValue)
                 {
-                    var response = await httpClient.DeleteAsync($"api/todo/{id}").ConfigureAwait(false);
+                    HttpResponseMessage response = await httpClient.DeleteAsync($"api/todo/{id}").ConfigureAwait(false);
                     response.IsSuccessStatusCode.Should().BeTrue("cleanup must succeed");
                 }
             }
@@ -211,8 +214,8 @@ namespace Todo.WebApi.Controllers
 
             try
             {
-                var nameSuffix = Guid.NewGuid().ToString("N");
-                var name = $"it--{nameof(GetById_UsingNewlyCreatedItem_ReturnsExpectedResult)}--{nameSuffix}";
+                string nameSuffix = Guid.NewGuid().ToString("N");
+                string name = $"it--{nameof(GetById_UsingNewlyCreatedItem_ReturnsExpectedResult)}--{nameSuffix}";
 
                 var newTodoItemModel = new NewTodoItemModel
                 {
@@ -220,7 +223,8 @@ namespace Todo.WebApi.Controllers
                     Name = name
                 };
 
-                var response = await httpClient.PostAsJsonAsync("api/todo", newTodoItemModel).ConfigureAwait(false);
+                HttpResponseMessage response =
+                    await httpClient.PostAsJsonAsync("api/todo", newTodoItemModel).ConfigureAwait(false);
                 response.IsSuccessStatusCode.Should().BeTrue();
                 response.StatusCode.Should().Be(HttpStatusCode.Created);
                 id = await response.Content.ReadAsAsync<long>().ConfigureAwait(false);
@@ -237,7 +241,7 @@ namespace Todo.WebApi.Controllers
             {
                 if (id.HasValue)
                 {
-                    var response = await httpClient.DeleteAsync($"api/todo/{id}").ConfigureAwait(false);
+                    HttpResponseMessage response = await httpClient.DeleteAsync($"api/todo/{id}").ConfigureAwait(false);
                     response.IsSuccessStatusCode.Should().BeTrue("cleanup must succeed");
                 }
             }
@@ -257,22 +261,24 @@ namespace Todo.WebApi.Controllers
 
             try
             {
-                var name = $"it--{nameof(Update_UsingNewlyCreatedTodoItem_MustSucceed)}--{Guid.NewGuid():N}";
-                var isComplete = DateTime.UtcNow.Ticks % 2 == 0;
+                string name = $"it--{nameof(Update_UsingNewlyCreatedTodoItem_MustSucceed)}--{Guid.NewGuid():N}";
+                bool isComplete = DateTime.UtcNow.Ticks % 2 == 0;
 
                 var newTodoItemInfo = new NewTodoItemModel
                 {
-                    Name = name, IsComplete = isComplete
+                    Name = name,
+                    IsComplete = isComplete
                 };
 
-                var response = await httpClient.PostAsJsonAsync("api/todo", newTodoItemInfo).ConfigureAwait(false);
+                HttpResponseMessage response =
+                    await httpClient.PostAsJsonAsync("api/todo", newTodoItemInfo).ConfigureAwait(false);
                 response.IsSuccessStatusCode.Should().BeTrue("a new entity has been created");
-
                 id = await response.Content.ReadAsAsync<long>().ConfigureAwait(false);
 
                 var updateTodoItemModel = new UpdateTodoItemModel
                 {
-                    IsComplete = !newTodoItemInfo.IsComplete, Name = $"CHANGED--{newTodoItemInfo.Name}"
+                    IsComplete = !newTodoItemInfo.IsComplete,
+                    Name = $"CHANGED--{newTodoItemInfo.Name}"
                 };
 
                 // Act
@@ -283,33 +289,22 @@ namespace Todo.WebApi.Controllers
                 response.IsSuccessStatusCode.Should().BeTrue("an entity has been previously created");
                 response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
-                var parametersToAdd = new Dictionary<string, string>
-                {
-                    {
-                        "id", id.Value.ToString()
-                    }
-                };
-
-                var requestUri = QueryHelpers.AddQueryString("api/todo", parametersToAdd);
-
-                response = await httpClient.GetAsync(requestUri).ConfigureAwait(false);
+                response = await httpClient.GetAsync($"api/todo/{id}").ConfigureAwait(false);
                 response.IsSuccessStatusCode.Should().BeTrue("an entity has been previously update");
                 response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-                var todoItemModels =
-                    await response.Content.ReadAsAsync<List<TodoItemModel>>().ConfigureAwait(false);
-                todoItemModels.Should().HaveCount(1, "the query is using id only");
-
-                TodoItemModel todoItemModel = todoItemModels.Single();
+                TodoItemModel todoItemModel =
+                    await response.Content.ReadAsAsync<TodoItemModel>().ConfigureAwait(false);
+                todoItemModel.Should().NotBeNull("an entity has been previously created");
                 todoItemModel.Id.Should().Be(id);
-                todoItemModel.IsComplete.Should().Be(updateTodoItemModel.IsComplete);
+                todoItemModel.IsComplete.Should().Be(updateTodoItemModel.IsComplete.Value);
                 todoItemModel.Name.Should().Be(updateTodoItemModel.Name);
             }
             finally
             {
                 if (id.HasValue)
                 {
-                    var response = await httpClient.DeleteAsync($"api/todo/{id}").ConfigureAwait(false);
+                    HttpResponseMessage response = await httpClient.DeleteAsync($"api/todo/{id}").ConfigureAwait(false);
                     response.IsSuccessStatusCode.Should().BeTrue("cleanup must succeed");
                 }
             }
