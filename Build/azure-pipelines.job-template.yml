@@ -38,29 +38,35 @@ jobs:
   # then have Azure DevOps complain that it cannot find it.
   # This issue is documented here: https://github.com/Microsoft/azure-pipelines-tasks/issues/8291.
   - task: UseDotNet@2
-    name: install_dotnetcore_sdk_required_by_application
-    displayName: Install .NET Core SDK required by application
-    enabled: True
+    name: 'install_dotnetcore_sdk_required_by_application'
+    displayName: 'Install .NET Core SDK required by application'
     inputs:
       packageType: 'sdk'
       version: $(DotNetCore_SDK_Version)
       
+  # See more about running Sonar analysis on Azure DevOps here: https://docs.sonarqube.org/latest/analysis/scan/sonarscanner-for-azure-devops/.
   - task: UseDotNet@2
-    name: install_dotnetcore_sdk_required_by_sonarsource_extension
-    displayName: Install .NET Core SDK required by SonarCloud Azure DevOps extension
-    enabled: True
-    inputs:
-      packageType: 'sdk'
-      version: 2.1.803
+    name: 'install_dotnetcore_sdk_required_by_sonarsource_extension'
+    displayName: 'Install .NET Core SDK required by Sonar Azure DevOps extension'
     condition: |
       and
       (
           succeeded()
         , eq( ${{ parameters.sonar.enabled }}, True)
       )
+    inputs:
+      packageType: 'sdk'
+      version: '2.1.803'
 
   - task: SonarSource.sonarcloud.14d9cde6-c1da-4d55-aa01-2965cd301255.SonarCloudPrepare@1
-    displayName: 'Prepare Analysis on SonarCloud'
+    name: 'prepare_analysis_on_sonar'
+    displayName: 'Prepare analysis on Sonar'
+    condition: |
+      and
+      (
+          succeeded()
+        , eq( ${{ parameters.sonar.enabled }}, True)
+      )
     inputs:
       SonarCloud: 'sonar-cloud'
       organization: 'satrapu-github'
@@ -70,21 +76,14 @@ jobs:
         sonar.cs.nunit.reportsPaths=**/TestResults/*.*
         sonar.cs.opencover.reportsPaths=**/coverage.opencover.xml
         sonar.coverage.exclusions=**/Tests/**/*.cs,**/Sources/Todo.Persistence/**/TodoDbContextModelSnapshot.cs
-    condition: |
-      and
-      (
-          succeeded()
-        , eq( ${{ parameters.sonar.enabled }}, True)
-      )
       
   # Compile source code.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/dotnet-core-cli?view=azure-devops.
   - script: >-
       dotnet build $(Build.SourcesDirectory)/Todo.sln
       --configuration ${{ parameters.build.configuration }}
-    name: build_sources
-    displayName: Build sources
-    enabled: True
+    name: 'build_sources'
+    displayName: 'Build sources'
     env:
       DOTNET_SKIP_FIRST_TIME_EXPERIENCE: $(DotNetSkipFirstTimeExperience)
       DOTNET_CLI_TELEMETRY_OPTOUT: $(DotNetCliTelemetryOptOut)
@@ -109,9 +108,8 @@ jobs:
       /p:Include="[Todo.*]*"
       /p:Exclude=\"[Todo.*.*Tests]*,[Todo.Persistence]*.TodoDbContextModelSnapshot\"
       -- NUnit.Where="cat == UnitTests"
-    name: run_unit_tests
-    displayName: Run unit tests
-    enabled: True
+    name: 'run_unit_tests'
+    displayName: 'Run unit tests'
     env:
       DOTNET_SKIP_FIRST_TIME_EXPERIENCE: $(DotNetSkipFirstTimeExperience)
       DOTNET_CLI_TELEMETRY_OPTOUT: $(DotNetCliTelemetryOptOut)
@@ -120,10 +118,9 @@ jobs:
   # Publish unit test results inside the build 'Tests' tab.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=azure-devops&tabs=yaml.
   - task: PublishTestResults@2
-    displayName: Publish unit test results
-    name: publish_unit_test_results
+    name: 'publish_unit_test_results'
+    displayName: 'Publish unit test results'
     condition: succeededOrFailed()
-    enabled: True
     inputs:
       testResultsFormat: 'NUnit'
       testResultsFiles: '**/UnitTests/**/TestResults/*'
@@ -136,8 +133,8 @@ jobs:
   - script: |
       chmod +x $(Build.SourcesDirectory)/Build/start-docker-on-macOS.sh
       $(Build.SourcesDirectory)/Build/start-docker-on-macOS.sh
-    name: install_and_start_docker
-    displayName: Install and start Docker
+    name: 'install_and_start_docker_on_macos'
+    displayName: 'Install and start Docker on macOS'
     condition: |
       and
       (
@@ -150,8 +147,14 @@ jobs:
   # Checking whether the database is ready for processing incoming queries is done 
   # using Docker logs command (https://docs.docker.com/engine/reference/commandline/logs/).
   - task: PowerShell@2
-    name: provision_db4it_docker_container_using_log_polling
-    displayName: Provision db4it Docker container using log-polling
+    name: 'provision_db4it_docker_container_using_log_polling'
+    displayName: 'Provision db4it Docker container using log-polling'
+    condition: |
+      and
+      (
+          succeeded()
+        , eq( ${{ parameters.db4it.databaseReadinessStrategy }}, 'log-polling')
+      )
     inputs:
       targetType: 'filePath'
       filePath: '$(Build.SourcesDirectory)/Build/Provision-Docker-container-using-log-polling.ps1'
@@ -168,20 +171,20 @@ jobs:
       errorActionPreference: 'stop'
       failOnStderr: True
       workingDirectory: $(Build.SourcesDirectory)
-    condition: |
-      and
-      (
-          succeeded()
-        , eq( '${{ parameters.db4it.databaseReadinessStrategy }}', 'log-polling')
-      )
 
   # Runs a PowerShell script to start a Docker container hosting the database 
   # to be targeted by the integration tests.
   # Checking whether the database is ready for processing incoming queries is done 
   # using Docker healthcheck support (https://docs.docker.com/engine/reference/run/#healthcheck).
   - task: PowerShell@2
-    name: provision_db4it_docker_container_using_healthcheck
-    displayName: Provision db4it Docker container using healthcheck
+    name: 'provision_db4it_docker_container_using_healthcheck'
+    displayName: 'Provision db4it Docker container using healthcheck'
+    condition: |
+      and
+      (
+          succeeded()
+        , eq( ${{ parameters.db4it.databaseReadinessStrategy }}, 'healthcheck')
+      )
     inputs:
       targetType: 'filePath'
       filePath: '$(Build.SourcesDirectory)/Build/Provision-Docker-container-using-healthcheck.ps1'
@@ -198,16 +201,12 @@ jobs:
       errorActionPreference: 'stop'
       failOnStderr: True
       workingDirectory: $(Build.SourcesDirectory)
-    condition: |
-      and
-      (
-          succeeded()
-        , eq( '${{ parameters.db4it.databaseReadinessStrategy }}', 'healthcheck')
-      )
 
   # Runs a PowerShell script to ensure the connection string pointing to the database 
   # to be targeted by the integration tests uses the appropriate port.
   - task: PowerShell@2
+    name: 'normalize_db_connection_string_pointing_to_db4it'
+    displayName: 'Normalize database connection string pointing to db4it Docker container'
     inputs:
       targetType: 'inline'
       errorActionPreference: 'stop'
@@ -216,9 +215,6 @@ jobs:
         $normalizedDatabaseConnectionString = "${{ parameters.db4it.databaseConnectionString.value }}" -replace '${{ parameters.db4it.databaseConnectionString.portPlaceholder }}', $(${{ parameters.db4it.dockerHostPortBuildVariableName }})
         Write-Output "##vso[task.setvariable variable=DatabaseConnectionStrings.Todo]$normalizedDatabaseConnectionString"
         Write-Output "The normalized database connection string is: $normalizedDatabaseConnectionString"
-    name: normalize_db_connection_string_pointing_to_db4it
-    displayName: Normalize database connection string pointing to db4it Docker container
-    enabled: True
 
   # Run integration tests and collect code coverage metrics.
   # Decorate the AssemblyInfo.cs found inside each integration test related project with:
@@ -234,9 +230,8 @@ jobs:
       /p:Include="[Todo.*]*"
       /p:Exclude=\"[Todo.*.*Tests]*,[Todo.Persistence]*.TodoDbContextModelSnapshot\"
       -- NUnit.Where="cat == IntegrationTests"
-    name: run_integration_tests
-    displayName: Run integration tests
-    enabled: True
+    name: 'run_integration_tests'
+    displayName: 'Run integration tests'
     env:
       DOTNET_SKIP_FIRST_TIME_EXPERIENCE: $(DotNetSkipFirstTimeExperience)
       DOTNET_CLI_TELEMETRY_OPTOUT: $(DotNetCliTelemetryOptOut)
@@ -248,10 +243,9 @@ jobs:
   # Publish integration test results inside the build 'Tests' tab.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=azure-devops&tabs=yaml.
   - task: PublishTestResults@2
-    displayName: Publish integration test results
-    name: publish_integration_test_results
+    name: 'publish_integration_test_results'
+    displayName: 'Publish integration test results'
     condition: succeededOrFailed()
-    enabled: True
     inputs:
       testResultsFormat: 'NUnit'
       testResultsFiles: '**/IntegrationTests/**/TestResults/*'
@@ -265,8 +259,8 @@ jobs:
   # This task will make use of the ~/Tests/.artifactignore file.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/artifacts/pipeline-artifacts?view=azure-devops&tabs=yaml#using-artifactignore-files.
   - task: PublishPipelineArtifact@1
-    displayName: Publish test results as pipeline artifacts
-    name: publish_test_results_as_pipeline_artifacts
+    name: 'publish_test_results_as_pipeline_artifacts'
+    displayName: 'Publish test results as pipeline artifacts'
     condition: |
       and
       (
@@ -282,9 +276,8 @@ jobs:
       dotnet tool install dotnet-reportgenerator-globaltool 
       --global
       --version $(ReportGenerator_Version)
-    name: install_code_coverage_report_generator
-    displayName: Install code coverage report generator tool
-    enabled: True
+    name: 'install_code_coverage_report_generator'
+    displayName: 'Install code coverage report generator tool'
     env:
       DOTNET_SKIP_FIRST_TIME_EXPERIENCE: $(DotNetSkipFirstTimeExperience)
       DOTNET_CLI_TELEMETRY_OPTOUT: $(DotNetCliTelemetryOptOut)
@@ -303,23 +296,22 @@ jobs:
       "-reports:$(Build.SourcesDirectory)/Tests/**/coverage.opencover.xml"
       "-targetdir:$(Build.SourcesDirectory)/.CodeCoverageReport"
       "-reporttypes:Cobertura;Badges"
-    name: generate_code_coverage_report
-    displayName: Generate code coverage report
-    enabled: True
+    name: 'generate_code_coverage_report'
+    displayName: 'Generate code coverage report'
 
   # Publish code coverage report.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-code-coverage-results?view=azure-devops.
   - task: PublishCodeCoverageResults@1
-    name: publish_code_coverage_report
-    displayName: Publish code coverage report
-    enabled: True
+    name: 'publish_code_coverage_report'
+    displayName: 'Publish code coverage report'
     inputs:
       codeCoverageTool: 'Cobertura'
       summaryFileLocation: '$(Build.SourcesDirectory)/.CodeCoverageReport/Cobertura.xml'
       reportDirectory: '$(Build.SourcesDirectory)/.CodeCoverageReport'
 
   - task: SonarSource.sonarcloud.ce096e50-6155-4de8-8800-4221aaeed4a1.SonarCloudAnalyze@1
-    displayName: 'Run Code Analysis'
+    name: 'run_sonar_analysis'
+    displayName: 'Run Sonar analysis'
     condition: |
       and
       (
@@ -328,7 +320,8 @@ jobs:
       )
 
   - task: SonarSource.sonarcloud.38b27399-a642-40af-bb7d-9971f69712e8.SonarCloudPublish@1
-    displayName: 'Publish Quality Gate Result'
+    name: 'publish_sonar_quality_gate_result'
+    displayName: 'Publish Sonar quality gate result'
     condition: |
       and
       (
@@ -341,13 +334,8 @@ jobs:
   # results of the static analysis performed against this branch.
   # This build step will be run only in case the build was triggered by a pul request.
   - task: PowerShell@2
-    inputs:
-      targetType: 'inline'
-      errorActionPreference: 'stop'
-      script: |
-        Write-Output "##vso[task.setvariable variable=CurrentGitBranchName]$(System.PullRequest.SourceBranch)"
-    name: load_current_git_branch_name_from_pull_request_info
-    displayName: Load current Git branch name from PR info
+    name: 'load_current_git_branch_name_from_pull_request_info'
+    displayName: 'Load current Git branch name from PR info'
     condition: |
       and
       (
@@ -356,19 +344,19 @@ jobs:
         , eq( ${{ parameters.sonar.buildBreaker.enabled }}, True)
         , eq( variables['Build.Reason'], 'PullRequest')
       )
+    inputs:
+      targetType: 'inline'
+      errorActionPreference: 'stop'
+      script: |
+        Write-Output "##vso[task.setvariable variable=CurrentGitBranchName]$(System.PullRequest.SourceBranch)"
       
   # Load the current Git branch name into a build variable to be later used when querying SonarCloud web API for the
   # results of the static analysis performed against this branch.
   # This build step will be run only in case the build was triggered by anything else but a pull request (e.g. a mere 
   # commit, a scheduled build, etc.).
   - task: PowerShell@2
-    inputs:
-      targetType: 'inline'
-      errorActionPreference: 'stop'
-      script: |
-        Write-Output "##vso[task.setvariable variable=CurrentGitBranchName]$(Build.SourceBranch)"
-    name: load_current_git_branch_name_from_commit_info
-    displayName: Load current Git branch name from commit info
+    name: 'load_current_git_branch_name_from_commit_info'
+    displayName: 'Load current Git branch name from commit info'
     condition: |
       and
       (
@@ -377,11 +365,25 @@ jobs:
         , eq( ${{ parameters.sonar.buildBreaker.enabled }}, True)
         , ne( variables['Build.Reason'], 'PullRequest')
       )
+    inputs:
+      targetType: 'inline'
+      errorActionPreference: 'stop'
+      script: |
+        Write-Output "##vso[task.setvariable variable=CurrentGitBranchName]$(Build.SourceBranch)"
       
   # Normalize Git branch name since Azure DevOps does not provide the expected one (e.g. 'master' or 'feature/my-feature-branch').
   # See more here: https://stackoverflow.com/questions/59956206/how-to-get-a-branch-name-with-a-slash-in-azure-devops
   # and here: https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml#build-variables.
   - task: PowerShell@2
+    name: 'normalize_current_git_branch_name'
+    displayName: 'Normalize current Git branch name'
+    condition: |
+      and
+      (
+          succeeded()
+        , eq( ${{ parameters.sonar.enabled }}, True)
+        , eq( ${{ parameters.sonar.buildBreaker.enabled }}, True)
+      )
     inputs:
       targetType: 'inline'
       errorActionPreference: 'stop'
@@ -391,21 +393,12 @@ jobs:
         Write-Output "##vso[task.setvariable variable=NormalizedGitBranchName]$normalizedGitBranchName"
         Write-Output "The current Git branch name is: $currentGitBranchName"
         Write-Output "The normalized Git branch name is: $normalizedGitBranchName"
-    name: normalize_current_git_branch_name
-    displayName: Normalize current Git branch name
-    condition: |
-      and
-      (
-          succeeded()
-        , eq( ${{ parameters.sonar.enabled }}, True)
-        , eq( ${{ parameters.sonar.buildBreaker.enabled }}, True)
-      )
 
   # Runs a PowerShell script to break the build in case Sonar quality gate has failed.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/powershell?view=azure-devops.
   - task: PowerShell@2
-    name: sonar_build_breaker
-    displayName: Run Sonar build breaker
+    name: 'sonar_build_breaker'
+    displayName: 'Run Sonar build breaker'
     # See more about conditions here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/conditions?view=azure-devops&tabs=yaml.
     condition: |
       and
@@ -422,6 +415,6 @@ jobs:
         -SonarServerBaseUrl 'https://sonarcloud.io'
         -SonarToken "$(CurrentProject.Sonar.Token)" 
         -GitBranchName "$(NormalizedGitBranchName)"
-      errorActionPreference: stop
+      errorActionPreference: 'stop'
       failOnStderr: True
       workingDirectory: $(Build.SourcesDirectory)
