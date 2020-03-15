@@ -337,7 +337,8 @@ jobs:
         , eq( ${{ parameters.sonar.buildBreaker.enabled }}, True)
       )
       
-  # Set the current Git branch name into a variable.
+  # Load the current Git branch name into a build variable to be later used when querying SonarCloud web API for the
+  # results of the static analysis performed against this branch.
   # This build step will be run only in case the build was triggered by a pul request.
   - task: PowerShell@2
     inputs:
@@ -356,8 +357,10 @@ jobs:
         , eq( variables['Build.Reason'], 'PullRequest')
       )
       
-  # Set the current Git branch name into a variable.
-  # This build step will be run only in case the build was triggered by anything else but a pull request.
+  # Load the current Git branch name into a build variable to be later used when querying SonarCloud web API for the
+  # results of the static analysis performed against this branch.
+  # This build step will be run only in case the build was triggered by anything else but a pull request (e.g. a mere 
+  # commit, a scheduled build, etc.).
   - task: PowerShell@2
     inputs:
       targetType: 'inline'
@@ -375,7 +378,7 @@ jobs:
         , ne( variables['Build.Reason'], 'PullRequest')
       )
       
-  # Normalize Git branch name since Azure DevOps is sending a full or short name.
+  # Normalize Git branch name since Azure DevOps does not provide the expected one (e.g. 'master' or 'feature/my-feature-branch').
   # See more here: https://stackoverflow.com/questions/59956206/how-to-get-a-branch-name-with-a-slash-in-azure-devops
   # and here: https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml#build-variables.
   - task: PowerShell@2
