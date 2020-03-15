@@ -6,23 +6,48 @@ namespace Todo.Services
 {
     public class TodoItemQuery
     {
+        /// <summary>
+        /// Gets or sets the id of the todo item to be fetched using this query.
+        /// </summary>
         public long? Id { get; set; }
 
+        /// <summary>
+        /// Gets or sets the pattern the name of the todo items must match to be fetched using this query.
+        /// </summary>
         public string NamePattern { get; set; }
 
+        /// <summary>
+        /// Gets or sets whether this query will fetch todo items which have been completed.
+        /// </summary>
         public bool? IsComplete { get; set; }
 
+        /// <summary>
+        /// Gets or sets the user who has created the todo items to be fetched using this query.
+        /// </summary>
         [Required]
-        public ClaimsPrincipal User { get; set; }
+        public ClaimsPrincipal Owner { get; set; }
 
+        /// <summary>
+        /// Gets or sets the maximum number of todo items to be fetched using this query.
+        /// </summary>
         [Range(1, 1000)]
         public int PageSize { get; set; } = 25;
 
+        /// <summary>
+        /// Gets or sets the 0-based index of the current batch of todo items to be fetched using this query. 
+        /// </summary>
         [Range(0, int.MaxValue)]
         public int PageIndex { get; set; }
 
+        /// <summary>
+        /// Gets or sets the property name used for sorting the todo items to be fetched using this query. 
+        /// </summary>
         public string SortBy { get; set; }
 
+        /// <summary>
+        /// Gets or sets whether the todo items to be fetched using this query will be sorted using
+        /// the <seealso cref="SortBy"/> property in an ascending order.
+        /// </summary>
         public bool? IsSortAscending { get; set; }
 
         public override string ToString()
@@ -32,7 +57,7 @@ namespace Todo.Services
                 $"[{nameof(Id)}={Id}",
                 $"{nameof(NamePattern)}={NamePattern}",
                 $"{nameof(IsComplete)}={IsComplete}",
-                $"{nameof(User)}={User.GetUserId()}",
+                $"{nameof(Owner)}={Owner.GetUserId()}",
                 $"{nameof(PageIndex)}={PageIndex}",
                 $"{nameof(PageSize)}={PageSize}",
                 $"{nameof(SortBy)}={SortBy}",
