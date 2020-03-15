@@ -51,9 +51,10 @@ In order to run this application locally, you need to setup some things first.
 
 This web API is accessible using JWT tokens provided by [Auth0](https://auth0.com).  
 Follow the steps below to ensure you are able to run integration tests:
- - Ensure you have an Auth0 account; if you don't have, sign-up for one [here](https://auth0.com/signup)
- - Create an API as instructed [here](https://auth0.com/docs/getting-started/set-up-api)
- - Get a client ID and a client secret used for generating access tokens when running integration tests, as instructed [here](https://auth0.com/docs/quickstart/backend/aspnet-core-webapi/02-using)
+
+- Ensure you have an Auth0 account; if you don't have, sign-up for one [here](https://auth0.com/signup)
+- Create an API as instructed [here](https://auth0.com/docs/getting-started/set-up-api)
+- Get a client ID and a client secret used for generating access tokens when running integration tests, as instructed [here](https://auth0.com/docs/quickstart/backend/aspnet-core-webapi/02-using)
 
 ### Setup local persistence services
 
