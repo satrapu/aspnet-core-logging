@@ -108,7 +108,7 @@ namespace Todo.WebApi.Controllers
             var updateTodoItemInfo = new UpdateTodoItemInfo
             {
                 Id = id,
-                IsComplete = updateTodoItemModel.IsComplete != null && updateTodoItemModel.IsComplete.Value,
+                IsComplete = updateTodoItemModel.IsComplete,
                 Name = updateTodoItemModel.Name,
                 User = User
             };
