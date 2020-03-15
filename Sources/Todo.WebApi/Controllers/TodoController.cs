@@ -24,7 +24,7 @@ namespace Todo.WebApi.Controllers
 
         [HttpGet]
         [Authorize(Policy = Policies.TodoItems.GetTodoItems)]
-        public async IAsyncEnumerable<TodoItemModel> GetByQuery([FromQuery] TodoItemQueryModel todoItemQueryModel)
+        public async IAsyncEnumerable<TodoItemModel> GetByQueryAsync([FromQuery] TodoItemQueryModel todoItemQueryModel)
         {
             var todoItemQuery = new TodoItemQuery
             {
@@ -57,7 +57,7 @@ namespace Todo.WebApi.Controllers
 
         [HttpGet("{id:long}")]
         [Authorize(Policy = Policies.TodoItems.GetTodoItems)]
-        public async Task<ActionResult<TodoItemModel>> GetById(long id)
+        public async Task<ActionResult<TodoItemModel>> GetByIdAsync(long id)
         {
             var todoItemQuery = new TodoItemQuery
             {
@@ -88,7 +88,7 @@ namespace Todo.WebApi.Controllers
 
         [HttpPost]
         [Authorize(Policy = Policies.TodoItems.CreateTodoItem)]
-        public async Task<IActionResult> Create(NewTodoItemModel newTodoItemModel)
+        public async Task<IActionResult> CreateAsync(NewTodoItemModel newTodoItemModel)
         {
             var newTodoItemInfo = new NewTodoItemInfo
             {
@@ -103,24 +103,23 @@ namespace Todo.WebApi.Controllers
 
         [HttpPut("{id:long}")]
         [Authorize(Policy = Policies.TodoItems.UpdateTodoItem)]
-        public IActionResult Update(long id, [FromBody] UpdateTodoItemModel updateTodoItemModel)
+        public async Task<IActionResult> UpdateAsync(long id, [FromBody] UpdateTodoItemModel updateTodoItemModel)
         {
             var updateTodoItemInfo = new UpdateTodoItemInfo
             {
                 Id = id,
-                IsComplete = updateTodoItemModel.IsComplete,
+                IsComplete = updateTodoItemModel.IsComplete != null && updateTodoItemModel.IsComplete.Value,
                 Name = updateTodoItemModel.Name,
                 User = User
             };
 
-            todoService.UpdateAsync(updateTodoItemInfo);
-
+            await todoService.UpdateAsync(updateTodoItemInfo).ConfigureAwait(false);
             return NoContent();
         }
 
         [HttpDelete("{id:long}")]
         [Authorize(Policy = Policies.TodoItems.DeleteTodoItem)]
-        public IActionResult Delete(long id)
+        public async Task<IActionResult> DeleteAsync(long id)
         {
             var deleteTodoItemInfo = new DeleteTodoItemInfo
             {
@@ -128,8 +127,7 @@ namespace Todo.WebApi.Controllers
                 User = User
             };
 
-            todoService.DeleteAsync(deleteTodoItemInfo);
-
+            await todoService.DeleteAsync(deleteTodoItemInfo).ConfigureAwait(false);
             return NoContent();
         }
     }
