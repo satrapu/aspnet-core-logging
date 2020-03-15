@@ -24,6 +24,7 @@ namespace Todo.Services
         private const string SortById = nameof(TodoItem.Id);
         private const string SortByLastUpdatedOn = nameof(TodoItem.LastUpdatedOn);
         private const string SortByName = nameof(TodoItem.Name);
+        private static readonly Expression<Func<TodoItem, object>> DefaultKeySelector = todoItem => todoItem.Id;
 
         /// <summary>
         /// Creates a new instance of the <see cref="TodoService"/> class.
@@ -59,7 +60,8 @@ namespace Todo.Services
 
             var newTodoItem = new TodoItem(newTodoItemInfo.Name, newTodoItemInfo.User.GetUserId())
             {
-                IsComplete = newTodoItemInfo.IsComplete
+                // ReSharper disable once PossibleInvalidOperationException
+                IsComplete = newTodoItemInfo.IsComplete.Value
             };
 
             todoDbContext.TodoItems.Add(newTodoItem);
@@ -77,7 +79,8 @@ namespace Todo.Services
 
             TodoItem existingTodoItem = await GetExistingTodoItem(updateTodoItemInfo.Id, updateTodoItemInfo.User)
                 .ConfigureAwait(false);
-            existingTodoItem.IsComplete = updateTodoItemInfo.IsComplete;
+            // ReSharper disable once PossibleInvalidOperationException
+            existingTodoItem.IsComplete = updateTodoItemInfo.IsComplete.Value;
             existingTodoItem.Name = updateTodoItemInfo.Name;
             existingTodoItem.LastUpdatedBy = updateTodoItemInfo.User.GetUserId();
             existingTodoItem.LastUpdatedOn = DateTime.UtcNow;
@@ -92,6 +95,7 @@ namespace Todo.Services
         public async Task DeleteAsync(DeleteTodoItemInfo deleteTodoItemInfo)
         {
             Validator.ValidateObject(deleteTodoItemInfo, new ValidationContext(deleteTodoItemInfo), true);
+
             TodoItem existingTodoItem = await GetExistingTodoItem(deleteTodoItemInfo.Id, deleteTodoItemInfo.User)
                 .ConfigureAwait(false);
 
@@ -140,38 +144,48 @@ namespace Todo.Services
 
         private static IQueryable<TodoItem> SortItems(IQueryable<TodoItem> todoItems, TodoItemQuery todoItemQuery)
         {
-            Expression<Func<TodoItem, object>> keySelector = null;
+            Expression<Func<TodoItem, object>> keySelector = GetKeySelectorBy(todoItemQuery.SortBy);
 
-            if (SortByCreatedOn.Equals(todoItemQuery.SortBy, StringComparison.InvariantCultureIgnoreCase))
+            if (todoItemQuery.IsSortAscending.HasValue && !todoItemQuery.IsSortAscending.Value)
             {
-                keySelector = todoItem => todoItem.CreatedOn;
+                todoItems = todoItems.OrderByDescending(keySelector);
             }
-            else if (SortById.Equals(todoItemQuery.SortBy, StringComparison.InvariantCultureIgnoreCase))
+            else
             {
-                keySelector = todoItem => todoItem.Id;
-            }
-            else if (SortByLastUpdatedOn.Equals(todoItemQuery.SortBy, StringComparison.InvariantCultureIgnoreCase))
-            {
-                keySelector = todoItem => todoItem.LastUpdatedOn;
-            }
-            else if (SortByName.Equals(todoItemQuery.SortBy, StringComparison.InvariantCultureIgnoreCase))
-            {
-                keySelector = todoItem => todoItem.Name;
-            }
-
-            if (keySelector != null)
-            {
-                if (todoItemQuery.IsSortAscending.HasValue && !todoItemQuery.IsSortAscending.Value)
-                {
-                    todoItems = todoItems.OrderByDescending(keySelector);
-                }
-                else
-                {
-                    todoItems = todoItems.OrderBy(keySelector);
-                }
+                todoItems = todoItems.OrderBy(keySelector);
             }
 
             return todoItems;
+        }
+
+        private static Expression<Func<TodoItem, object>> GetKeySelectorBy(string sortByProperty)
+        {
+            if (string.IsNullOrWhiteSpace(sortByProperty))
+            {
+                return DefaultKeySelector;
+            }
+
+            if (SortByCreatedOn.Equals(sortByProperty, StringComparison.InvariantCultureIgnoreCase))
+            {
+                return todoItem => todoItem.CreatedOn;
+            }
+
+            if (SortById.Equals(sortByProperty, StringComparison.InvariantCultureIgnoreCase))
+            {
+                return todoItem => todoItem.Id;
+            }
+
+            if (SortByLastUpdatedOn.Equals(sortByProperty, StringComparison.InvariantCultureIgnoreCase))
+            {
+                return todoItem => todoItem.LastUpdatedOn;
+            }
+
+            if (SortByName.Equals(sortByProperty, StringComparison.InvariantCultureIgnoreCase))
+            {
+                return todoItem => todoItem.Name;
+            }
+
+            return DefaultKeySelector;
         }
 
         private static IQueryable<TodoItemInfo> ProjectItems(IQueryable<TodoItem> todoItems)
