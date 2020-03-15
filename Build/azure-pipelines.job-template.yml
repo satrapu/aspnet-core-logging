@@ -153,7 +153,7 @@ jobs:
       and
       (
           succeeded()
-        , eq( ${{ parameters.db4it.databaseReadinessStrategy }}, 'log-polling')
+        , eq( '${{ parameters.db4it.databaseReadinessStrategy }}', 'log-polling')
       )
     inputs:
       targetType: 'filePath'
@@ -183,7 +183,7 @@ jobs:
       and
       (
           succeeded()
-        , eq( ${{ parameters.db4it.databaseReadinessStrategy }}, 'healthcheck')
+        , eq( '${{ parameters.db4it.databaseReadinessStrategy }}', 'healthcheck')
       )
     inputs:
       targetType: 'filePath'
