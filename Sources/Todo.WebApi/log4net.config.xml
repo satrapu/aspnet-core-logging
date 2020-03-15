@@ -16,7 +16,7 @@
   </appender>
 
   <logger name="Todo">
-    <level value="DEBUG" />
+    <level value="INFO" />
   </logger>
 
   <logger name="Microsoft">
