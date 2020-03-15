@@ -39,10 +39,11 @@ $NormalizedGitBranchName = $GitBranchName -Replace "refs/heads/", ""
 # See more about the HTTP request below here: https://sonarcloud.io/web_api/api/qualitygates/project_status.
 $SonarWebApiUrl = "{0}/api/qualitygates/project_status?projectKey={1}&branch={2}" -f $SonarServerBaseUrl, $SonarProjectKey, $NormalizedGitBranchName
 $Response = Invoke-WebRequest -Uri $SonarWebApiUrl -Headers $Headers -UseBasicParsing -ErrorAction Stop | ConvertFrom-Json
+$SonarDashboardUrl = "$SonarServerBaseUrl/dashboard?id=$SonarProjectKey"
 
 if ($Response.projectStatus.status -eq 'OK')
 {
-    Write-Output "Quality gate PASSED. Please check it here: $SonarServerBaseUrl/dashboard?id=$SonarProjectKey"
+    Write-Output "Quality gate PASSED. Please check it here: $SonarDashboardUrl"
     exit 0
 }
 elseif ($Response.projectStatus.status -eq 'NONE')
@@ -51,6 +52,6 @@ elseif ($Response.projectStatus.status -eq 'NONE')
     exit 0
 }
 
-Write-Output "##vso[task.LogIssue type=error;] Quality gate FAILED. Please check it here: $SonarServerBaseUrl/dashboard?id=$SonarProjectKey"
+Write-Output "##vso[task.LogIssue type=error;] Quality gate FAILED. Please check it here: $SonarDashboardUrl"
 Write-Output "##vso[task.complete result=Failed;]"
 exit 1
