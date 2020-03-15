@@ -15,7 +15,7 @@ namespace Todo.Services
         public string Name { get; set; }
 
         [Required]
-        public bool IsComplete { get; set; }
+        public bool? IsComplete { get; set; }
 
         [Required]
         public ClaimsPrincipal User { get; set; }
