@@ -22,18 +22,18 @@ namespace Todo.Services
         /// </summary>
         /// <param name="newTodoItemInfo"></param>
         /// <returns></returns>
-        long Add(NewTodoItemInfo newTodoItemInfo);
+        Task<long> AddAsync(NewTodoItemInfo newTodoItemInfo);
 
         /// <summary>
         /// Updates an existing <see cref="TodoItem"/> instance.
         /// </summary>
         /// <param name="updateTodoItemInfo"></param>
-        void Update(UpdateTodoItemInfo updateTodoItemInfo);
+        Task UpdateAsync(UpdateTodoItemInfo updateTodoItemInfo);
 
         /// <summary>
         /// Removes an existing <see cref="TodoItem"/> instance from the underlying database.
         /// </summary>
         /// <param name="deleteTodoItemInfo"></param>
-        void Delete(DeleteTodoItemInfo deleteTodoItemInfo);
+        Task DeleteAsync(DeleteTodoItemInfo deleteTodoItemInfo);
     }
 }

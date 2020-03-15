@@ -31,7 +31,7 @@ namespace Todo.WebApi.Controllers
                 Id = todoItemQueryModel.Id,
                 IsComplete = todoItemQueryModel.IsComplete,
                 NamePattern = todoItemQueryModel.NamePattern,
-                User = User,
+                Owner = User,
                 PageIndex = todoItemQueryModel.PageIndex,
                 PageSize = todoItemQueryModel.PageSize,
                 IsSortAscending = todoItemQueryModel.IsSortAscending,
@@ -62,7 +62,7 @@ namespace Todo.WebApi.Controllers
             var todoItemQuery = new TodoItemQuery
             {
                 Id = id,
-                User = User
+                Owner = User
             };
 
             IList<TodoItemInfo> todoItemInfoList =
@@ -88,7 +88,7 @@ namespace Todo.WebApi.Controllers
 
         [HttpPost]
         [Authorize(Policy = Policies.TodoItems.CreateTodoItem)]
-        public IActionResult Create(NewTodoItemModel newTodoItemModel)
+        public async Task<IActionResult> Create(NewTodoItemModel newTodoItemModel)
         {
             var newTodoItemInfo = new NewTodoItemInfo
             {
@@ -97,7 +97,7 @@ namespace Todo.WebApi.Controllers
                 User = User
             };
 
-            long newlyCreatedEntityId = todoService.Add(newTodoItemInfo);
+            long newlyCreatedEntityId = await todoService.AddAsync(newTodoItemInfo).ConfigureAwait(false);
             return Created($"api/todo/{newlyCreatedEntityId}", newlyCreatedEntityId);
         }
 
@@ -113,7 +113,7 @@ namespace Todo.WebApi.Controllers
                 User = User
             };
 
-            todoService.Update(updateTodoItemInfo);
+            todoService.UpdateAsync(updateTodoItemInfo);
 
             return NoContent();
         }
@@ -128,7 +128,7 @@ namespace Todo.WebApi.Controllers
                 User = User
             };
 
-            todoService.Delete(deleteTodoItemInfo);
+            todoService.DeleteAsync(deleteTodoItemInfo);
 
             return NoContent();
         }

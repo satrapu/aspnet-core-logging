@@ -48,12 +48,12 @@ namespace Todo.Services
             IList<TodoItemInfo> result = await todoItemInfos.ToListAsync().ConfigureAwait(false);
 
             logger.LogInformation("Fetched {TodoItemsCount} todo item(s) for user {UserId} using query {TodoItemQuery}",
-                result.Count, todoItemQuery.User.GetUserId(), todoItemQuery);
+                result.Count, todoItemQuery.Owner.GetUserId(), todoItemQuery);
 
             return result;
         }
 
-        public long Add(NewTodoItemInfo newTodoItemInfo)
+        public async Task<long> AddAsync(NewTodoItemInfo newTodoItemInfo)
         {
             Validator.ValidateObject(newTodoItemInfo, new ValidationContext(newTodoItemInfo), true);
 
@@ -63,7 +63,7 @@ namespace Todo.Services
             };
 
             todoDbContext.TodoItems.Add(newTodoItem);
-            todoDbContext.SaveChanges();
+            await todoDbContext.SaveChangesAsync().ConfigureAwait(false);
 
             logger.LogInformation("Item with id {TodoItemId} has been added by user {UserId}"
                 , newTodoItem.Id, newTodoItem.CreatedBy);
@@ -71,39 +71,41 @@ namespace Todo.Services
             return newTodoItem.Id;
         }
 
-        public void Update(UpdateTodoItemInfo updateTodoItemInfo)
+        public async Task UpdateAsync(UpdateTodoItemInfo updateTodoItemInfo)
         {
             Validator.ValidateObject(updateTodoItemInfo, new ValidationContext(updateTodoItemInfo), true);
 
-            TodoItem existingTodoItem = GetExistingTodoItem(updateTodoItemInfo.Id, updateTodoItemInfo.User);
+            TodoItem existingTodoItem = await GetExistingTodoItem(updateTodoItemInfo.Id, updateTodoItemInfo.User)
+                .ConfigureAwait(false);
             existingTodoItem.IsComplete = updateTodoItemInfo.IsComplete;
             existingTodoItem.Name = updateTodoItemInfo.Name;
             existingTodoItem.LastUpdatedBy = updateTodoItemInfo.User.GetUserId();
             existingTodoItem.LastUpdatedOn = DateTime.UtcNow;
 
             todoDbContext.TodoItems.Update(existingTodoItem);
-            todoDbContext.SaveChanges();
+            await todoDbContext.SaveChangesAsync().ConfigureAwait(false);
 
             logger.LogInformation("Item with id {TodoItemId} has been updated by user {UserId}"
                 , existingTodoItem.Id, existingTodoItem.LastUpdatedBy);
         }
 
-        public void Delete(DeleteTodoItemInfo deleteTodoItemInfo)
+        public async Task DeleteAsync(DeleteTodoItemInfo deleteTodoItemInfo)
         {
             Validator.ValidateObject(deleteTodoItemInfo, new ValidationContext(deleteTodoItemInfo), true);
-            TodoItem existingTodoItem = GetExistingTodoItem(deleteTodoItemInfo.Id, deleteTodoItemInfo.User);
+            TodoItem existingTodoItem = await GetExistingTodoItem(deleteTodoItemInfo.Id, deleteTodoItemInfo.User)
+                .ConfigureAwait(false);
 
             todoDbContext.TodoItems.Remove(existingTodoItem);
-            todoDbContext.SaveChanges();
+            await todoDbContext.SaveChangesAsync().ConfigureAwait(false);
 
             logger.LogInformation("Item with id {TodoItemId} has been deleted by user {UserId}"
                 , deleteTodoItemInfo.Id, deleteTodoItemInfo.User.GetUserId());
         }
 
-        private TodoItem GetExistingTodoItem(long? id, ClaimsPrincipal owner)
+        private async Task<TodoItem> GetExistingTodoItem(long? id, ClaimsPrincipal owner)
         {
-            TodoItem existingTodoItem = todoDbContext.TodoItems.SingleOrDefault(todoItem =>
-                todoItem.Id == id && todoItem.CreatedBy == owner.GetUserId());
+            TodoItem existingTodoItem = await todoDbContext.TodoItems.SingleOrDefaultAsync(todoItem =>
+                todoItem.Id == id && todoItem.CreatedBy == owner.GetUserId()).ConfigureAwait(false);
 
             if (existingTodoItem == null)
             {
@@ -116,7 +118,7 @@ namespace Todo.Services
         private IQueryable<TodoItem> FilterItems(TodoItemQuery todoItemQuery)
         {
             IQueryable<TodoItem> todoItems =
-                todoDbContext.TodoItems.Where(todoItem => todoItem.CreatedBy == todoItemQuery.User.GetUserId());
+                todoDbContext.TodoItems.Where(todoItem => todoItem.CreatedBy == todoItemQuery.Owner.GetUserId());
 
             if (todoItemQuery.Id.HasValue)
             {
