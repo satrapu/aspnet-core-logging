@@ -44,6 +44,11 @@ namespace Todo.WebApi
             // Configure logging
             services.AddLogging(loggingBuilder =>
             {
+                if (WebHostingEnvironment.IsProduction())
+                {
+                    loggingBuilder.ClearProviders();
+                }
+
                 // https://github.com/huorswords/Microsoft.Extensions.Logging.Log4Net.AspNetCore
                 var log4NetProviderOptions = Configuration.GetSection("Log4NetCore").Get<Log4NetProviderOptions>();
                 loggingBuilder.AddLog4Net(log4NetProviderOptions);
