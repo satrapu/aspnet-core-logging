@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
 
 namespace Todo.WebApi
 {
@@ -8,23 +8,23 @@ namespace Todo.WebApi
     {
         public static void Main(string[] args)
         {
-            CreateWebHostBuilder(args).Build().Run();
+            CreateHostBuilder(args).Build().Run();
         }
 
-        private static IWebHostBuilder CreateWebHostBuilder(string[] args)
+        private static IHostBuilder CreateHostBuilder(string[] args)
         {
-            IWebHostBuilder webHostBuilder =
-                WebHost.CreateDefaultBuilder(args)
-                       .ConfigureAppConfiguration((webHostBuilderContext, configurationBuilder) =>
-                       {
-                           string environmentName = webHostBuilderContext.HostingEnvironment.EnvironmentName;
-                           configurationBuilder.AddJsonFile("appsettings.json", false)
-                                               .AddJsonFile($"appsettings.{environmentName}.json", true)
-                                               .AddEnvironmentVariables()
-                                               .AddCommandLine(args);
-                       })
-                       .UseStartup<Startup>();
-            return webHostBuilder;
+            IHostBuilder hostBuilder =
+                Host.CreateDefaultBuilder(args)
+                    .ConfigureAppConfiguration((hostBuilderContext, configurationBuilder) =>
+                    {
+                        string environmentName = hostBuilderContext.HostingEnvironment.EnvironmentName;
+                        configurationBuilder.AddJsonFile("appsettings.json", false)
+                            .AddJsonFile($"appsettings.{environmentName}.json", true)
+                            .AddEnvironmentVariables()
+                            .AddCommandLine(args);
+                    })
+                    .ConfigureWebHostDefaults(localHostBuilder => { localHostBuilder.UseStartup<Startup>(); });
+            return hostBuilder;
         }
     }
 }
