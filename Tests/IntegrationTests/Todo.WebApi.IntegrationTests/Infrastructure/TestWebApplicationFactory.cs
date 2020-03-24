@@ -11,6 +11,8 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Linq;
 using Npgsql;
@@ -28,7 +30,7 @@ namespace Todo.WebApi.Infrastructure
             testDatabaseName = $"it--{applicationName}";
         }
 
-        protected override void ConfigureWebHost(IWebHostBuilder builder)
+        protected override void ConfigureWebHost(IWebHostBuilder webHostBuilder)
         {
             var configurationBuilder = new ConfigurationBuilder();
             IConfigurationRoot testConfiguration = configurationBuilder.AddJsonFile("appsettings.json", false)
@@ -36,10 +38,13 @@ namespace Todo.WebApi.Infrastructure
                 .AddEnvironmentVariables()
                 .Build();
 
-            builder.UseConfiguration(testConfiguration);
-            builder.UseEnvironment(EnvironmentName);
-            builder.ConfigureTestServices(services =>
+            webHostBuilder.UseConfiguration(testConfiguration);
+            webHostBuilder.UseEnvironment(EnvironmentName);
+            webHostBuilder.ConfigureTestServices(services =>
             {
+                // Don't run IHostedServices when running tests
+                services.RemoveAll(typeof(IHostedService));
+
                 // Ensure an implementation of IHttpClientFactory interface can be injected at a later time
                 services.AddHttpClient();
 
