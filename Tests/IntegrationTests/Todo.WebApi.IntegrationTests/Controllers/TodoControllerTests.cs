@@ -44,7 +44,7 @@ namespace Todo.WebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [Test]
-        public async Task Create_UsingValidTodoItem_ReturnsTheSameInstance()
+        public async Task CreateAsync_UsingValidTodoItem_ReturnsTheSameInstance()
         {
             // Arrange
             using HttpClient httpClient =
@@ -55,7 +55,7 @@ namespace Todo.WebApi.Controllers
             {
                 var newTodoItemModel = new NewTodoItemModel
                 {
-                    Name = $"it--{nameof(Create_UsingValidTodoItem_ReturnsTheSameInstance)}--{Guid.NewGuid():N}",
+                    Name = $"it--{nameof(CreateAsync_UsingValidTodoItem_ReturnsTheSameInstance)}--{Guid.NewGuid():N}",
                     IsComplete = DateTime.UtcNow.Ticks % 2 == 0
                 };
 
@@ -155,7 +155,7 @@ namespace Todo.WebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [Test]
-        public async Task GetById_UsingNewlyCreatedItem_ReturnsExpectedResult()
+        public async Task GetByIdAsync_UsingNewlyCreatedItem_ReturnsExpectedResult()
         {
             // Arrange
             using HttpClient httpClient =
@@ -165,7 +165,7 @@ namespace Todo.WebApi.Controllers
             try
             {
                 string nameSuffix = Guid.NewGuid().ToString("N");
-                string name = $"it--{nameof(GetById_UsingNewlyCreatedItem_ReturnsExpectedResult)}--{nameSuffix}";
+                string name = $"it--{nameof(GetByIdAsync_UsingNewlyCreatedItem_ReturnsExpectedResult)}--{nameSuffix}";
 
                 var newTodoItemModel = new NewTodoItemModel
                 {
@@ -209,7 +209,7 @@ namespace Todo.WebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [Test]
-        public async Task GetById_UsingNonExistingId_ReturnsNotFoundStatusCode()
+        public async Task GetByIdAsync_UsingNonExistingId_ReturnsNotFoundStatusCode()
         {
             // Arrange
             using HttpClient httpClient =
@@ -219,7 +219,7 @@ namespace Todo.WebApi.Controllers
             try
             {
                 string nameSuffix = Guid.NewGuid().ToString("N");
-                string name = $"it--{nameof(GetById_UsingNewlyCreatedItem_ReturnsExpectedResult)}--{nameSuffix}";
+                string name = $"it--{nameof(GetByIdAsync_UsingNonExistingId_ReturnsNotFoundStatusCode)}--{nameSuffix}";
 
                 var newTodoItemModel = new NewTodoItemModel
                 {
@@ -257,7 +257,7 @@ namespace Todo.WebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [Test]
-        public async Task Update_UsingNewlyCreatedTodoItem_MustSucceed()
+        public async Task UpdateAsync_UsingNewlyCreatedTodoItem_MustSucceed()
         {
             // Arrange
             using HttpClient httpClient =
@@ -266,7 +266,7 @@ namespace Todo.WebApi.Controllers
 
             try
             {
-                string name = $"it--{nameof(Update_UsingNewlyCreatedTodoItem_MustSucceed)}--{Guid.NewGuid():N}";
+                string name = $"it--{nameof(UpdateAsync_UsingNewlyCreatedTodoItem_MustSucceed)}--{Guid.NewGuid():N}";
                 bool isComplete = DateTime.UtcNow.Ticks % 2 == 0;
 
                 var newTodoItemInfo = new NewTodoItemModel
