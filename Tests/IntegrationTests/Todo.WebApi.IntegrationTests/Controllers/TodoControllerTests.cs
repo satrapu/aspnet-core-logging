@@ -315,5 +315,34 @@ namespace Todo.WebApi.Controllers
                 }
             }
         }
+
+        /// <summary>
+        /// Ensures method <see cref="TodoController.DeleteAsync" /> works as expected.
+        /// </summary>
+        /// <returns></returns>
+        [Test]
+        public async Task DeleteAsync_UsingNewlyCreatedTodoItem_MustSucceed()
+        {
+            // Arrange
+            using HttpClient httpClient =
+                await testWebApplicationFactory.CreateClientWithJwtToken().ConfigureAwait(false);
+
+            string name = $"it--{nameof(DeleteAsync_UsingNewlyCreatedTodoItem_MustSucceed)}--{Guid.NewGuid():N}";
+            bool isComplete = DateTime.UtcNow.Ticks % 2 == 0;
+
+            var newTodoItemInfo = new NewTodoItemModel
+            {
+                Name = name,
+                IsComplete = isComplete
+            };
+
+            HttpResponseMessage response =
+                await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemInfo).ConfigureAwait(false);
+            response.IsSuccessStatusCode.Should().BeTrue("a new entity has been created");
+            long? id = await response.Content.ReadAsAsync<long>().ConfigureAwait(false);
+
+            response = await httpClient.DeleteAsync($"{BaseUrl}/{id}").ConfigureAwait(false);
+            response.IsSuccessStatusCode.Should().BeTrue("existing entity must be deleted");
+        }
     }
 }
