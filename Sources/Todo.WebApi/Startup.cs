@@ -14,6 +14,7 @@ using Microsoft.IdentityModel.Tokens;
 using Todo.Persistence;
 using Todo.Services;
 using Todo.WebApi.Authorization;
+using Todo.WebApi.ExceptionHandling;
 using Todo.WebApi.Logging;
 
 namespace Todo.WebApi
@@ -130,7 +131,13 @@ namespace Todo.WebApi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder applicationBuilder)
         {
+            // The HTTP logging middleware *must* be the first one inside the ASP.NET Core request pipeline to ensure
+            // all requests and their responses are properly logged
             applicationBuilder.UseHttpLogging();
+
+            // The exception handling middleware *must* be the second one inside the ASP.NET Core request pipeline
+            // to ensure any unhandled exception is eventually handled
+            applicationBuilder.UseExceptionHandling();
 
             if (WebHostingEnvironment.IsDevelopment())
             {
