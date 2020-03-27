@@ -42,16 +42,7 @@ namespace Todo.WebApi.Controllers
 
             foreach (TodoItemInfo todoItemInfo in todoItemInfos)
             {
-                yield return new TodoItemModel
-                {
-                    Id = todoItemInfo.Id,
-                    IsComplete = todoItemInfo.IsComplete,
-                    Name = todoItemInfo.Name,
-                    CreatedBy = todoItemInfo.CreatedBy,
-                    CreatedOn = todoItemInfo.CreatedOn,
-                    LastUpdatedBy = todoItemInfo.LastUpdatedBy,
-                    LastUpdatedOn = todoItemInfo.LastUpdatedOn
-                };
+                yield return MapFrom(todoItemInfo);
             }
         }
 
@@ -67,16 +58,7 @@ namespace Todo.WebApi.Controllers
 
             IList<TodoItemInfo> todoItemInfoList =
                 await todoService.GetByQueryAsync(todoItemQuery).ConfigureAwait(false);
-            TodoItemModel model = todoItemInfoList.Select(todoItemInfo => new TodoItemModel
-            {
-                Id = todoItemInfo.Id,
-                IsComplete = todoItemInfo.IsComplete,
-                Name = todoItemInfo.Name,
-                CreatedBy = todoItemInfo.CreatedBy,
-                CreatedOn = todoItemInfo.CreatedOn,
-                LastUpdatedBy = todoItemInfo.LastUpdatedBy,
-                LastUpdatedOn = todoItemInfo.LastUpdatedOn
-            }).FirstOrDefault();
+            TodoItemModel model = todoItemInfoList.Select(MapFrom).FirstOrDefault();
 
             if (model == null)
             {
@@ -129,6 +111,22 @@ namespace Todo.WebApi.Controllers
 
             await todoService.DeleteAsync(deleteTodoItemInfo).ConfigureAwait(false);
             return NoContent();
+        }
+
+        private static TodoItemModel MapFrom(TodoItemInfo todoItemInfo)
+        {
+            TodoItemModel result = new TodoItemModel
+            {
+                Id = todoItemInfo.Id,
+                IsComplete = todoItemInfo.IsComplete,
+                Name = todoItemInfo.Name,
+                CreatedBy = todoItemInfo.CreatedBy,
+                CreatedOn = todoItemInfo.CreatedOn,
+                LastUpdatedBy = todoItemInfo.LastUpdatedBy,
+                LastUpdatedOn = todoItemInfo.LastUpdatedOn
+            };
+
+            return result;
         }
     }
 }
