@@ -69,27 +69,27 @@ namespace Todo.WebApi.Logging
             httpContext.Request.EnableBuffering();
 
             // Logs the current HTTP request
-            var httpRequestAsLogMessage = await httpObjectConverter.ToLogMessageAsync(httpContext.Request).ConfigureAwait(false);
+            string httpRequestAsLogMessage = await httpObjectConverter.ToLogMessageAsync(httpContext.Request).ConfigureAwait(false);
             // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
             logger.LogDebug(httpRequestAsLogMessage);
 
             // Saves the original response body stream for latter purposes
-            var originalResponseBodyStream = httpContext.Response.Body;
+            Stream originalResponseBodyStream = httpContext.Response.Body;
 
-            using var stream = new MemoryStream(BufferSizeInBytes);
+            await using var memoryStream = new MemoryStream(BufferSizeInBytes);
             // Replace response body stream with a seekable one, like a MemoryStream, to allow logging it
-            httpContext.Response.Body = stream;
+            httpContext.Response.Body = memoryStream;
 
             // Process current request
             await nextRequestDelegate(httpContext).ConfigureAwait(false);
 
             // Logs the current HTTP response
-            var httpResponseAsLogMessage = await httpObjectConverter.ToLogMessageAsync(httpContext.Response).ConfigureAwait(false);
+            string httpResponseAsLogMessage = await httpObjectConverter.ToLogMessageAsync(httpContext.Response).ConfigureAwait(false);
             // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
             logger.LogDebug(httpResponseAsLogMessage);
 
             // Ensure the original HTTP response is sent to the next middleware
-            await stream.CopyToAsync(originalResponseBodyStream).ConfigureAwait(false);
+            await memoryStream.CopyToAsync(originalResponseBodyStream).ConfigureAwait(false);
         }
     }
 }
