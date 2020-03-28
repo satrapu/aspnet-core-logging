@@ -4,6 +4,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Todo.Services;
 
 namespace Todo.WebApi.ExceptionHandling
 {
@@ -54,8 +55,17 @@ namespace Todo.WebApi.ExceptionHandling
                 "An unhandled exception has been caught; associated error id is: {ErrorId}", errorId);
 
             httpContext.Response.Body = new MemoryStream();
-            httpContext.Response.StatusCode = (int) HttpStatusCode.InternalServerError;
+            httpContext.Response.StatusCode = (int) ConvertToHttpStatusCode(unhandledException);
             httpContext.Response.Headers.Add("ErrorId", errorId);
+        }
+
+        private static HttpStatusCode ConvertToHttpStatusCode(Exception exception)
+        {
+            return exception switch
+            {
+                EntityNotFoundException _ => HttpStatusCode.NotFound,
+                _ => HttpStatusCode.InternalServerError
+            };
         }
     }
 }
