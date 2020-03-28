@@ -73,14 +73,7 @@ namespace Todo.WebApi
             });
 
             // Display personally identifiable information only during development
-            if (WebHostingEnvironment.IsDevelopment())
-            {
-                IdentityModelEventSource.ShowPII = true;
-            }
-            else
-            {
-                IdentityModelEventSource.ShowPII = false;
-            }
+            IdentityModelEventSource.ShowPII = WebHostingEnvironment.IsDevelopment();
 
             // Configure authentication & authorization using JWT tokens
             string authZeroDomain = $"https://{Configuration["Auth0:Domain"]}/";

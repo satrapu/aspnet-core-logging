@@ -56,7 +56,7 @@ namespace Todo.Persistence
         {
             var configurationBuilder = new ConfigurationBuilder();
             IConfigurationRoot testConfiguration = configurationBuilder.AddJsonFile("appsettings.json", false)
-                .AddJsonFile($"appsettings.IntegrationTests.json", false)
+                .AddJsonFile("appsettings.IntegrationTests.json", false)
                 .AddEnvironmentVariables()
                 .Build();
             // ReSharper disable once SettingNotFoundInConfiguration

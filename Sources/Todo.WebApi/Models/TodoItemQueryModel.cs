@@ -1,5 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
+
 namespace Todo.WebApi.Models
 {
     public class TodoItemQueryModel

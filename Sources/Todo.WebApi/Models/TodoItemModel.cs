@@ -1,5 +1,7 @@
 ﻿using System;
 
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+
 namespace Todo.WebApi.Models
 {
     public class TodoItemModel
