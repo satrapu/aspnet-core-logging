@@ -33,7 +33,6 @@ $Headers = @{
     AcceptType = "application/json"
 }
 
-
 $NormalizedGitBranchName = $GitBranchName -Replace "refs/heads/", ""
 
 # See more about the HTTP request below here: https://sonarcloud.io/web_api/api/qualitygates/project_status.

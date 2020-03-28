@@ -3,17 +3,15 @@
   See more MSBuild properties here: https://docs.microsoft.com/en-us/visualstudio/msbuild/common-msbuild-project-properties?view=vs-2017.
 -->
 <Project>
-  <PropertyGroup>
+    <PropertyGroup>
+        <!--
+          Sets up property "Treat warnings as errors" found in Visual Studio project -> Properties -> Build.
+        -->
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 
-    <!--
-      Sets up property "Treat warnings as errors" found in Visual Studio project -> Properties -> Build.
-    -->
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-
-    <!--
-      Sets up property "Language version" found in Visual Studio project -> Properties -> Build -> Advanced.
-    -->
-    <LangVersion>8.0</LangVersion>
-
-  </PropertyGroup>
+        <!--
+          Sets up property "Language version" found in Visual Studio project -> Properties -> Build -> Advanced.
+        -->
+        <LangVersion>8.0</LangVersion>
+    </PropertyGroup>
 </Project>
