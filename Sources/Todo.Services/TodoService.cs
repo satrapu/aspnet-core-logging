@@ -113,7 +113,7 @@ namespace Todo.Services
 
             if (existingTodoItem == null)
             {
-                throw new ArgumentException($"Could not find {nameof(TodoItem)} by id {id}", nameof(id));
+                throw new EntityNotFoundException(typeof(TodoItem), id);
             }
 
             return existingTodoItem;
