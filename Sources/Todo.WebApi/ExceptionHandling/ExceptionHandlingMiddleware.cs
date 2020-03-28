@@ -4,7 +4,6 @@ using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Todo.WebApi.Logging;
 
 namespace Todo.WebApi.ExceptionHandling
 {
@@ -18,7 +17,7 @@ namespace Todo.WebApi.ExceptionHandling
         private readonly ILogger logger;
 
         /// <summary>
-        /// Creates a new instance of the <see cref="LoggingMiddleware"/> class.
+        /// Creates a new instance of the <see cref="ExceptionHandlingMiddleware"/> class.
         /// </summary>
         /// <param name="nextRequestDelegate"></param>
         /// <param name="logger"></param>
