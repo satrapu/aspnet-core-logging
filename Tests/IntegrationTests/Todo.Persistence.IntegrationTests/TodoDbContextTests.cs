@@ -59,6 +59,7 @@ namespace Todo.Persistence
                 .AddJsonFile($"appsettings.IntegrationTests.json", false)
                 .AddEnvironmentVariables()
                 .Build();
+            // ReSharper disable once SettingNotFoundInConfiguration
             var testConnectionString = testConfiguration.GetConnectionString("TodoForIntegrationTests");
             var connectionStringBuilder = new NpgsqlConnectionStringBuilder(testConnectionString)
             {
