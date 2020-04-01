@@ -1,10 +1,13 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
-using System.Net.Http.Headers;
+using System.Text.Json;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
@@ -14,10 +17,10 @@ using Todo.WebApi.Infrastructure;
 namespace Todo.WebApi.ExceptionHandling
 {
     /// <summary>
-    /// Contains integration tests targeting <see cref="ExceptionHandlingMiddleware"/> class.
+    /// Contains integration tests targeting <see cref="CustomExceptionHandlerHelper"/> class.
     /// </summary>
     [TestFixture]
-    public class ExceptionHandlingMiddlewareTests
+    public class CustomErrorHandlerHelperTests
     {
         private WebApplicationFactoryWhichThrowsException webApplicationFactoryWhichThrowsException;
 
@@ -34,33 +37,42 @@ namespace Todo.WebApi.ExceptionHandling
         }
 
         /// <summary>
-        /// Tests <see cref="ExceptionHandlingMiddleware.Invoke"/> method.
+        /// Tests <see cref="CustomExceptionHandlerHelper.WriteResponse"/> method.
         /// </summary>
         [Test]
-        public async Task Invoke_AgainstEndpointThrowingException_MustHandleException()
+        public async Task WriteResponse_AgainstEndpointThrowingException_MustHandleException()
         {
             // Arrange
             using HttpClient httpClient =
                 await webApplicationFactoryWhichThrowsException.CreateClientWithJwtToken().ConfigureAwait(false);
             var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, "api/todo");
-            httpRequestMessage.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json"));
 
             // Act
             HttpResponseMessage httpResponseMessage =
                 await httpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
 
             // Assert
-            httpResponseMessage.IsSuccessStatusCode.Should().BeFalse();
-            httpResponseMessage.Headers.TryGetValues("ErrorId", out var values);
-            string[] errorIdHeaderValues = values as string[] ?? values.ToArray();
-            errorIdHeaderValues.Should().NotBeNullOrEmpty("an unhandled exception was eventually handled");
-            errorIdHeaderValues.First().Should()
-                .NotBeNullOrWhiteSpace("an id has been associated with the unhandled exception");
+            httpResponseMessage.IsSuccessStatusCode.Should()
+                .BeFalse("the endpoint was supposed to throw a hard-coded exception");
+            httpResponseMessage.StatusCode.Should()
+                .Be(HttpStatusCode.NotFound, "the hard-coded exception was mapped to HTTP status 404");
+            byte[] problemDetailsAsBytes =
+                await httpResponseMessage.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+            await using var memoryStream = new MemoryStream(problemDetailsAsBytes);
+
+            // Must use System.Text.Json.JsonSerializer instead of Newtonsoft.Json.JsonSerializer to ensure
+            // ProblemDetails.Extensions property is correctly deserialized and does not end up as an empty dictionary
+            ProblemDetails problemDetails =
+                await JsonSerializer.DeserializeAsync<ProblemDetails>(memoryStream).ConfigureAwait(false);
+            problemDetails.Extensions.TryGetValue("errorId", out object errorId).Should()
+                .BeTrue("an id must accompany the unhandled exception");
+            errorId?.ToString().Should()
+                .NotBeNullOrWhiteSpace("the id accompanying the unhandled exception must not be null or whitespace");
         }
 
         private class WebApplicationFactoryWhichThrowsException : TestWebApplicationFactory
         {
-            public WebApplicationFactoryWhichThrowsException() : base(nameof(ExceptionHandlingMiddlewareTests))
+            public WebApplicationFactoryWhichThrowsException() : base(nameof(CustomErrorHandlerHelperTests))
             {
             }
 
@@ -87,7 +99,8 @@ namespace Todo.WebApi.ExceptionHandling
         {
             public Task<IList<TodoItemInfo>> GetByQueryAsync(TodoItemQuery todoItemQuery)
             {
-                throw new System.NotImplementedException();
+                //throw new System.NotImplementedException();
+                throw new EntityNotFoundException(todoItemQuery.GetType(), null);
             }
 
             public Task<long> AddAsync(NewTodoItemInfo newTodoItemInfo)
