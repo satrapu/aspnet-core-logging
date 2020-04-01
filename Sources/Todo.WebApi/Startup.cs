@@ -130,7 +130,8 @@ namespace Todo.WebApi
 
             // The exception handling middleware *must* be the second one inside the ASP.NET Core request pipeline
             // to ensure any unhandled exception is eventually handled
-            applicationBuilder.UseExceptionHandling();
+            applicationBuilder.UseExceptionHandler(localApplicationBuilder =>
+                localApplicationBuilder.UseCustomExceptionHandler(WebHostingEnvironment));
 
             if (WebHostingEnvironment.IsDevelopment())
             {
