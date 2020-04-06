@@ -6,17 +6,19 @@
 - [Build](#build)
 - [Code Quality](#code-quality)
 - [Setup Local Development Environment](#setup-local-development-environment)
-  - [Setup Auth0 account](#setup-auth0-account)
-  - [Setup local persistence services](#setup-local-persistence-services)
-  - [Create Docker volumes](#create-docker-volumes)
-  - [Create .env file](#create-env-file)
-  - [Compose commands](#compose-commands)
-    - [Run compose services](#run-compose-services)
-    - [Stop compose services](#stop-compose-services)
-    - [Start compose services](#start-compose-services)
-    - [Display compose service log](#display-compose-service-log)
-    - [Destroy compose services](#destroy-compose-services)
-  - [Setup environment variables](#setup-environment-variables)
+- [Setup local development database](#setup-local-development-database)
+- [Setup Auth0 account](#setup-auth0-account)
+- [Setup local persistence services](#setup-local-persistence-services)
+- [Create Docker volumes](#create-docker-volumes)
+- [Create .env file](#create-env-file)
+- [Compose commands](#compose-commands)
+  - [Run compose services](#run-compose-services)
+  - [Stop compose services](#stop-compose-services)
+  - [Start compose services](#start-compose-services)
+  - [Display compose service log](#display-compose-service-log)
+  - [Destroy compose services](#destroy-compose-services)
+- [Open database manager](#open-database-manager)
+- [Setup environment variables](#setup-environment-variables)
 
 ## Description
 
@@ -46,6 +48,48 @@ This project has several posts associated with it:
 ## Setup Local Development Environment
 
 In order to run this application locally, you need to setup some things first.
+
+### Setup local development database
+
+In order to create and update the local development database, you need to install EF Core CLI tools; the reference documentation can be found [here](https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/dotnet). I also recommend reading about database migrations [here](https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/?tabs=dotnet-core-cli).  
+All of the commands below should be executed from the folder where you have checked-out this git repository.
+
+- Install dotnet-ef
+
+```bash
+dotnet tool install dotnet-ef --global
+```
+
+- Upgrade dotnet-ef to latest version, if requested to do so
+
+```bash
+dotnet tool upgrade dotnet-ef --global
+```
+
+- Add a new database migration
+
+```bash
+dotnet ef migrations add <MIGRATION_NAME> --startup-project ./Sources/Todo.WebApi --project ./Sources/Todo.Persistence
+```
+
+- List existing database migrations
+
+```bash
+dotnet ef migrations list --startup-project ./Sources/Todo.WebApi --project ./Sources/Todo.Persistence
+```
+
+- Update database to the last migration
+
+```bash
+dotnet ef database update --startup-project ./Sources/Todo.WebApi --project ./Sources/Todo.Persistence
+```
+
+- Drop existing database
+
+```bash
+dotnet ef database drop --startup-project ./Sources/Todo.WebApi --project ./Sources/Todo.Persistence
+
+```
 
 ### Setup Auth0 account
 
@@ -141,6 +185,10 @@ The command below will **not** delete the Docker volumes!
 ```bash
 docker-compose down
 ```
+
+### Open database manager
+
+Once the services have been stared using `docker-compose up` command, open your browser and navigate to [http://localhost:8080](http://localhost:8080) in order to access the pgadmin UI; use `PGADMIN_DEFAULT_EMAIL` and `PGADMIN_DEFAULT_PASSWORD` properties found in your .env file to login.
 
 ### Setup environment variables
 
