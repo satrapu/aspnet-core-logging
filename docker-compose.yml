@@ -4,6 +4,7 @@ services:
   aspnet-core-logging-dev:
     container_name: aspnet-core-logging-dev
     image: postgres:12-alpine
+    restart: unless-stopped
     volumes:
       - aspnet-core-logging-dev_data:/var/lib/postgresql/data
     ports:
@@ -18,6 +19,7 @@ services:
   aspnet-core-logging-it:
     container_name: aspnet-core-logging-it
     image: postgres:12-alpine
+    restart: unless-stopped
     volumes:
       - aspnet-core-logging-it_data:/var/lib/postgresql/data
     ports:
@@ -31,7 +33,8 @@ services:
 
   pgadmin:
     container_name: pgadmin
-    image: dpage/pgadmin4:4.19
+    image: dpage/pgadmin4:4.20
+    restart: unless-stopped
     volumes:
       - pgadmin_data:/var/lib/pgadmin
     ports:
