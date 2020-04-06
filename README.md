@@ -210,4 +210,4 @@ If you enable [MiniProfiler](https://miniprofiler.com/) by setting the configura
 
 - List all requests: [https://localhost:5001/miniprofiler/results-index](https://localhost:5001/miniprofiler/results-index)
 - Inspect current request: [https://localhost:5001/miniprofiler/results](https://localhost:5001/miniprofiler/results)
-- List all requests as JSON: [https://localhost:5001/miniprofiler/results-list](https://localhost:5001//miniprofiler/results-list)
+- List all requests as JSON: [https://localhost:5001/miniprofiler/results-list](https://localhost:5001/miniprofiler/results-list)
