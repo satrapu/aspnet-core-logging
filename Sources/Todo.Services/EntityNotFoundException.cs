@@ -17,14 +17,10 @@ namespace Todo.Services
         /// <summary>
         /// Serialization constructor.
         /// </summary>
-        /// <param name="serializationInfo"></param>
-        /// <param name="streamingContext"></param>
-        protected EntityNotFoundException(SerializationInfo serializationInfo, StreamingContext streamingContext) :
-            base(serializationInfo, streamingContext)
-        {
-        }
-
-        public override void GetObjectData(SerializationInfo serializationInfo, StreamingContext streamingContext)
+        /// <param name="info"></param>
+        /// <param name="context"></param>
+        protected EntityNotFoundException(SerializationInfo info, StreamingContext context) :
+            base(info, context)
         {
         }
     }
