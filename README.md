@@ -28,6 +28,7 @@ This project has several posts associated with it:
   - [Destroy compose services](#destroy-compose-services)
 - [Open database manager](#open-database-manager)
 - [Setup environment variables](#setup-environment-variables)
+- [Inspect MiniProfiler results](#inspect-miniprofiler-results)
 
 ## Build
 
@@ -201,3 +202,12 @@ the following environment variables must be defined on your local development ma
 | CONNECTIONSTRINGS__TODOFORINTEGRATIONTESTS | Server=localhost; Port=5433; Database=aspnet-core-logging-it; Username=satrapu; Password=***;  | The connection string pointing to the integration tests database |
 | AUTH0__CLIENTID                            | <YOUR_AUTH0_TEST_CLIENT_ID>                                                                    | The Auth0 test client id                                         |
 | AUTH0__CLIENTSECRET                        | <YOUR_AUTH0_TEST_CLIENT_SECRET>                                                                | The Auth0 test client secret                                     |
+
+
+### Inspect MiniProfiler results
+
+If you enable [MiniProfiler](https://miniprofiler.com/) by setting the configuration property `EnableMiniProfiler` to `true`, you can navigate to the following MiniProfiler URLs:
+
+- List all requests: [https://localhost:5001/miniprofiler/results-index](https://localhost:5001/miniprofiler/results-index)
+- Inspect current request: [https://localhost:5001/miniprofiler/results](https://localhost:5001//miniprofiler/results)
+- List all requests as JSON: [https://localhost:5001/miniprofiler/results-list](https://localhost:5001//miniprofiler/results-list)
