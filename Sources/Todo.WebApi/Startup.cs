@@ -24,6 +24,8 @@ namespace Todo.WebApi
     /// </summary>
     public class Startup
     {
+        private bool shouldUseMiniProfiler;
+        
         /// <summary>
         /// Creates a new instance of the <see cref="Startup"/> class.
         /// </summary>
@@ -33,6 +35,9 @@ namespace Todo.WebApi
         {
             Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             WebHostingEnvironment = webHostEnvironment ?? throw new ArgumentNullException(nameof(webHostEnvironment));
+
+            shouldUseMiniProfiler =
+                bool.TryParse(Configuration["EnableMiniProfiler"], out bool enableMiniProfiler) && enableMiniProfiler;
         }
 
         private IConfiguration Configuration { get; }
@@ -106,6 +111,22 @@ namespace Todo.WebApi
             });
             services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
 
+            // Configure MiniProfiler for Web API and EF Core only when inside development environment.
+            // Based on: https://dotnetthoughts.net/using-miniprofiler-in-aspnetcore-webapi/.
+            if (shouldUseMiniProfiler)
+            {
+                services.AddMemoryCache();
+                services.AddMiniProfiler(options =>
+                {
+                    // MiniProfiler URLs:
+                    // - show all requests:         /miniprofiler/results-index
+                    // - show current request:      /miniprofiler/results
+                    // - show all requests as JSON: /miniprofiler/results-list
+                    options.RouteBasePath = "/miniprofiler";
+                    options.EnableServerTimingHeader = true;
+                }).AddEntityFramework();
+            }
+
             // Configure ASP.NET Web API services
             services.AddControllers();
 
@@ -137,6 +158,11 @@ namespace Todo.WebApi
             {
                 applicationBuilder.UseDeveloperExceptionPage();
                 applicationBuilder.UseDatabaseErrorPage();
+            }
+
+            if (shouldUseMiniProfiler)
+            {
+                applicationBuilder.UseMiniProfiler();
             }
 
             applicationBuilder.UseHttpsRedirection();
