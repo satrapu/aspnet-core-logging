@@ -99,7 +99,6 @@ namespace Todo.WebApi.ExceptionHandling
         {
             public Task<IList<TodoItemInfo>> GetByQueryAsync(TodoItemQuery todoItemQuery)
             {
-                //throw new System.NotImplementedException();
                 throw new EntityNotFoundException(todoItemQuery.GetType(), null);
             }
 
