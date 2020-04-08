@@ -154,12 +154,6 @@ namespace Todo.WebApi
             applicationBuilder.UseExceptionHandler(localApplicationBuilder =>
                 localApplicationBuilder.UseCustomExceptionHandler(WebHostingEnvironment));
 
-            if (WebHostingEnvironment.IsDevelopment())
-            {
-                applicationBuilder.UseDeveloperExceptionPage();
-                applicationBuilder.UseDatabaseErrorPage();
-            }
-
             if (shouldUseMiniProfiler)
             {
                 applicationBuilder.UseMiniProfiler();
