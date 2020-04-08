@@ -13,21 +13,21 @@ This project has several posts associated with it:
 
 - [Description](#description)
 - [Build](#build)
-- [Code Quality](#code-quality)
-- [Setup Local Development Environment](#setup-local-development-environment)
-- [Setup local development database](#setup-local-development-database)
+- [Code quality](#code-quality)
 - [Setup Auth0 account](#setup-auth0-account)
-- [Setup local persistence services](#setup-local-persistence-services)
-- [Create Docker volumes](#create-docker-volumes)
-- [Create .env file](#create-env-file)
-- [Compose commands](#compose-commands)
-  - [Run compose services](#run-compose-services)
-  - [Stop compose services](#stop-compose-services)
-  - [Start compose services](#start-compose-services)
-  - [Display compose service log](#display-compose-service-log)
-  - [Destroy compose services](#destroy-compose-services)
-- [Open database manager](#open-database-manager)
-- [Setup environment variables](#setup-environment-variables)
+- [Setup local development environment](#setup-local-development-environment)
+    - [Setup local persistence services](#setup-local-persistence-services)
+      - [Create Docker volumes](#create-docker-volumes)
+      - [Create .env file](#create-env-file)
+      - [Compose commands](#compose-commands)
+        - [Run compose services](#run-compose-services)
+        - [Stop compose services](#stop-compose-services)
+        - [Start compose services](#start-compose-services)
+        - [Display compose service log](#display-compose-service-log)
+        - [Destroy compose services](#destroy-compose-services)
+      - [Open database manager](#open-database-manager)
+    - [Setup environment variables](#setup-environment-variables)      
+    - [Setup local development database](#setup-local-development-database)
 - [Inspect MiniProfiler results](#inspect-miniprofiler-results)
 
 ## Build
@@ -38,59 +38,13 @@ This project has several posts associated with it:
 | [Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/) | macOs            | [![Build Status](https://dev.azure.com/satrapu/aspnet-core-logging/_apis/build/status/ci-pipeline?branchName=master&jobName=Run%20on%20macOS)](https://dev.azure.com/satrapu/aspnet-core-logging/_build/latest?definitionId=2&branchName=master)                |
 | [Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/) | Windows          | [![Build Status](https://dev.azure.com/satrapu/aspnet-core-logging/_apis/build/status/ci-pipeline?branchName=master&jobName=Run%20on%20Windows)](https://dev.azure.com/satrapu/aspnet-core-logging/_build/latest?definitionId=2&branchName=master)              |
 
-## Code Quality
+## Code quality
 
 | Provider                                  | Badge                                                                                                                                                                                                                  |
 | ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [Codacy](https://www.codacy.com/)         | [![Codacy Badge](https://api.codacy.com/project/badge/Grade/001d9d7bbf43459aae186c7d8cd49858)](https://www.codacy.com/app/satrapu/aspnet-core-logging)                                                                 |
 | [FOSSA](https://fossa.com/)               | [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fsatrapu%2Faspnet-core-logging.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fsatrapu%2Faspnet-core-logging?ref=badge_shield) |
 | [SonarCloud](https://sonarcloud.io/about) | [![SonarCloud Status](https://sonarcloud.io/api/project_badges/measure?project=aspnet-core-logging&metric=alert_status)](https://sonarcloud.io/dashboard?id=aspnet-core-logging&branch=master)                         |
-
-## Setup Local Development Environment
-
-In order to run this application locally, you need to setup some things first.
-
-### Setup local development database
-
-In order to create and update the local development database, you need to install EF Core CLI tools; the reference documentation can be found [here](https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/dotnet). I also recommend reading about database migrations [here](https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/?tabs=dotnet-core-cli).  
-All of the commands below should be executed from the folder where you have checked-out this git repository.
-
-- Install dotnet-ef
-
-```bash
-dotnet tool install dotnet-ef --global
-```
-
-- Upgrade dotnet-ef to latest version, if requested to do so
-
-```bash
-dotnet tool upgrade dotnet-ef --global
-```
-
-- Add a new database migration
-
-```bash
-dotnet ef migrations add <MIGRATION_NAME> --startup-project ./Sources/Todo.WebApi --project ./Sources/Todo.Persistence
-```
-
-- List existing database migrations
-
-```bash
-dotnet ef migrations list --startup-project ./Sources/Todo.WebApi --project ./Sources/Todo.Persistence
-```
-
-- Update database to the last migration
-
-```bash
-dotnet ef database update --startup-project ./Sources/Todo.WebApi --project ./Sources/Todo.Persistence
-```
-
-- Drop existing database
-
-```bash
-dotnet ef database drop --startup-project ./Sources/Todo.WebApi --project ./Sources/Todo.Persistence
-
-```
 
 ### Setup Auth0 account
 
@@ -100,6 +54,10 @@ Follow the steps below to ensure you are able to run integration tests:
 - Ensure you have an Auth0 account; if you don't have, sign-up for one [here](https://auth0.com/signup)
 - Create an API as instructed [here](https://auth0.com/docs/getting-started/set-up-api)
 - Get a client ID and a client secret used for generating access tokens when running integration tests, as instructed [here](https://auth0.com/docs/quickstart/backend/aspnet-core-webapi/02-using)
+
+## Setup local development environment
+
+In order to run this application locally, you need to setup some things first, like: run PostgreSQL and pgadmin via Docker Compose, create a PostgreSQL database using EF Core database migrations, etc.
 
 ### Setup local persistence services
 
@@ -187,7 +145,7 @@ The command below will **not** delete the Docker volumes!
 docker-compose down
 ```
 
-### Open database manager
+#### Open database manager
 
 Once the services have been stared using `docker-compose up` command, open your browser and navigate to [http://localhost:8080](http://localhost:8080) in order to access the pgadmin UI; use `PGADMIN_DEFAULT_EMAIL` and `PGADMIN_DEFAULT_PASSWORD` properties found in your .env file to login.
 
@@ -203,6 +161,46 @@ the following environment variables must be defined on your local development ma
 | AUTH0__CLIENTID                            | <YOUR_AUTH0_TEST_CLIENT_ID>                                                                    | The Auth0 test client id                                         |
 | AUTH0__CLIENTSECRET                        | <YOUR_AUTH0_TEST_CLIENT_SECRET>                                                                | The Auth0 test client secret                                     |
 
+### Setup local development database
+
+In order to create and update the local development database, you need to install EF Core CLI tools; the reference documentation can be found [here](https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/dotnet). I also recommend reading about database migrations [here](https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/?tabs=dotnet-core-cli).  
+All of the commands below should be executed from the folder where you have checked-out this git repository.
+
+- Install dotnet-ef
+
+```bash
+dotnet tool install dotnet-ef --global
+```
+
+- Upgrade dotnet-ef to latest version, if requested to do so
+
+```bash
+dotnet tool upgrade dotnet-ef --global
+```
+
+- Add a new database migration
+
+```bash
+dotnet ef migrations add <MIGRATION_NAME> --startup-project ./Sources/Todo.WebApi --project ./Sources/Todo.Persistence
+```
+
+- List existing database migrations
+
+```bash
+dotnet ef migrations list --startup-project ./Sources/Todo.WebApi --project ./Sources/Todo.Persistence
+```
+
+- Update database to the last migration
+
+```bash
+dotnet ef database update --startup-project ./Sources/Todo.WebApi --project ./Sources/Todo.Persistence
+```
+
+- Drop existing database
+
+```bash
+dotnet ef database drop --startup-project ./Sources/Todo.WebApi --project ./Sources/Todo.Persistence
+```
 
 ### Inspect MiniProfiler results
 
