@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Security.Claims;
+using System.Text;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -16,6 +18,7 @@ using Todo.Services;
 using Todo.WebApi.Authorization;
 using Todo.WebApi.ExceptionHandling;
 using Todo.WebApi.Logging;
+using Todo.WebApi.Models;
 
 namespace Todo.WebApi
 {
@@ -24,8 +27,8 @@ namespace Todo.WebApi
     /// </summary>
     public class Startup
     {
-        private bool shouldUseMiniProfiler;
-        
+        private readonly bool shouldUseMiniProfiler;
+
         /// <summary>
         /// Creates a new instance of the <see cref="Startup"/> class.
         /// </summary>
@@ -36,8 +39,8 @@ namespace Todo.WebApi
             Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             WebHostingEnvironment = webHostEnvironment ?? throw new ArgumentNullException(nameof(webHostEnvironment));
 
-            shouldUseMiniProfiler =
-                bool.TryParse(Configuration["EnableMiniProfiler"], out bool enableMiniProfiler) && enableMiniProfiler;
+            shouldUseMiniProfiler = bool.TryParse(Configuration["MiniProfiler:Enable"], out bool enableMiniProfiler) &&
+                                    enableMiniProfiler;
         }
 
         private IConfiguration Configuration { get; }
@@ -81,7 +84,10 @@ namespace Todo.WebApi
             IdentityModelEventSource.ShowPII = WebHostingEnvironment.IsDevelopment();
 
             // Configure authentication & authorization using JWT tokens
-            string authZeroDomain = $"https://{Configuration["Auth0:Domain"]}/";
+            IConfigurationSection generateJwtTokensOptions =
+                Configuration.GetSection("GenerateJwtTokens");
+            string tokenIssuer = generateJwtTokensOptions.GetValue<string>("Issuer");
+            string tokenAudience = generateJwtTokensOptions.GetValue<string>("Audience");
 
             services.AddAuthentication(options =>
             {
@@ -89,25 +95,45 @@ namespace Todo.WebApi
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(options =>
             {
-                options.Authority = authZeroDomain;
-                options.Audience = Configuration["Auth0:Audience"];
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    //  Ensures the User.Identity.Name will be set to something in cases the access token does not
-                    // have a "sub" claim - see more here: https://auth0.com/docs/quickstart/backend/aspnet-core-webapi#configure-the-middleware.
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey =
+                        new SymmetricSecurityKey(
+                            Encoding.UTF8.GetBytes(generateJwtTokensOptions.GetValue<string>("Secret"))),
+                    ValidateIssuer = true,
+                    ValidIssuer = tokenIssuer,
+                    ValidateAudience = true,
+                    ValidAudience = tokenAudience,
+                    ValidateLifetime = true,
+                    ClockSkew = TimeSpan.Zero,
+                    // Ensure the User.Identity.Name is set to the user identifier and not to the user name.
                     NameClaimType = ClaimTypes.NameIdentifier
                 };
+                options.Events = new JwtBearerEvents
+                {
+                    OnAuthenticationFailed = context =>
+                    {
+                        if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+                        {
+                            context.Response.Headers.Add("Token-Expired", "true");
+                        }
+
+                        return Task.CompletedTask;
+                    }
+                };
             });
+
             services.AddAuthorization(options =>
             {
                 options.AddPolicy(Policies.TodoItems.GetTodoItems,
-                    policy => policy.Requirements.Add(new HasScopeRequirement("get:todo", authZeroDomain)));
+                    policy => policy.Requirements.Add(new HasScopeRequirement("get:todo", tokenIssuer)));
                 options.AddPolicy(Policies.TodoItems.CreateTodoItem,
-                    policy => policy.Requirements.Add(new HasScopeRequirement("create:todo", authZeroDomain)));
+                    policy => policy.Requirements.Add(new HasScopeRequirement("create:todo", tokenIssuer)));
                 options.AddPolicy(Policies.TodoItems.UpdateTodoItem,
-                    policy => policy.Requirements.Add(new HasScopeRequirement("update:todo", authZeroDomain)));
+                    policy => policy.Requirements.Add(new HasScopeRequirement("update:todo", tokenIssuer)));
                 options.AddPolicy(Policies.TodoItems.DeleteTodoItem,
-                    policy => policy.Requirements.Add(new HasScopeRequirement("delete:todo", authZeroDomain)));
+                    policy => policy.Requirements.Add(new HasScopeRequirement("delete:todo", tokenIssuer)));
             });
             services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
 
@@ -118,11 +144,11 @@ namespace Todo.WebApi
                 services.AddMemoryCache();
                 services.AddMiniProfiler(options =>
                 {
-                    // MiniProfiler URLs:
+                    // MiniProfiler URLs (assuming options.RouteBasePath has been set to '/miniprofiler')
                     // - show all requests:         /miniprofiler/results-index
                     // - show current request:      /miniprofiler/results
                     // - show all requests as JSON: /miniprofiler/results-list
-                    options.RouteBasePath = "/miniprofiler";
+                    options.RouteBasePath = Configuration.GetValue<string>("MiniProfiler:RouteBasePath");
                     options.EnableServerTimingHeader = true;
                 }).AddEntityFramework();
             }
@@ -140,6 +166,10 @@ namespace Todo.WebApi
                 serviceProvider.GetRequiredService<LoggingService>());
             services.AddSingleton<IHttpContextLoggingHandler>(serviceProvider =>
                 serviceProvider.GetRequiredService<LoggingService>());
+
+            // Configure options used for customizing generating JWT tokens.
+            // Options pattern: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-3.1.
+            services.Configure<GenerateJwtTokensOptions>(generateJwtTokensOptions);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

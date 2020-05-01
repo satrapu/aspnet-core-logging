@@ -21,23 +21,20 @@ namespace Todo.WebApi.ExceptionHandling
         public static void UseCustomExceptionHandler(this IApplicationBuilder applicationBuilder,
             IHostEnvironment hostEnvironment)
         {
+            ILogger logger = applicationBuilder.ApplicationServices.GetRequiredService<ILoggerFactory>()
+                .CreateLogger(nameof(CustomExceptionHandlerHelper));
+
             if (hostEnvironment.IsDevelopment())
             {
-                applicationBuilder.Use(WriteDevelopmentResponse);
+                applicationBuilder.Use((httpContext, _) => WriteResponse(httpContext, logger, true));
             }
             else
             {
-                applicationBuilder.Use(WriteProductionResponse);
+                applicationBuilder.Use((httpContext, _) => WriteResponse(httpContext, logger, false));
             }
         }
 
-        private static Task WriteDevelopmentResponse(HttpContext httpContext, Func<Task> next) =>
-            WriteResponse(httpContext, true);
-
-        private static Task WriteProductionResponse(HttpContext httpContext, Func<Task> next) =>
-            WriteResponse(httpContext, false);
-
-        private static async Task WriteResponse(HttpContext httpContext, bool includeDetails)
+        private static async Task WriteResponse(HttpContext httpContext, ILogger logger, bool includeDetails)
         {
             // Try and retrieve the error from the ExceptionHandler middleware
             IExceptionHandlerFeature exceptionHandlerFeature = httpContext.Features.Get<IExceptionHandlerFeature>();
@@ -54,9 +51,6 @@ namespace Todo.WebApi.ExceptionHandling
             // ProblemDetails has it's own content type
             httpContext.Response.ContentType = "application/problem+json";
             httpContext.Response.StatusCode = problemDetails.Status ?? (int) HttpStatusCode.InternalServerError;
-
-            ILoggerFactory loggerFactory = httpContext.RequestServices.GetRequiredService<ILoggerFactory>();
-            ILogger logger = loggerFactory.CreateLogger(typeof(CustomExceptionHandlerHelper));
 
             // The exception is first logged by the Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware class,
             // then by this method, but it's worth it since the second time the exception is logged, we end up with

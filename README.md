@@ -3,6 +3,10 @@
 ## Description
 
 This repo shows ASP.NET Core v3.x logging in action; it also serves as a learning, experimenting and teaching path for [Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/).  
+  
+:exclamation: Currently this web API uses JWT tokens for authentication & authorization purposes, but momentarily the mechanism used for generating these tokens has been __greatly__ reduced as my focus is set on other topics.  
+On the other hand, I do intend on providing a more realistic implementation in a not so far away future.
+
 This project has several posts associated with it:
 
 - [Use Docker when running integration tests with Azure Pipelines](https://crossprogramming.com/2019/12/27/use-docker-when-running-integration-tests-with-azure-pipelines.html)
@@ -14,7 +18,6 @@ This project has several posts associated with it:
 - [Description](#description)
 - [Build](#build)
 - [Code quality](#code-quality)
-- [Setup Auth0 account](#setup-auth0-account)
 - [Setup local development environment](#setup-local-development-environment)
     - [Setup local persistence services](#setup-local-persistence-services)
       - [Create Docker volumes](#create-docker-volumes)
@@ -46,18 +49,9 @@ This project has several posts associated with it:
 | [FOSSA](https://fossa.com/)               | [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fsatrapu%2Faspnet-core-logging.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fsatrapu%2Faspnet-core-logging?ref=badge_shield) |
 | [SonarCloud](https://sonarcloud.io/about) | [![SonarCloud Status](https://sonarcloud.io/api/project_badges/measure?project=aspnet-core-logging&metric=alert_status)](https://sonarcloud.io/dashboard?id=aspnet-core-logging&branch=master)                         |
 
-### Setup Auth0 account
-
-This web API is accessible using JWT tokens provided by [Auth0](https://auth0.com).  
-Follow the steps below to ensure you are able to run integration tests:
-
-- Ensure you have an Auth0 account; if you don't have, sign-up for one [here](https://auth0.com/signup)
-- Create an API as instructed [here](https://auth0.com/docs/getting-started/set-up-api)
-- Get a client ID and a client secret used for generating access tokens when running integration tests, as instructed [here](https://auth0.com/docs/quickstart/backend/aspnet-core-webapi/02-using)
-
 ## Setup local development environment
 
-In order to run this application locally, you need to setup some things first, like: run PostgreSQL and pgadmin via Docker Compose, create a PostgreSQL database using EF Core database migrations, etc.
+In order to run this application locally, you need to setup some things first, like: run PostgreSQL and pgadmin via Docker Compose, create a PostgreSQL database using EF Core database migrations, etc.  
 
 ### Setup local persistence services
 
@@ -154,12 +148,11 @@ Once the services have been stared using `docker-compose up` command, open your 
 Since storing sensitive data inside configuration file put under source control is not a very good idea,
 the following environment variables must be defined on your local development machine:
 
-| Name                                       | Value                                                                                          | Description                                                      |
-| ------------------------------------------ | ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
-| CONNECTIONSTRINGS__TODO                    | Server=localhost; Port=5432; Database=aspnet-core-logging-dev; Username=satrapu; Password=***; | The connection string pointing to the local development database |
-| CONNECTIONSTRINGS__TODOFORINTEGRATIONTESTS | Server=localhost; Port=5433; Database=aspnet-core-logging-it; Username=satrapu; Password=***;  | The connection string pointing to the integration tests database |
-| AUTH0__CLIENTID                            | <YOUR_AUTH0_TEST_CLIENT_ID>                                                                    | The Auth0 test client id                                         |
-| AUTH0__CLIENTSECRET                        | <YOUR_AUTH0_TEST_CLIENT_SECRET>                                                                | The Auth0 test client secret                                     |
+| Name                                       | Value                                                                                          | Description                                                                |
+| ------------------------------------------ | ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| CONNECTIONSTRINGS__TODO                    | Server=localhost; Port=5432; Database=aspnet-core-logging-dev; Username=satrapu; Password=***; | The connection string pointing to the local development database           |
+| CONNECTIONSTRINGS__TODOFORINTEGRATIONTESTS | Server=localhost; Port=5433; Database=aspnet-core-logging-it; Username=satrapu; Password=***;  | The connection string pointing to the integration tests database           |
+| GENERATEJWTTOKENS__SECRET                  | <YOUR_JWT_SECRET>                                                                              | The secret used for generating JWT tokens for experimenting purposes only  |
 
 ### Setup local development database
 

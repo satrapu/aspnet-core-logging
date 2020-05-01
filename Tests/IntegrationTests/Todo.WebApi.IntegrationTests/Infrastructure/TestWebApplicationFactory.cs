@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -14,9 +13,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
 using Npgsql;
 using Todo.Persistence;
+using Todo.WebApi.Models;
 
 namespace Todo.WebApi.Infrastructure
 {
@@ -63,36 +62,24 @@ namespace Todo.WebApi.Infrastructure
 
         private async Task<string> GetAccessToken()
         {
-            IConfiguration configuration = base.Services.GetRequiredService<IConfiguration>();
-            // ReSharper disable SettingNotFoundInConfiguration
-            string requestUri = $"https://{configuration["Auth0:Domain"]}/oauth/token";
-            string audience = configuration["Auth0:Audience"];
-            string clientId = configuration["Auth0:ClientId"];
-            string clientSecret = configuration["Auth0:ClientSecret"];
-            // ReSharper restore SettingNotFoundInConfiguration
-
-            using HttpClient httpClient = base.Services.GetRequiredService<IHttpClientFactory>().CreateClient();
-            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Post, requestUri)
+            var generateJwtTokenModel = new GenerateJwtTokenModel
             {
-                Content = new FormUrlEncodedContent(new List<KeyValuePair<string, string>>
-                {
-                    new KeyValuePair<string, string>("grant_type", "client_credentials"),
-                    new KeyValuePair<string, string>("client_id", clientId),
-                    new KeyValuePair<string, string>("client_secret", clientSecret),
-                    new KeyValuePair<string, string>("audience", audience)
-                })
+                UserName = $"user-{Guid.NewGuid():N}",
+                Password = $"password-{Guid.NewGuid():N}",
             };
+
+            using HttpClient httpClient = CreateClient();
             HttpResponseMessage httpResponseMessage =
-                await httpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
+                await httpClient.PostAsJsonAsync("api/jwttokens", generateJwtTokenModel).ConfigureAwait(false);
 
             if (!httpResponseMessage.IsSuccessStatusCode)
             {
                 throw new CouldNotGetTokenException(httpResponseMessage);
             }
 
-            JObject content = await httpResponseMessage.Content.ReadAsAsync<JObject>().ConfigureAwait(false);
-            string accessToken = content.Value<string>("access_token");
-            return accessToken;
+            JwtTokenModel jwtTokenModel =
+                await httpResponseMessage.Content.ReadAsAsync<JwtTokenModel>().ConfigureAwait(false);
+            return jwtTokenModel.AccessToken;
         }
 
         private void SetupDbContext(IServiceCollection services)
