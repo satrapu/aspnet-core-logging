@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using EntityFrameworkCoreMock;
 using FluentAssertions;
@@ -40,30 +41,55 @@ namespace Todo.Services
         }
 
         /// <summary>
+        /// Tests <see cref="TodoService"/> constructor.
+        /// </summary>
+        [Test]
+        public void Constructor_WithNullDbContext_ThrowsException()
+        {
+            TodoDbContext todoDbContext = null;
+            var mockLogger = new Mock<ILogger<TodoService>>();
+
+            // ReSharper disable once ExpressionIsAlwaysNull
+            Action createService = () => new TodoService(todoDbContext, mockLogger.Object);
+            createService.Should()
+                .Throw<ArgumentNullException>(
+                    $"must not create {nameof(TodoService)} with a null {nameof(TodoDbContext)}")
+                .And.ParamName.Should().Be(nameof(todoDbContext), "the EF Core context is null");
+        }
+
+        /// <summary>
+        /// Tests <see cref="TodoService"/> constructor.
+        /// </summary>
+        [Test]
+        public void Constructor_WithNullLogger_ThrowsException()
+        {
+            var mockTodoDbContext = new DbContextMock<TodoDbContext>(DummyOptions);
+            ILogger<TodoService> logger = null;
+
+            // ReSharper disable once ExpressionIsAlwaysNull
+            Action createService = () => new TodoService(mockTodoDbContext.Object, logger);
+            createService.Should()
+                .Throw<ArgumentNullException>(
+                    $"must not create {nameof(TodoService)} with a null {nameof(ILogger<TodoService>)}")
+                .And.ParamName.Should().Be(nameof(logger), "the logger is null");
+        }
+
+        /// <summary>
         /// Tests <see cref="TodoService.GetByQueryAsync"/> method.
         /// </summary>
         [Test]
-        public async Task GetByQueryAsync_UsingNullAsQuery_MustThrowException()
+        public void GetByQueryAsync_UsingNullAsQuery_MustThrowException()
         {
             var mockTodoDbContext = new DbContextMock<TodoDbContext>(DummyOptions);
             var mockLogger = new Mock<ILogger<TodoService>>();
             var todoService = new TodoService(mockTodoDbContext.Object, mockLogger.Object);
             TodoItemQuery todoItemQuery = null;
 
-            try
-            {
-                // ReSharper disable once ExpressionIsAlwaysNull
+            // ReSharper disable once ExpressionIsAlwaysNull
+            Func<Task<IList<TodoItemInfo>>> getByQueryAsync = async () =>
                 await todoService.GetByQueryAsync(todoItemQuery).ConfigureAwait(false);
-                Assert.Fail($"Expected to not be able to call method {nameof(todoService.GetByQueryAsync)} using null as argument");
-            }
-            catch (Exception expectedException)
-            {
-                expectedException.Should()
-                    .NotBeNull()
-                    .And.BeAssignableTo<ArgumentNullException>()
-                    .Subject.As<ArgumentNullException>()
-                    .ParamName.Should().Be("instance");
-            }
+            getByQueryAsync.Should().Throw<ArgumentNullException>("service cannot fetch data using a null query")
+                .And.ParamName.Should().Be("instance", "the query is null");
         }
     }
 }
