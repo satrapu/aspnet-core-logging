@@ -6,6 +6,9 @@
 	<s:Int64 x:Key="/Default/CodeStyle/Naming/CSharpAutoNaming/AutoNamingCompletedVersion/@EntryValue">2</s:Int64>
 	<s:String x:Key="/Default/CustomTools/CustomToolsData/@EntryValue"></s:String>
 	<s:String x:Key="/Default/Environment/Highlighting/HighlightingMode/@EntryValue">MarkersAndFullLine</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=3baba04b_002Dda66_002D47e6_002D85f0_002D8ee836c2598d/@EntryIndexedValue">&lt;SessionState ContinuousTestingIsOn="False" ContinuousTestingMode="0" FrameworkVersion="{x:Null}" IsLocked="False" Name="All tests from Solution" PlatformMonoPreference="{x:Null}" PlatformType="{x:Null}" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"&gt;
+  &lt;Solution /&gt;
+&lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=4ed2a04c_002Dfc35_002D48d5_002D99b6_002Da1bcbbc9777c/@EntryIndexedValue">&lt;SessionState ContinuousTestingIsOn="False" ContinuousTestingMode="0" FrameworkVersion="{x:Null}" IsLocked="False" Name="CreateAsync_UsingValidTodoItem_ReturnsTheSameInstance" PlatformMonoPreference="{x:Null}" PlatformType="{x:Null}" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"&gt;
   &lt;Solution /&gt;
 &lt;/SessionState&gt;</s:String>
