@@ -197,7 +197,7 @@ dotnet ef database drop --startup-project ./Sources/Todo.WebApi --project ./Sour
 
 ### Inspect MiniProfiler results
 
-If you enable [MiniProfiler](https://miniprofiler.com/) by setting the configuration property `EnableMiniProfiler` to `true`, you can navigate to the following MiniProfiler URLs:
+If you enable [MiniProfiler](https://miniprofiler.com/) by setting the configuration property `MiniProfiler:Enable` to `true`, you can navigate to the following MiniProfiler URLs:
 
 - List all requests: [https://localhost:5001/miniprofiler/results-index](https://localhost:5001/miniprofiler/results-index)
 - Inspect current request: [https://localhost:5001/miniprofiler/results](https://localhost:5001/miniprofiler/results)
