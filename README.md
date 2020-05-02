@@ -4,7 +4,7 @@
 
 This repo shows ASP.NET Core v3.x logging in action; it also serves as a learning, experimenting and teaching path for [Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/).  
   
-:exclamation: Currently this web API uses JSON web tokens (JWT) for authentication & authorization purposes, but momentarily the mechanism used for generating these tokens has been __greatly__ reduced as my focus is set on other topics.  
+:exclamation: Currently this web API uses JSON web tokens (JWT) for authentication & authorization purposes, but momentarily the mechanism used for generating these tokens has been __greatly__ simplified (to the point of being actually naive) as my focus is set on other topics.  
 On the other hand, I do intend on providing a more realistic implementation in a not so far away future.
 
 This project has several posts associated with it:
