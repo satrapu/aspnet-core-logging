@@ -39,6 +39,7 @@ variables:
   # Load group containing variables applicable to integration tests.
   # This group contains the password to be used when accessing the dockerized database targeted by the integration tests.
   # This password is stored as a secret under the name "IntegrationTests.Database.Todo.Password".
+  # See more about secret variables here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&tabs=yaml%2Cbatch#secret-variables.
   - group: 'IntegrationTests'
 
   # Specifies the version of the .NET Core SDK to install and use when running this pipeline.
@@ -74,11 +75,6 @@ variables:
   - name: 'IntegrationTests.Database.Todo.Username'
     value: 'satrapu'
     
-  # Represents the project version used by Sonar.
-  # See more here (search for 'sonar.projectVersion '): https://docs.sonarqube.org/latest/analysis/analysis-parameters/.
-  - name: 'Sonar.ProjectVersion'
-    value: '$(Date:yyyyMMdd).$(Rev:rrr)'
-
 # Define multiple jobs, one per supported operating system (Linux, macOS and Windows).
 # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/multiple-phases?tabs=yaml&view=azure-devops.
 #
