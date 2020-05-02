@@ -72,6 +72,7 @@ jobs:
       SonarCloud: 'sonar-cloud'
       organization: 'satrapu-github'
       projectKey: 'aspnet-core-logging'
+      projectVersion: '$(Date:yyyyMMdd).$(Rev:rrr)'
       extraProperties: |
         sonar.sourceEncoding=UTF-8
         sonar.cs.nunit.reportsPaths=**/TestResults/*.*
@@ -322,7 +323,7 @@ jobs:
   - task: SonarSource.sonarcloud.38b27399-a642-40af-bb7d-9971f69712e8.SonarCloudPublish@1
     name: 'publish_sonar_quality_gate_result'
     displayName: 'Publish Sonar quality gate result'
-    timeoutInMinutes: ${{ parameters.sonar.timeoutInMinutes }}
+    timeoutInMinutes: '${{ parameters.sonar.timeoutInMinutes }}'
     condition: |
       and
       (
