@@ -327,7 +327,7 @@ jobs:
     name: 'publish_sonar_quality_gate_result'
     displayName: 'Publish Sonar quality gate result'
     inputs:
-      pollingTimeoutSec: ${{ parameters.sonar.publishPollingTimeoutSeconds }}
+      pollingTimeoutSeconds: ${{ parameters.sonar.publishPollingTimeoutSeconds }}
     condition: |
       and
       (
