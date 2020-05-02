@@ -73,6 +73,7 @@ jobs:
       SonarCloud: 'sonar-cloud'
       organization: 'satrapu-github'
       projectKey: 'aspnet-core-logging'
+      # The 'CurrentProject.Version' variable has been declared inside the 'GlobalVariables' variable group.
       projectVersion: '$(CurrentProject.Version)'
       extraProperties: |
         sonar.sourceEncoding=UTF-8
