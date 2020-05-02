@@ -314,7 +314,8 @@ jobs:
   - task: SonarSource.sonarcloud.ce096e50-6155-4de8-8800-4221aaeed4a1.SonarCloudAnalyze@1
     name: 'run_sonar_analysis'
     displayName: 'Run Sonar analysis'
-    timeoutInMinutes: ${{ parameters.sonar.runAnalysisTimeoutInMinutes }}
+    inputs:
+      timeoutInMinutes: ${{ parameters.sonar.runAnalysisTimeoutInMinutes }}
     condition: |
       and
       (
