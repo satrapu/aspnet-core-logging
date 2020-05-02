@@ -7,6 +7,7 @@ parameters:
     configuration: 'Release'
   sonar:
     enabled: False
+    timeoutInMinutes: 5
     buildBreaker:
       enabled: False
   publishPipelineArtifacts: True
@@ -321,6 +322,7 @@ jobs:
   - task: SonarSource.sonarcloud.38b27399-a642-40af-bb7d-9971f69712e8.SonarCloudPublish@1
     name: 'publish_sonar_quality_gate_result'
     displayName: 'Publish Sonar quality gate result'
+    timeoutInMinutes: ${{ parameters.sonar.timeoutInMinutes }}
     condition: |
       and
       (
