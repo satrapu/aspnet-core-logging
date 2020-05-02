@@ -73,6 +73,11 @@ variables:
   # Represents the user used for accessing the database to be targeted by integration tests
   - name: 'IntegrationTests.Database.Todo.Username'
     value: 'satrapu'
+    
+  # Represents the project version used by Sonar.
+  # See more here (search for 'sonar.projectVersion '): https://docs.sonarqube.org/latest/analysis/analysis-parameters/.
+  - name: 'Sonar.ProjectVersion'
+    value: '$(Date:yyyyMMdd).$(Rev:rrr)'
 
 # Define multiple jobs, one per supported operating system (Linux, macOS and Windows).
 # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/multiple-phases?tabs=yaml&view=azure-devops.
