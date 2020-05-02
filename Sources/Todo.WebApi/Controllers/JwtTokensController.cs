@@ -44,21 +44,21 @@ namespace Todo.WebApi.Controllers
 
         private JwtTokenModel GenerateJwtToken(string userName, string password)
         {
-            var symmetricSecurityKey =
-                new SymmetricSecurityKey(Encoding.UTF8.GetBytes(generateJwtTokensOptions.Secret));
+            byte[] userNameAsBytes = Encoding.UTF8.GetBytes(userName);
+            string userNameAsBase64 = Convert.ToBase64String(userNameAsBytes);
+            var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(generateJwtTokensOptions.Secret));
 
             var securityTokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new[]
                 {
-                    new Claim(ClaimTypes.NameIdentifier, Guid.NewGuid().ToString("N")),
+                    new Claim(ClaimTypes.NameIdentifier, userNameAsBase64),
                     new Claim("scope", string.Join(' ', "get:todo", "create:todo", "update:todo", "delete:todo")),
                 }),
-                Expires = DateTime.UtcNow.AddDays(1),
+                Expires = DateTime.UtcNow.AddMonths(6),
                 Issuer = generateJwtTokensOptions.Issuer,
                 Audience = generateJwtTokensOptions.Audience,
-                SigningCredentials =
-                    new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256Signature)
+                SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256Signature),
             };
 
             var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
