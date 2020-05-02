@@ -7,6 +7,7 @@ parameters:
     configuration: 'Release'
   sonar:
     enabled: False
+    projectVersion: '$(Date:yyyyMMdd).$(Rev:rrr)'
     runAnalysisTimeoutInMinutes: 5
     publishPollingTimeoutSeconds: 300
     buildBreaker:
@@ -73,7 +74,7 @@ jobs:
       SonarCloud: 'sonar-cloud'
       organization: 'satrapu-github'
       projectKey: 'aspnet-core-logging'
-      projectVersion: $(Date:yyyyMMdd).$(Rev:rrr)
+      projectVersion: '${{ parameters.sonar.projectVersion }}'
       extraProperties: |
         sonar.sourceEncoding=UTF-8
         sonar.cs.nunit.reportsPaths=**/TestResults/*.*
