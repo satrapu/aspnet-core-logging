@@ -1,6 +1,6 @@
 namespace Todo.WebApi.Models
 {
-    public class GenerateJwtTokenModel
+    public class GenerateJwtModel
     {
         public string UserName { get; set; }
 

@@ -48,7 +48,7 @@ namespace Todo.WebApi.Controllers
         {
             // Arrange
             using HttpClient httpClient =
-                await testWebApplicationFactory.CreateClientWithJwtToken().ConfigureAwait(false);
+                await testWebApplicationFactory.CreateClientWithJwt().ConfigureAwait(false);
             long? id = null;
 
             try
@@ -90,7 +90,7 @@ namespace Todo.WebApi.Controllers
         {
             // Arrange
             using HttpClient httpClient =
-                await testWebApplicationFactory.CreateClientWithJwtToken().ConfigureAwait(false);
+                await testWebApplicationFactory.CreateClientWithJwt().ConfigureAwait(false);
             long? id = null;
 
             try
@@ -159,7 +159,7 @@ namespace Todo.WebApi.Controllers
         {
             // Arrange
             using HttpClient httpClient =
-                await testWebApplicationFactory.CreateClientWithJwtToken().ConfigureAwait(false);
+                await testWebApplicationFactory.CreateClientWithJwt().ConfigureAwait(false);
             long? id = null;
 
             try
@@ -213,7 +213,7 @@ namespace Todo.WebApi.Controllers
         {
             // Arrange
             using HttpClient httpClient =
-                await testWebApplicationFactory.CreateClientWithJwtToken().ConfigureAwait(false);
+                await testWebApplicationFactory.CreateClientWithJwt().ConfigureAwait(false);
             long? id = null;
 
             try
@@ -261,7 +261,7 @@ namespace Todo.WebApi.Controllers
         {
             // Arrange
             using HttpClient httpClient =
-                await testWebApplicationFactory.CreateClientWithJwtToken().ConfigureAwait(false);
+                await testWebApplicationFactory.CreateClientWithJwt().ConfigureAwait(false);
             long? id = null;
 
             try
@@ -325,7 +325,7 @@ namespace Todo.WebApi.Controllers
         {
             // Arrange
             using HttpClient httpClient =
-                await testWebApplicationFactory.CreateClientWithJwtToken().ConfigureAwait(false);
+                await testWebApplicationFactory.CreateClientWithJwt().ConfigureAwait(false);
 
             string name = $"it--{nameof(DeleteAsync_UsingNewlyCreatedTodoItem_MustSucceed)}--{Guid.NewGuid():N}";
             bool isComplete = DateTime.UtcNow.Ticks % 2 == 0;

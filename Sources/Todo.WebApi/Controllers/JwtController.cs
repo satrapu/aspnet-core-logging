@@ -12,41 +12,46 @@ using Todo.WebApi.Models;
 namespace Todo.WebApi.Controllers
 {
     /// <summary>
-    /// Creates JWT tokens to be used when authentication and authorize users accessing this web API.
+    /// Creates JSON web tokens to be used when authentication and authorize users accessing this web API.
     /// Based on: https://dotnetcoretutorials.com/2020/01/15/creating-and-validating-jwt-tokens-in-asp-net-core/.
     /// WARNING: This controller is *not* ready for production! It has been written for experimenting purposes only,
-    /// so the logic of generating a JWT token for a given user name and password has been greatly simplified.
+    /// so the logic of generating a JSON web token for a given user name and password has been greatly simplified.
     /// In the future, a better mechanism will be implemented.
     /// </summary>
     [Route("api/[controller]")]
     [Authorize]
     [ApiController]
-    public class JwtTokensController : ControllerBase
+    public class JwtController : ControllerBase
     {
-        private readonly GenerateJwtTokensOptions generateJwtTokensOptions;
+        private readonly GenerateJwtOptions generateJwtOptions;
 
-        public JwtTokensController(IOptionsMonitor<GenerateJwtTokensOptions> generateJwtTokensOptionsMonitor)
+        public JwtController(IOptionsMonitor<GenerateJwtOptions> generateJwtOptionsMonitor)
         {
             // Options pattern: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-3.1.
-            generateJwtTokensOptions = generateJwtTokensOptionsMonitor.CurrentValue;
+            generateJwtOptions = generateJwtOptionsMonitor.CurrentValue;
         }
 
+        /// <summary>
+        /// Generates a JSON web token.
+        /// </summary>
+        /// <param name="generateJwtModel"></param>
+        /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
-        public async Task<IActionResult> GenerateJwtTokenAsync([FromBody] GenerateJwtTokenModel generateJwtTokenModel)
+        public async Task<IActionResult> GenerateTokenAsync([FromBody] GenerateJwtModel generateJwtModel)
         {
-            JwtTokenModel jwtTokenModel = await Task
-                .FromResult(GenerateJwtToken(generateJwtTokenModel.UserName, generateJwtTokenModel.Password))
+            JwtModel jwtModel = await Task
+                .FromResult(GenerateToken(generateJwtModel.UserName, generateJwtModel.Password))
                 .ConfigureAwait(false);
 
-            return Ok(jwtTokenModel);
+            return Ok(jwtModel);
         }
 
-        private JwtTokenModel GenerateJwtToken(string userName, string password)
+        private JwtModel GenerateToken(string userName, string password)
         {
             byte[] userNameAsBytes = Encoding.UTF8.GetBytes(userName);
             string userNameAsBase64 = Convert.ToBase64String(userNameAsBytes);
-            var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(generateJwtTokensOptions.Secret));
+            var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(generateJwtOptions.Secret));
 
             var securityTokenDescriptor = new SecurityTokenDescriptor
             {
@@ -56,20 +61,20 @@ namespace Todo.WebApi.Controllers
                     new Claim("scope", string.Join(' ', "get:todo", "create:todo", "update:todo", "delete:todo")),
                 }),
                 Expires = DateTime.UtcNow.AddMonths(6),
-                Issuer = generateJwtTokensOptions.Issuer,
-                Audience = generateJwtTokensOptions.Audience,
+                Issuer = generateJwtOptions.Issuer,
+                Audience = generateJwtOptions.Audience,
                 SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256Signature),
             };
 
             var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
             SecurityToken securityToken = jwtSecurityTokenHandler.CreateToken(securityTokenDescriptor);
 
-            var generatedJwtTokenModel = new JwtTokenModel
+            var jwtModel = new JwtModel
             {
                 AccessToken = jwtSecurityTokenHandler.WriteToken(securityToken),
             };
 
-            return generatedJwtTokenModel;
+            return jwtModel;
         }
     }
 }

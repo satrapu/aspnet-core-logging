@@ -1,6 +1,6 @@
 namespace Todo.WebApi.Models
 {
-    public class JwtTokenModel
+    public class JwtModel
     {
         public string AccessToken { get; set; }
     }

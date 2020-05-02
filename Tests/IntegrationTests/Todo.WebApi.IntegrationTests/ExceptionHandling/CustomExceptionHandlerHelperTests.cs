@@ -44,7 +44,7 @@ namespace Todo.WebApi.ExceptionHandling
         {
             // Arrange
             using HttpClient httpClient =
-                await webApplicationFactoryWhichThrowsException.CreateClientWithJwtToken().ConfigureAwait(false);
+                await webApplicationFactoryWhichThrowsException.CreateClientWithJwt().ConfigureAwait(false);
             var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, "api/todo");
 
             // Act

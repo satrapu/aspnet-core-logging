@@ -83,11 +83,10 @@ namespace Todo.WebApi
             // Display personally identifiable information only during development
             IdentityModelEventSource.ShowPII = WebHostingEnvironment.IsDevelopment();
 
-            // Configure authentication & authorization using JWT tokens
-            IConfigurationSection generateJwtTokensOptions =
-                Configuration.GetSection("GenerateJwtTokens");
-            string tokenIssuer = generateJwtTokensOptions.GetValue<string>("Issuer");
-            string tokenAudience = generateJwtTokensOptions.GetValue<string>("Audience");
+            // Configure authentication & authorization using JSON web tokens
+            IConfigurationSection generateJwtOptions = Configuration.GetSection("GenerateJwt");
+            string tokenIssuer = generateJwtOptions.GetValue<string>("Issuer");
+            string tokenAudience = generateJwtOptions.GetValue<string>("Audience");
 
             services.AddAuthentication(options =>
             {
@@ -100,7 +99,7 @@ namespace Todo.WebApi
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey =
                         new SymmetricSecurityKey(
-                            Encoding.UTF8.GetBytes(generateJwtTokensOptions.GetValue<string>("Secret"))),
+                            Encoding.UTF8.GetBytes(generateJwtOptions.GetValue<string>("Secret"))),
                     ValidateIssuer = true,
                     ValidIssuer = tokenIssuer,
                     ValidateAudience = true,
@@ -169,7 +168,7 @@ namespace Todo.WebApi
 
             // Configure options used for customizing generating JWT tokens.
             // Options pattern: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-3.1.
-            services.Configure<GenerateJwtTokensOptions>(generateJwtTokensOptions);
+            services.Configure<GenerateJwtOptions>(generateJwtOptions);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

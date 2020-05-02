@@ -52,7 +52,7 @@ namespace Todo.WebApi.Infrastructure
             });
         }
 
-        public async Task<HttpClient> CreateClientWithJwtToken()
+        public async Task<HttpClient> CreateClientWithJwt()
         {
             string accessToken = await GetAccessToken().ConfigureAwait(false);
             HttpClient httpClient = CreateClient();
@@ -62,7 +62,7 @@ namespace Todo.WebApi.Infrastructure
 
         private async Task<string> GetAccessToken()
         {
-            var generateJwtTokenModel = new GenerateJwtTokenModel
+            var generateJwtModel = new GenerateJwtModel
             {
                 UserName = $"user-{Guid.NewGuid():N}",
                 Password = $"password-{Guid.NewGuid():N}",
@@ -70,16 +70,16 @@ namespace Todo.WebApi.Infrastructure
 
             using HttpClient httpClient = CreateClient();
             HttpResponseMessage httpResponseMessage =
-                await httpClient.PostAsJsonAsync("api/jwttokens", generateJwtTokenModel).ConfigureAwait(false);
+                await httpClient.PostAsJsonAsync("api/jwt", generateJwtModel).ConfigureAwait(false);
 
             if (!httpResponseMessage.IsSuccessStatusCode)
             {
-                throw new CouldNotGetTokenException(httpResponseMessage);
+                throw new CouldNotGetJwtException(httpResponseMessage);
             }
 
-            JwtTokenModel jwtTokenModel =
-                await httpResponseMessage.Content.ReadAsAsync<JwtTokenModel>().ConfigureAwait(false);
-            return jwtTokenModel.AccessToken;
+            JwtModel jwtModel =
+                await httpResponseMessage.Content.ReadAsAsync<JwtModel>().ConfigureAwait(false);
+            return jwtModel.AccessToken;
         }
 
         private void SetupDbContext(IServiceCollection services)

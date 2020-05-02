@@ -148,11 +148,11 @@ Once the services have been stared using `docker-compose up` command, open your 
 Since storing sensitive data inside configuration file put under source control is not a very good idea,
 the following environment variables must be defined on your local development machine:
 
-| Name                                       | Value                                                                                          | Description                                                                |
-| ------------------------------------------ | ---------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
-| CONNECTIONSTRINGS__TODO                    | Server=localhost; Port=5432; Database=aspnet-core-logging-dev; Username=satrapu; Password=***; | The connection string pointing to the local development database           |
-| CONNECTIONSTRINGS__TODOFORINTEGRATIONTESTS | Server=localhost; Port=5433; Database=aspnet-core-logging-it; Username=satrapu; Password=***;  | The connection string pointing to the integration tests database           |
-| GENERATEJWTTOKENS__SECRET                  | <YOUR_JWT_SECRET>                                                                              | The secret used for generating JWT tokens for experimenting purposes only  |
+| Name                                       | Value                                                                                          | Description                                                                    |
+| ------------------------------------------ | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| CONNECTIONSTRINGS__TODO                    | Server=localhost; Port=5432; Database=aspnet-core-logging-dev; Username=satrapu; Password=***; | The connection string pointing to the local development database               |
+| CONNECTIONSTRINGS__TODOFORINTEGRATIONTESTS | Server=localhost; Port=5433; Database=aspnet-core-logging-it; Username=satrapu; Password=***;  | The connection string pointing to the integration tests database               |
+| GENERATEJWT__SECRET                        | <YOUR_JWT_SECRET>                                                                              | The secret used for generating JSON web tokens for experimenting purposes only |
 
 ### Setup local development database
 
