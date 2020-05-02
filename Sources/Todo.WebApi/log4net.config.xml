@@ -2,7 +2,6 @@
 <log4net>
 
     <appender name="Application" type="log4net.Appender.RollingFileAppender">
-        <lockingModel type="log4net.Appender.FileAppender+MinimalLock"/>
         <file value="Logs/todo.log"/>
         <datePattern value=".yyyy-MM-dd.'log'"/>
         <staticLogFileName value="true"/>

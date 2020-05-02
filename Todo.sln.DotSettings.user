@@ -13,9 +13,7 @@
   &lt;Solution /&gt;
 &lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=5b2f76fe_002D6507_002D49ae_002D80e9_002D37e12c4b12bf/@EntryIndexedValue">&lt;SessionState ContinuousTestingIsOn="False" ContinuousTestingMode="0" FrameworkVersion="{x:Null}" IsLocked="False" Name="Constructor_WithNullDbContext_ThrowsException" PlatformMonoPreference="{x:Null}" PlatformType="{x:Null}" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"&gt;
-  &lt;TestAncestor&gt;
-    &lt;TestId&gt;NUnit3x::31B079C8-A348-489A-A8CD-60513D1F35EB::.NETCoreApp,Version=v3.1::Todo.Services.TodoServiceTests.Constructor_WithNullDbContext_ThrowsException&lt;/TestId&gt;
-  &lt;/TestAncestor&gt;
+  &lt;Solution /&gt;
 &lt;/SessionState&gt;</s:String>
 	
 	
