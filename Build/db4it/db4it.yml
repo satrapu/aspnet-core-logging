@@ -1,0 +1,45 @@
+# Start the services below by running the command:
+#
+#  docker-compose --file ./db4it.yml --project-name db4it down \
+#  && docker-compose --file ./db4it.yml --project-name db4it build \
+#  && docker-compose --file ./db4it.yml --project-name db4it up -d \
+#  && docker-compose --file ./db4it.yml --project-name db4it logs --follow dependency-checker
+version: '3.8'
+services:
+  db:
+    image: postgres:12-alpine
+    healthcheck:
+      test: >
+        pg_isready \
+          --host=localhost \
+          --port=5432 \
+          --dbname=${db_name} \
+          --username=${db_username}
+      interval: ${db_healthcheck_interval}
+      timeout: ${db_healthcheck_timeout}
+      retries: ${db_healthcheck_retries}
+    stdin_open: true
+    tty: true
+    environment:
+      POSTGRES_DB: ${db_name}
+      POSTGRES_USER: ${db_username}
+      POSTGRES_PASSWORD: ${db_password}
+    ports:
+      - 5432
+  dependency-checker:
+    image: satrapu/dependency-checker
+    build:
+      context: .
+      dockerfile: ./Dockerfile-dependency-checker
+    stdin_open: true
+    tty: true
+    environment:
+      SLEEP_BETWEEN_CONSECTUIVE_RETRIES: ${sleep_between_consecutive_retries}
+      MAX_RETRIES: ${max_retries}
+      SERVICE_NAME: db
+      PROJECT_NAME: db4it
+      DOCKER_API_VERSION: ${docker_api_version}
+    depends_on:
+      - db
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock

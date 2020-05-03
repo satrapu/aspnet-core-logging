@@ -1,0 +1,13 @@
+FROM alpine:3.11.6
+
+LABEL maintainer="Bogdan Marian <satrapu@users.noreply.github.com>"
+
+COPY ./dependency-checker-entrypoint.sh /bin/dependency-checker-entrypoint.sh
+
+RUN apk add --no-cache \
+        curl=7.67.0-r0 \
+        jq=1.6-r0 \
+    && rm -rf /var/cache/apk/* \
+    && chmod +x /bin/dependency-checker-entrypoint.sh
+    
+ENTRYPOINT ["sh", "/bin/dependency-checker-entrypoint.sh"]
