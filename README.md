@@ -175,7 +175,8 @@ the following environment variables must be defined on your local development ma
 | GENERATEJWT__SECRET                        | <YOUR_JWT_SECRET>                                                                              | The secret used for generating JSON web tokens for experimenting purposes only |
 
 The connection strings above use the same username and password pairs find in the local `.env` file.  
-The port from each connection string represent the host port declared inside the local `docker-compose.yml` file.
+The port from each connection string represent the host port declared inside the local `docker-compose.yml` file - 
+see more about ports [here](https://docs.docker.com/compose/compose-file/#ports).
 
 ### Setup local development database
 
