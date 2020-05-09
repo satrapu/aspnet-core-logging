@@ -33,8 +33,8 @@ This project has several posts associated with it:
         - [Register local database server](#register-your-local-database-server)
     - [Setup environment variables](#setup-environment-variables)      
     - [Setup local development database](#setup-local-development-database)
-      - [Option 1: Manually run database migrations]
-      - [Option 2: Run database migrations at application startup]
+      - [Option 1: Manually run database migrations](#option-1-manually-run-database-migrations)
+      - [Option 2: Run database migrations at application startup](#option-2-run-database-migrations-at-application-startup)
 - [Inspect MiniProfiler results](#inspect-miniprofiler-results)
 
 ## Build
