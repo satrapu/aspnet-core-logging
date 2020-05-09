@@ -39,7 +39,8 @@ namespace Todo.WebApi
             Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             WebHostingEnvironment = webHostEnvironment ?? throw new ArgumentNullException(nameof(webHostEnvironment));
 
-            shouldUseMiniProfiler = bool.TryParse(Configuration["MiniProfiler:Enable"], out bool enableMiniProfiler) && enableMiniProfiler;
+            shouldUseMiniProfiler = bool.TryParse(Configuration["MiniProfiler:Enable"], out bool enableMiniProfiler) &&
+                                    enableMiniProfiler;
         }
 
         private IConfiguration Configuration { get; }
@@ -96,7 +97,8 @@ namespace Todo.WebApi
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(generateJwtOptions.GetValue<string>("Secret"))),
+                    IssuerSigningKey =
+                        new SymmetricSecurityKey(Encoding.UTF8.GetBytes(generateJwtOptions.GetValue<string>("Secret"))),
                     ValidateIssuer = true,
                     ValidIssuer = tokenIssuer,
                     ValidateAudience = true,
@@ -170,7 +172,8 @@ namespace Todo.WebApi
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         // ReSharper disable once UnusedMember.Global
-        public void Configure(IApplicationBuilder applicationBuilder, IHostApplicationLifetime hostApplicationLifetime, ILogger<Startup> logger)
+        public void Configure(IApplicationBuilder applicationBuilder, IHostApplicationLifetime hostApplicationLifetime,
+            ILogger<Startup> logger)
         {
             // The HTTP logging middleware *must* be the first one inside the ASP.NET Core request pipeline to ensure
             // all requests and their responses are properly logged
@@ -225,7 +228,8 @@ namespace Todo.WebApi
 
         private void MigrateDatabase(IApplicationBuilder applicationBuilder, ILogger logger)
         {
-            using var serviceScope = applicationBuilder.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope();
+            using var serviceScope = applicationBuilder.ApplicationServices.GetRequiredService<IServiceScopeFactory>()
+                .CreateScope();
             using var todoDbContext = serviceScope.ServiceProvider.GetService<TodoDbContext>();
             string database = todoDbContext.Database.GetDbConnection().Database;
 
