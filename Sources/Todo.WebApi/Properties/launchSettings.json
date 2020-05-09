@@ -2,10 +2,6 @@
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
-    "iis": {
-      "applicationUrl": "http://localhost/Todo.WebApi",
-      "sslPort": 0
-    },
     "iisExpress": {
       "applicationUrl": "http://localhost:57747",
       "sslPort": 44353
