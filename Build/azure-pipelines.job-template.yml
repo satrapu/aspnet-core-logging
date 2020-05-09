@@ -79,7 +79,7 @@ jobs:
         sonar.sourceEncoding=UTF-8
         sonar.cs.nunit.reportsPaths=**/TestResults/*.*
         sonar.cs.opencover.reportsPaths=**/coverage.opencover.xml
-        sonar.coverage.exclusions=**/Tests/**/*.cs,**/Sources/Todo.Persistence/**/TodoDbContextModelSnapshot.cs
+        sonar.coverage.exclusions=**/Tests/**/*.cs,**/Sources/Todo.Persistence/**/TodoDbContextModelSnapshot.cs,**/Sources/Todo.WebApi/**/Startup.cs 
       
   # Compile source code.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/dotnet-core-cli?view=azure-devops.
@@ -110,7 +110,7 @@ jobs:
       /p:CollectCoverage=True
       /p:CoverletOutputFormat=opencover
       /p:Include="[Todo.*]*"
-      /p:Exclude=\"[Todo.*.*Tests]*,[Todo.Persistence]*.TodoDbContextModelSnapshot\"
+      /p:Exclude=\"[Todo.*.*Tests]*,[Todo.Persistence]*.TodoDbContextModelSnapshot,[Todo.WebApi]*.Startup\"
       -- NUnit.Where="cat == UnitTests"
     name: 'run_unit_tests'
     displayName: 'Run unit tests'
