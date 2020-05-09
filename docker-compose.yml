@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   aspnet-core-logging-dev:
-    container_name: aspnet-core-logging-dev
+    container_name: aspnet-core-logging-dev-db
     image: postgres:12-alpine
     restart: unless-stopped
     volumes:
@@ -17,7 +17,7 @@ services:
       - POSTGRES_DB=aspnet-core-logging-dev
 
   aspnet-core-logging-it:
-    container_name: aspnet-core-logging-it
+    container_name: aspnet-core-logging-it-db
     image: postgres:12-alpine
     restart: unless-stopped
     volumes:
@@ -32,7 +32,7 @@ services:
       - POSTGRES_DB=aspnet-core-logging-it
 
   pgadmin:
-    container_name: pgadmin
+    container_name: pgadmin-ui
     image: dpage/pgadmin4:4.21
     restart: unless-stopped
     volumes:
