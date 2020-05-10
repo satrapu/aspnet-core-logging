@@ -55,7 +55,7 @@ This project has several posts associated with it:
 
 ## Setup local development environment
 
-In order to run this application locally, you need to setup some things first, like: run PostgreSQL and pgadmin via Docker Compose, create a PostgreSQL database using EF Core database migrations, etc.  
+In order to run this application locally, you need to setup some things first, like: run PostgreSQL and pgAdmin via Docker Compose, create a PostgreSQL database using EF Core database migrations, etc.  
 
 ### Setup local persistence services
 
@@ -77,7 +77,7 @@ docker volume create --name=aspnet-core-logging-dev_data
 docker volume create --name=aspnet-core-logging-it_data
 ```
 
-- Volume used by pgadmin tool
+- Volume used by pgAdmin tool
 
 ```bash
 docker volume create --name=pgadmin_data
