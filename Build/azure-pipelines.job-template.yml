@@ -271,7 +271,7 @@ jobs:
         , eq( ${{ parameters.publishPipelineArtifacts }}, True)
       )
     inputs:
-      artifact: 'test-results-$(Agent.OS)-$(Agent.OSArchitecture)-$(Build.BuildNumber)-$(BuildID)'
+      artifact: 'test-results-$(Agent.OS)-$(Agent.OSArchitecture)-$(Build.BuildNumber)-$(Build.BuildID)'
       path: '$(Build.SourcesDirectory)/Tests'
 
   # Install reportgenerator tool to be able to generate code coverage related reports.
