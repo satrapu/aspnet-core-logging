@@ -1,4 +1,3 @@
-using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -10,30 +9,30 @@ namespace Todo.Persistence.Entities.Configurations
         {
             builder.ToTable("TodoItems");
 
-            builder.HasKey("Id");
+            builder.HasKey(todoItem => todoItem.Id);
 
-            builder.Property<long>("Id")
+            builder.Property(todoItem => todoItem.Id)
                 .ValueGeneratedOnAdd();
 
-            builder.Property<string>("Name")
+            builder.Property(todoItem => todoItem.Name)
                 .IsRequired()
                 .HasMaxLength(100);
 
-            builder.Property<bool>("IsComplete")
+            builder.Property(todoItem => todoItem.IsComplete)
                 .IsRequired();
 
-            builder.Property<string>("CreatedBy")
+            builder.Property(todoItem => todoItem.CreatedBy)
                 .IsRequired()
                 .HasMaxLength(100);
 
-            builder.Property<DateTime>("CreatedOn")
+            builder.Property(todoItem => todoItem.CreatedOn)
                 .IsRequired();
 
-            builder.Property<string>("LastUpdatedBy")
+            builder.Property(todoItem => todoItem.LastUpdatedBy)
                 .IsRequired(false)
                 .HasMaxLength(100);
 
-            builder.Property<DateTime?>("LastUpdatedOn")
+            builder.Property(todoItem => todoItem.LastUpdatedOn)
                 .IsRequired(false);
 
             // Enable optimistic locking for this table using PostgreSQL xmin feature (holds the ID of the latest
