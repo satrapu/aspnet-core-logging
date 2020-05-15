@@ -49,7 +49,15 @@ namespace Todo.Persistence.Entities
         /// When a user creates an item, this property is set to the same value as the <seealso cref="CreatedOn"/> one.
         /// </summary>
         public DateTime? LastUpdatedOn { get; set; }
-
+        
+        /// <summary>
+        /// The identity (transaction ID) of the inserting transaction for this row version.
+        /// See more here: https://www.postgresql.org/docs/12/ddl-system-columns.html.
+        /// </summary>
+        // ReSharper disable once InconsistentNaming
+        // ReSharper disable once UnusedMember.Global
+        public uint xmin { get; set; }
+        
         /// <summary>
         /// Creates a new instance of the <see cref="TodoItem"/> class.
         /// </summary>

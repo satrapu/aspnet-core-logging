@@ -36,6 +36,12 @@ namespace Todo.Persistence.Entities.Configurations
             builder.Property<DateTime?>("LastUpdatedOn")
                 .IsRequired(false);
 
+            // Enable optimistic locking for this table using PostgreSQL xmin feature (holds the ID of the latest
+            // updating transaction).
+            // See more about xmin here: https://www.npgsql.org/efcore/modeling/concurrency.html.
+            // See more about handling concurrency with EF Cor here: https://docs.microsoft.com/en-us/ef/core/saving/concurrency.
+            builder.UseXminAsConcurrencyToken();
+
             builder.HasIndex(nameof(TodoItem.CreatedBy), nameof(TodoItem.Name))
                 .IsUnique();
         }
