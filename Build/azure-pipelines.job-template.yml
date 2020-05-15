@@ -309,6 +309,7 @@ jobs:
     displayName: 'Publish code coverage report'
     inputs:
       codeCoverageTool: 'Cobertura'
+      pathToSources: '$(Build.SourcesDirectory)/Sources'
       summaryFileLocation: '$(Build.SourcesDirectory)/.CodeCoverageReport/Cobertura.xml'
       reportDirectory: '$(Build.SourcesDirectory)/.CodeCoverageReport'
 
