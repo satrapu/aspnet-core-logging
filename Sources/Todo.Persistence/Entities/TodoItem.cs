@@ -83,7 +83,8 @@ namespace Todo.Persistence.Entities
                    $"{nameof(CreatedBy)}: {CreatedBy}, " +
                    $"{nameof(CreatedOn)}: {CreatedOn:u}, " +
                    $"{nameof(LastUpdatedBy)}: {LastUpdatedBy}, " +
-                   $"{nameof(LastUpdatedOn)}: {LastUpdatedOn?.ToString("u")}]";
+                   $"{nameof(LastUpdatedOn)}: {LastUpdatedOn?.ToString("u")}, " + 
+                   $"{nameof(xmin)}(concurrency token): {xmin}]";
         }
     }
 }
