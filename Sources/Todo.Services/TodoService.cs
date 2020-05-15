@@ -42,7 +42,13 @@ namespace Todo.Services
         {
             Validator.ValidateObject(todoItemQuery, new ValidationContext(todoItemQuery), true);
 
-            IQueryable<TodoItem> todoItems = FilterItems(todoItemQuery).TagWith(nameof(GetByQueryAsync)).AsNoTracking();
+            IQueryable<TodoItem> todoItems = FilterItems(todoItemQuery)
+                // Read more about query tags here: 
+                // https://docs.microsoft.com/en-us/ef/core/querying/tags
+                .TagWith(nameof(GetByQueryAsync))
+                // Read moe about no tracking queries here:
+                // https://docs.microsoft.com/en-us/ef/core/querying/tracking#no-tracking-queries
+                .AsNoTracking();
             todoItems = SortItems(todoItems, todoItemQuery);
             todoItems = PaginateItems(todoItems, todoItemQuery);
             IQueryable<TodoItemInfo> todoItemInfos = ProjectItems(todoItems);
