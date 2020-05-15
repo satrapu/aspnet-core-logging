@@ -193,10 +193,10 @@ All of the commands below should be executed from the folder where you have chec
 dotnet tool install dotnet-ef --global
 ```
 
-- Upgrade dotnet-ef to latest version, if requested to do so
+- Update dotnet-ef to latest version, if requested to do so
 
 ```bash
-dotnet tool upgrade dotnet-ef --global
+dotnet tool update dotnet-ef --global
 ```
 
 - Add a new database migration
