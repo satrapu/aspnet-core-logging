@@ -37,7 +37,7 @@ namespace Todo.WebApi.Logging
         {
             // Arrange
             using HttpClient httpClient =
-                await testWebApplicationFactory.CreateClientWithJwt().ConfigureAwait(false);
+                await testWebApplicationFactory.CreateClientWithJwtAsync().ConfigureAwait(false);
             var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, "qwerty/123456");
             httpRequestMessage.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("qwerty/123456"));
 
@@ -57,7 +57,7 @@ namespace Todo.WebApi.Logging
         {
             // Arrange
             using HttpClient httpClient =
-                await testWebApplicationFactory.CreateClientWithJwt().ConfigureAwait(false);
+                await testWebApplicationFactory.CreateClientWithJwtAsync().ConfigureAwait(false);
             var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, "api/todo");
             httpRequestMessage.Headers.Accept.Add(MediaTypeWithQualityHeaderValue.Parse("application/json"));
 

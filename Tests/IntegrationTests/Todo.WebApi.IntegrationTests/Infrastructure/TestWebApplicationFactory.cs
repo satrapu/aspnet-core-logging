@@ -52,15 +52,15 @@ namespace Todo.WebApi.Infrastructure
             });
         }
 
-        public async Task<HttpClient> CreateClientWithJwt()
+        public async Task<HttpClient> CreateClientWithJwtAsync()
         {
-            string accessToken = await GetAccessToken().ConfigureAwait(false);
+            string accessToken = await GetAccessTokenAsync().ConfigureAwait(false);
             HttpClient httpClient = CreateClient();
             httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
             return httpClient;
         }
 
-        private async Task<string> GetAccessToken()
+        private async Task<string> GetAccessTokenAsync()
         {
             var generateJwtModel = new GenerateJwtModel
             {
