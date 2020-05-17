@@ -89,7 +89,7 @@ jobs:
   # The command used for generating the lock files is:
   # dotnet restore ./Todo.sln --configfile ./nuget.config --use-lock-file --lock-file-path packages.lock.json
   - script: >-
-      dotnet restore $(Build.SourcesDirectory) 
+      dotnet restore $(Build.SourcesDirectory)/Todo.sln 
       --configfile $(Build.SourcesDirectory)/nuget.config
       --locked-mode
     name: 'restore_nuget_packages'
