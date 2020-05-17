@@ -64,7 +64,7 @@ jobs:
   # Prepares analysis on SonarCloud.
   - task: SonarSource.sonarcloud.14d9cde6-c1da-4d55-aa01-2965cd301255.SonarCloudPrepare@1
     name: 'prepare_analysis_on_sonar'
-    displayName: 'Prepare analysis on Sonar'
+    displayName: 'Prepare analysis on SonarCloud'
     condition: |
       and
       (

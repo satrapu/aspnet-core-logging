@@ -76,13 +76,13 @@ variables:
     value: 'satrapu'
     
 # Define multiple jobs, one per supported operating system (Linux, macOS and Windows).
-# See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/multiple-phases?tabs=yaml&view=azure-devops.
+# See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/phases?view=azure-devops&tabs=yaml
 #
 # The list of virtual machine images used for running these operating systems can be found here: 
 # https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/hosted?view=azure-devops&tabs=yaml#use-a-microsoft-hosted-agent.
 #
 # Will use job templates, since all supported operating systems will run the same job.
-# See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=azure-devops&tabs=example#job-templates
+# See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=azure-devops&tabs=schema%2Cparameter-schema#job-templates
 # and here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/templates?view=azure-devops.
 jobs:
 - template: './azure-pipelines.job-template.yml'
