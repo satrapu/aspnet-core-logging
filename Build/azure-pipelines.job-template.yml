@@ -177,15 +177,20 @@ jobs:
         db_healthcheck_timeout=5s
         db_healthcheck_retries=30
         db_healthcheck_start_period=5s
-        sleep_between_consecutive_retries=1s
-        max_retries=30
-        docker_api_version=1.40
-        debug_enabled=true
       projectName: 'aspnet-core-logging-integration-tests'
       qualifyImageNames: false
       buildImages: true
       abortOnContainerExit: true
-      detached: false
+      detached: true
+      
+  - task: PowerShell@2
+      name: 'wait_for_compose_services_to_be_up_and_running'
+      displayName: 'Wait for compose services to be up & running'
+      inputs:
+        targetType: 'inline'
+        errorActionPreference: 'stop'
+        script: |
+          Start-Sleep -Seconds 5
 
   # Run integration tests and collect code coverage metrics using 'dotnet test' command.
   # See more about this command here: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-test.
