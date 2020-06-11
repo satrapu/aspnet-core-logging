@@ -34,7 +34,7 @@ jobs:
   workspace:
     clean: all
   steps:
-  # Install specific .NET Core SDK version.
+  # Install specific .NET Core SDK version used for building the application.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/tool/dotnet-core-tool-installer?view=azure-devops.
   # Installing a specific .NET Core SDK version is needed to avoid installing a .NET Core global tool in a following task and 
   # then have Azure DevOps complain that it cannot find it.
@@ -46,6 +46,7 @@ jobs:
       packageType: 'sdk'
       version: $(DotNetCore_SDK_Version)
       
+  # Install a specific .NET Core SDK as needed by the Azure DevOps extension used for running Sonar scans.
   # See more about running Sonar analysis on Azure DevOps here: https://docs.sonarqube.org/latest/analysis/scan/sonarscanner-for-azure-devops/.
   - task: UseDotNet@2
     name: 'install_dotnetcore_sdk_required_by_sonarsource_extension'
@@ -60,9 +61,10 @@ jobs:
       packageType: 'sdk'
       version: '2.1.803'
 
+  # Prepares analysis on SonarCloud.
   - task: SonarSource.sonarcloud.14d9cde6-c1da-4d55-aa01-2965cd301255.SonarCloudPrepare@1
     name: 'prepare_analysis_on_sonar'
-    displayName: 'Prepare analysis on Sonar'
+    displayName: 'Prepare analysis on SonarCloud'
     condition: |
       and
       (
@@ -79,12 +81,29 @@ jobs:
         sonar.sourceEncoding=UTF-8
         sonar.cs.nunit.reportsPaths=**/TestResults/*.*
         sonar.cs.opencover.reportsPaths=**/coverage.opencover.xml
-        sonar.coverage.exclusions=**/Tests/**/*.cs,**/Sources/Todo.Persistence/**/TodoDbContextModelSnapshot.cs
+        sonar.coverage.exclusions=**/Tests/**/*.cs,**/Sources/Todo.Persistence/**/TodoDbContextModelSnapshot.cs,**/Sources/Todo.WebApi/**/Startup.cs 
       
-  # Compile source code.
-  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/dotnet-core-cli?view=azure-devops.
+  # Restore NuGet packages using 'dotnet restore' command.
+  # See more about this command here: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-restore?source=docs.
+  #
+  # The command used for generating the lock files is:
+  # dotnet restore ./Todo.sln --configfile ./nuget.config --use-lock-file --lock-file-path packages.lock.json
+  - script: >-
+      dotnet restore $(Build.SourcesDirectory)/Todo.sln 
+      --configfile $(Build.SourcesDirectory)/nuget.config
+      --locked-mode
+    name: 'restore_nuget_packages'
+    displayName: 'Restore NuGet packages'
+    env:
+      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: $(DotNetSkipFirstTimeExperience)
+      DOTNET_CLI_TELEMETRY_OPTOUT: $(DotNetCliTelemetryOptOut)
+      COREHOST_TRACE: $(CoreHostTrace)
+      
+  # Compile source code using 'dotnet build' command.
+  # See more about this command here: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-build.
   - script: >-
       dotnet build $(Build.SourcesDirectory)/Todo.sln
+      --no-restore
       --configuration ${{ parameters.build.configuration }}
     name: 'build_sources'
     displayName: 'Build sources'
@@ -93,7 +112,8 @@ jobs:
       DOTNET_CLI_TELEMETRY_OPTOUT: $(DotNetCliTelemetryOptOut)
       COREHOST_TRACE: $(CoreHostTrace)
 
-  # Run unit tests and collect code coverage metrics.
+  # Run unit tests and collect code coverage metrics using 'dotnet test' command.
+  # See more about this command here: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-test.
   # See more about running selective tests here: https://docs.microsoft.com/en-us/dotnet/core/testing/selective-unit-tests#nunit.
   # Decorate the AssemblyInfo.cs found inside each unit test related project with:
   #     [assembly: NUnit.Framework.Category("UnitTests")]
@@ -104,13 +124,14 @@ jobs:
   - script: >-
       dotnet test $(Build.SourcesDirectory)/Todo.sln
       --no-build
+      --no-restore
       --configuration ${{ parameters.build.configuration }}
       --test-adapter-path "."
       --logger "nunit"
       /p:CollectCoverage=True
       /p:CoverletOutputFormat=opencover
       /p:Include="[Todo.*]*"
-      /p:Exclude=\"[Todo.*.*Tests]*,[Todo.Persistence]*.TodoDbContextModelSnapshot\"
+      /p:Exclude=\"[Todo.*.*Tests]*,[Todo.Persistence]*.TodoDbContextModelSnapshot,[Todo.WebApi]*.Startup\"
       -- NUnit.Where="cat == UnitTests"
     name: 'run_unit_tests'
     displayName: 'Run unit tests'
@@ -119,7 +140,7 @@ jobs:
       DOTNET_CLI_TELEMETRY_OPTOUT: $(DotNetCliTelemetryOptOut)
       COREHOST_TRACE: $(CoreHostTrace)
 
-  # Publish unit test results inside the build 'Tests' tab.
+  # Publish unit test results.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=azure-devops&tabs=yaml.
   - task: PublishTestResults@2
     name: 'publish_unit_test_results'
@@ -146,10 +167,9 @@ jobs:
         , eq( variables['Agent.OS'], 'Darwin')
       )
 
-  # Runs a PowerShell script to start a Docker container hosting the database 
-  # to be targeted by the integration tests.
-  # Checking whether the database is ready for processing incoming queries is done 
-  # using Docker logs command (https://docs.docker.com/engine/reference/commandline/logs/).
+  # Runs a PowerShell script to start a Docker container hosting the database to be targeted by the integration tests.
+  # Checking whether the database is ready for processing incoming queries is done using Docker 
+  # logs command (https://docs.docker.com/engine/reference/commandline/logs/).
   - task: PowerShell@2
     name: 'provision_db4it_docker_container_using_log_polling'
     displayName: 'Provision db4it Docker container using log-polling'
@@ -176,10 +196,9 @@ jobs:
       failOnStderr: True
       workingDirectory: $(Build.SourcesDirectory)
 
-  # Runs a PowerShell script to start a Docker container hosting the database 
-  # to be targeted by the integration tests.
-  # Checking whether the database is ready for processing incoming queries is done 
-  # using Docker healthcheck support (https://docs.docker.com/engine/reference/run/#healthcheck).
+  # Runs a PowerShell script to start a Docker container hosting the database to be targeted by the integration tests.
+  # Checking whether the database is ready for processing incoming queries is done using Docker healthcheck 
+  # support (https://docs.docker.com/engine/reference/run/#healthcheck).
   - task: PowerShell@2
     name: 'provision_db4it_docker_container_using_healthcheck'
     displayName: 'Provision db4it Docker container using healthcheck'
@@ -206,8 +225,8 @@ jobs:
       failOnStderr: True
       workingDirectory: $(Build.SourcesDirectory)
 
-  # Runs a PowerShell script to ensure the connection string pointing to the database 
-  # to be targeted by the integration tests uses the appropriate port.
+  # Run a PowerShell script to ensure the connection string pointing to the database to be targeted by the 
+  # integration tests uses the appropriate port.
   - task: PowerShell@2
     name: 'normalize_db_connection_string_pointing_to_db4it'
     displayName: 'Normalize database connection string pointing to db4it Docker container'
@@ -220,12 +239,14 @@ jobs:
         Write-Output "##vso[task.setvariable variable=DatabaseConnectionStrings.Todo]$normalizedDatabaseConnectionString"
         Write-Output "The normalized database connection string is: $normalizedDatabaseConnectionString"
 
-  # Run integration tests and collect code coverage metrics.
+  # Run integration tests and collect code coverage metrics using 'dotnet test' command.
+  # See more about this command here: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-test.
   # Decorate the AssemblyInfo.cs found inside each integration test related project with:
   #     [assembly: NUnit.Framework.Category("IntegrationTests")]
   - script: >-
       dotnet test $(Build.SourcesDirectory)/Todo.sln
       --no-build
+      --no-restore
       --configuration ${{ parameters.build.configuration }}
       --test-adapter-path "."
       --logger "nunit"
@@ -243,7 +264,7 @@ jobs:
       CONNECTIONSTRINGS__TODOFORINTEGRATIONTESTS: $(DatabaseConnectionStrings.Todo)
       GENERATEJWT__SECRET: $(IntegrationTests.GenerateJwt.Secret)
 
-  # Publish integration test results inside the build 'Tests' tab.
+  # Publish integration test results.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=azure-devops&tabs=yaml.
   - task: PublishTestResults@2
     name: 'publish_integration_test_results'
@@ -271,10 +292,11 @@ jobs:
         , eq( ${{ parameters.publishPipelineArtifacts }}, True)
       )
     inputs:
-      artifact: 'test-results-$(Agent.OS)-$(Agent.OSArchitecture)-$(Build.BuildNumber)'
+      artifact: 'test-results-$(Agent.OS)-$(Agent.OSArchitecture)-$(Build.BuildNumber)-$(Build.BuildID)'
       path: '$(Build.SourcesDirectory)/Tests'
 
-  # Install reportgenerator tool to be able to generate code coverage related reports.
+  # Install reportgenerator tool to be able to generate code coverage related reports using 'dotnet tool install' command.
+  # See more about this command here: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-tool-install.
   - script: >-
       dotnet tool install dotnet-reportgenerator-globaltool 
       --global
@@ -289,7 +311,6 @@ jobs:
   # Generate code coverage report:
   #   - combine several OpenCover coverage data files into one single file in Cobertura format
   #   - generate coverage HTML report ready to be displayed by Azure DevOps
-  #   - generate coverage badge to be displayed on GitHub project home page
   # See more here: https://github.com/danielpalme/ReportGenerator#usage.
   # See more about the output formats here: https://github.com/danielpalme/ReportGenerator/wiki/Output-formats.
   # In order to be able to see the report inside the Code Coverage tab on Azure DevOps, 
@@ -298,7 +319,7 @@ jobs:
       reportgenerator 
       "-reports:$(Build.SourcesDirectory)/Tests/**/coverage.opencover.xml"
       "-targetdir:$(Build.SourcesDirectory)/.CodeCoverageReport"
-      "-reporttypes:Cobertura;Badges"
+      "-reporttypes:Cobertura"
     name: 'generate_code_coverage_report'
     displayName: 'Generate code coverage report'
 
@@ -309,6 +330,7 @@ jobs:
     displayName: 'Publish code coverage report'
     inputs:
       codeCoverageTool: 'Cobertura'
+      pathToSources: '$(Build.SourcesDirectory)/Sources'
       summaryFileLocation: '$(Build.SourcesDirectory)/.CodeCoverageReport/Cobertura.xml'
       reportDirectory: '$(Build.SourcesDirectory)/.CodeCoverageReport'
 
@@ -324,6 +346,7 @@ jobs:
         , eq( ${{ parameters.sonar.enabled }}, True)
       )
 
+  # Publish Sonar quality gate result to the remote server.
   - task: SonarSource.sonarcloud.38b27399-a642-40af-bb7d-9971f69712e8.SonarCloudPublish@1
     name: 'publish_sonar_quality_gate_result'
     displayName: 'Publish Sonar quality gate result'
@@ -401,7 +424,7 @@ jobs:
         Write-Output "The current Git branch name is: $currentGitBranchName"
         Write-Output "The normalized Git branch name is: $normalizedGitBranchName"
 
-  # Runs a PowerShell script to break the build in case Sonar quality gate has failed.
+  # Run a PowerShell script to break the build in case Sonar quality gate has failed.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/powershell?view=azure-devops.
   - task: PowerShell@2
     name: 'sonar_build_breaker'

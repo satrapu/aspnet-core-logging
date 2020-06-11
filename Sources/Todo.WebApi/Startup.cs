@@ -33,7 +33,7 @@ namespace Todo.WebApi
         /// Creates a new instance of the <see cref="Startup"/> class.
         /// </summary>
         /// <param name="configuration">The configuration to be used for setting up this application.</param>
-        /// /// <param name="webHostEnvironment">The environment where this application is hosted.</param>
+        /// <param name="webHostEnvironment">The environment where this application is hosted.</param>
         public Startup(IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
         {
             Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
@@ -98,8 +98,7 @@ namespace Todo.WebApi
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey =
-                        new SymmetricSecurityKey(
-                            Encoding.UTF8.GetBytes(generateJwtOptions.GetValue<string>("Secret"))),
+                        new SymmetricSecurityKey(Encoding.UTF8.GetBytes(generateJwtOptions.GetValue<string>("Secret"))),
                     ValidateIssuer = true,
                     ValidIssuer = tokenIssuer,
                     ValidateAudience = true,
@@ -172,7 +171,9 @@ namespace Todo.WebApi
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder applicationBuilder)
+        // ReSharper disable once UnusedMember.Global
+        public void Configure(IApplicationBuilder applicationBuilder, IHostApplicationLifetime hostApplicationLifetime,
+            ILogger<Startup> logger)
         {
             // The HTTP logging middleware *must* be the first one inside the ASP.NET Core request pipeline to ensure
             // all requests and their responses are properly logged
@@ -193,6 +194,58 @@ namespace Todo.WebApi
             applicationBuilder.UseAuthentication();
             applicationBuilder.UseAuthorization();
             applicationBuilder.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+
+            hostApplicationLifetime.ApplicationStarted.Register(() => OnApplicationStarted(applicationBuilder, logger));
+            hostApplicationLifetime.ApplicationStopping.Register(() => OnApplicationStopping(logger));
+            hostApplicationLifetime.ApplicationStopped.Register(() => OnApplicationStopped(logger));
+        }
+
+        private void OnApplicationStarted(IApplicationBuilder applicationBuilder, ILogger logger)
+        {
+            logger.LogInformation("Application has started");
+            bool shouldMigrateDatabase = Configuration.GetValue<bool>("MigrateDatabase");
+
+            if (shouldMigrateDatabase)
+            {
+                logger.LogInformation("Migrating database has been turned on");
+                MigrateDatabase(applicationBuilder, logger);
+            }
+            else
+            {
+                logger.LogInformation("Migrating database has been turned off");
+            }
+        }
+
+        private void OnApplicationStopping(ILogger logger)
+        {
+            logger.LogInformation("Application is stopping");
+        }
+
+        private void OnApplicationStopped(ILogger logger)
+        {
+            logger.LogInformation("Application has stopped");
+        }
+
+        private void MigrateDatabase(IApplicationBuilder applicationBuilder, ILogger logger)
+        {
+            using var serviceScope = applicationBuilder.ApplicationServices.GetRequiredService<IServiceScopeFactory>()
+                .CreateScope();
+            using var todoDbContext = serviceScope.ServiceProvider.GetService<TodoDbContext>();
+            string database = todoDbContext.Database.GetDbConnection().Database;
+
+            logger.LogInformation("About to migrate database {Database} ...", database);
+
+            try
+            {
+                todoDbContext.Database.Migrate();
+            }
+            catch (Exception exception)
+            {
+                logger.LogError(exception, "Failed to migrate database {Database}", database);
+                throw;
+            }
+
+            logger.LogInformation("Database {Database} has been migrated", database);
         }
     }
 }

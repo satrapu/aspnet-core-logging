@@ -13,5 +13,15 @@
           Sets up property "Language version" found in Visual Studio project -> Properties -> Build -> Advanced.
         -->
         <LangVersion>8.0</LangVersion>
+
+        <!--
+            Fix issue: "error NU1403: Package content hash validation failed for ..." occuring when restoring NuGet
+            packages when using lock files.
+            See more about the fix here: https://github.com/NuGet/Home/issues/7921#issuecomment-478152479.
+        -->
+        <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+        <RestoreLockedMode>true</RestoreLockedMode>
+        <NoWarn>NU1603</NoWarn>
+        <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
     </PropertyGroup>
 </Project>
