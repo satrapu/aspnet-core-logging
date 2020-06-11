@@ -173,7 +173,7 @@ jobs:
         db_name=${{ parameters.integrationTests.databaseName }}
         db_username=${{ parameters.integrationTests.databaseUsername }}
         db_password=${{ parameters.integrationTests.databasePassword }}
-        db_healthcheck_interval=2s
+        db_healthcheck_interval=1s
         db_healthcheck_timeout=5s
         db_healthcheck_retries=30
         db_healthcheck_start_period=5s
@@ -190,7 +190,7 @@ jobs:
       targetType: 'inline'
       errorActionPreference: 'stop'
       script: |
-        Start-Sleep -Seconds 5
+        Start-Sleep -Seconds 15
 
   # Run integration tests and collect code coverage metrics using 'dotnet test' command.
   # See more about this command here: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-test.
