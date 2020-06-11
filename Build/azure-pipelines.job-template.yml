@@ -179,7 +179,7 @@ jobs:
         db_healthcheck_start_period=5s
       projectName: 'aspnet-core-logging-integration-tests'
       qualifyImageNames: false
-      buildImages: true
+      buildImages: false
       abortOnContainerExit: true
       detached: true
       
