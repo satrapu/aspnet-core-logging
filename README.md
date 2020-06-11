@@ -144,7 +144,7 @@ docker-compose down
 
 ### Setup pgAdmin
 
-Once the services have been stared using `docker-compose up` command, pgAdmin UI is ready to be used.
+Once the services have been started using `docker-compose up` command, pgAdmin UI is ready to be used.
 
 #### Open pgAdmin UI
 
