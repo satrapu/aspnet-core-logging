@@ -180,12 +180,12 @@ jobs:
         sleep_between_consecutive_retries=1s
         max_retries=30
         docker_api_version=1.40
-        debug_enabled=false
+        debug_enabled=true
       projectName: 'aspnet-core-logging-integration-tests'
       qualifyImageNames: false
       buildImages: true
       abortOnContainerExit: true
-      detached: true
+      detached: false
 
   # Run integration tests and collect code coverage metrics using 'dotnet test' command.
   # See more about this command here: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-test.
