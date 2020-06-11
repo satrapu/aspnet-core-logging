@@ -4,7 +4,7 @@ set -eu
 
 main() {
     serviceName=$SERVICE_NAME
-    projectName=$PROJECT_NAME
+    projectName=$COMPOSE_PROJECT_NAME
     dockerApiVersion=$DOCKER_API_VERSION
     sleepingTime="$SLEEP_BETWEEN_CONSECTUIVE_RETRIES"
     totalAttempts=$MAX_RETRIES
@@ -13,7 +13,6 @@ main() {
     if [ "$DEBUG" = "true" ]; then
       printf "DEBUG is *on*\n"
       printf "serviceName=%s\n" "$serviceName"
-      printf "projectName=%s\n" "$projectName"
       printf "dockerApiVersion=%s\n" "$dockerApiVersion"
       printf "\n\n\n"
     fi

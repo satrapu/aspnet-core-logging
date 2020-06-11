@@ -12,19 +12,12 @@ parameters:
     buildBreaker:
       enabled: False
   publishPipelineArtifacts: True
-  db4it:
-    dockerImage: ''
-    dockerImageTag: ''
-    dockerContainerName: ''
-    dockerPortMapping: ''
-    dockerHostPortBuildVariableName: ''
-    dockerContainerEnvironmentVariables: ''
-    dockerContainerLogPatternForDatabaseReady: ''
-    dockerContainerHealthcheckCommand: ''
-    databaseConnectionString:
-      value: ''
-      portPlaceholder: ''
-    databaseReadinessStrategy: ''
+  integrationTests:
+    databaseHost: ''
+    databaseName: ''
+    databasePort:
+    databaseUsername: ''
+    databasePassword: ''
 
 jobs:
 - job: ${{ parameters.job.name }}
@@ -167,77 +160,33 @@ jobs:
         , eq( variables['Agent.OS'], 'Darwin')
       )
 
-  # Runs a PowerShell script to start a Docker container hosting the database to be targeted by the integration tests.
-  # Checking whether the database is ready for processing incoming queries is done using Docker 
-  # logs command (https://docs.docker.com/engine/reference/commandline/logs/).
-  - task: PowerShell@2
-    name: 'provision_db4it_docker_container_using_log_polling'
-    displayName: 'Provision db4it Docker container using log-polling'
-    condition: |
-      and
-      (
-          succeeded()
-        , eq( '${{ parameters.db4it.databaseReadinessStrategy }}', 'log-polling')
-      )
+ # Run compose services used when executing integration tests.
+ # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/docker-compose?view=azure-devops.
+  - task: DockerCompose@0
+    displayName: Run services used by integration tests
     inputs:
-      targetType: 'filePath'
-      filePath: '$(Build.SourcesDirectory)/Build/Provision-Docker-container-using-log-polling.ps1'
-      arguments: >-
-        -DockerImageName '${{ parameters.db4it.dockerImage }}'
-        -DockerImageTag '${{ parameters.db4it.dockerImageTag }}'
-        -ContainerName '${{ parameters.db4it.dockerContainerName }}'
-        -PortMapping '${{ parameters.db4it.dockerPortMapping }}'
-        -DockerHostPortBuildVariableName '${{ parameters.db4it.dockerHostPortBuildVariableName}}'
-        -ContainerEnvironmentVariables '${{ parameters.db4it.dockerContainerEnvironmentVariables }}'
-        -ContainerLogPatternForDatabaseReady '${{ parameters.db4it.dockerContainerLogPatternForDatabaseReady }}'
-        -SleepingTimeInMillis 250
-        -MaxNumberOfTries 120
-      errorActionPreference: 'stop'
-      failOnStderr: True
-      workingDirectory: $(Build.SourcesDirectory)
-
-  # Runs a PowerShell script to start a Docker container hosting the database to be targeted by the integration tests.
-  # Checking whether the database is ready for processing incoming queries is done using Docker healthcheck 
-  # support (https://docs.docker.com/engine/reference/run/#healthcheck).
-  - task: PowerShell@2
-    name: 'provision_db4it_docker_container_using_healthcheck'
-    displayName: 'Provision db4it Docker container using healthcheck'
-    condition: |
-      and
-      (
-          succeeded()
-        , eq( '${{ parameters.db4it.databaseReadinessStrategy }}', 'healthcheck')
-      )
-    inputs:
-      targetType: 'filePath'
-      filePath: '$(Build.SourcesDirectory)/Build/Provision-Docker-container-using-healthcheck.ps1'
-      arguments: >-
-        -DockerImageName '${{ parameters.db4it.dockerImage }}'
-        -DockerImageTag '${{ parameters.db4it.dockerImageTag }}'
-        -ContainerName '${{ parameters.db4it.dockerContainerName }}'
-        -PortMapping '${{ parameters.db4it.dockerPortMapping }}'
-        -DockerHostPortBuildVariableName '${{ parameters.db4it.dockerHostPortBuildVariableName}}'
-        -ContainerEnvironmentVariables '${{ parameters.db4it.dockerContainerEnvironmentVariables }}'
-        -HealthCheckCommand '${{ parameters.db4it.dockerContainerHealthcheckCommand }}'
-        -HealthCheckIntervalInMilliseconds 250
-        -MaxNumberOfTries 120
-      errorActionPreference: 'stop'
-      failOnStderr: True
-      workingDirectory: $(Build.SourcesDirectory)
-
-  # Run a PowerShell script to ensure the connection string pointing to the database to be targeted by the 
-  # integration tests uses the appropriate port.
-  - task: PowerShell@2
-    name: 'normalize_db_connection_string_pointing_to_db4it'
-    displayName: 'Normalize database connection string pointing to db4it Docker container'
-    inputs:
-      targetType: 'inline'
-      errorActionPreference: 'stop'
-      script: |
-        Write-Output "The Docker host port mapped to container '${{ parameters.db4it.dockerContainerName }}' is: $(${{ parameters.db4it.dockerHostPortBuildVariableName }})"
-        $normalizedDatabaseConnectionString = "${{ parameters.db4it.databaseConnectionString.value }}" -replace '${{ parameters.db4it.databaseConnectionString.portPlaceholder }}', $(${{ parameters.db4it.dockerHostPortBuildVariableName }})
-        Write-Output "##vso[task.setvariable variable=DatabaseConnectionStrings.Todo]$normalizedDatabaseConnectionString"
-        Write-Output "The normalized database connection string is: $normalizedDatabaseConnectionString"
+      containerregistrytype: 'Container Registry'
+      action: 'Run services'
+      dockerComposeFile: '$(Build.SourcesDirectory)/Build.db4it-compose/db4it.yml'
+      dockerComposeFileArgs:
+        # Settings applicable to compose service "db"
+        db_name=${{ parameters.integrationTests.databaseName }}
+        db_username=${{ parameters.integrationTests.databaseUsername }}
+        db_password=${{ parameters.integrationTests.databasePassword }}
+        db_healthcheck_interval=2s
+        db_healthcheck_timeout=5s
+        db_healthcheck_retries=30
+        db_healthcheck_start_period=5s
+        # Settings applicable to compose service "dependency-checker"
+        sleep_between_consecutive_retries=1s
+        max_retries=30
+        docker_api_version=1.40
+        debug_enabled=false
+      projectName: 'aspnet-core-logging-integration-tests'
+      qualifyImageNames: false
+      buildImages: true
+      abortOnContainerExit: true
+      detached: true
 
   # Run integration tests and collect code coverage metrics using 'dotnet test' command.
   # See more about this command here: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-test.
@@ -261,7 +210,12 @@ jobs:
       DOTNET_SKIP_FIRST_TIME_EXPERIENCE: $(DotNetSkipFirstTimeExperience)
       DOTNET_CLI_TELEMETRY_OPTOUT: $(DotNetCliTelemetryOptOut)
       COREHOST_TRACE: $(CoreHostTrace)
-      CONNECTIONSTRINGS__TODOFORINTEGRATIONTESTS: $(DatabaseConnectionStrings.Todo)
+      CONNECTIONSTRINGS__TODOFORINTEGRATIONTESTS: >-
+        Host=${{ parameters.integrationTests.databaseHost }};
+        Port=${{ parameters.integrationTests.databasePort }};
+        Database=${{ parameters.integrationTests.databaseName }};
+        Username=${{ parameters.integrationTests.databaseUserName }};
+        Password=${{ parameters.integrationTests.databasePassword }};
       GENERATEJWT__SECRET: $(IntegrationTests.GenerateJwt.Secret)
 
   # Publish integration test results.
