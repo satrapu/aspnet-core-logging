@@ -97,9 +97,9 @@ jobs:
     pool:
       vmImage: 'ubuntu-18.04'
     sonar:
-      enabled: True
+      enabled: false
       buildBreaker:
-        enabled: True
+        enabled: false
     integrationTests:
       databaseHost: 'localhost'
       databaseName: $(IntegrationTests.Database.Todo.Name)
