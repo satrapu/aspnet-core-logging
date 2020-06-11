@@ -168,7 +168,8 @@ jobs:
       containerregistrytype: 'Container Registry'
       action: 'Run services'
       dockerComposeFile: '$(Build.SourcesDirectory)/Build/db4it-compose/db4it.yml'
-      dockerComposeFileArgs:
+      # The pipe symbol below is intentional, as explained here: https://github.com/MicrosoftDocs/azure-devops-docs/issues/3441#issuecomment-494205716.
+      dockerComposeFileArgs: |
         db_name=${{ parameters.integrationTests.databaseName }}
         db_username=${{ parameters.integrationTests.databaseUsername }}
         db_password=${{ parameters.integrationTests.databasePassword }}
