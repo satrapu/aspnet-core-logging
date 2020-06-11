@@ -184,13 +184,13 @@ jobs:
       detached: true
       
   - task: PowerShell@2
-      name: 'wait_for_compose_services_to_be_up_and_running'
-      displayName: 'Wait for compose services to be up & running'
-      inputs:
-        targetType: 'inline'
-        errorActionPreference: 'stop'
-        script: |
-          Start-Sleep -Seconds 5
+    name: 'wait_for_compose_services_to_be_up_and_running'
+    displayName: 'Wait for compose services to be up & running'
+    inputs:
+      targetType: 'inline'
+      errorActionPreference: 'stop'
+      script: |
+        Start-Sleep -Seconds 5
 
   # Run integration tests and collect code coverage metrics using 'dotnet test' command.
   # See more about this command here: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-test.
