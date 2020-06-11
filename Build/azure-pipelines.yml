@@ -73,7 +73,7 @@ variables:
    
   # Represents the port of the database to be targeted by integration tests
   - name: 'IntegrationTests.Database.Todo.Port'
-      value: 9876
+    value: 9876
 
   # Represents the user used for accessing the database to be targeted by integration tests
   - name: 'IntegrationTests.Database.Todo.Username'
