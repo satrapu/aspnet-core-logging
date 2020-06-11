@@ -169,7 +169,6 @@ jobs:
       action: 'Run services'
       dockerComposeFile: '$(Build.SourcesDirectory)/Build.db4it-compose/db4it.yml'
       dockerComposeFileArgs:
-        # Settings applicable to compose service "db"
         db_name=${{ parameters.integrationTests.databaseName }}
         db_username=${{ parameters.integrationTests.databaseUsername }}
         db_password=${{ parameters.integrationTests.databasePassword }}
@@ -177,7 +176,6 @@ jobs:
         db_healthcheck_timeout=5s
         db_healthcheck_retries=30
         db_healthcheck_start_period=5s
-        # Settings applicable to compose service "dependency-checker"
         sleep_between_consecutive_retries=1s
         max_retries=30
         docker_api_version=1.40
