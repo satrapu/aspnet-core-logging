@@ -8,7 +8,7 @@ name: '$(SourceBranchName)_$(Date:yyyyMMdd).$(Rev:rrr)'
 
 resources:
   repositories: 
-  # See more about repositories here: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=vsts&tabs=schema#repository.
+  # See more about repositories here: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=azure-devops&tabs=schema%2Cparameter-schema#repository-resource.
   - repository: 'aspnet_core_logging'
     type: 'github'
     name: 'satrapu/aspnet-core-logging'
@@ -18,7 +18,7 @@ resources:
     endpoint: 'satrapu'
 
 # Build multiple branches.
-# See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/build/ci-build-git?view=vsts&tabs=yaml.
+# See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/build/ci-build-git?view=azure-devops&tabs=yaml.
 trigger:
  - master
  - feature/*
@@ -26,13 +26,13 @@ trigger:
  - hotfix/*
  - release/*
 
-# See more about Azure Pipelines variables here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=vsts.
+# See more about Azure Pipelines variables here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&tabs=yaml%2Cbatch.
 variables:
   # Load group containing variables applicable to all pipelines belonging to this project.
   - group: 'GlobalVariables'
 
   # Load SonarQube related variable group.
-  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/library/variable-groups?view=vsts&tabs=yaml#use-a-variable-group.
+  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/library/variable-groups?view=azure-devops&tabs=yaml#use-a-variable-group.
   # Be sure to link this group to this pipeline by selecting the latter -> Edit -> Variables -> Variable Groups!
   - group: 'SonarQube'
 
