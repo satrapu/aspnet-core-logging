@@ -268,7 +268,7 @@ jobs:
         , eq( ${{ parameters.publishPipelineArtifacts }}, true)
       )
     inputs:
-      artifact: 'test-results-$(Agent.OS)-$(Agent.OSArchitecture)-$(Build.BuildNumber)-$(Build.BuildID)'
+      artifact: 'test-artifacts-$(Agent.OS)-$(Agent.OSArchitecture)-$(Build.BuildNumber)-$(Build.BuildID)'
       path: '$(Build.SourcesDirectory)/Tests'
 
   # Install reportgenerator tool to be able to generate code coverage related reports using 'dotnet tool install' command.
