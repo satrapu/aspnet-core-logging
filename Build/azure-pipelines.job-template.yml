@@ -163,7 +163,7 @@ jobs:
  # Run compose services used when executing integration tests.
  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/docker-compose?view=azure-devops.
   - task: DockerCompose@0
-    displayName: Run services used by integration tests
+    displayName: Start compose services used by integration tests
     inputs:
       containerregistrytype: 'Container Registry'
       action: 'Run services'
@@ -188,10 +188,7 @@ jobs:
       detached: true
       
   - bash: |
-      docker-compose \
-        --file $(Build.SourcesDirectory)/Build/db4it-compose/db4it.yml \
-        --exit-code-from dependency-checker \
-        up dependency-checker
+      docker-compose --file $(Build.SourcesDirectory)/Build/db4it-compose/db4it.yml up --exit-code-from dependency-checker dependency-checker
       
       if [ $? -eq 0 ]; then 
         echo '##vso[task.LogIssue type=info] All compose services are up & running' 
@@ -199,8 +196,8 @@ jobs:
         echo '##vso[task.LogIssue type=error] Failed to start compose services in due time'
         echo '##vso[task.complete result=Failed]' 
       fi
-    name: 'ensure_compose_services_are_healthy'
-    displayName: 'Ensure compose services are healthy'
+    name: 'ensure_compose_services_are_up_and_running'
+    displayName: 'Ensure compose services used by integration tests are up & running'
 
   # Run integration tests and collect code coverage metrics using 'dotnet test' command.
   # See more about this command here: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-test.
