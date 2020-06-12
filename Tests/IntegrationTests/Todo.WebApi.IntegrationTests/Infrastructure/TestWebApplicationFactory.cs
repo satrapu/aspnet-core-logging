@@ -84,7 +84,6 @@ namespace Todo.WebApi.Infrastructure
 
         private void SetupDbContext(IServiceCollection services)
         {
-            ILogger logger = services.BuildServiceProvider().GetRequiredService<ILogger<TestWebApplicationFactory>>();
             ServiceDescriptor dbContextServiceDescriptor = services.SingleOrDefault(serviceDescriptor =>
                 serviceDescriptor.ServiceType == typeof(DbContextOptions<TodoDbContext>));
 
@@ -102,9 +101,6 @@ namespace Todo.WebApi.Infrastructure
                 {
                     Database = testDatabaseName
                 };
-
-                logger.LogInformation("Integration tests will use the following connection string: {ConnectionString}",
-                    connectionStringBuilder.ConnectionString);
 
                 dbContextOptionsBuilder.UseNpgsql(connectionStringBuilder.ConnectionString)
                     .EnableSensitiveDataLogging()
