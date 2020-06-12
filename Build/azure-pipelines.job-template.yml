@@ -185,6 +185,8 @@ jobs:
 
       if($?) {
         Write-Output '##vso[task.LogIssue] All compose services are up & running'
+        $DatabaseHostPort = $(docker-compose --file $(Build.SourcesDirectory)/Build/db4it-compose/db4it.yml port --protocol=tcp db 5432) | Out-String
+        Write-Output "Database host port is: $DatabaseHostPort"
         Write-Output '##vso[task.complete result=Succeeded]'
       } else {
         Write-Output '##vso[task.LogIssue type=error] Failed to start compose services in due time'
