@@ -160,34 +160,27 @@ jobs:
         , eq( variables['Agent.OS'], 'Darwin')
       )
 
- # Run compose services used when executing integration tests.
- # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/build/docker-compose?view=azure-devops.
-  - task: DockerCompose@0
-    displayName: Start compose services used by integration tests
-    inputs:
-      containerregistrytype: 'Container Registry'
-      action: 'Run services'
-      dockerComposeFile: '$(Build.SourcesDirectory)/Build/db4it-compose/db4it.yml'
-      # The pipe symbol below is intentional, as explained here: https://github.com/MicrosoftDocs/azure-devops-docs/issues/3441#issuecomment-494205716.
-      dockerComposeFileArgs: |
-        COMPOSE_PROJECT_NAME=aspnet-core-logging-integration-tests
-        db_name=${{ parameters.integrationTests.databaseName }}
-        db_username=${{ parameters.integrationTests.databaseUsername }}
-        db_password=${{ parameters.integrationTests.databasePassword }}
-        db_healthcheck_interval=1s
-        db_healthcheck_timeout=5s
-        db_healthcheck_retries=30
-        db_healthcheck_start_period=5s
-        sleep_between_consecutive_retries=2s
-        max_retries=30
-        docker_api_version=1.40
-        debug_enabled=true
-      qualifyImageNames: false
-      buildImages: false
-      abortOnContainerExit: false
-      detached: true
-      
-  - bash: |
+ # Run compose services used by integration tests.
+  - pwsh: |
+      docker-compose --file $(Build.SourcesDirectory)/Build/db4it-compose/db4it.yml up -d
+    name: 'run_compose_services_used_by_integration_tests'
+    displayName: 'RUn compose services used by integration tests'
+    env:
+      - COMPOSE_PROJECT_NAME: 'aspnet-core-logging-integration-tests'
+      - db_name: ${{ parameters.integrationTests.databaseName }}
+      - db_username: ${{ parameters.integrationTests.databaseUsername }}
+      - db_password: ${{ parameters.integrationTests.databasePassword }}
+      - db_healthcheck_interval: '1s'
+      - db_healthcheck_timeout: '5s'
+      - db_healthcheck_retries: 30
+      - db_healthcheck_start_period: '3s'
+      - sleep_between_consecutive_retries: '2s'
+      - max_retries: 30
+      - docker_api_version: '1.40'
+      - debug_enabled: true
+        
+  # Ensure compose services used by integration tests are up & running.    
+  - pwsh: |
       docker-compose --file $(Build.SourcesDirectory)/Build/db4it-compose/db4it.yml up --exit-code-from dependency-checker dependency-checker
       
       if [ $? -eq 0 ]; then 
@@ -196,8 +189,21 @@ jobs:
         echo '##vso[task.LogIssue type=error] Failed to start compose services in due time'
         echo '##vso[task.complete result=Failed]' 
       fi
-    name: 'ensure_compose_services_are_up_and_running'
+    name: 'ensure_compose_services_used_by_integration_tests_are_up_and_running'
     displayName: 'Ensure compose services used by integration tests are up & running'
+    env:
+      - COMPOSE_PROJECT_NAME: 'aspnet-core-logging-integration-tests'
+      - db_name: ${{ parameters.integrationTests.databaseName }}
+      - db_username: ${{ parameters.integrationTests.databaseUsername }}
+      - db_password: ${{ parameters.integrationTests.databasePassword }}
+      - db_healthcheck_interval: '1s'
+      - db_healthcheck_timeout: '5s'
+      - db_healthcheck_retries: 30
+      - db_healthcheck_start_period: '3s'
+      - sleep_between_consecutive_retries: '2s'
+      - max_retries: 30
+      - docker_api_version: '1.40'
+      - debug_enabled: true
 
   # Run integration tests and collect code coverage metrics using 'dotnet test' command.
   # See more about this command here: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-test.
