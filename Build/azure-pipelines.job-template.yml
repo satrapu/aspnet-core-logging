@@ -160,11 +160,11 @@ jobs:
         , eq( variables['Agent.OS'], 'Darwin')
       )
 
- # Run compose services used by integration tests.
+ # Start compose services used by integration tests.
   - pwsh: |
       docker-compose --file $(Build.SourcesDirectory)/Build/db4it-compose/db4it.yml up -d
-    name: 'run_compose_services_used_by_integration_tests'
-    displayName: 'RUn compose services used by integration tests'
+    name: 'start_compose_services_used_by_integration_tests'
+    displayName: 'Start compose services used by integration tests'
     env:
       COMPOSE_PROJECT_NAME: 'aspnet-core-logging-integration-tests'
       db_name: ${{ parameters.integrationTests.databaseName }}
@@ -182,13 +182,13 @@ jobs:
   # Ensure compose services used by integration tests are up & running.    
   - pwsh: |
       docker-compose --file $(Build.SourcesDirectory)/Build/db4it-compose/db4it.yml up --exit-code-from dependency-checker dependency-checker
-      
-      if [ $? -eq 0 ]; then 
-        echo '##vso[task.LogIssue type=info] All compose services are up & running' 
-      else 
-        echo '##vso[task.LogIssue type=error] Failed to start compose services in due time'
-        echo '##vso[task.complete result=Failed]' 
-      fi
+
+      if($?) {
+        Write-Output "##vso[task.LogIssue type=info] All compose services are up & running"
+      } else {
+        Write-Output "##vso[task.LogIssue type=error] Failed to start compose services in due time"
+        Write-Output "##vso[task.complete result=Failed]"
+      }
     name: 'ensure_compose_services_used_by_integration_tests_are_up_and_running'
     displayName: 'Ensure compose services used by integration tests are up & running'
     env:
