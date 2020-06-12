@@ -1,4 +1,5 @@
-# Ensure only test and code coverage results can be published as pipeline artifacts when a build is running via Azure Pipelines
+# Ensure only test log file, test and code coverage results can be published as pipeline artifacts when a build is running via Azure Pipelines
 **/*
 !**/TestResults/*
 !**/coverage.opencover.xml
+!**/Logs/*.log
