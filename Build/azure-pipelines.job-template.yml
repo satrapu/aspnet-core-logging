@@ -179,21 +179,23 @@ jobs:
       docker_api_version: '1.40'
       debug_enabled: true
         
-  # Ensure compose services used by integration tests are up & running.    
+  # Identify the dynamically allocated Docker host port for the 'db' compose service
   - pwsh: |
       docker-compose --file $(Build.SourcesDirectory)/Build/db4it-compose/db4it.yml up --exit-code-from dependency-checker dependency-checker
 
       if($?) {
-        Write-Output '##vso[task.LogIssue] All compose services are up & running'
-        $DatabaseHostPort = $(docker-compose --file $(Build.SourcesDirectory)/Build/db4it-compose/db4it.yml port --protocol=tcp db 5432) | Out-String
+        Write-Output '##vso[task.LogIssue] All compose services used by integration tests are up & running'
+        $DatabaseHostPortRawValue = $(docker-compose --file $(Build.SourcesDirectory)/Build/db4it-compose/db4it.yml port --protocol=tcp db 5432) | Out-String
+        $DatabaseHostPort = $DatabaseHostPortRawValue -split ':' | Select-Object -Skip 1
         Write-Output "Database host port is: $DatabaseHostPort"
+        Write-Output "##vso[task.setvariable variable=DynamicallyAllocatedDatabaseHostPort]$DatabaseHostPort"
         Write-Output '##vso[task.complete result=Succeeded]'
       } else {
-        Write-Output '##vso[task.LogIssue type=error] Failed to start compose services in due time'
+        Write-Output '##vso[task.LogIssue type=error] Failed to start compose services used by integration tests in due time'
         Write-Output '##vso[task.complete result=Failed]'
       }
-    name: 'ensure_compose_services_used_by_integration_tests_are_up_and_running'
-    displayName: 'Ensure compose services used by integration tests are up & running'
+    name: 'identify_database_port'
+    displayName: 'Identify port for the database to be targeted by integration tests'
     env:
       COMPOSE_PROJECT_NAME: 'aspnet-core-logging-integration-tests'
       db_name: ${{ parameters.integrationTests.databaseName }}
@@ -232,7 +234,7 @@ jobs:
       COREHOST_TRACE: $(CoreHostTrace)
       CONNECTIONSTRINGS__TODOFORINTEGRATIONTESTS: >-
         Host=${{ parameters.integrationTests.databaseHost }};
-        Port=${{ parameters.integrationTests.databasePort }};
+        Port=$(DynamicallyAllocatedDatabaseHostPort);
         Database=${{ parameters.integrationTests.databaseName }};
         Username=${{ parameters.integrationTests.databaseUserName }};
         Password=${{ parameters.integrationTests.databasePassword }};
