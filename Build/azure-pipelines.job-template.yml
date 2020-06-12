@@ -6,7 +6,7 @@ parameters:
   build:
     configuration: 'Release'
   sonar:
-    enabled: f
+    enabled: false
     runAnalysisTimeoutInMinutes: 5
     publishPollingTimeoutSeconds: 300
     buildBreaker:
@@ -15,7 +15,7 @@ parameters:
   integrationTests:
     databaseHost: ''
     databaseName: ''
-    databasePort:
+    databasePort: 5432
     databaseUsername: ''
     databasePassword: ''
 
