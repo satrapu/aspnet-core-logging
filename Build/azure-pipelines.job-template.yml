@@ -236,7 +236,7 @@ jobs:
         Host=${{ parameters.integrationTests.databaseHost }};
         Port=$(DynamicallyAllocatedDatabaseHostPort);
         Database=${{ parameters.integrationTests.databaseName }};
-        Username=${{ parameters.integrationTests.databaseUserName }};
+        Username=${{ parameters.integrationTests.databaseUsername }};
         Password=${{ parameters.integrationTests.databasePassword }};
       GENERATEJWT__SECRET: $(IntegrationTests.GenerateJwt.Secret)
 
