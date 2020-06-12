@@ -170,6 +170,7 @@ jobs:
       dockerComposeFile: '$(Build.SourcesDirectory)/Build/db4it-compose/db4it.yml'
       # The pipe symbol below is intentional, as explained here: https://github.com/MicrosoftDocs/azure-devops-docs/issues/3441#issuecomment-494205716.
       dockerComposeFileArgs: |
+        COMPOSE_PROJECT_NAME=aspnet-core-logging-integration-tests
         db_name=${{ parameters.integrationTests.databaseName }}
         db_username=${{ parameters.integrationTests.databaseUsername }}
         db_password=${{ parameters.integrationTests.databasePassword }}
@@ -177,20 +178,29 @@ jobs:
         db_healthcheck_timeout=5s
         db_healthcheck_retries=30
         db_healthcheck_start_period=5s
-      projectName: 'aspnet-core-logging-integration-tests'
+        sleep_between_consecutive_retries=2s
+        max_retries=30
+        docker_api_version=1.40
+        debug_enabled=true
       qualifyImageNames: false
       buildImages: false
-      abortOnContainerExit: true
+      abortOnContainerExit: false
       detached: true
       
-  - task: PowerShell@2
-    name: 'wait_for_compose_services_to_be_up_and_running'
-    displayName: 'Wait for compose services to be up & running'
-    inputs:
-      targetType: 'inline'
-      errorActionPreference: 'stop'
-      script: |
-        Start-Sleep -Seconds 15
+  - bash: |
+      docker-compose \
+        --file $(Build.SourcesDirectory)/Build/db4it-compose/db4it.yml \
+        --exit-code-from dependency-checker \
+        up dependency-checker
+      
+      if [ $? -eq 0 ]; then 
+        echo '##vso[task.LogIssue type=info] All compose services are up & running' 
+      else 
+        echo '##vso[task.LogIssue type=error] Failed to start compose services in due time'
+        echo '##vso[task.complete result=Failed]' 
+      fi
+    name: 'ensure_compose_services_are_healthy'
+    displayName: 'Ensure compose services are healthy'
 
   # Run integration tests and collect code coverage metrics using 'dotnet test' command.
   # See more about this command here: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-test.

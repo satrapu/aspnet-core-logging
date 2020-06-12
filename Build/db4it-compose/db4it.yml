@@ -1,7 +1,9 @@
 # Start the services below by running the commands:
-#   docker-compose --file ./db4it.yml down \
-#   && docker-compose --file ./db4it.yml build \
-#   && docker-compose --file ./db4it.yml up -d
+# docker-compose --file ./db4it.yml down \
+# && docker-compose --file ./db4it.yml build \
+# && docker-compose --file ./db4it.yml up -d \
+# && docker-compose --file ./db4it.yml up --exit-code-from dependency-checker dependency-checker \
+# && if [ $? -eq 0 ]; then echo 'OK: All compose services are up & running'; else echo 'ERROR: Failed to start compose services in due time'; fi
 #
 # Get the host container allocated to the db service using the command:
 #  docker-compose --file ./db4it.yml port --protocol=tcp db 5432
@@ -27,4 +29,22 @@ services:
       POSTGRES_USER: ${db_username}
       POSTGRES_PASSWORD: ${db_password}
     ports:
-      - 9876:5432/tcp
+      - 5432
+  dependency-checker:
+    image: satrapu/dependency-checker
+    build:
+      context: .
+      dockerfile: ./Dockerfile-dependency-checker
+    stdin_open: true
+    tty: true
+    environment:
+      SLEEP_BETWEEN_CONSECTUIVE_RETRIES: ${sleep_between_consecutive_retries}
+      MAX_RETRIES: ${max_retries}
+      COMPOSE_SERVICE_NAME: db
+      COMPOSE_PROJECT_NAME: ${COMPOSE_PROJECT_NAME}
+      DOCKER_API_VERSION: ${docker_api_version}
+      DEBUG: ${debug_enabled}
+    depends_on:
+      - db
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock

@@ -1,50 +1,69 @@
 #!/bin/sh
-### Ensure when editing this file on Windows, its line-endings are set to "LF" instead of "CRLF"!
+# Ensure when editing this file on Windows, its line-endings are set to "LF" instead of "CRLF"!
 set -eu
 
 main() {
-    serviceName=$SERVICE_NAME
-    projectName=$COMPOSE_PROJECT_NAME
+    composeServiceName=$COMPOSE_SERVICE_NAME
+    composeProjectName=$COMPOSE_PROJECT_NAME
     dockerApiVersion=$DOCKER_API_VERSION
-    sleepingTime="$SLEEP_BETWEEN_CONSECTUIVE_RETRIES"
-    totalAttempts=$MAX_RETRIES
-    currentAttempt=1
+    sleepBetweenConsecutiveRetries="$SLEEP_BETWEEN_CONSECTUIVE_RETRIES"
+    maxRetries=$MAX_RETRIES
     
     if [ "$DEBUG" = "true" ]; then
-      printf "DEBUG is *on*\n"
-      printf "serviceName=%s\n" "$serviceName"
+      printf "Debug mode is *on*\n"
+      printf "composeServiceName=%s\n" "$composeServiceName"
+      printf "composeProjectName=%s\n" "$composeProjectName"
       printf "dockerApiVersion=%s\n" "$dockerApiVersion"
-      printf "\n\n\n"
+      printf "sleepBetweenConsecutiveRetries=%s\n" "$sleepBetweenConsecutiveRetries"
+      printf "maxRetries=%s\n" "$maxRetries"
+    else
+      printf "Debug mode is *off*\n"
     fi
     
-    printf "Start checking whether service \"%s\" is up & running each %s for a total amount of %d times\n" \
-              "$serviceName" "$sleepingTime" "$totalAttempts"
+    printf "\n"
+    printf "Start checking whether service \"%s\" is up & running each %s for a total amount of %d times\n\n" \
+              "$composeServiceName" "$sleepBetweenConsecutiveRetries" "$maxRetries"
 
-    while [ $currentAttempt -le "$totalAttempts" ]; do
-        sleep "$sleepingTime"
+    currentAttempt=1
+    
+    while [ $currentAttempt -le "$maxRetries" ]; do
+        printf "Trial %d/%d\n" "$currentAttempt" "$maxRetries"
+        sleep "$sleepBetweenConsecutiveRetries"
         
-        response=$(curl --silent --unix-socket /var/run/docker.sock http://v"$dockerApiVersion"/containers/json | \
+        # Request the list of specific compose services from Docker Engine API.
+        # See more about curl command here: https://curl.haxx.se/docs/manpage.html.
+        dockerEngineApiResponse=$(curl --silent \
+                                       --get \
+                                       --unix-socket /var/run/docker.sock \
+                                       --data-urlencode 'all=true' \
+                                       --data-urlencode "filters={\"label\":[\"com.docker.compose.project=$composeProjectName\", \"com.docker.compose.service=$composeServiceName\"]}" \
+                                       http://v"$dockerApiVersion"/containers/json)
+        
+        if [ "$DEBUG" = "true" ]; then
+          printf "Docker Engine API response is: \n%s\n" "$dockerEngineApiResponse"
+        fi  
+        
+        # Process the Docker Engine API response in order to find whether the given compose service is healthy or not.
+        # See more about jq command here: https://stedolan.github.io/jq/manual/.
+        # Please keep in mind the Docker Engine API response is different than the outcome of the `docker inspect` command.
+        isComposeServiceHealthy=$(echo "$dockerEngineApiResponse" | \
                     jq '.[] 
-                        | select(.Labels["com.docker.compose.project"] == "'"$projectName"'")
-                        | select(.Labels["com.docker.compose.service"] == "'"$serviceName"'")
                         | select(.State == "running") 
                         | .Status 
                         | contains("healthy")')
             
-        if [ "$DEBUG" = "true" ]; then
-          printf "Docker Engine API response is: \n%s\n\n" "$response"
-        fi    
-                  
-        if [ "$response" = "true" ]; then
-            printf "%-4s: [%d/%d] Service \"%s\" is up & running\n" "OK" "$currentAttempt" "$totalAttempts" "$serviceName"
+        if [ "$isComposeServiceHealthy" = "true" ]; then
+            printf "%-4s: Service \"%s\" is up & running" "OK" "$composeServiceName"
+            printf "\n%s\n\n" "--------------------------------------------------"
             return 0
         else
-            printf "%-4s: [%d/%d] Service \"%s\" is still *not* up & running\n" "WARN" "$currentAttempt" "$totalAttempts" "$serviceName"
+            printf "%-4s: Service \"%s\" is still *not* up & running" "WARN" "$composeServiceName"
+            printf "\n%s\n\n" "--------------------------------------------------"
             currentAttempt=$((currentAttempt + 1))
         fi
     done;
 
-    printf "ERROR: Service \"%s\" hasn't started in due time\n" "$serviceName"
+    printf "ERROR: Service \"%s\" hasn't started in due time\n" "$composeServiceName"
     return 1
 }
 
