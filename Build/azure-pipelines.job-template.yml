@@ -184,10 +184,11 @@ jobs:
       docker-compose --file $(Build.SourcesDirectory)/Build/db4it-compose/db4it.yml up --exit-code-from dependency-checker dependency-checker
 
       if($?) {
-        Write-Output "##vso[task.LogIssue type=info] All compose services are up & running"
+        Write-Output '##vso[task.LogIssue] All compose services are up & running'
+        Write-Output '##vso[task.complete result=Succeeded]'
       } else {
-        Write-Output "##vso[task.LogIssue type=error] Failed to start compose services in due time"
-        Write-Output "##vso[task.complete result=Failed]"
+        Write-Output '##vso[task.LogIssue type=error] Failed to start compose services in due time'
+        Write-Output '##vso[task.complete result=Failed]'
       }
     name: 'ensure_compose_services_used_by_integration_tests_are_up_and_running'
     displayName: 'Ensure compose services used by integration tests are up & running'
