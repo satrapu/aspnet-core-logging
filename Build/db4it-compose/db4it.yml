@@ -38,7 +38,7 @@ services:
     stdin_open: true
     tty: true
     environment:
-      SLEEP_BETWEEN_CONSECTUIVE_RETRIES: ${sleep_between_consecutive_retries}
+      SLEEP_BETWEEN_CONSECUTIVE_RETRIES: ${sleep_between_consecutive_retries}
       MAX_RETRIES: ${max_retries}
       COMPOSE_SERVICE_NAME: db
       COMPOSE_PROJECT_NAME: ${COMPOSE_PROJECT_NAME}

@@ -6,7 +6,7 @@ main() {
     composeServiceName=$COMPOSE_SERVICE_NAME
     composeProjectName=$COMPOSE_PROJECT_NAME
     dockerApiVersion=$DOCKER_API_VERSION
-    sleepBetweenConsecutiveRetries="$SLEEP_BETWEEN_CONSECTUIVE_RETRIES"
+    sleepBetweenConsecutiveRetries="$SLEEP_BETWEEN_CONSECUTIVE_RETRIES"
     maxRetries=$MAX_RETRIES
     
     if [ "$DEBUG" = "true" ]; then
