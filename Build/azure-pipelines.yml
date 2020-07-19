@@ -64,6 +64,7 @@ variables:
     value: '1'
 
   # Disable Core CLR tracing.
+  # See more here: https://docs.microsoft.com/en-us/dotnet/core/dependency-loading/default-probing#how-do-i-debug-the-probing-properties-construction.
   - name: 'CoreHostTrace'
     value: '0'
 
