@@ -33,7 +33,31 @@ jobs:
   pool: ${{ parameters.pool }}
   workspace:
     clean: all
+  variables:
+    # Environment variable used when caching restored NuGet packages.
+    # See more about this variable here: https://docs.microsoft.com/en-us/nuget/reference/cli-reference/cli-ref-environment-variables.
+    # See more about caching NuGet packages here: https://docs.microsoft.com/en-us/azure/devops/pipelines/release/caching?view=azure-devops#netnuget.
+    NUGET_PACKAGES: '$(Pipeline.Workspace)/.nuget/packages'
+
+    # Avoid caching NuGet packages each time a build runs on an Azure DevOps agent.
+    # See more here: http://donovanbrown.com/post/Stop-wasting-time-during-NET-Core-builds.
+    DOTNET_SKIP_FIRST_TIME_EXPERIENCE: '1'
+
+    # Disable .NET Core telemetry.
+    # See more here: https://docs.microsoft.com/en-us/dotnet/core/tools/telemetry#how-to-opt-out.
+    DOTNET_CLI_TELEMETRY_OPTOUT: '1'
+
+    # Disable Core CLR tracing.
+    # See more here: https://docs.microsoft.com/en-us/dotnet/core/dependency-loading/default-probing#how-do-i-debug-the-probing-properties-construction.
+    COREHOST_TRACE: '0'
   steps:
+  # Customize the way this job checkouts the current Git branch.
+  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=azure-devops&tabs=schema%2Cparameter-schema#checkout.
+  - checkout: self
+    clean: True
+    fetchDepth: 1
+    lfs: False
+
   # Install specific .NET Core SDK version used for building the application.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/tool/dotnet-core-tool-installer?view=azure-devops.
   # Installing a specific .NET Core SDK version is needed to avoid installing a .NET Core global tool in a following task and 
@@ -82,6 +106,18 @@ jobs:
         sonar.cs.nunit.reportsPaths=**/TestResults/*.*
         sonar.cs.opencover.reportsPaths=**/coverage.opencover.xml
         sonar.coverage.exclusions=**/Tests/**/*.cs,**/Sources/Todo.Persistence/**/TodoDbContextModelSnapshot.cs,**/Sources/Todo.WebApi/**/Startup.cs 
+
+  # Cache NuGet packages to avoid having to restore them during each build.
+  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/release/caching?view=azure-devops#netnuget.
+  - task: Cache@2
+    name: 'cache_restored_nuget_packages'
+    displayName: Cache restored NuGet packages
+    inputs:
+      key: 'nuget | "$(Agent.OS)" | **/packages.lock.json,!**/bin/**'
+      restoreKeys: |
+        nuget | "$(Agent.OS)"
+      path: $(NUGET_PACKAGES)
+      cacheHitVar: CacheRestoredNuGetPackages
       
   # Restore NuGet packages using 'dotnet restore' command.
   # See more about this command here: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-restore?source=docs.
@@ -94,23 +130,15 @@ jobs:
       --locked-mode
     name: 'restore_nuget_packages'
     displayName: 'Restore NuGet packages'
-    env:
-      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: $(DotNetSkipFirstTimeExperience)
-      DOTNET_CLI_TELEMETRY_OPTOUT: $(DotNetCliTelemetryOptOut)
-      COREHOST_TRACE: $(CoreHostTrace)
+    condition: ne(variables['CacheRestoredNuGetPackages'], True)
       
   # Compile source code using 'dotnet build' command.
   # See more about this command here: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-build.
   - script: >-
       dotnet build $(Build.SourcesDirectory)/Todo.sln
-      --no-restore
       --configuration ${{ parameters.build.configuration }}
     name: 'build_sources'
     displayName: 'Build sources'
-    env:
-      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: $(DotNetSkipFirstTimeExperience)
-      DOTNET_CLI_TELEMETRY_OPTOUT: $(DotNetCliTelemetryOptOut)
-      COREHOST_TRACE: $(CoreHostTrace)
 
   # Run unit tests and collect code coverage metrics using 'dotnet test' command.
   # See more about this command here: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-test.
@@ -135,10 +163,6 @@ jobs:
       -- NUnit.Where="cat == UnitTests"
     name: 'run_unit_tests'
     displayName: 'Run unit tests'
-    env:
-      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: $(DotNetSkipFirstTimeExperience)
-      DOTNET_CLI_TELEMETRY_OPTOUT: $(DotNetCliTelemetryOptOut)
-      COREHOST_TRACE: $(CoreHostTrace)
 
   # Publish unit test results.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=azure-devops&tabs=yaml.
@@ -258,9 +282,6 @@ jobs:
     name: 'run_integration_tests'
     displayName: 'Run integration tests'
     env:
-      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: $(DotNetSkipFirstTimeExperience)
-      DOTNET_CLI_TELEMETRY_OPTOUT: $(DotNetCliTelemetryOptOut)
-      COREHOST_TRACE: $(CoreHostTrace)
       CONNECTIONSTRINGS__TODOFORINTEGRATIONTESTS: $(DatabaseConnectionStrings.Todo)
       GENERATEJWT__SECRET: $(IntegrationTests.GenerateJwt.Secret)
 
@@ -303,10 +324,6 @@ jobs:
       --version $(ReportGenerator_Version)
     name: 'install_code_coverage_report_generator'
     displayName: 'Install code coverage report generator tool'
-    env:
-      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: $(DotNetSkipFirstTimeExperience)
-      DOTNET_CLI_TELEMETRY_OPTOUT: $(DotNetCliTelemetryOptOut)
-      COREHOST_TRACE: $(CoreHostTrace)
 
   # Generate code coverage report:
   #   - combine several OpenCover coverage data files into one single file in Cobertura format
