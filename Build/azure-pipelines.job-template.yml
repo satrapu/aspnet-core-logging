@@ -2,7 +2,6 @@ parameters:
   job:
     name: ''
     displayName: ''
-    timeoutInMinutes: 10
   pool: ''
   build:
     configuration: 'Release'
@@ -34,7 +33,6 @@ jobs:
   pool: ${{ parameters.pool }}
   workspace:
     clean: all
-  timeoutInMinutes: ${{ parameters.job.timeoutInMinutes }}
   variables:
     # Environment variable used when caching restored NuGet packages.
     # See more about this variable here: https://docs.microsoft.com/en-us/nuget/reference/cli-reference/cli-ref-environment-variables.
