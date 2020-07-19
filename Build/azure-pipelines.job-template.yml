@@ -92,7 +92,7 @@ jobs:
   # https://docs.microsoft.com/en-us/rest/api/azure/devops/artifacts/feed%20%20management/get%20feeds?view=azure-devops-rest-5.1.
   - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreAndSaveCacheV1.RestoreAndSaveCache@1
     name: 'restore_and_save_cache_for_nuget_packages'
-    display: 'Restore and save cache for NuGet packages'
+    displayName: 'Restore and save cache for NuGet packages'
     inputs:
       keyfile: "$(Build.SourcesDirectory)/Sources/**/packages.lock.json, $(Build.SourcesDirectory)/Tests/**/packages.lock.json"
       targetfolder: "$(Build.SourcesDirectory)/.nuget"
