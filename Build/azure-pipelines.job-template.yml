@@ -90,9 +90,10 @@ jobs:
     displayName: Cache restored NuGet packages
     inputs:
       key: |
-      'nuget | "$(Agent.OS)" 
-      | $(Build.SourcesDirectory)/Sources/**/packages.lock.json,!**/bin/**
-      | $(Build.SourcesDirectory)/Tests/**/packages.lock.json,!**/bin/**'
+        nuget
+        "$(Agent.OS)"
+        $(Build.SourcesDirectory)/Sources/**/packages.lock.json,!**/bin/**
+        $(Build.SourcesDirectory)/Tests/**/packages.lock.json,!**/bin/**
       restoreKeys: |
         nuget | "$(Agent.OS)"
       path: '$(Pipeline.Workspace)/.nuget/packages'
