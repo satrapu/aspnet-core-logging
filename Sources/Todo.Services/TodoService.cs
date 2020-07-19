@@ -45,7 +45,7 @@ namespace Todo.Services
             IQueryable<TodoItem> todoItems = FilterItems(todoItemQuery)
                 // Read more about query tags here: 
                 // https://docs.microsoft.com/en-us/ef/core/querying/tags
-                .TagWith(nameof(GetByQueryAsync))
+                .TagWith($"{nameof(TodoService)}#{nameof(GetByQueryAsync)}")
                 // Read more about no tracking queries here:
                 // https://docs.microsoft.com/en-us/ef/core/querying/tracking#no-tracking-queries
                 .AsNoTracking();
@@ -212,7 +212,21 @@ namespace Todo.Services
 
         private static IQueryable<TodoItem> PaginateItems(IQueryable<TodoItem> todoItems, TodoItemQuery todoItemQuery)
         {
-            IQueryable<TodoItem> result = todoItems.Skip(todoItemQuery.PageIndex).Take(todoItemQuery.PageSize);
+            IQueryable<TodoItem> result = todoItems;
+            int pageIndex = TodoItemQuery.DefaultPageIndex;
+            int pageSize = TodoItemQuery.DefaultPageSize;
+
+            if (todoItemQuery.PageIndex.HasValue)
+            {
+                pageIndex = todoItemQuery.PageIndex.Value;
+            }
+
+            if (todoItemQuery.PageSize.HasValue)
+            {
+                pageSize = todoItemQuery.PageSize.Value;
+            }
+
+            result.Skip(pageIndex * pageSize).Take(pageSize);
             return result;
         }
     }
