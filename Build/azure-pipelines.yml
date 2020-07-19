@@ -28,11 +28,6 @@ trigger:
 
 # See more about Azure Pipelines variables here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&tabs=yaml%2Cbatch.
 variables:
-  # Environment variable used when caching restored NuGet packages.
-  # See more about caching such files here: https://docs.microsoft.com/en-us/azure/devops/pipelines/release/caching?view=azure-devops#netnuget.
-  # See more about this variable here: https://docs.microsoft.com/en-us/nuget/reference/cli-reference/cli-ref-environment-variables.
-  NUGET_PACKAGES: '$(Pipeline.Workspace)/.nuget/packages'
-
   # Load group containing variables applicable to all pipelines belonging to this project.
   - group: 'GlobalVariables'
 
