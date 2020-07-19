@@ -92,7 +92,7 @@ jobs:
       key: 'nuget | "$(Agent.OS)" | **/packages.lock.json,!**/bin/**'
       restoreKeys: |
         nuget | "$(Agent.OS)"
-      path: '$(Pipeline.Workspace)/.nuget/packages'
+      path: $(NUGET_PACKAGES)
       cacheHitVar: CacheRestoredNuGetPackages
       
   # Restore NuGet packages using 'dotnet restore' command.
