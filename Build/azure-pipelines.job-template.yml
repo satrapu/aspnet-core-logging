@@ -136,6 +136,7 @@ jobs:
   - script: >-
       dotnet test $(Build.SourcesDirectory)/Todo.sln
       --no-build
+      --no-restore
       --configuration ${{ parameters.build.configuration }}
       --test-adapter-path "."
       --logger "nunit"
@@ -253,6 +254,7 @@ jobs:
   - script: >-
       dotnet test $(Build.SourcesDirectory)/Todo.sln
       --no-build
+      --no-restore
       --configuration ${{ parameters.build.configuration }}
       --test-adapter-path "."
       --logger "nunit"
