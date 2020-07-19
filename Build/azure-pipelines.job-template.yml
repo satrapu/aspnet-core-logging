@@ -83,21 +83,20 @@ jobs:
         sonar.cs.opencover.reportsPaths=**/coverage.opencover.xml
         sonar.coverage.exclusions=**/Tests/**/*.cs,**/Sources/Todo.Persistence/**/TodoDbContextModelSnapshot.cs,**/Sources/Todo.WebApi/**/Startup.cs 
 
-  # Restore cached NuGet packages to shorten build time via an Azure DevOps extension.
-  # See more about this extension here: https://marketplace.visualstudio.com/items?itemName=1ESLighthouseEng.PipelineArtifactCaching. 
-  #
-  # The id of the feed to store the cache can be obtained by inspecting the response of the following command:
-  #    curl  https://feeds.dev.azure.com/satrapu/aspnet-core-logging/_apis/packaging/feeds\?api-version\=5.1-preview.1 -X GET
-  # See more about getting feed details using Azure DevOps REST API here: 
-  # https://docs.microsoft.com/en-us/rest/api/azure/devops/artifacts/feed%20%20management/get%20feeds?view=azure-devops-rest-5.1.
-  - task: 1ESLighthouseEng.PipelineArtifactCaching.RestoreAndSaveCacheV1.RestoreAndSaveCache@1
-    name: 'restore_and_save_cache_for_nuget_packages'
-    displayName: 'Restore and save cache for NuGet packages'
+  # Cache NuGet packages to avoid having to restore them during each build.
+  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/release/caching?view=azure-devops#netnuget.
+  - task: Cache@2
+    name: 'cache_restored_nuget_packages'
+    displayName: Cache restored NuGet packages
     inputs:
-      keyfile: "$(Build.SourcesDirectory)/Sources/**/packages.lock.json, $(Build.SourcesDirectory)/Tests/**/packages.lock.json"
-      targetfolder: "$(Build.SourcesDirectory)/.nuget"
-      vstsFeed: "$(Feeds.CacheNuGetPackages.Id)"
-      alias: "NuGetPackages"
+      key: |
+      'nuget | "$(Agent.OS)" 
+      | $(Build.SourcesDirectory)/Sources/**/packages.lock.json,!**/bin/**
+      | $(Build.SourcesDirectory)/Tests/**/packages.lock.json,!**/bin/**'
+      restoreKeys: |
+        nuget | "$(Agent.OS)"
+      path: '$(Pipeline.Workspace)/.nuget/packages'
+      cacheHitVar: CacheRestoredNuGetPackages
       
   # Restore NuGet packages using 'dotnet restore' command.
   # See more about this command here: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-restore?source=docs.
@@ -110,7 +109,7 @@ jobs:
       --locked-mode
     name: 'restore_nuget_packages'
     displayName: 'Restore NuGet packages'
-    condition: ne(variables['CacheRestored-NuGetPackages'], 'true')
+    condition: ne(variables['CacheRestoredNuGetPackages'], 'true')
     env:
       DOTNET_SKIP_FIRST_TIME_EXPERIENCE: $(DotNetSkipFirstTimeExperience)
       DOTNET_CLI_TELEMETRY_OPTOUT: $(DotNetCliTelemetryOptOut)
