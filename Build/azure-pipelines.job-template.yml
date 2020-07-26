@@ -166,8 +166,11 @@ jobs:
     displayName: 'Start compose services used by integration tests'
     inputs:
       targetType: 'filePath'
-      filePath: '$(Build.SourcesDirectory)/Build/db4it-compose/RunComposeServices.ps1'
+      filePath: '$(Build.SourcesDirectory)/Build/RunComposeServices.ps1'
       arguments: >-
+        -RelativePathToComposeFile './db4it-compose/docker-compose.yml' `
+        -RelativePathToEnvironmentFile './db4it-compose/.env' `
+        -ComposeProjectName 'db4it' `it 
         -ExtraEnvironmentVariables `
          @{ `
            'db_name'='${{ parameters.integrationTests.databaseName }}'; `
@@ -186,9 +189,9 @@ jobs:
       targetType: 'inline'
       errorActionPreference: 'stop'
       script: |
-        Write-Output "Host port for service db-v11 is: $(compose.project.aspnet-core-logging-it.service.db-v11.port.5432)"
-        Write-Output "Host port for service db-v12 is: $(compose.project.aspnet-core-logging-it.service.db-v12.port.5432)"
-        Write-Output "Host port for service db-v13 is: $(compose.project.aspnet-core-logging-it.service.db-v13.port.5432)"
+        Write-Output "Host port for service db-v11 is: $(compose.project.db4it.service.db-v11.port.5432)"
+        Write-Output "Host port for service db-v12 is: $(compose.project.db4it.service.db-v12.port.5432)"
+        Write-Output "Host port for service db-v13 is: $(compose.project.db4it.service.db-v13.port.5432)"
 
   # Run integration tests and collect code coverage metrics using 'dotnet test' command.
   # See more about this command here: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-test.
@@ -214,7 +217,7 @@ jobs:
       COREHOST_TRACE: $(CoreHostTrace)
       CONNECTIONSTRINGS__TODOFORINTEGRATIONTESTS: >-
         Host=${{ parameters.integrationTests.databaseHost }};
-        Port=$(compose.project.aspnet-core-logging-it.service.db-v13.port.5432);
+        Port=$(compose.project.db4it.service.db-v13.port.5432);
         Database=${{ parameters.integrationTests.databaseName }};
         Username=${{ parameters.integrationTests.databaseUsername }};
         Password=${{ parameters.integrationTests.databasePassword }};
