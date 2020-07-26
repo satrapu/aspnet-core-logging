@@ -1,0 +1,65 @@
+version: "3.8"
+services:
+  db-v11:
+    image: postgres:11-alpine
+    healthcheck:
+      test: >
+        pg_isready \
+          --host=localhost \
+          --port=5432 \
+          --dbname=${db_name} \
+          --username=${db_username}
+      interval: ${db_healthcheck_interval}
+      timeout: ${db_healthcheck_timeout}
+      retries: ${db_healthcheck_retries}
+      start_period: ${db_healthcheck_start_period}
+    stdin_open: true
+    tty: true
+    environment:
+      POSTGRES_DB: ${db_name}
+      POSTGRES_USER: ${db_username}
+      POSTGRES_PASSWORD: ${db_password}
+    ports:
+      - 5432
+  db-v12:
+    image: postgres:12-alpine
+    healthcheck:
+      test: >
+        pg_isready \
+          --host=localhost \
+          --port=5432 \
+          --dbname=${db_name} \
+          --username=${db_username}
+      interval: ${db_healthcheck_interval}
+      timeout: ${db_healthcheck_timeout}
+      retries: ${db_healthcheck_retries}
+      start_period: ${db_healthcheck_start_period}
+    stdin_open: true
+    tty: true
+    environment:
+      POSTGRES_DB: ${db_name}
+      POSTGRES_USER: ${db_username}
+      POSTGRES_PASSWORD: ${db_password}
+    ports:
+      - 5432
+  db-v13:
+    image: postgres:13-alpine
+    healthcheck:
+      test: >
+        pg_isready \
+          --host=localhost \
+          --port=5432 \
+          --dbname=${db_name} \
+          --username=${db_username}
+      interval: ${db_healthcheck_interval}
+      timeout: ${db_healthcheck_timeout}
+      retries: ${db_healthcheck_retries}
+      start_period: ${db_healthcheck_start_period}
+    stdin_open: true
+    tty: true
+    environment:
+      POSTGRES_DB: ${db_name}
+      POSTGRES_USER: ${db_username}
+      POSTGRES_PASSWORD: ${db_password}
+    ports:
+      - 5432
