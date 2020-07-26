@@ -175,7 +175,7 @@ jobs:
            'db_password'='${{ parameters.integrationTests.databasePassword }}' `
          }
       errorActionPreference: 'stop'
-      failOnStderr: true
+      failOnStderr: false
       workingDirectory: $(Build.SourcesDirectory)
 
   # Run a PowerShell script to display the host ports associated with the compose services needed when running integration tests.
