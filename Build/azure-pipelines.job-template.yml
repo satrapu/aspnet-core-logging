@@ -168,7 +168,7 @@ jobs:
       targetType: 'filePath'
       filePath: '$(Build.SourcesDirectory)/Build/db4it-compose/RunComposeServices.ps1'
       arguments: >-
-        -ExtraEnvironmentVariables >
+        -ExtraEnvironmentVariables
          @{
            'db_name'='${{ parameters.integrationTests.databaseName }}'; 
            'db_username'='${{ parameters.integrationTests.databaseUsername }}'; 
