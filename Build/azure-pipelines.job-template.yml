@@ -160,24 +160,7 @@ jobs:
         , eq( variables['Agent.OS'], 'Darwin')
       )
 
- # Start compose services used by integration tests.
-  - pwsh: $(Build.SourcesDirectory)/Build/db4it-compose/RunComposeServices.ps1
-    name: 'start_compose_services_used_by_integration_tests'
-    displayName: 'Start compose services used by integration tests'
-    env:
-      COMPOSE_PROJECT_NAME: 'aspnet-core-logging-integration-tests'
-      db_name: ${{ parameters.integrationTests.databaseName }}
-      db_username: ${{ parameters.integrationTests.databaseUsername }}
-      db_password: ${{ parameters.integrationTests.databasePassword }}
-      db_healthcheck_interval: '1s'
-      db_healthcheck_timeout: '5s'
-      db_healthcheck_retries: 30
-      db_healthcheck_start_period: '3s'
-      sleep_between_consecutive_retries: '2s'
-      max_retries: 30
-      docker_api_version: '1.40'
-      debug_enabled: true
-
+  # Run a PowerShell script to start compose services needed when running integration tests.
   - task: PowerShell@2
     name: 'start_compose_services_used_by_integration_tests'
     displayName: 'Start compose services used by integration tests'
@@ -190,9 +173,10 @@ jobs:
       failOnStderr: true
       workingDirectory: $(Build.SourcesDirectory)
 
+  # Run a PowerShell script to display the host ports associated with the compose services needed when running integration tests.
   - task: PowerShell@2
     name: 'display_compose_host_ports'
-    displayName: 'Display ports to be used while running integration tests'
+    displayName: 'Display host ports to be used while running integration tests'
     inputs:
       targetType: 'inline'
       errorActionPreference: 'stop'
