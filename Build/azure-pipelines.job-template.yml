@@ -186,9 +186,9 @@ jobs:
       targetType: 'inline'
       errorActionPreference: 'stop'
       script: |
-        Write-Output "Host port for service db-v11 is: variables['$(compose.project.aspnet-core-logging-it.service.db-v11.port.5432)']"
-        Write-Output "Host port for service db-v12 is: variables['$(compose.project.aspnet-core-logging-it.service.db-v12.port.5432)']"
-        Write-Output "Host port for service db-v13 is: variables['$(compose.project.aspnet-core-logging-it.service.db-v13.port.5432)']"
+        Write-Output "Host port for service db-v11 is: $(compose.project.aspnet-core-logging-it.service.db-v11.port.5432)"
+        Write-Output "Host port for service db-v12 is: $(compose.project.aspnet-core-logging-it.service.db-v12.port.5432)"
+        Write-Output "Host port for service db-v13 is: $(compose.project.aspnet-core-logging-it.service.db-v13.port.5432)"
 
   # Run integration tests and collect code coverage metrics using 'dotnet test' command.
   # See more about this command here: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-test.
@@ -214,7 +214,7 @@ jobs:
       COREHOST_TRACE: $(CoreHostTrace)
       CONNECTIONSTRINGS__TODOFORINTEGRATIONTESTS: >-
         Host=${{ parameters.integrationTests.databaseHost }};
-        Port=$variables['$(compose.project.aspnet-core-logging-it.service.db-v13.port.5432)';
+        Port=$(compose.project.aspnet-core-logging-it.service.db-v13.port.5432);
         Database=${{ parameters.integrationTests.databaseName }};
         Username=${{ parameters.integrationTests.databaseUsername }};
         Password=${{ parameters.integrationTests.databasePassword }};
