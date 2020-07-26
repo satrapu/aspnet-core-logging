@@ -11,6 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{398FFE78
 		Directory.Build.targets = Directory.Build.targets
 		Build\start-docker-on-macOS.sh = Build\start-docker-on-macOS.sh
 		Build\SonarBuildBreaker.ps1 = Build\SonarBuildBreaker.ps1
+		Build\RunComposeServices.ps1 = Build\RunComposeServices.ps1
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sources", "Sources", "{ED7A5363-C21A-4D47-A2A5-67DEB1E0DDE3}"
