@@ -1,6 +1,6 @@
 version: "3.8"
 services:
-  db-v11:
+  postgres-v11:
     image: postgres:11-alpine
     healthcheck:
       test: >
@@ -21,7 +21,7 @@ services:
       POSTGRES_PASSWORD: ${db_password}
     ports:
       - 5432
-  db-v12:
+  postgres-v12:
     image: postgres:12-alpine
     healthcheck:
       test: >
@@ -42,7 +42,7 @@ services:
       POSTGRES_PASSWORD: ${db_password}
     ports:
       - 5432
-  db-v13:
+  postgres-v13:
     image: postgres:13-alpine
     healthcheck:
       test: >
