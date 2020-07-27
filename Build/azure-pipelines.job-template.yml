@@ -170,7 +170,7 @@ jobs:
       arguments: >-
         -RelativePathToComposeFile './db4it-compose/docker-compose.yml' `
         -RelativePathToEnvironmentFile './db4it-compose/.env' `
-        -ComposeProjectName 'db4it' `it 
+        -ComposeProjectName 'db4it' `
         -ExtraEnvironmentVariables `
          @{ `
            'db_name'='${{ parameters.integrationTests.databaseName }}'; `
