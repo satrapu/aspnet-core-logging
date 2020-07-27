@@ -1,18 +1,38 @@
-# To run this script from Visual Studio Code terminal use 'pwsh' and run:
-#   cd ~/dev/projects/aspnetcore-logging/Build/db4it-compose
-#   sudo pwsh ./RunComposeServices.ps1
+# This script starts the Docker Compose services residing in a given compose file and will also
+# create one Azure DevOps variable per port per service.
 Param(
+    # Relative path pointing to a Docker Compose YAML file.
+    # This path is resolved using this script location as base path.
+    # See more here: https://docs.docker.com/compose/reference/overview/#use--f-to-specify-name-and-path-of-one-or-more-compose-files.
+    # Currently, this script supports only one compose file.
     [String]
     $RelativePathToComposeFile = 'docker-compose.yml',
 
+    # Docker Compose project name.
+    # See more here: https://docs.docker.com/compose/reference/overview/#use--p-to-specify-a-project-name.
+    [String]
+    $ComposeProjectName = 'aspnet-core-logging-it',
+
+    # Relative path pointing to a file containing variables using `key=value` convention.
+    # This path is resolved using this script location as base path.
+    # These variables will be passed to the containers started via Docker Compose.
     [String]
     $RelativePathToEnvironmentFile = '.env',
 
-    [hashtable]
-    $ExtraEnvironmentVariables,
+    # The amount of time in milliseconds between two consecutive checks made to ensure
+    # Docker Compose services have reached healthy state.
+    [Int32]
+    [ValidateRange(250, [Int32]::MaxValue)]
+    $HealthCheckIntervalInMilliseconds = 250,
 
-    [String]
-    $ComposeProjectName = 'aspnet-core-logging-it'
+    # The maximum amount of retries before giving up and considering that the  Compose services are not running.
+    [Int32]
+    [ValidateRange([System.Management.Automation.ValidateRangeKind]::Positive)]
+    $MaxNumberOfTries = 120,
+
+    # An optional dictionary storing variables which will be passed to the containers started via Docker Compose.
+    [hashtable]
+    $ExtraEnvironmentVariables
 )
 
 $ErrorActionPreference = 'Stop'
@@ -58,12 +78,12 @@ $ComposeStartInfoMessage = "About to start compose services declared in file: `"
 Write-Output $ComposeStartInfoMessage
 
 docker-compose --file="$ComposeFilePath" `
-    --project-name="$ComposeProjectName" `
-    up -d 
+               --project-name="$ComposeProjectName" `
+               up -d 
 
 $LsCommandOutput = (docker container ls -a `
-        --filter "label=com.docker.compose.project=$ComposeProjectName" `
-        --format "{{ .ID }}") | Out-String
+                                     --filter "label=com.docker.compose.project=$ComposeProjectName" `
+                                     --format "{{ .ID }}") | Out-String
 
 $ComposeServices = [System.Collections.Generic.List[psobject]]::new()
 $LsCommandOutput.Split([System.Environment]::NewLine, [System.StringSplitOptions]::RemoveEmptyEntries) | ForEach-Object {
@@ -80,12 +100,10 @@ $LsCommandOutput.Split([System.Environment]::NewLine, [System.StringSplitOptions
     $ComposeServices.Add($ComposeService)
 }
 
-$NumberOfTries = 0
-$MaxNumberOfTries = 30
-$SleepingTimeInMillis = 250
+$NumberOfTries = 1
 
 do {
-    Start-Sleep -Milliseconds $SleepingTimeInMillis
+    Start-Sleep -Milliseconds $HealthCheckIntervalInMilliseconds
     $AreAllServicesReady = $true
 
     foreach ($ComposeService in $ComposeServices) {
@@ -127,7 +145,9 @@ do {
                 # Using the port mapping from above and assuming the project name is 'aspnet-core-logging-it' and 
                 # the service is named 'db-v12', the following variable will be created:
                 #   'compose.project.aspnet-core-logging-it.services.db-v12.ports.5432' with value: '32769'
-                Write-Output "##vso[task.setvariable variable=compose.project.$ComposeProjectName.service.$($ComposeService.ServiceName).port.$ContainerPort]$HostPort"
+                $VariableName = "compose.project.$ComposeProjectName.service.$($ComposeService.ServiceName).port.$ContainerPort"
+                Write-Output "##vso[task.setvariable variable=$VariableName]$HostPort"
+                Write-Output "##vso[command]Variable $VariableName has been set to: $($VariableName)"
             }
         }
 
@@ -137,4 +157,7 @@ do {
     $numberOfTries++
 } until ($NumberOfTries -eq $MaxNumberOfTries)
 
+Write-Output "##vso[task.LogIssue type=error;]Services from project: $ComposeProjectName " `
+           + "are still not running after checking for $numberOfTries times; will stop here"
+Write-Output "##vso[task.complete result=Failed;]"
 exit 99;
