@@ -138,8 +138,6 @@ do {
             $RawPortMappings = $PortCommandOutput.Split([System.Environment]::NewLine, [System.StringSplitOptions]::RemoveEmptyEntries)
 
             foreach ($RawPortMapping in $RawPortMappings) {
-                Write-Output "Processing raw port mapping: $RawPortMapping for service: $($ComposeService.ServiceName) ..."
-                
                 # Port mapping looks like this: 5432/tcp -> 0.0.0.0:32769
                 # The part on the left side of the ' -> ' string represents container port info,
                 # while the part of the right represents host port info.
@@ -147,18 +145,10 @@ do {
                 # To find the container port, one need to extract it from string '5432/tcp' - in this case, the container port is: 5432.
                 # To find the host port, one need to extract it from string '0.0.0.0:32769' - in this case, the host port is: 32769.
                 $RawPortMappingParts = $RawPortMapping.Split(' -> ', [System.StringSplitOptions]::RemoveEmptyEntries)
-                
                 $RawContainerPort = $RawPortMappingParts[0]
-                Write-Output "RawContainerPort=$RawContainerPort"
-                
                 $RawHostPort = $RawPortMappingParts[1]
-                Write-Output "RawHostPort=$RawHostPort"
-                
                 $ContainerPort = $RawContainerPort.Split('/', [System.StringSplitOptions]::RemoveEmptyEntries)[0]
-                Write-Output "ContainerPort=$ContainerPort"
-                
                 $HostPort = $RawHostPort.Split(':', [System.StringSplitOptions]::RemoveEmptyEntries)[1]
-                Write-Output "HostPort=$HostPort"
 
                 # For each port mapping an Azure DevOps pipeline variable will be created with a name following the convention:
                 #   compose.project.<COMPOSE_PROJECT_NAME>.service.<COMPOSE_SERVICE_NAME>.port.<CONTAINER_PORT>.
