@@ -226,7 +226,7 @@ namespace Todo.Services
                 pageSize = todoItemQuery.PageSize.Value;
             }
 
-            result.Skip(pageIndex * pageSize).Take(pageSize);
+            result = result.Skip(pageIndex * pageSize).Take(pageSize);
             return result;
         }
     }
