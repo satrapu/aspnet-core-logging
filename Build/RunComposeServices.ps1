@@ -79,10 +79,14 @@ Write-Output $ComposeStartInfoMessage
 
 # Redirect all streams to null since Docker Compose uses standard error stream to log
 # messages when doing its stuff - see more here: https://github.com/docker/compose/issues/5590.
+#
 # Will use $LASTEXITCODE to detect whether the last Docker Compose command has failed or not.
+#
+# See more here about PowerShell redirecting streams: 
+# https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_redirection?view=powershell-7.
 docker-compose --file="$ComposeFilePath" `
                --project-name="$ComposeProjectName" `
-               up -d *>$null
+               up -d *> $null
 
 # Ensure `docker-compose up` command did not fail
 if ($LASTEXITCODE -ne 0) {
