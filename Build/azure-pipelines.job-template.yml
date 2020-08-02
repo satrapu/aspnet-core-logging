@@ -171,13 +171,13 @@ jobs:
       arguments: >-
         -RelativePathToComposeFile './db4it-compose/docker-compose.yml' `
         -RelativePathToEnvironmentFile './db4it-compose/.env' `
-        -ComposeProjectName 'db4it' `
+        -ComposeProjectName 'integration-test-prerequisites' `
         -ExtraEnvironmentVariables `
          @{ `
            'db_docker_image'='${{ parameters.integrationTests.databaseDockerImage }}'; `
            'db_name'='${{ parameters.integrationTests.databaseName }}'; `
            'db_username'='${{ parameters.integrationTests.databaseUsername }}'; `
-           'db_password'='${{ parameters.integrationTests.databasePassword }}' `
+           'db_password'='${{ parameters.integrationTests.databasePassword }}' 
          }
       errorActionPreference: 'stop'
       # Docker Compose commands write to standard error stream, thus tricking Azure DevOps
@@ -211,7 +211,7 @@ jobs:
       COREHOST_TRACE: $(CoreHostTrace)
       CONNECTIONSTRINGS__TODOFORINTEGRATIONTESTS: >-
         Host=${{ parameters.integrationTests.databaseHost }};
-        Port=$(compose.project.db4it.service.postgres-v13.port.5432);
+        Port=$(compose.project.integration-test-prerequisites.service.db4it.port.5432);
         Database=${{ parameters.integrationTests.databaseName }};
         Username=${{ parameters.integrationTests.databaseUsername }};
         Password=${{ parameters.integrationTests.databasePassword }};
