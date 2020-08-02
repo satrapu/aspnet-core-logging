@@ -77,10 +77,14 @@ $ComposeStartInfoMessage = "About to start compose services declared in file: `"
     + "and environment file: `"$ComposeEnvironmentFilePath`" ..."
 Write-Output $ComposeStartInfoMessage
 
+# Redirect all streams to null since Docker Compose uses standard error stream to log
+# messages when doing its stuff - see more here: https://github.com/docker/compose/issues/5590.
+# Will use $LASTEXITCODE to detect whether the last Docker Compose command has failed or not.
 docker-compose --file="$ComposeFilePath" `
                --project-name="$ComposeProjectName" `
-               up -d 2>$null
+               up -d *>$null
 
+# Ensure `docker-compose up` command did not fail
 if ($LASTEXITCODE -ne 0) {
     Write-Output "##vso[task.LogIssue type=error;]Failed to start compose services for project: $ComposeProjectName"
     Write-Output "##vso[task.complete result=Failed;]"
