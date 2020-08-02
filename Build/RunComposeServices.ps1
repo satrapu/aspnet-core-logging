@@ -86,7 +86,7 @@ Write-Output $ComposeStartInfoMessage
 # https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_redirection?view=powershell-7.
 docker-compose --file="$ComposeFilePath" `
                --project-name="$ComposeProjectName" `
-               up -d *> $null
+               up -d 3>&1 2>&1 > $null
 
 # Ensure `docker-compose up` command did not fail
 if ($LASTEXITCODE -ne 0) {
