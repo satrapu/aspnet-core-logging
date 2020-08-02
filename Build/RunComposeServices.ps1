@@ -79,7 +79,13 @@ Write-Output $ComposeStartInfoMessage
 
 docker-compose --file="$ComposeFilePath" `
                --project-name="$ComposeProjectName" `
-               up -d 1>$null
+               up -d 2>$null
+
+if ($LASTEXITCODE -ne 0) {
+    Write-Output "##vso[task.LogIssue type=error;]Failed to start compose services for project: $ComposeProjectName"
+    Write-Output "##vso[task.complete result=Failed;]"
+    exit 3;
+}
 
 $LsCommandOutput = docker container ls -a `
                                     --filter "label=com.docker.compose.project=$ComposeProjectName" `
@@ -155,7 +161,7 @@ do {
             }
         }
 
-        exit 0;
+        exit 4;
     }
 
     $numberOfTries++
