@@ -13,21 +13,21 @@ Param(
     [String]
     $ComposeProjectName = 'aspnet-core-logging-it',
 
-    # Relative path pointing to a file containing variables using `key=value` convention.
+    # Relative path pointing to a file containing variables following `key=value` convention.
     # This path is resolved using this script location as base path.
     # These variables will be passed to the containers started via Docker Compose.
     [String]
     $RelativePathToEnvironmentFile = '.env',
 
-    # The amount of time in milliseconds between two consecutive checks made to ensure
-    # Docker Compose services have reached healthy state.
+    # The amount of time in milliseconds between two consecutive checks made to ensure  compose services have 
+    # reached healthy state.
     [Int32]
     [ValidateRange(250, [Int32]::MaxValue)]
     $HealthCheckIntervalInMilliseconds = 250,
 
-    # The maximum amount of retries before giving up and considering that the  Compose services are not running.
+    # The maximum amount of retries before giving up and considering that the compose services are not running.
     [Int32]
-    [ValidateRange([System.Management.Automation.ValidateRangeKind]::Positive)]
+    [ValidateRange(1, [Int32]::MaxValue)]
     $MaxNumberOfTries = 120,
 
     # An optional dictionary storing variables which will be passed to the containers started via Docker Compose.
