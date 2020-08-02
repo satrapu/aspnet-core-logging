@@ -47,6 +47,7 @@ namespace Todo.WebApi.Controllers
             return Ok(jwtModel);
         }
 
+        // ReSharper disable once UnusedParameter.Local
         private JwtModel GenerateToken(string userName, string password)
         {
             byte[] userNameAsBytes = Encoding.UTF8.GetBytes(userName);
