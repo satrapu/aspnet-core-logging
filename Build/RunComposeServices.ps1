@@ -77,18 +77,17 @@ $ComposeStartInfoMessage = "About to start compose services declared in file: `"
     + "and environment file: `"$ComposeEnvironmentFilePath`" ..."
 Write-Output $ComposeStartInfoMessage
 
-# Redirect all streams to null since Docker Compose uses standard error stream to log
-# messages when doing its stuff - see more here: https://github.com/docker/compose/issues/5590.
-#
-# Will use $LASTEXITCODE to detect whether the last Docker Compose command has failed or not.
-#
-# See more here about PowerShell redirecting streams: 
-# https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_redirection?view=powershell-7.
+# Since Docker Compose logs to standard error, as documented here https://github.com/docker/compose/issues/5590,
+# I need to employ `--log-level` option (https://docs.docker.com/compose/reference/overview/) to ensure starting 
+# compose services will not trick Azure DevOps into thinking this PowerShell script has failed since something gets
+# written to standard error stream.
+# Furthermore, I will use $LASTEXITCODE to detect whether the last Docker Compose command has failed or not.
 docker-compose --file="$ComposeFilePath" `
                --project-name="$ComposeProjectName" `
-               up -d 3>&1 2>&1 > $null
+               --log-level ERROR `
+               up -d
 
-# Ensure `docker-compose up` command did not fail
+# Check whether `docker-compose up` command has failed or not
 if ($LASTEXITCODE -ne 0) {
     Write-Output "##vso[task.LogIssue type=error;]Failed to start compose services for project: $ComposeProjectName"
     Write-Output "##vso[task.complete result=Failed;]"
