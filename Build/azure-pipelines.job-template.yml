@@ -178,7 +178,7 @@ jobs:
            'db_password'='${{ parameters.integrationTests.databasePassword }}' `
          }
       errorActionPreference: 'stop'
-      failOnStderr: false
+      failOnStderr: true
       workingDirectory: $(Build.SourcesDirectory)
 
   # Run integration tests and collect code coverage metrics using 'dotnet test' command.

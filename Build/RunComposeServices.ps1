@@ -79,16 +79,19 @@ Write-Output $ComposeStartInfoMessage
 
 docker-compose --file="$ComposeFilePath" `
                --project-name="$ComposeProjectName" `
-               up -d 
+               up -d 1>$null
 
-$LsCommandOutput = (docker container ls -a `
-                                     --filter "label=com.docker.compose.project=$ComposeProjectName" `
-                                     --format "{{ .ID }}") | Out-String
+$LsCommandOutput = docker container ls -a `
+                                    --filter "label=com.docker.compose.project=$ComposeProjectName" `
+                                    --format "{{ .ID }}" `
+                                    | Out-String
 
 $ComposeServices = [System.Collections.Generic.List[psobject]]::new()
 $LsCommandOutput.Split([System.Environment]::NewLine, [System.StringSplitOptions]::RemoveEmptyEntries) | ForEach-Object {
     $ContainerId = $_
-    $ComposeServiceLabelsAsJson = (docker inspect --format '{{ json .Config.Labels }}' $ContainerId) | Out-String | ConvertFrom-Json
+    $ComposeServiceLabelsAsJson = docker inspect --format '{{ json .Config.Labels }}' $ContainerId `
+                                                 | Out-String `
+                                                 | ConvertFrom-Json
     $ComposeServiceNameLabel = 'com.docker.compose.service'
     $ComposeServiceName = $ComposeServiceLabelsAsJson.$ComposeServiceNameLabel
     
@@ -107,7 +110,8 @@ do {
     $AreAllServicesReady = $true
 
     foreach ($ComposeService in $ComposeServices) {
-        $IsServiceReady = docker inspect $ComposeService.ContainerId --format "{{.State.Health.Status}}" | Select-String -Pattern 'healthy' -SimpleMatch -Quiet
+        $IsServiceReady = docker inspect $ComposeService.ContainerId --format "{{.State.Health.Status}}" `
+                                         | Select-String -Pattern 'healthy' -SimpleMatch -Quiet
 
         if ($IsServiceReady -eq $false) {
             Write-Output "Service: $($ComposeService.ServiceName) from project: $ComposeProjectName is not healthy yet"
@@ -123,7 +127,7 @@ do {
         Write-Output "All services from project: $ComposeProjectName are healthy"
 
         foreach ($ComposeService in $ComposeServices) {
-            $PortCommandOutput = (docker port $ComposeService.ContainerId) | Out-String
+            $PortCommandOutput = docker port $ComposeService.ContainerId | Out-String
             $RawPortMappings = $PortCommandOutput.Split([System.Environment]::NewLine, [System.StringSplitOptions]::RemoveEmptyEntries)
 
             foreach ($RawPortMapping in $RawPortMappings) {
