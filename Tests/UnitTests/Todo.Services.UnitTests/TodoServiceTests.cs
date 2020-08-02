@@ -50,6 +50,7 @@ namespace Todo.Services
             var mockLogger = new Mock<ILogger<TodoService>>();
 
             // ReSharper disable once ExpressionIsAlwaysNull
+            // ReSharper disable once ObjectCreationAsStatement
             Action createService = () => new TodoService(todoDbContext, mockLogger.Object);
             createService.Should()
                 .Throw<ArgumentNullException>(
@@ -67,6 +68,7 @@ namespace Todo.Services
             ILogger<TodoService> logger = null;
 
             // ReSharper disable once ExpressionIsAlwaysNull
+            // ReSharper disable once ObjectCreationAsStatement
             Action createService = () => new TodoService(mockTodoDbContext.Object, logger);
             createService.Should()
                 .Throw<ArgumentNullException>(
