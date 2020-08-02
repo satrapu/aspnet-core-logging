@@ -1,4 +1,6 @@
-version: "3.8"
+# Use compose file version 3.7 and not a newer one 
+# since macOS agent cannot run a newer Docker version.
+version: "3.7"
 services:
   postgres-v11:
     image: postgres:11-alpine
