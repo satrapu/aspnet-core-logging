@@ -85,7 +85,7 @@ Write-Output $ComposeStartInfoMessage
 docker-compose --file="$ComposeFilePath" `
                --project-name="$ComposeProjectName" `
                --log-level ERROR `
-               up -d
+               up -d *> $null
 
 # Check whether `docker-compose up` command has failed or not
 if ($LASTEXITCODE -ne 0) {
