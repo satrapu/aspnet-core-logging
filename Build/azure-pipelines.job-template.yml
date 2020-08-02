@@ -178,7 +178,11 @@ jobs:
            'db_password'='${{ parameters.integrationTests.databasePassword }}' `
          }
       errorActionPreference: 'stop'
-      failOnStderr: true
+      # Docker Compose commands write to standard error stream, thus tricking Azure DevOps
+      # into thinking this PowerShell script has failed, which isn't the case.
+      # Due to this limitation (see more here: https://github.com/docker/compose/issues/5590),
+      # I need to rely on $LASTEXITCODE in my script to detect failures.
+      failOnStderr: False
       workingDirectory: $(Build.SourcesDirectory)
 
   # Run integration tests and collect code coverage metrics using 'dotnet test' command.

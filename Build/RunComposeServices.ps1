@@ -77,18 +77,9 @@ $ComposeStartInfoMessage = "About to start compose services declared in file: `"
     + "and environment file: `"$ComposeEnvironmentFilePath`" ..."
 Write-Output $ComposeStartInfoMessage
 
-# Since Docker Compose logs to standard error, as documented here https://github.com/docker/compose/issues/5590,
-# I need to employ `--log-level` option (https://docs.docker.com/compose/reference/overview/) to ensure starting 
-# compose services will not trick Azure DevOps into thinking this PowerShell script has failed since something gets
-# written to standard error stream.
-# Furthermore, I will use $LASTEXITCODE to detect whether the last Docker Compose command has failed or not.
 docker-compose --file="$ComposeFilePath" `
                --project-name="$ComposeProjectName" `
-               --log-level ERROR `
-               up -d `
-               *> $null `
-               | Out-Null
-               
+               up -d
 
 # Check whether `docker-compose up` command has failed or not
 if ($LASTEXITCODE -ne 0) {
