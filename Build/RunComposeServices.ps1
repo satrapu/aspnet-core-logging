@@ -56,9 +56,9 @@ $EnvironmentFileLines = Get-Content -Path $ComposeEnvironmentFilePath
 
 foreach ($EnvironmentFileLine in $EnvironmentFileLines) {
     # Each line of text will be split using first delimiter only
-    $Parts = $EnvironmentFileLine.Split('=', 2)
-    $EnvironmentVariableName = $Parts[0]
-    $EnvironmentVariableValue = $Parts[1]
+    $EnvironmentFileLineParts = $EnvironmentFileLine.Split('=', 2)
+    $EnvironmentVariableName = $EnvironmentFileLineParts[0]
+    $EnvironmentVariableValue = $EnvironmentFileLineParts[1]
 
     # Each key-value pair from the environment file will be promoted to an environment variable
     # in the scope of the current process since, AFAIK, there's no other way of passing such variables
@@ -138,15 +138,16 @@ do {
             $RawPortMappings = $PortCommandOutput.Split([System.Environment]::NewLine, [System.StringSplitOptions]::RemoveEmptyEntries)
 
             foreach ($RawPortMapping in $RawPortMappings) {
+                Write-Output "Processing raw port mapping: $RawPortMapping for service: $($ComposeService.ServiceName) ..."
                 # Port mapping looks like this: 5432/tcp -> 0.0.0.0:32769
                 # The part on the left side of the ' -> ' string represents container port info,
                 # while the part of the right represents host port info.
                 #
                 # To find the container port, one need to extract it from string '5432/tcp' - in this case, the container port is: 5432.
                 # To find the host port, one need to extract it from string '0.0.0.0:32769' - in this case, the host port is: 32769.
-                $Parts = $RawPortMapping.Split(' -> ')
-                $RawContainerPort = $Parts[0]
-                $RawHostPort = $Parts[1]
+                $RawPortMappingParts = $RawPortMapping.Split(' -> ')
+                $RawContainerPort = $RawPortMappingParts[0]
+                $RawHostPort = $RawPortMappingParts[1]
                 $ContainerPort = $RawContainerPort.Split('/')[0]
                 $HostPort = $RawHostPort.Split(':')[1]
 
