@@ -4,7 +4,7 @@
 version: "3.7"
 services:
   db4it:
-    image: "{db_docker_image}"
+    image: "${db_docker_image}"
     healthcheck:
       test: >
         pg_isready \
