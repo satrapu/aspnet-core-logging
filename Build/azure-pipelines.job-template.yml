@@ -6,23 +6,24 @@ parameters:
   build:
     configuration: 'Release'
   sonar:
-    enabled: false
+    enabled: False
     runAnalysisTimeoutInMinutes: 5
     publishPollingTimeoutSeconds: 300
     buildBreaker:
-      enabled: false
-  publishPipelineArtifacts: true
+      enabled: False
+  publishPipelineArtifacts: True
   integrationTests:
-    databaseHost: ''
-    databaseName: ''
+    databaseDockerImage: 'postgres:12-alpine'
+    databaseHost: 'localhost'
+    databaseName: $(IntegrationTests.Database.Todo.Name)
     databasePort: 5432
-    databaseUsername: ''
-    databasePassword: ''
+    databaseUsername: $(IntegrationTests.Database.Todo.Username)
+    databasePassword: $(IntegrationTests.Database.Todo.Password)
 
 jobs:
 - job: ${{ parameters.job.name }}
   displayName: ${{ parameters.job.displayName }}
-  continueOnError: false
+  continueOnError: False
   pool: ${{ parameters.pool }}
   workspace:
     clean: all
@@ -48,7 +49,7 @@ jobs:
       and
       (
           succeeded()
-        , eq( ${{ parameters.sonar.enabled }}, true)
+        , eq( ${{ parameters.sonar.enabled }}, True)
       )
     inputs:
       packageType: 'sdk'
@@ -62,7 +63,7 @@ jobs:
       and
       (
           succeeded()
-        , eq( ${{ parameters.sonar.enabled }}, true)
+        , eq( ${{ parameters.sonar.enabled }}, True)
       )
     inputs:
       SonarCloud: 'sonar-cloud'
@@ -121,7 +122,7 @@ jobs:
       --configuration ${{ parameters.build.configuration }}
       --test-adapter-path "."
       --logger "nunit"
-      /p:CollectCoverage=true
+      /p:CollectCoverage=True
       /p:CoverletOutputFormat=opencover
       /p:Include="[Todo.*]*"
       /p:Exclude=\"[Todo.*.*Tests]*,[Todo.Persistence]*.TodoDbContextModelSnapshot,[Todo.WebApi]*.Startup\"
@@ -142,9 +143,9 @@ jobs:
     inputs:
       testResultsFormat: 'NUnit'
       testResultsFiles: '**/UnitTests/**/TestResults/*'
-      mergeTestResults: true
+      mergeTestResults: True
       buildConfiguration: ${{ parameters.build.configuration }}
-      publishRunAttachments: true
+      publishRunAttachments: True
 
   # Install and start Docker Engine on macOS.
   # See more here: https://github.com/microsoft/azure-pipelines-image-generation/issues/738#issuecomment-527013065.
@@ -173,6 +174,7 @@ jobs:
         -ComposeProjectName 'db4it' `
         -ExtraEnvironmentVariables `
          @{ `
+           'db_docker_image'='${{ parameters.integrationTests.databaseDockerImage }}'; `
            'db_name'='${{ parameters.integrationTests.databaseName }}'; `
            'db_username'='${{ parameters.integrationTests.databaseUsername }}'; `
            'db_password'='${{ parameters.integrationTests.databasePassword }}' `
@@ -196,7 +198,7 @@ jobs:
       --configuration ${{ parameters.build.configuration }}
       --test-adapter-path "."
       --logger "nunit"
-      /p:CollectCoverage=true
+      /p:CollectCoverage=True
       /p:CoverletOutputFormat=opencover
       /p:Include="[Todo.*]*"
       /p:Exclude=\"[Todo.*.*Tests]*,[Todo.Persistence]*.TodoDbContextModelSnapshot\"
@@ -224,9 +226,9 @@ jobs:
     inputs:
       testResultsFormat: 'NUnit'
       testResultsFiles: '**/IntegrationTests/**/TestResults/*'
-      mergeTestResults: true
+      mergeTestResults: True
       buildConfiguration: ${{ parameters.build.configuration }}
-      publishRunAttachments: true
+      publishRunAttachments: True
 
   # Publish test results as pipeline artifacts.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/artifacts/pipeline-artifacts?view=azure-devops&tabs=yaml#publish-a-pipeline-artifact.
@@ -240,7 +242,7 @@ jobs:
       and
       (
           succeededOrFailed()
-        , eq( ${{ parameters.publishPipelineArtifacts }}, true)
+        , eq( ${{ parameters.publishPipelineArtifacts }}, True)
       )
     inputs:
       artifact: 'test-artifacts-$(Agent.OS)-$(Agent.OSArchitecture)-$(Build.BuildNumber)-$(Build.BuildID)'
@@ -294,7 +296,7 @@ jobs:
       and
       (
           succeeded()
-        , eq( ${{ parameters.sonar.enabled }}, true)
+        , eq( ${{ parameters.sonar.enabled }}, True)
       )
 
   # Publish Sonar quality gate result to the remote server.
@@ -307,8 +309,8 @@ jobs:
       and
       (
           succeeded()
-        , eq( ${{ parameters.sonar.enabled }}, true)
-        , eq( ${{ parameters.sonar.buildBreaker.enabled }}, true)
+        , eq( ${{ parameters.sonar.enabled }}, True)
+        , eq( ${{ parameters.sonar.buildBreaker.enabled }}, True)
       )
       
   # Load the current Git branch name into a build variable to be later used when querying SonarCloud web API for the
@@ -321,8 +323,8 @@ jobs:
       and
       (
           succeeded()
-        , eq( ${{ parameters.sonar.enabled }}, true)
-        , eq( ${{ parameters.sonar.buildBreaker.enabled }}, true)
+        , eq( ${{ parameters.sonar.enabled }}, True)
+        , eq( ${{ parameters.sonar.buildBreaker.enabled }}, True)
         , eq( variables['Build.Reason'], 'PullRequest')
       )
     inputs:
@@ -342,8 +344,8 @@ jobs:
       and
       (
           succeeded()
-        , eq( ${{ parameters.sonar.enabled }}, true)
-        , eq( ${{ parameters.sonar.buildBreaker.enabled }}, true)
+        , eq( ${{ parameters.sonar.enabled }}, True)
+        , eq( ${{ parameters.sonar.buildBreaker.enabled }}, True)
         , ne( variables['Build.Reason'], 'PullRequest')
       )
     inputs:
@@ -362,8 +364,8 @@ jobs:
       and
       (
           succeeded()
-        , eq( ${{ parameters.sonar.enabled }}, true)
-        , eq( ${{ parameters.sonar.buildBreaker.enabled }}, true)
+        , eq( ${{ parameters.sonar.enabled }}, True)
+        , eq( ${{ parameters.sonar.buildBreaker.enabled }}, True)
       )
     inputs:
       targetType: 'inline'
@@ -385,8 +387,8 @@ jobs:
       and
       (
           succeeded()
-        , eq( ${{ parameters.sonar.enabled }}, true)
-        , eq( ${{ parameters.sonar.buildBreaker.enabled }}, true)
+        , eq( ${{ parameters.sonar.enabled }}, True)
+        , eq( ${{ parameters.sonar.buildBreaker.enabled }}, True)
       )
     inputs:
       targetType: 'filePath'
@@ -397,5 +399,5 @@ jobs:
         -SonarToken "$(CurrentProject.Sonar.Token)" 
         -GitBranchName "$(NormalizedGitBranchName)"
       errorActionPreference: 'stop'
-      failOnStderr: true
+      failOnStderr: True
       workingDirectory: $(Build.SourcesDirectory)

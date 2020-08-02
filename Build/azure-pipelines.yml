@@ -12,7 +12,7 @@ resources:
   - repository: 'aspnet_core_logging'
     type: 'github'
     name: 'satrapu/aspnet-core-logging'
-    clean: true
+    clean: True
     # The value of the "endpoint" element must match the service connection name 
     # declared in Project Settings -> Service connections section of your Azure DevOps organization.
     endpoint: 'satrapu'
@@ -93,14 +93,9 @@ jobs:
     pool:
       vmImage: 'ubuntu-18.04'
     sonar:
-      enabled: false
+      enabled: True
       buildBreaker:
-        enabled: false
-    integrationTests:
-      databaseHost: 'localhost'
-      databaseName: $(IntegrationTests.Database.Todo.Name)
-      databaseUsername: $(IntegrationTests.Database.Todo.Username)
-      databasePassword: $(IntegrationTests.Database.Todo.Password)
+        enabled: True
       
 - template: './azure-pipelines.job-template.yml'
   parameters:
@@ -109,11 +104,6 @@ jobs:
       displayName: 'Run on macOS'
     pool:
       vmImage: 'macOS-10.15'
-    integrationTests:
-      databaseHost: 'localhost'
-      databaseName: $(IntegrationTests.Database.Todo.Name)
-      databaseUsername: $(IntegrationTests.Database.Todo.Username)
-      databasePassword: $(IntegrationTests.Database.Todo.Password)
       
 - template: './azure-pipelines.job-template.yml'
   parameters:
@@ -123,7 +113,4 @@ jobs:
     pool:
       vmImage: 'windows-2019'
     integrationTests:
-      databaseHost: 'localhost'
-      databaseName: $(IntegrationTests.Database.Todo.Name)
-      databaseUsername: $(IntegrationTests.Database.Todo.Username)
-      databasePassword: $(IntegrationTests.Database.Todo.Password)
+      databaseDockerImage: 'stellirin/postgres-windows:12'
