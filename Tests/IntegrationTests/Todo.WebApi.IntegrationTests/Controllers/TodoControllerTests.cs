@@ -30,7 +30,7 @@ namespace Todo.WebApi.Controllers
         public void GivenAnHttpRequestIsToBePerformed()
         {
             testWebApplicationFactory =
-                new TestWebApplicationFactory(MethodBase.GetCurrentMethod().DeclaringType?.Name);
+                new TestWebApplicationFactory(MethodBase.GetCurrentMethod()?.DeclaringType?.Name);
         }
 
         [OneTimeTearDown]
