@@ -16,8 +16,8 @@ services:
       timeout: ${db_healthcheck_timeout}
       retries: ${db_healthcheck_retries}
       start_period: ${db_healthcheck_start_period}
-    stdin_open: true
-    tty: true
+    stdin_open: false
+    tty: false
     environment:
       POSTGRES_DB: "${db_name}"
       POSTGRES_USER: "${db_username}"
