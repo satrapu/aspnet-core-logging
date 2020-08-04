@@ -6,6 +6,9 @@ namespace Todo.Services
 {
     public class TodoItemQuery
     {
+        public const int DefaultPageIndex = 0;
+        public const int DefaultPageSize = 25;
+        
         /// <summary>
         /// Gets or sets the id of the todo item to be fetched using this query.
         /// </summary>
@@ -30,14 +33,16 @@ namespace Todo.Services
         /// <summary>
         /// Gets or sets the maximum number of todo items to be fetched using this query.
         /// </summary>
+        [Required]
         [Range(1, 1000)]
-        public int PageSize { get; set; } = 25;
+        public int? PageSize { get; set; } = DefaultPageSize;
 
         /// <summary>
         /// Gets or sets the 0-based index of the current batch of todo items to be fetched using this query. 
         /// </summary>
+        [Required]
         [Range(0, int.MaxValue)]
-        public int PageIndex { get; set; }
+        public int? PageIndex { get; set; } = DefaultPageIndex;
 
         /// <summary>
         /// Gets or sets the property name used for sorting the todo items to be fetched using this query. 

@@ -226,7 +226,7 @@ dotnet ef database drop --startup-project ./Sources/Todo.WebApi --project ./Sour
 #### Option 2: Run database migrations at application startup
 
 Ensure the `MigrateDatabase` configuration property is set to `true`.  
-See more about applying EF Core migrations at runtime [here](https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/?tabs=dotnet-core-cli#apply-migrations-at-runtime).
+See more about applying EF Core migrations at runtime [here](https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/applying?tabs=dotnet-core-cli#apply-migrations-at-runtime).
 
 ### Inspect MiniProfiler results
 
