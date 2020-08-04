@@ -18,7 +18,7 @@ namespace Todo.Services
         /// <summary>
         /// Persists a new todo item to the underlying persistent storage.
         /// </summary>
-        /// <param name="newTodoItemInfolate">The template used for creating the new todo item.</param>
+        /// <param name="newTodoItemInfo">The template used for creating the new todo item.</param>
         /// <returns>The identified of the new todo item.</returns>
         Task<long> AddAsync(NewTodoItemInfo newTodoItemInfo);
 
