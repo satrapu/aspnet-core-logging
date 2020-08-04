@@ -136,7 +136,6 @@ jobs:
       (
           succeeded()
         , ne(variables['CacheRestoredForNuGetPackages'], 'true')
-        , eq(${{ parameters.cacheRestoredNuGetPackages }}, True)
       )
       
   # Compile source code using 'dotnet build' command.
