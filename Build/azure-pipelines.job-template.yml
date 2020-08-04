@@ -5,6 +5,9 @@ parameters:
   pool: ''
   build:
     configuration: 'Release'
+  # Since currently downloading an archive containing a cache of restored 
+  # NuGet packages takes considerably more time than just doing a restore 
+  # with each build, this feature has been turned off.
   cacheRestoredNuGetPackages: False
   sonar:
     enabled: False
@@ -14,11 +17,11 @@ parameters:
       enabled: False
   publishPipelineArtifacts: True
   integrationTests:
-    databaseDockerImage: 'postgres:12-alpine'
-    databaseHost: 'localhost'
-    databaseName: '$(IntegrationTests.Database.Todo.Name)'
-    databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
-    databasePassword: '$(IntegrationTests.Database.Todo.Password)'
+    databaseDockerImage: ''
+    databaseHost: ''
+    databaseName: ''
+    databaseUsername: ''
+    databasePassword: ''
 
 jobs:
 - job: ${{ parameters.job.name }}
