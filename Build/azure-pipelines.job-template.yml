@@ -5,6 +5,7 @@ parameters:
   pool: ''
   build:
     configuration: 'Release'
+  cacheRestoredNuGetPackages: False
   sonar:
     enabled: False
     runAnalysisTimeoutInMinutes: 5
@@ -106,6 +107,12 @@ jobs:
   - task: Cache@2
     name: 'cache_restored_nuget_packages'
     displayName: Cache restored NuGet packages
+    condition: |
+      and
+      (
+          succeeded()
+        , eq( ${{ parameters.cacheRestoredNuGetPackages }}, True)
+      )
     inputs:
       key: 'nuget | "$(Agent.OS)" | **/packages.lock.json,!**/bin/**'
       restoreKeys: |
@@ -120,17 +127,23 @@ jobs:
   # dotnet restore ./Todo.sln --configfile ./nuget.config --use-lock-file --lock-file-path packages.lock.json
   - script: >-
       dotnet restore $(Build.SourcesDirectory)/Todo.sln 
-      --configfile $(Build.SourcesDirectory)/nuget.config
-      --locked-mode
+                     --configfile $(Build.SourcesDirectory)/nuget.config
+                     --locked-mode
     name: 'restore_nuget_packages'
     displayName: 'Restore NuGet packages'
-    condition: ne(variables['CacheRestoredNuGetPackages'], True)
+    condition: |
+      and
+      (
+          succeeded()
+        , eq(variables['CacheRestoredNuGetPackages'], False)
+        , eq( ${{ parameters.cacheRestoredNuGetPackages }}, True)
+      )
       
   # Compile source code using 'dotnet build' command.
   # See more about this command here: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-build.
   - script: >-
       dotnet build $(Build.SourcesDirectory)/Todo.sln
-      --configuration ${{ parameters.build.configuration }}
+                   --configuration ${{ parameters.build.configuration }}
     name: 'build_sources'
     displayName: 'Build sources'
 
@@ -145,16 +158,16 @@ jobs:
   # See more here: http://blog.prokrams.com/2019/12/16/nunit3-filter-dotnet/#tldr.
   - script: >-
       dotnet test $(Build.SourcesDirectory)/Todo.sln
-      --no-build
-      --no-restore
-      --configuration ${{ parameters.build.configuration }}
-      --test-adapter-path "."
-      --logger "nunit"
-      /p:CollectCoverage=True
-      /p:CoverletOutputFormat=opencover
-      /p:Include="[Todo.*]*"
-      /p:Exclude=\"[Todo.*.*Tests]*,[Todo.Persistence]*.TodoDbContextModelSnapshot,[Todo.WebApi]*.Startup\"
-      -- NUnit.Where="cat == UnitTests"
+                  --no-build
+                  --no-restore
+                  --configuration ${{ parameters.build.configuration }}
+                  --test-adapter-path "."
+                  --logger "nunit"
+                  /p:CollectCoverage=True
+                  /p:CoverletOutputFormat=opencover
+                  /p:Include="[Todo.*]*"
+                  /p:Exclude=\"[Todo.*.*Tests]*,[Todo.Persistence]*.TodoDbContextModelSnapshot,[Todo.WebApi]*.Startup\"
+                  -- NUnit.Where="cat == UnitTests"
     name: 'run_unit_tests'
     displayName: 'Run unit tests'
 
@@ -217,16 +230,16 @@ jobs:
   #     [assembly: NUnit.Framework.Category("IntegrationTests")]
   - script: >-
       dotnet test $(Build.SourcesDirectory)/Todo.sln
-      --no-build
-      --no-restore
-      --configuration ${{ parameters.build.configuration }}
-      --test-adapter-path "."
-      --logger "nunit"
-      /p:CollectCoverage=True
-      /p:CoverletOutputFormat=opencover
-      /p:Include="[Todo.*]*"
-      /p:Exclude=\"[Todo.*.*Tests]*,[Todo.Persistence]*.TodoDbContextModelSnapshot\"
-      -- NUnit.Where="cat == IntegrationTests"
+                  --no-build
+                  --no-restore
+                  --configuration ${{ parameters.build.configuration }}
+                  --test-adapter-path "."
+                  --logger "nunit"
+                  /p:CollectCoverage=True
+                  /p:CoverletOutputFormat=opencover
+                  /p:Include="[Todo.*]*"
+                  /p:Exclude=\"[Todo.*.*Tests]*,[Todo.Persistence]*.TodoDbContextModelSnapshot\"
+                  -- NUnit.Where="cat == IntegrationTests"
     name: 'run_integration_tests'
     displayName: 'Run integration tests'
     env:
@@ -273,8 +286,8 @@ jobs:
   # See more about this command here: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-tool-install.
   - script: >-
       dotnet tool install dotnet-reportgenerator-globaltool 
-      --global
-      --version $(ReportGenerator_Version)
+                          --global
+                          --version $(ReportGenerator_Version)
     name: 'install_code_coverage_report_generator'
     displayName: 'Install code coverage report generator tool'
 
@@ -286,10 +299,9 @@ jobs:
   # In order to be able to see the report inside the Code Coverage tab on Azure DevOps, 
   # enable Azure Boards for your project, as documented here: https://developercommunity.visualstudio.com/solutions/403137/view.html.
   - script: >-
-      reportgenerator 
-      "-reports:$(Build.SourcesDirectory)/Tests/**/coverage.opencover.xml"
-      "-targetdir:$(Build.SourcesDirectory)/.CodeCoverageReport"
-      "-reporttypes:Cobertura"
+      reportgenerator "-reports:$(Build.SourcesDirectory)/Tests/**/coverage.opencover.xml"
+                      "-targetdir:$(Build.SourcesDirectory)/.CodeCoverageReport"
+                      "-reporttypes:Cobertura"
     name: 'generate_code_coverage_report'
     displayName: 'Generate code coverage report'
 
