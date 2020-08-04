@@ -339,7 +339,7 @@ jobs:
       (
           succeeded()
         , eq(${{ parameters.sonar.enabled }}, True)
-        , eq ${{ parameters.sonar.buildBreaker.enabled }}, True)
+        , eq(${{ parameters.sonar.buildBreaker.enabled }}, True)
       )
       
   # Load the current Git branch name into a build variable to be later used when querying SonarCloud web API for the
@@ -353,7 +353,7 @@ jobs:
       (
           succeeded()
         , eq(${{ parameters.sonar.enabled }}, True)
-        , eq ${{ parameters.sonar.buildBreaker.enabled }}, True)
+        , eq(${{ parameters.sonar.buildBreaker.enabled }}, True)
         , eq(variables['Build.Reason'], 'PullRequest')
       )
     inputs:
