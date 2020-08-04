@@ -102,7 +102,8 @@ jobs:
         sonar.coverage.exclusions=**/Tests/**/*.cs,**/Sources/Todo.Persistence/**/TodoDbContextModelSnapshot.cs,**/Sources/Todo.WebApi/**/Startup.cs 
 
   # Cache NuGet packages to avoid having to restore them during each build.
-  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/release/caching?view=azure-devops#netnuget.
+  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/release/caching?view=azure-devops#netnuget
+  # and here: https://docs.microsoft.com/en-us/azure/devops/pipelines/release/caching?view=azure-devops#conditioning-on-cache-restoration.
   - task: Cache@2
     name: 'cache_restored_nuget_packages'
     displayName: Cache restored NuGet packages
@@ -117,7 +118,7 @@ jobs:
       restoreKeys: |
         nuget | "$(Agent.OS)"
       path: $(NUGET_PACKAGES)
-      cacheHitVar: CacheRestoredNuGetPackages
+      cacheHitVar: CacheRestoredForNuGetPackages
       
   # Restore NuGet packages using 'dotnet restore' command.
   # See more about this command here: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-restore?source=docs.
@@ -134,7 +135,7 @@ jobs:
       and
       (
           succeeded()
-        , eq(variables['CacheRestoredNuGetPackages'], False)
+        , ne(variables['CacheRestoredForNuGetPackages'], 'true')
         , eq(${{ parameters.cacheRestoredNuGetPackages }}, True)
       )
       
