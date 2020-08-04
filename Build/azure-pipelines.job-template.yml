@@ -73,7 +73,7 @@ jobs:
       and
       (
           succeeded()
-        , eq( ${{ parameters.sonar.enabled }}, True)
+        , eq(${{ parameters.sonar.enabled }}, True)
       )
     inputs:
       packageType: 'sdk'
@@ -87,7 +87,7 @@ jobs:
       and
       (
           succeeded()
-        , eq( ${{ parameters.sonar.enabled }}, True)
+        , eq(${{ parameters.sonar.enabled }}, True)
       )
     inputs:
       SonarCloud: 'sonar-cloud'
@@ -110,7 +110,7 @@ jobs:
       and
       (
           succeeded()
-        , eq( ${{ parameters.cacheRestoredNuGetPackages }}, True)
+        , eq(${{ parameters.cacheRestoredNuGetPackages }}, True)
       )
     inputs:
       key: 'nuget | "$(Agent.OS)" | **/packages.lock.json,!**/bin/**'
@@ -135,7 +135,7 @@ jobs:
       (
           succeeded()
         , eq(variables['CacheRestoredNuGetPackages'], False)
-        , eq( ${{ parameters.cacheRestoredNuGetPackages }}, True)
+        , eq(${{ parameters.cacheRestoredNuGetPackages }}, True)
       )
       
   # Compile source code using 'dotnet build' command.
@@ -183,7 +183,7 @@ jobs:
       buildConfiguration: ${{ parameters.build.configuration }}
       publishRunAttachments: True
 
-  # Install and start Docker Engine on macOS.
+  # Install and start Docker Engine on macOS based agents only.
   # See more here: https://github.com/microsoft/azure-pipelines-image-generation/issues/738#issuecomment-527013065.
   - script: |
       chmod +x $(Build.SourcesDirectory)/Build/start-docker-on-macOS.sh
@@ -194,7 +194,7 @@ jobs:
       and
       (
           succeeded()
-        , eq( variables['Agent.OS'], 'Darwin')
+        , eq(variables['Agent.OS'], 'Darwin')
       )
 
   # Run a PowerShell script to start compose services needed when running integration tests.
@@ -275,7 +275,7 @@ jobs:
       and
       (
           succeededOrFailed()
-        , eq( ${{ parameters.publishPipelineArtifacts }}, True)
+        , eq(${{ parameters.publishPipelineArtifacts }}, True)
       )
     inputs:
       artifact: 'test-artifacts-$(Agent.OS)-$(Agent.OSArchitecture)-$(Build.BuildNumber)-$(Build.BuildID)'
@@ -324,7 +324,7 @@ jobs:
       and
       (
           succeeded()
-        , eq( ${{ parameters.sonar.enabled }}, True)
+        , eq(${{ parameters.sonar.enabled }}, True)
       )
 
   # Publish Sonar quality gate result to the remote server.
@@ -337,8 +337,8 @@ jobs:
       and
       (
           succeeded()
-        , eq( ${{ parameters.sonar.enabled }}, True)
-        , eq( ${{ parameters.sonar.buildBreaker.enabled }}, True)
+        , eq(${{ parameters.sonar.enabled }}, True)
+        , eq ${{ parameters.sonar.buildBreaker.enabled }}, True)
       )
       
   # Load the current Git branch name into a build variable to be later used when querying SonarCloud web API for the
@@ -351,9 +351,9 @@ jobs:
       and
       (
           succeeded()
-        , eq( ${{ parameters.sonar.enabled }}, True)
-        , eq( ${{ parameters.sonar.buildBreaker.enabled }}, True)
-        , eq( variables['Build.Reason'], 'PullRequest')
+        , eq(${{ parameters.sonar.enabled }}, True)
+        , eq ${{ parameters.sonar.buildBreaker.enabled }}, True)
+        , eq(variables['Build.Reason'], 'PullRequest')
       )
     inputs:
       targetType: 'inline'
@@ -372,9 +372,9 @@ jobs:
       and
       (
           succeeded()
-        , eq( ${{ parameters.sonar.enabled }}, True)
-        , eq( ${{ parameters.sonar.buildBreaker.enabled }}, True)
-        , ne( variables['Build.Reason'], 'PullRequest')
+        , eq(${{ parameters.sonar.enabled }}, True)
+        , eq(${{ parameters.sonar.buildBreaker.enabled }}, True)
+        , ne(variables['Build.Reason'], 'PullRequest')
       )
     inputs:
       targetType: 'inline'
@@ -392,8 +392,8 @@ jobs:
       and
       (
           succeeded()
-        , eq( ${{ parameters.sonar.enabled }}, True)
-        , eq( ${{ parameters.sonar.buildBreaker.enabled }}, True)
+        , eq(${{ parameters.sonar.enabled }}, True)
+        , eq(${{ parameters.sonar.buildBreaker.enabled }}, True)
       )
     inputs:
       targetType: 'inline'
@@ -415,8 +415,8 @@ jobs:
       and
       (
           succeeded()
-        , eq( ${{ parameters.sonar.enabled }}, True)
-        , eq( ${{ parameters.sonar.buildBreaker.enabled }}, True)
+        , eq(${{ parameters.sonar.enabled }}, True)
+        , eq(${{ parameters.sonar.buildBreaker.enabled }}, True)
       )
     inputs:
       targetType: 'filePath'
