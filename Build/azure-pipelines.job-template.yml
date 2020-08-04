@@ -230,9 +230,6 @@ jobs:
     name: 'run_integration_tests'
     displayName: 'Run integration tests'
     env:
-      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: $(DotNetSkipFirstTimeExperience)
-      DOTNET_CLI_TELEMETRY_OPTOUT: $(DotNetCliTelemetryOptOut)
-      COREHOST_TRACE: $(CoreHostTrace)
       CONNECTIONSTRINGS__TODOFORINTEGRATIONTESTS: >-
         Host=${{ parameters.integrationTests.databaseHost }};
         Port=$(compose.project.integration-test-prerequisites.service.db4it.port.5432);
