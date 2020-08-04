@@ -17,7 +17,6 @@ parameters:
     databaseDockerImage: 'postgres:12-alpine'
     databaseHost: 'localhost'
     databaseName: '$(IntegrationTests.Database.Todo.Name)'
-    databasePort: 5432
     databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
     databasePassword: '$(IntegrationTests.Database.Todo.Password)'
 
