@@ -52,7 +52,8 @@ namespace Todo.Persistence.Entities
         
         /// <summary>
         /// The identity (transaction ID) of the inserting transaction for this row version.
-        /// See more here: https://www.postgresql.org/docs/12/ddl-system-columns.html.
+        /// See more here: https://www.postgresql.org/docs/12/ddl-system-columns.html
+        /// and here: https://www.npgsql.org/efcore/modeling/concurrency.html.
         /// </summary>
         // ReSharper disable once InconsistentNaming
         // ReSharper disable once UnusedMember.Global
