@@ -18,7 +18,7 @@ parameters:
   publishPipelineArtifacts: True
   integrationTests:
     databaseDockerImage: ''
-    databaseHost: 'localhost'
+    databaseHost: ''
     databaseName: ''
     databaseUsername: ''
     databasePassword: ''
