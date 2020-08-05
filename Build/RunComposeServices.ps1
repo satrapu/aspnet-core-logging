@@ -73,8 +73,8 @@ if ($ExtraEnvironmentVariables -ne $null) {
 }
 
 $ComposeStartInfoMessage = "About to start compose services declared in file: `"$ComposeFilePath`" " `
-    + "using project name: `"$ComposeProjectName`" " `
-    + "and environment file: `"$ComposeEnvironmentFilePath`" ..."
+                         + "using project name: `"$ComposeProjectName`" " `
+                         + "and environment file: `"$ComposeEnvironmentFilePath`" ..."
 Write-Output $ComposeStartInfoMessage
 
 docker-compose --file="$ComposeFilePath" `
@@ -92,6 +92,7 @@ $LsCommandOutput = docker container ls -a `
                                     --filter "label=com.docker.compose.project=$ComposeProjectName" `
                                     --format "{{ .ID }}" `
                                     | Out-String
+Write-Output "Found the following container IDs: $LsCommandOutput"
 
 $ComposeServices = [System.Collections.Generic.List[psobject]]::new()
 $LsCommandOutput.Split([System.Environment]::NewLine, [System.StringSplitOptions]::RemoveEmptyEntries) | ForEach-Object {
@@ -108,8 +109,11 @@ $LsCommandOutput.Split([System.Environment]::NewLine, [System.StringSplitOptions
     }
 
     $ComposeServices.Add($ComposeService)
+    Write-Output "Found compose service with container id: `"$($ComposeService.ContainerId)`" "
+               + "and service name: `"$($ComposeService.ServiceName)`""
 }
 
+Write-Output "About to check whether $($ComposeServices.Count) compose services are healthy or not ..."
 $NumberOfTries = 1
 
 do {
@@ -130,46 +134,57 @@ do {
         }
     }
 
-    if ($AreAllServicesReady) {
-        Write-Output "All services from project: $ComposeProjectName are healthy"
-
-        foreach ($ComposeService in $ComposeServices) {
-            $PortCommandOutput = docker port $ComposeService.ContainerId | Out-String
-            $RawPortMappings = $PortCommandOutput.Split([System.Environment]::NewLine, [System.StringSplitOptions]::RemoveEmptyEntries)
-
-            foreach ($RawPortMapping in $RawPortMappings) {
-                # Port mapping looks like this: 5432/tcp -> 0.0.0.0:32769
-                # The part on the left side of the ' -> ' string represents container port info,
-                # while the part of the right represents host port info.
-                #
-                # To find the container port, one need to extract it from string '5432/tcp' - in this case, the container port is: 5432.
-                # To find the host port, one need to extract it from string '0.0.0.0:32769' - in this case, the host port is: 32769.
-                $RawPortMappingParts = $RawPortMapping.Split(' -> ', [System.StringSplitOptions]::RemoveEmptyEntries)
-                $RawContainerPort = $RawPortMappingParts[0]
-                $RawHostPort = $RawPortMappingParts[1]
-                $ContainerPort = $RawContainerPort.Split('/', [System.StringSplitOptions]::RemoveEmptyEntries)[0]
-                $HostPort = $RawHostPort.Split(':', [System.StringSplitOptions]::RemoveEmptyEntries)[1]
-
-                # For each port mapping an Azure DevOps pipeline variable will be created with a name following the convention:
-                #   compose.project.<COMPOSE_PROJECT_NAME>.service.<COMPOSE_SERVICE_NAME>.port.<CONTAINER_PORT>.
-                # The variable value will be set to the host port.
-                # Using the port mapping from above and assuming the project name is 'aspnet-core-logging-it' and 
-                # the service is named 'db-v12', the following variable will be created:
-                #   'compose.project.aspnet-core-logging-it.services.db-v12.ports.5432' with value: '32769'
-                $VariableName = "compose.project.$ComposeProjectName.service.$($ComposeService.ServiceName).port.$ContainerPort"
-                Write-Output "##vso[task.setvariable variable=$VariableName]$HostPort"
-                Write-Output "##[command]Variable $VariableName has been set to: $HostPort"
-            }
-        }
-
-        # Everything it's OK at this point, so exit this script the nice way :)
-        exit 0;
+    if ($AreAllServicesReady -eq $True) {
+        break;
     }
 
-    $numberOfTries++
+    $NumberOfTries++
 } until ($NumberOfTries -eq $MaxNumberOfTries)
 
-Write-Output "##vso[task.LogIssue type=error;]Services from project: $ComposeProjectName " `
-           + "are still not running after checking for $numberOfTries times; will stop here"
-Write-Output "##vso[task.complete result=Failed;]"
-exit 99;
+Write-Output "Finished checking whether $($ComposeServices.Count) compose service(s) are healthy or not"
+
+if($AreAllServicesReady -eq $False) {
+    Write-Output "##vso[task.LogIssue type=error;]Services from project: $ComposeProjectName " `
+           + "are still not running after checking for $NumberOfTries times; will stop here"
+    Write-Output "##vso[task.complete result=Failed;]"
+    exit 99;
+}
+
+Write-Output "All services from project: $ComposeProjectName are healthy"
+
+foreach ($ComposeService in $ComposeServices) {
+    $PortCommandOutput = docker port $ComposeService.ContainerId | Out-String
+    Write-Output "Found port mappings: $PortCommandOutput"
+    $RawPortMappings = $PortCommandOutput.Split([System.Environment]::NewLine, [System.StringSplitOptions]::RemoveEmptyEntries)
+
+    foreach ($RawPortMapping in $RawPortMappings) {
+        Write-Output "Processing port mapping: `"$RawPortMapping`" ..."
+
+        # Port mapping looks like this: 5432/tcp -> 0.0.0.0:32769
+        # The part on the left side of the ' -> ' string represents container port info,
+        # while the part of the right represents host port info.
+        #
+        # To find the container port, one need to extract it from string '5432/tcp' - in this case, the container port is: 5432.
+        # To find the host port, one need to extract it from string '0.0.0.0:32769' - in this case, the host port is: 32769.
+        $RawPortMappingParts = $RawPortMapping.Split(' -> ', [System.StringSplitOptions]::RemoveEmptyEntries)
+        $RawContainerPort = $RawPortMappingParts[0]
+        $RawHostPort = $RawPortMappingParts[1]
+        $ContainerPort = $RawContainerPort.Split('/', [System.StringSplitOptions]::RemoveEmptyEntries)[0]
+        $HostPort = $RawHostPort.Split(':', [System.StringSplitOptions]::RemoveEmptyEntries)[1]
+        Write-Output "Container port: $ContainerPort is mapped to host port: $HostPort"
+
+        # For each port mapping an Azure DevOps pipeline variable will be created with a name following the convention:
+        #   compose.project.<COMPOSE_PROJECT_NAME>.service.<COMPOSE_SERVICE_NAME>.port.<CONTAINER_PORT>.
+        # The variable value will be set to the host port.
+        # Using the port mapping from above and assuming the project name is 'aspnet-core-logging-it' and 
+        # the service is named 'db-v12', the following variable will be created:
+        #   'compose.project.aspnet-core-logging-it.services.db-v12.ports.5432' with value: '32769'
+        $VariableName = "compose.project.$ComposeProjectName.service.$($ComposeService.ServiceName).port.$ContainerPort"
+        Write-Output "##vso[task.setvariable variable=$VariableName]$HostPort"
+        Write-Output "##[command]Variable $VariableName has been set to: $HostPort"
+        Write-Output "Finished processing port mapping: `"$RawPortMapping`"`n`n"
+    }
+}
+
+# Everything it's OK at this point, so exit this script the nice way :)
+exit 0;
