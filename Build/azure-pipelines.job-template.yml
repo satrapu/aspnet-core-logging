@@ -22,6 +22,7 @@ parameters:
     databaseName: ''
     databaseUsername: ''
     databasePassword: ''
+    databaseContainerVolumePath: ''
 
 jobs:
 - job: ${{ parameters.job.name }}
@@ -216,7 +217,8 @@ jobs:
            'db_docker_image'='${{ parameters.integrationTests.databaseDockerImage }}'; `
            'db_name'='${{ parameters.integrationTests.databaseName }}'; `
            'db_username'='${{ parameters.integrationTests.databaseUsername }}'; `
-           'db_password'='${{ parameters.integrationTests.databasePassword }}'
+           'db_password'='${{ parameters.integrationTests.databasePassword }}'; `
+           'db_data_volume'='${{ parameters.integrationTests.databaseContainerVolumePath}}'
          }
       errorActionPreference: 'stop'
       # Docker Compose commands write to standard error stream, thus tricking Azure DevOps

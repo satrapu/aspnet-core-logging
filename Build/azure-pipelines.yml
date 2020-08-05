@@ -88,6 +88,7 @@ jobs:
       databaseName: '$(IntegrationTests.Database.Todo.Name)'
       databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
       databasePassword: '$(IntegrationTests.Database.Todo.Password)'
+      databaseContainerVolumePath: '/var/lib/postgresql/data'
       
 - template: './azure-pipelines.job-template.yml'
   parameters:
@@ -102,6 +103,7 @@ jobs:
       databaseName: '$(IntegrationTests.Database.Todo.Name)'
       databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
       databasePassword: '$(IntegrationTests.Database.Todo.Password)'
+      databaseContainerVolumePath: '/var/lib/postgresql/data'
       
 - template: './azure-pipelines.job-template.yml'
   parameters:
@@ -116,3 +118,4 @@ jobs:
       databaseName: '$(IntegrationTests.Database.Todo.Name)'
       databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
       databasePassword: '$(IntegrationTests.Database.Todo.Password)'
+      databaseContainerVolumePath: 'C:/pgsql/data'
