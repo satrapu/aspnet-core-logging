@@ -112,7 +112,7 @@ $LsCommandOutput.Split([System.Environment]::NewLine, [System.StringSplitOptions
     $ComposeServiceLabelsAsJson = docker inspect --format '{{ json .Config.Labels }}' $ContainerId `
                                                  | Out-String `
                                                  | ConvertFrom-Json
-
+    
     if ($LASTEXITCODE -ne 0)
     {
         Write-Output "##vso[task.LogIssue type=error;]Failed to inspect container with ID: $ContainerId"
@@ -129,8 +129,8 @@ $LsCommandOutput.Split([System.Environment]::NewLine, [System.StringSplitOptions
     }
     $ComposeServices.Add($ComposeService)
 
-    $ComposeServiceInfoMessage = "Found compose service with container id: `"$( $ComposeService.ContainerId )`" " `
-                               + "and service name: `"$( $ComposeService.ServiceName )`""
+    $ComposeServiceInfoMessage = "Found compose service with container id: `"$($ComposeService.ContainerId)`" " `
+                               + "and service name: `"$($ComposeService.ServiceName)`""
     Write-Output $ComposeServiceInfoMessage
 }
 
@@ -140,7 +140,7 @@ if ($ComposeServices.Count -eq 1)
 }
 else
 {
-    Write-Output "About to check whether $( $ComposeServices.Count ) compose services are healthy or not ..."
+    Write-Output "About to check whether $($ComposeServices.Count) compose services are healthy or not ..."
 }
 
 $NumberOfTries = 1
@@ -159,20 +159,20 @@ do
         if ($LASTEXITCODE -ne 0)
         {
             Write-Output "##vso[task.LogIssue type=error;]Failed to fetch health state for compose service " `
-                       + "with name: $( $ComposeService.ServiceName )"
+                       + "with name: $($ComposeService.ServiceName)"
             Write-Output "##vso[task.complete result=Failed;]"
             exit 6;
         }
 
         if ($IsServiceReady -eq $false)
         {
-            Write-Output "Service: $( $ComposeService.ServiceName ) from project: $ComposeProjectName is not healthy yet"
+            Write-Output "Service: $($ComposeService.ServiceName) from project: $ComposeProjectName is not healthy yet"
             $AreAllServicesReady = $false
             continue;
         }
         else
         {
-            Write-Output "Service: $( $ComposeService.ServiceName ) from project: $ComposeProjectName is healthy"
+            Write-Output "Service: $($ComposeService.ServiceName) from project: $ComposeProjectName is healthy"
         }
     }
 
@@ -204,14 +204,21 @@ if ($AreAllServicesReady -eq $false)
 
 foreach ($ComposeService in $ComposeServices)
 {
-    $PortCommandOutput = docker port $ComposeService.ContainerId | Out-String
+    Write-Output "About to fetch port mappings for compose service with name: $($ComposeService.ServiceName) ..."
+    $PortCommandOutput = docker port $($ComposeService.ContainerId) | Out-String
 
     if ($LASTEXITCODE -ne 0)
     {
         Write-Output "##vso[task.LogIssue type=error;]Failed to fetch port mappings for compose service " `
-                     "with name: $( $ComposeService.ServiceName )"
+                     "with name: $($ComposeService.ServiceName)"
         Write-Output "##vso[task.complete result=Failed;]"
         exit 8;
+    }
+    
+    if($PortCommandOutput.Length -eq 0)
+    {
+        Write-Output "This compose service has no port mappings"
+        break;
     }
 
     Write-Output "Found port mappings: $PortCommandOutput"
@@ -242,7 +249,7 @@ foreach ($ComposeService in $ComposeServices)
         # Using the port mapping from above and assuming the project name is 'aspnet-core-logging-it' and 
         # the service is named 'db-v12', the following variable will be created:
         #   'compose.project.aspnet-core-logging-it.services.db-v12.ports.5432' with value: '32769'
-        $VariableName = "compose.project.$ComposeProjectName.service.$( $ComposeService.ServiceName ).port.$ContainerPort"
+        $VariableName = "compose.project.$ComposeProjectName.service.$($ComposeService.ServiceName).port.$ContainerPort"
         Write-Output "##vso[task.setvariable variable=$VariableName]$HostPort"
         Write-Output "##[command]Variable $VariableName has been set to: $HostPort"
         Write-Output "Finished processing port mapping: `"$RawPortMapping`"`n`n"
