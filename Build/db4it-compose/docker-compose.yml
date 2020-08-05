@@ -25,11 +25,11 @@ services:
     ports:
       - 5432
     volumes:
-      - db4it-data: /var/lib/postgresql/data 
+      # See more about configuring the below volume here: https://stackoverflow.com/a/55366707.
+      - type: volume
+          source: db4it-data
+          target: /var/lib/postgresql/data
         
 volumes:
   db4it-data:
-    # See more about 'external' property here: 
-    # https://docs.docker.com/compose/compose-file/#external.
-    external: false
   
