@@ -216,7 +216,7 @@ foreach ($ComposeService in $ComposeServices)
         exit 8;
     }
     
-    Write-Output "Found ports: $PortMappingsAsJson"
+    Write-Output "Found ports: $Ports"
     
     $Ports | ConvertFrom-Json | Get-ObjectMembers | foreach {
         $PortEntry = $_
