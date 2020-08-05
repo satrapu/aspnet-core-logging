@@ -2,6 +2,7 @@
 # since macOS-based Azure DevOps agents cannot run 
 # Docker versions compatible with v3.8+.
 version: "3.7"
+
 services:
   db4it:
     image: "${db_docker_image}"
@@ -25,11 +26,9 @@ services:
     ports:
       - 5432
     volumes:
-      # See more about configuring the below volume here: https://stackoverflow.com/a/55366707.
-      - type: volume
-          source: db4it-data
-          target: /var/lib/postgresql/data
-        
+      - db4it_data:/var/lib/postgresql/data 
+      
 volumes:
-  db4it-data:
+  db4it_data:
+    external: true
   

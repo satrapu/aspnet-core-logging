@@ -199,6 +199,13 @@ jobs:
           succeeded()
         , eq(variables['Agent.OS'], 'Darwin')
       )
+      
+  # Create Docker volumes to be used by the compose services needed
+  # to run integration tests
+  - script: >-
+      docker volume create db4it_data
+    name: 'create_docker_volumes_for_compose_services'
+    displayName: 'Create Docker volumes'
 
   # Run a PowerShell script to start compose services needed when running integration tests.
   - task: PowerShell@2
