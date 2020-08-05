@@ -227,7 +227,7 @@ jobs:
            'db_docker_image'='${{ parameters.integrationTests.databaseDockerImage }}'; `
            'db_name'='${{ parameters.integrationTests.databaseName }}'; `
            'db_username'='${{ parameters.integrationTests.databaseUsername }}'; `
-           'db_password'='${{ parameters.integrationTests.databasePassword }}' `
+           'db_password'='${{ parameters.integrationTests.databasePassword }}'; `
            'COMPOSE_CONVERT_WINDOWS_PATHS'=1
          }
       errorActionPreference: 'stop'
