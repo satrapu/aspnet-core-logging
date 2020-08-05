@@ -40,21 +40,24 @@ $ErrorActionPreference = 'Stop'
 Write-Output "Current script path: $PSScriptRoot"
 $ComposeFilePath = Join-Path -Path $PSScriptRoot $RelativePathToComposeFile
 
-if (![System.IO.File]::Exists($ComposeFilePath)) {
-    Write-Output "There is no compose file at path: $ComposeFilePath"
+if (![System.IO.File]::Exists($ComposeFilePath))
+{
+    Write-Output "There is no compose file at path: `"$ComposeFilePath`""
     exit 1;
 }
 
 $ComposeEnvironmentFilePath = Join-Path -Path $PSScriptRoot $RelativePathToEnvironmentFile
 
-if (![System.IO.File]::Exists($ComposeEnvironmentFilePath)) {
-    Write-Output "There is no environment file at path: $ComposeEnvironmentFilePath"
+if (![System.IO.File]::Exists($ComposeEnvironmentFilePath))
+{
+    Write-Output "There is no environment file at path: `"$ComposeEnvironmentFilePath`""
     exit 2;
 }
 
 $EnvironmentFileLines = Get-Content -Path $ComposeEnvironmentFilePath
 
-foreach ($EnvironmentFileLine in $EnvironmentFileLines) {
+foreach ($EnvironmentFileLine in $EnvironmentFileLines)
+{
     # Each line of text will be split using first delimiter only
     $EnvironmentFileLineParts = $EnvironmentFileLine.Split('=', 2)
     $EnvironmentVariableName = $EnvironmentFileLineParts[0]
@@ -66,8 +69,9 @@ foreach ($EnvironmentFileLine in $EnvironmentFileLines) {
     [System.Environment]::SetEnvironmentVariable($EnvironmentVariableName, $EnvironmentVariableValue, 'Process')
 }
 
-if ($ExtraEnvironmentVariables -ne $null) {
-    $ExtraEnvironmentVariables.GetEnumerator() | ForEach-Object { 
+if ($ExtraEnvironmentVariables -ne $null)
+{
+    $ExtraEnvironmentVariables.GetEnumerator() | ForEach-Object {
         [System.Environment]::SetEnvironmentVariable($_.Key, $_.Value, 'Process')
     }
 }
@@ -77,12 +81,12 @@ $ComposeStartInfoMessage = "About to start compose services declared in file: `"
                          + "and environment file: `"$ComposeEnvironmentFilePath`" ..."
 Write-Output $ComposeStartInfoMessage
 
-docker-compose --file="$ComposeFilePath" `
-               --project-name="$ComposeProjectName" `
+docker-compose --file = "$ComposeFilePath" `
+               --project-name = "$ComposeProjectName" `
                up -d
 
-# Check whether `docker-compose up` command has failed or not
-if ($LASTEXITCODE -ne 0) {
+if ($LASTEXITCODE -ne 0)
+{
     Write-Output "##vso[task.LogIssue type=error;]Failed to start compose services for project: $ComposeProjectName"
     Write-Output "##vso[task.complete result=Failed;]"
     exit 3;
@@ -92,6 +96,14 @@ $LsCommandOutput = docker container ls -a `
                                     --filter "label=com.docker.compose.project=$ComposeProjectName" `
                                     --format "{{ .ID }}" `
                                     | Out-String
+
+if ($LASTEXITCODE -ne 0)
+{
+    Write-Output "##vso[task.LogIssue type=error;]Failed to identify compose services for project: $ComposeProjectName"
+    Write-Output "##vso[task.complete result=Failed;]"
+    exit 4;
+}
+
 Write-Output "Found the following container IDs: $LsCommandOutput"
 
 $ComposeServices = [System.Collections.Generic.List[psobject]]::new()
@@ -100,72 +112,122 @@ $LsCommandOutput.Split([System.Environment]::NewLine, [System.StringSplitOptions
     $ComposeServiceLabelsAsJson = docker inspect --format '{{ json .Config.Labels }}' $ContainerId `
                                                  | Out-String `
                                                  | ConvertFrom-Json
-    $ComposeServiceNameLabel = 'com.docker.compose.service'
-    $ComposeServiceName = $ComposeServiceLabelsAsJson.$ComposeServiceNameLabel
-    
-    $ComposeService = New-Object PSObject -Property @{
-        ContainerId = $ContainerId
-        ServiceName = $ComposeServiceName
+
+    if ($LASTEXITCODE -ne 0)
+    {
+        Write-Output "##vso[task.LogIssue type=error;]Failed to inspect container with ID: $ContainerId"
+        Write-Output "##vso[task.complete result=Failed;]"
+        exit 5;
     }
 
-    $ComposeServices.Add($ComposeService)
-    Write-Output "Found compose service with container id: `"$($ComposeService.ContainerId)`" " `
-               + "and service name: `"$($ComposeService.ServiceName)`""
+    $ComposeServiceNameLabel = 'com.docker.compose.service'
+    $ComposeServiceName = $ComposeServiceLabelsAsJson.$ComposeServiceNameLabel
+
+    $ComposeServices.Add(New-Object PSObject -Property @{
+        ContainerId = $ContainerId
+        ServiceName = $ComposeServiceName
+    })
+
+    $ComposeServiceInfoMessage = "Found compose service with container id: `"$( $ComposeService.ContainerId )`" " `
+                               + "and service name: `"$( $ComposeService.ServiceName )`""
+    Write-Output $ComposeServiceInfoMessage
 }
 
-Write-Output "About to check whether $($ComposeServices.Count) compose services are healthy or not ..."
+if ($ComposeServices.Count -eq 1)
+{
+    Write-Output "About to check whether the compose service is healthy or not ..."
+}
+else
+{
+    Write-Output "About to check whether $( $ComposeServices.Count ) compose services are healthy or not ..."
+}
+
 $NumberOfTries = 1
 
-do {
+do
+{
     Start-Sleep -Milliseconds $HealthCheckIntervalInMilliseconds
     $AreAllServicesReady = $true
 
-    foreach ($ComposeService in $ComposeServices) {
-        $IsServiceReady = docker inspect $ComposeService.ContainerId --format "{{.State.Health.Status}}" `
+    foreach ($ComposeService in $ComposeServices)
+    {
+        $IsServiceReady = docker inspect $ComposeService.ContainerId `
+                                         --format "{{.State.Health.Status}}" `
                                          | Select-String -Pattern 'healthy' -SimpleMatch -Quiet
 
-        if ($IsServiceReady -eq $false) {
-            Write-Output "Service: $($ComposeService.ServiceName) from project: $ComposeProjectName is not healthy yet"
+        if ($LASTEXITCODE -ne 0)
+        {
+            Write-Output "##vso[task.LogIssue type=error;]Failed to fetch health state for compose service " `
+                       + "with name: $( $ComposeService.ServiceName )"
+            Write-Output "##vso[task.complete result=Failed;]"
+            exit 6;
+        }
+
+        if ($IsServiceReady -eq $false)
+        {
+            Write-Output "Service: $( $ComposeService.ServiceName ) from project: $ComposeProjectName is not healthy yet"
             $AreAllServicesReady = $false
             continue;
         }
-        else {
-            Write-Output "Service: $($ComposeService.ServiceName) from project: $ComposeProjectName is healthy"
+        else
+        {
+            Write-Output "Service: $( $ComposeService.ServiceName ) from project: $ComposeProjectName is healthy"
         }
     }
 
-    if ($AreAllServicesReady -eq $True) {
+    if ($AreAllServicesReady -eq $True)
+    {
         break;
     }
 
     $NumberOfTries++
 } until ($NumberOfTries -eq $MaxNumberOfTries)
 
-Write-Output "Finished checking whether $($ComposeServices.Count) compose service(s) are healthy or not"
-
-if($AreAllServicesReady -eq $False) {
-    Write-Output "##vso[task.LogIssue type=error;]Services from project: $ComposeProjectName " `
-           + "are still not running after checking for $NumberOfTries times; will stop here"
-    Write-Output "##vso[task.complete result=Failed;]"
-    exit 99;
+if ($ComposeServices.Count -eq 1)
+{
+    Write-Output "Finished checking whether compose service is healthy or not"
+}
+else
+{
+    Write-Output "Finished checking whether compose services are healthy or not"
 }
 
-Write-Output "All services from project: $ComposeProjectName are healthy"
+if ($AreAllServicesReady -eq $False)
+{
+    $ErrorMessage = "Not all services from project: $ComposeProjectName " `
+                  + "are still not running after checking for $NumberOfTries times; will stop here"
+    Write-Output "##vso[task.LogIssue type=error;]$ErrorMessage"
+    Write-Output "##vso[task.complete result=Failed;]"
+    exit 7;
+}
 
-foreach ($ComposeService in $ComposeServices) {
+foreach ($ComposeService in $ComposeServices)
+{
     $PortCommandOutput = docker port $ComposeService.ContainerId | Out-String
+
+    if ($LASTEXITCODE -ne 0)
+    {
+        Write-Output "##vso[task.LogIssue type=error;]Failed to fetch port mappings for compose service " `
+                     "with name: $( $ComposeService.ServiceName )"
+        Write-Output "##vso[task.complete result=Failed;]"
+        exit 8;
+    }
+
     Write-Output "Found port mappings: $PortCommandOutput"
     $RawPortMappings = $PortCommandOutput.Split([System.Environment]::NewLine, [System.StringSplitOptions]::RemoveEmptyEntries)
 
-    foreach ($RawPortMapping in $RawPortMappings) {
+    foreach ($RawPortMapping in $RawPortMappings)
+    {
         Write-Output "Processing port mapping: `"$RawPortMapping`" ..."
 
         # Port mapping looks like this: 5432/tcp -> 0.0.0.0:32769
         # The part on the left side of the ' -> ' string represents container port info,
         # while the part of the right represents host port info.
         #
-        # To find the container port, one need to extract it from string '5432/tcp' - in this case, the container port is: 5432.
-        # To find the host port, one need to extract it from string '0.0.0.0:32769' - in this case, the host port is: 32769.
+        # To find the container port, one need to extract it from string '5432/tcp' - in this case, 
+        # the container port is: 5432.
+        # To find the host port, one need to extract it from string '0.0.0.0:32769' - in this case, 
+        # the host port is: 32769.
         $RawPortMappingParts = $RawPortMapping.Split(' -> ', [System.StringSplitOptions]::RemoveEmptyEntries)
         $RawContainerPort = $RawPortMappingParts[0]
         $RawHostPort = $RawPortMappingParts[1]
@@ -173,13 +235,13 @@ foreach ($ComposeService in $ComposeServices) {
         $HostPort = $RawHostPort.Split(':', [System.StringSplitOptions]::RemoveEmptyEntries)[1]
         Write-Output "Container port: $ContainerPort is mapped to host port: $HostPort"
 
-        # For each port mapping an Azure DevOps pipeline variable will be created with a name following the convention:
-        #   compose.project.<COMPOSE_PROJECT_NAME>.service.<COMPOSE_SERVICE_NAME>.port.<CONTAINER_PORT>.
+        # For each port mapping an Azure DevOps pipeline variable will be created with a name following 
+        # the convention: compose.project.<COMPOSE_PROJECT_NAME>.service.<COMPOSE_SERVICE_NAME>.port.<CONTAINER_PORT>.
         # The variable value will be set to the host port.
         # Using the port mapping from above and assuming the project name is 'aspnet-core-logging-it' and 
         # the service is named 'db-v12', the following variable will be created:
         #   'compose.project.aspnet-core-logging-it.services.db-v12.ports.5432' with value: '32769'
-        $VariableName = "compose.project.$ComposeProjectName.service.$($ComposeService.ServiceName).port.$ContainerPort"
+        $VariableName = "compose.project.$ComposeProjectName.service.$( $ComposeService.ServiceName ).port.$ContainerPort"
         Write-Output "##vso[task.setvariable variable=$VariableName]$HostPort"
         Write-Output "##[command]Variable $VariableName has been set to: $HostPort"
         Write-Output "Finished processing port mapping: `"$RawPortMapping`"`n`n"
