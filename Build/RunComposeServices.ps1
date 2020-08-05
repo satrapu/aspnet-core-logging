@@ -109,7 +109,7 @@ $LsCommandOutput.Split([System.Environment]::NewLine, [System.StringSplitOptions
     }
 
     $ComposeServices.Add($ComposeService)
-    Write-Output "Found compose service with container id: `"$($ComposeService.ContainerId)`" "
+    Write-Output "Found compose service with container id: `"$($ComposeService.ContainerId)`" " `
                + "and service name: `"$($ComposeService.ServiceName)`""
 }
 
