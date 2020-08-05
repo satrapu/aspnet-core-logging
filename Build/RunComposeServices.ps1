@@ -123,10 +123,11 @@ $LsCommandOutput.Split([System.Environment]::NewLine, [System.StringSplitOptions
     $ComposeServiceNameLabel = 'com.docker.compose.service'
     $ComposeServiceName = $ComposeServiceLabelsAsJson.$ComposeServiceNameLabel
 
-    $ComposeServices.Add(New-Object PSObject -Property @{
+    $ComposeService = New-Object PSObject -Property @{
         ContainerId = $ContainerId
         ServiceName = $ComposeServiceName
-    })
+    }
+    $ComposeServices.Add($ComposeService)
 
     $ComposeServiceInfoMessage = "Found compose service with container id: `"$( $ComposeService.ContainerId )`" " `
                                + "and service name: `"$( $ComposeService.ServiceName )`""
