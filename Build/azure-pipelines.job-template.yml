@@ -199,19 +199,8 @@ jobs:
           succeeded()
         , eq(variables['Agent.OS'], 'Darwin')
       )
-      
-  # Create Docker volumes to be used by the compose services needed
-  # to run integration tests
-  - script: >-
-      docker volume create db4it_data
-    name: 'create_docker_volumes_for_compose_services'
-    displayName: 'Create Docker volumes'
 
   # Run a PowerShell script to start compose services needed when running integration tests.
-  # The COMPOSE_CONVERT_WINDOWS_PATHS extra environment variable is needed to overcome
-  # the error occuring when running this pipeline on Windows based agents:
-  # 'Cannot create container for service db4it: invalid volume specification:', 
-  # as documented here: https://github.com/docker/compose/issues/5842#issuecomment-620397002.
   - task: PowerShell@2
     name: 'start_compose_services_used_by_integration_tests'
     displayName: 'Start compose services used by integration tests'
@@ -227,8 +216,7 @@ jobs:
            'db_docker_image'='${{ parameters.integrationTests.databaseDockerImage }}'; `
            'db_name'='${{ parameters.integrationTests.databaseName }}'; `
            'db_username'='${{ parameters.integrationTests.databaseUsername }}'; `
-           'db_password'='${{ parameters.integrationTests.databasePassword }}'; `
-           'COMPOSE_CONVERT_WINDOWS_PATHS'='1'
+           'db_password'='${{ parameters.integrationTests.databasePassword }}'
          }
       errorActionPreference: 'stop'
       # Docker Compose commands write to standard error stream, thus tricking Azure DevOps

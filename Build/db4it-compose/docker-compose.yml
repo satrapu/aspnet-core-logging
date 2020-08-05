@@ -26,9 +26,4 @@ services:
     ports:
       - 5432
     volumes:
-      - db4it_data:/var/lib/postgresql/data 
-      
-volumes:
-  db4it_data:
-    external: true
-  
+      - /var/lib/postgresql/data
