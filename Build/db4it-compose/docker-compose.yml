@@ -24,3 +24,12 @@ services:
       POSTGRES_PASSWORD: "${db_password}"
     ports:
       - 5432
+    volumes:
+      - db4it-data: /var/lib/postgresql/data 
+        
+volumes:
+  db4it-data:
+    # See more about 'external' property here: 
+    # https://docs.docker.com/compose/compose-file/#external.
+    external: false
+  
