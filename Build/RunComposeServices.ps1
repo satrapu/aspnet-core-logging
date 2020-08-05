@@ -176,7 +176,7 @@ do
         }
     }
 
-    if ($AreAllServicesReady -eq $True)
+    if ($AreAllServicesReady -eq $true)
     {
         break;
     }
@@ -193,7 +193,7 @@ else
     Write-Output "Finished checking whether compose services are healthy or not"
 }
 
-if ($AreAllServicesReady -eq $False)
+if ($AreAllServicesReady -eq $false)
 {
     $ErrorMessage = "Not all services from project: $ComposeProjectName " `
                   + "are still not running after checking for $NumberOfTries times; will stop here"
