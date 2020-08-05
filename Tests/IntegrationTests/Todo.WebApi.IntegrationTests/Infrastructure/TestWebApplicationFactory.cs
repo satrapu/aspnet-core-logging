@@ -102,6 +102,8 @@ namespace Todo.WebApi.Infrastructure
                     Database = testDatabaseName
                 };
 
+                LogConnectionString(connectionStringBuilder.ConnectionString, serviceProvider);
+                
                 dbContextOptionsBuilder.UseNpgsql(connectionStringBuilder.ConnectionString)
                     .EnableSensitiveDataLogging()
                     .EnableDetailedErrors()
@@ -109,6 +111,18 @@ namespace Todo.WebApi.Infrastructure
             });
         }
 
+        private static void LogConnectionString(string originalConnectionString, IServiceProvider serviceProvider)
+        {
+            var connectionStringBuilder = new NpgsqlConnectionStringBuilder(originalConnectionString)
+            {
+                Password = new string('*', 5)
+            };
+                
+            ILogger logger = serviceProvider.GetRequiredService<ILogger<TestWebApplicationFactory>>();
+            logger.LogInformation("Will use connection string: {ConnectionStringWithObfuscatedPassword}", 
+                connectionStringBuilder.ConnectionString);
+        }
+        
         private static void SetupDatabase(IServiceCollection services)
         {
             ServiceProvider serviceProvider = services.BuildServiceProvider();
