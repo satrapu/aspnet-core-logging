@@ -81,8 +81,8 @@ $ComposeStartInfoMessage = "About to start compose services declared in file: `"
                          + "and environment file: `"$ComposeEnvironmentFilePath`" ..."
 Write-Output $ComposeStartInfoMessage
 
-docker-compose --file = "$ComposeFilePath" `
-               --project-name = "$ComposeProjectName" `
+docker-compose --file="$ComposeFilePath" `
+               --project-name="$ComposeProjectName" `
                up -d
 
 if ($LASTEXITCODE -ne 0)
