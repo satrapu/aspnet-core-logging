@@ -84,7 +84,6 @@ jobs:
         enabled: True
     integrationTests:
       databaseDockerImage: 'postgres:12-alpine'
-      databaseHost: 'localhost'
       databaseName: '$(IntegrationTests.Database.Todo.Name)'
       databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
       databasePassword: '$(IntegrationTests.Database.Todo.Password)'
@@ -98,7 +97,6 @@ jobs:
       vmImage: 'macOS-10.15'
     integrationTests:
       databaseDockerImage: 'postgres:12-alpine'
-      databaseHost: 'localhost'
       databaseName: '$(IntegrationTests.Database.Todo.Name)'
       databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
       databasePassword: '$(IntegrationTests.Database.Todo.Password)'
@@ -112,7 +110,6 @@ jobs:
       vmImage: 'windows-2019'
     integrationTests:
       databaseDockerImage: 'stellirin/postgres-windows:12'
-      databaseHost: 'localhost'
       databaseName: '$(IntegrationTests.Database.Todo.Name)'
       databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
       databasePassword: '$(IntegrationTests.Database.Todo.Password)'
