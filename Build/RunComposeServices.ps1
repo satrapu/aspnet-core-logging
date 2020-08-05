@@ -218,7 +218,7 @@ foreach ($ComposeService in $ComposeServices)
     
     Write-Output "Found ports: $Ports"
     
-    $Ports | ConvertFrom-Json | Get-ObjectMembers | foreach {
+    $Ports | ConvertFrom-Json | Get-Member | foreach {
         $PortEntry = $_
         Write-Output "Processing port entry: `"$PortEntry`" ..."
         $ContainerPort = $PortEntry.Key.Split('/', [System.StringSplitOptions]::RemoveEmptyEntries)[0]
