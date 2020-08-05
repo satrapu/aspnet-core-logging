@@ -228,7 +228,7 @@ jobs:
            'db_name'='${{ parameters.integrationTests.databaseName }}'; `
            'db_username'='${{ parameters.integrationTests.databaseUsername }}'; `
            'db_password'='${{ parameters.integrationTests.databasePassword }}'; `
-           'COMPOSE_CONVERT_WINDOWS_PATHS'=1
+           'COMPOSE_CONVERT_WINDOWS_PATHS'='1'
          }
       errorActionPreference: 'stop'
       # Docker Compose commands write to standard error stream, thus tricking Azure DevOps
