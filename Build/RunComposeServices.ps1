@@ -76,22 +76,26 @@ if ($ExtraEnvironmentVariables -ne $null)
     }
 }
 
-$ComposeStartInfoMessage = "About to start compose services declared in file: `"$ComposeFilePath`" " `
+$CreateVolmeInfoMessage = "About to create Docker volume needed by compose services declared in file: `"$ComposeFilePath`" " `
                          + "using project name: `"$ComposeProjectName`" " `
                          + "and environment file: `"$ComposeEnvironmentFilePath`" ..."
-Write-Output $ComposeStartInfoMessage
+Write-Output $CreateVolmeInfoMessage
 
-# satrapu 2020-07-08 See whetehr manually creating the external volumes 
+# satrapu 2020-07-08 See whether manually creating the external volumes 
 # works on Windows-based Azure DevOps agents
-docker volume create db4it_data
+docker volume create "db4it_data"
 
 if ($LASTEXITCODE -ne 0)
 {
-    Write-Output "##vso[task.LogIssue type=error;]Failed to start compose services for project: $ComposeProjectName"
+    Write-Output "##vso[task.LogIssue type=error;]Failed to create external Docker volume for project: $ComposeProjectName"
     Write-Output "##vso[task.complete result=Failed;]"
     exit 3;
 }
 
+$ComposeStartInfoMessage = "About to start compose services declared in file: `"$ComposeFilePath`" " `
+                         + "using project name: `"$ComposeProjectName`" " `
+                         + "and environment file: `"$ComposeEnvironmentFilePath`" ..."
+Write-Output $ComposeStartInfoMessage
 docker-compose --file="$ComposeFilePath" `
                --project-name="$ComposeProjectName" `
                up -d
