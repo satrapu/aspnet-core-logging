@@ -18,7 +18,7 @@ $LsCommandOutput = docker container ls -a `
                                     --format "{{ .ID }}" `
                                     | Out-String
 
-if (!$?)
+if ((!$?) -or ($LsCommandOutput.Length -eq 0))
 {
     Write-Output "##vso[task.LogIssue type=error;]Failed to identify compose services for project: $ComposeProjectName"
     Write-Output "##vso[task.complete result=Failed;]"
@@ -56,18 +56,13 @@ $LsCommandOutput.Split([System.Environment]::NewLine, [System.StringSplitOptions
        New-Item -Path "$LogsOutputFolder" -ItemType "Directory"
     }
 
+    # Do not check whether this command has ended successfully since it's writing to 
+    # standard error stream, thus tricking runtime into thinking it failed.
     docker logs --tail "all" `
                 --details `
                 --timestamps `
                 "$ContainerId" `
                 | Out-File -FilePath "$LogFilePath"
-
-    if (!$?)
-    {
-        Write-Output "##vso[task.LogIssue type=error;]Failed to fetch logs for container with ID: $ContainerId"
-        Write-Output "##vso[task.complete result=Failed;]"
-        exit 3;
-    }
 }
 
 exit 0;

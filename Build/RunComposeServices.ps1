@@ -112,28 +112,24 @@ $ComposeStartInfoMessage = "About to start compose services declared in file: `"
                          + "using project name: `"$ComposeProjectName`" " `
                          + "and environment file: `"$ComposeEnvironmentFilePath`" ..."
 Write-Output $ComposeStartInfoMessage
+
+# Do not check whether this command has ended successfully since it's writing to 
+# standard error stream, thus tricking runtime into thinking it failed.
 docker-compose --file="$ComposeFilePath" `
                --project-name="$ComposeProjectName" `
                up `
                --detach
-
-if(!$?)
-{
-    Write-Output "##vso[task.LogIssue type=error;]Failed to start compose services for project: $ComposeProjectName"
-    Write-Output "##vso[task.complete result=Failed;]"
-    exit 4;
-}
 
 $LsCommandOutput = docker container ls -a `
                                     --filter "label=com.docker.compose.project=$ComposeProjectName" `
                                     --format "{{ .ID }}" `
                                     | Out-String
 
-if (!$?)
+if ((!$?) -or ($LsCommandOutput.Length -eq 0))
 {
     Write-Output "##vso[task.LogIssue type=error;]Failed to identify compose services for project: $ComposeProjectName"
     Write-Output "##vso[task.complete result=Failed;]"
-    exit 5;
+    exit 4;
 }
 
 Write-Output "Found the following container IDs: $LsCommandOutput"
@@ -149,7 +145,7 @@ $LsCommandOutput.Split([System.Environment]::NewLine, [System.StringSplitOptions
     {
         Write-Output "##vso[task.LogIssue type=error;]Failed to inspect container with ID: $ContainerId"
         Write-Output "##vso[task.complete result=Failed;]"
-        exit 6;
+        exit 5;
     }
 
     $ComposeServiceNameLabel = 'com.docker.compose.service'
@@ -194,7 +190,7 @@ do
             Write-Output "##vso[task.LogIssue type=error;]Failed to fetch health state for compose service " `
                        + "with name: $($ComposeService.ServiceName)"
             Write-Output "##vso[task.complete result=Failed;]"
-            exit 7;
+            exit 6;
         }
 
         if ($IsServiceHealthy -eq $false)
@@ -232,7 +228,7 @@ if ($AreAllServicesReady -eq $false)
                   + "are still not running after checking for $NumberOfTries times; will stop here"
     Write-Output "##vso[task.LogIssue type=error;]$ErrorMessage"
     Write-Output "##vso[task.complete result=Failed;]"
-    exit 8;
+    exit 7;
 }
 
 foreach ($ComposeService in $ComposeServices)
@@ -245,7 +241,7 @@ foreach ($ComposeService in $ComposeServices)
         Write-Output "##vso[task.LogIssue type=error;]Failed to fetch port mappings for compose service " `
                      "with name: $($ComposeService.ServiceName)"
         Write-Output "##vso[task.complete result=Failed;]"
-        exit 9;
+        exit 8;
     }
     
     if($PortCommandOutput.Length -eq 0)
