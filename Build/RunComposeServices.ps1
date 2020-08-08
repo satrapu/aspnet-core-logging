@@ -32,7 +32,11 @@ Param(
 
     # An optional dictionary storing variables which will be passed to the containers started via Docker Compose.
     [hashtable]
-    $ExtraEnvironmentVariables
+    $ExtraEnvironmentVariables,
+
+    # The path to the file where Docker Compose will write its logs
+    [String]
+    $ComposeLogsOutputFilePath
 )
 
 Write-Output "Current script path: $PSScriptRoot"
@@ -284,10 +288,9 @@ foreach ($ComposeService in $ComposeServices)
 }
 
 # Publish Docker Compose logs as build artifact
-$LogsCommandOutputFileName = "docker-compose-logs-command-output--$(Agent.OS)-$(Agent.OSArchitecture)-$(Build.BuildNumber)-$(Build.BuildID).txt"
 docker-compose logs --tail="all" `
                     --timestamps `
-                    | Out-File $LogsCommandOutputFileName
+                    | Out-File $ComposeLogsOutputFilePath
 
 # Everything it's OK at this point, so exit this script the nice way :)
 exit 0;
