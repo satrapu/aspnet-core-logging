@@ -287,10 +287,8 @@ foreach ($ComposeService in $ComposeServices)
     }
 }
 
-# Publish Docker Compose logs as build artifact
 docker-compose logs --tail="all" `
-                    --timestamps `
-                    | Out-File $ComposeLogsOutputFilePath
+                    --timestamps
 
 # Everything it's OK at this point, so exit this script the nice way :)
 exit 0;
