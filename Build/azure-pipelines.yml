@@ -88,7 +88,6 @@ jobs:
       databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
       databasePassword: '$(IntegrationTests.Database.Todo.Password)'
       databaseDockerImage: 'postgres:12-alpine'
-      databaseDockerContainerVolumePath: '/var/lib/postgresql/data'
       
 - template: './azure-pipelines.job-template.yml'
   parameters:
@@ -103,7 +102,6 @@ jobs:
       databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
       databasePassword: '$(IntegrationTests.Database.Todo.Password)'
       databaseDockerImage: 'postgres:12-alpine'
-      databaseDockerContainerVolumePath: '/var/lib/postgresql/data'
       
 - template: './azure-pipelines.job-template.yml'
   parameters:
@@ -118,4 +116,3 @@ jobs:
       databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
       databasePassword: '$(IntegrationTests.Database.Todo.Password)'
       databaseDockerImage: 'stellirin/postgres-windows:12'
-      databaseDockerContainerVolumePath: 'C:\db4it'

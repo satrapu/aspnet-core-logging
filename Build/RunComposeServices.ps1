@@ -32,13 +32,10 @@ Param(
 
     # An optional dictionary storing variables which will be passed to the containers started via Docker Compose.
     [hashtable]
-    $ExtraEnvironmentVariables,
-
-    # The path to the file where Docker Compose will write its logs
-    [String]
-    $ComposeLogsOutputFilePath
+    $ExtraEnvironmentVariables
 )
 
+Write-Output "Preparing to start compose services from project: $ComposeProjectName"
 Write-Output "Current script path is: $PSScriptRoot"
 $ComposeFilePath = Join-Path -Path $PSScriptRoot $RelativePathToComposeFile
 
@@ -90,22 +87,6 @@ if ($ExtraEnvironmentVariables -ne $null)
     $ExtraEnvironmentVariables.GetEnumerator() | ForEach-Object {
         [System.Environment]::SetEnvironmentVariable($_.Key, $_.Value, 'Process')
     }
-}
-
-$InfoMessage = "About to create Docker volume needed by compose services declared in file: `"$ComposeFilePath`" " `
-             + "using project name: `"$ComposeProjectName`" " `
-             + "and environment file: `"$ComposeEnvironmentFilePath`" ..."
-Write-Output $InfoMessage
-
-# satrapu 2020-07-08 See whether manually creating the external volumes 
-# works on Windows-based Azure DevOps agents
-docker volume create --name db4it_data --driver local
-
-if(!$?)
-{
-    Write-Output "##vso[task.LogIssue type=error;]Failed to create external Docker volume for project: $ComposeProjectName"
-    Write-Output "##vso[task.complete result=Failed;]"
-    exit 3;
 }
 
 $InfoMessage = "About to start compose services declared in file: `"$ComposeFilePath`" " `
@@ -196,9 +177,6 @@ do
             exit 6;
         }
 
-        # satrapu 2020-08-08 Print message for debugging purposes
-        Write-Output "IsServiceHealthy=$IsServiceHealthy"
-        
         if ($IsServiceHealthy -eq $true)
         {
             Write-Output "Service with name: $($ComposeService.ServiceName) from project: $ComposeProjectName is healthy"
