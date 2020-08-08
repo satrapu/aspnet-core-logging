@@ -220,11 +220,13 @@ jobs:
            'db_password'='${{ parameters.integrationTests.databasePassword }}'; `
            'db_data_volume'='${{ parameters.integrationTests.databaseDockerContainerVolumePath }}'; `
          }
-      errorActionPreference: 'Stop'
       # Docker Compose commands write to standard error stream, thus tricking Azure DevOps
       # into thinking this PowerShell script has failed, which isn't the case.
       # Due to this limitation (see more here: https://github.com/docker/compose/issues/5590),
       # I need to rely on $? in my script to detect failures.
+      # Thus, set errorActionPreference to 'Continue' and
+      # set failOnStderr to False.
+      errorActionPreference: 'Continue'
       failOnStderr: False
       workingDirectory: $(Build.SourcesDirectory)
 
@@ -272,11 +274,13 @@ jobs:
       arguments: >-
         -ComposeProjectName 'integration-test-prerequisites' `
         -LogsOutputFolder '$(Build.SourcesDirectory)/Tests/.ComposeService-Logs'
-      errorActionPreference: 'Stop'
       # Docker Compose commands write to standard error stream, thus tricking Azure DevOps
       # into thinking this PowerShell script has failed, which isn't the case.
       # Due to this limitation (see more here: https://github.com/docker/compose/issues/5590),
       # I need to rely on $? in my script to detect failures.
+      # Thus, set errorActionPreference to 'Continue' and
+      # set failOnStderr to False.
+      errorActionPreference: 'Continue'
       failOnStderr: False
       workingDirectory: $(Build.SourcesDirectory)
       
