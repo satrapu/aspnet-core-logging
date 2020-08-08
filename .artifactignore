@@ -1,4 +1,5 @@
-# Ensure only specific items are published as artifacts when running an Azure Pipeline
+# Ensure only specific items are published as artifacts when running an Azure Pipeline.
+# See more about this file here: https://docs.microsoft.com/en-us/azure/devops/artifacts/reference/artifactignore?view=azure-devops.
 **/*
 
 # Publish test results
