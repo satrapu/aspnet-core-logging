@@ -23,12 +23,5 @@ services:
       POSTGRES_DB: "${db_name}"
       POSTGRES_USER: "${db_username}"
       POSTGRES_PASSWORD: "${db_password}"
-      PGDATA: "${db_data_volume}"
     ports:
-      - "5432"
-    volumes:
-      - "db4it_data:${db_data_volume}"
-        
-volumes:
-  db4it_data:
-    external: true
+      - 5432
