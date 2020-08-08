@@ -11,6 +11,8 @@ Param(
     $LogsOutputFolder
 )
 
+Write-Output "Start publishing logs for compose services from project: $ComposeProjectName"
+
 $LsCommandOutput = docker container ls -a `
                                     --filter "label=com.docker.compose.project=$ComposeProjectName" `
                                     --format "{{ .ID }}" `
@@ -41,7 +43,7 @@ $LsCommandOutput.Split([System.Environment]::NewLine, [System.StringSplitOptions
 
     $ComposeServiceNameLabel = 'com.docker.compose.service'
     $ComposeServiceName = $ComposeServiceLabelsAsJson.$ComposeServiceNameLabel
-    $LogFileName = "$ComposeServiceName--$ContainerId.log"
+    $LogFileName = "$ComposeProjectName--$ComposeServiceName--$ContainerId.log"
     $LogFilePath = Join-Path -Path $LogsOutputFolder $LogFileName
 
     $PublishLogsInfoMessage = "About to publish logs for compose service with container id: " `
