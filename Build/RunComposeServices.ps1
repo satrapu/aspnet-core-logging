@@ -44,7 +44,8 @@ $ComposeFilePath = Join-Path -Path $PSScriptRoot $RelativePathToComposeFile
 
 if (![System.IO.File]::Exists($ComposeFilePath))
 {
-    Write-Output "There is no compose file at path: `"$ComposeFilePath`""
+    Write-Output "##vso[task.LogIssue type=error;]There is no compose file at path: `"$ComposeFilePath`""
+    Write-Output "##vso[task.complete result=Failed;]"
     exit 1;
 }
 
@@ -52,7 +53,8 @@ $ComposeEnvironmentFilePath = Join-Path -Path $PSScriptRoot $RelativePathToEnvir
 
 if (![System.IO.File]::Exists($ComposeEnvironmentFilePath))
 {
-    Write-Output "There is no environment file at path: `"$ComposeEnvironmentFilePath`""
+    Write-Output "##vso[task.LogIssue type=error;]There is no environment file at path: `"$ComposeEnvironmentFilePath`""
+    Write-Output "##vso[task.complete result=Failed;]"
     exit 2;
 }
 
@@ -112,7 +114,8 @@ $ComposeStartInfoMessage = "About to start compose services declared in file: `"
 Write-Output $ComposeStartInfoMessage
 docker-compose --file="$ComposeFilePath" `
                --project-name="$ComposeProjectName" `
-               up -d
+               up `
+               --detach
 
 if(!$?)
 {
