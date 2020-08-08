@@ -220,11 +220,11 @@ jobs:
            'db_password'='${{ parameters.integrationTests.databasePassword }}'; `
            'db_data_volume'='${{ parameters.integrationTests.databaseDockerContainerVolumePath }}'; `
          }
-      errorActionPreference: 'continue'
+      errorActionPreference: 'Continue'
       # Docker Compose commands write to standard error stream, thus tricking Azure DevOps
       # into thinking this PowerShell script has failed, which isn't the case.
       # Due to this limitation (see more here: https://github.com/docker/compose/issues/5590),
-      # I need to rely on $LASTEXITCODE in my script to detect failures.
+      # I need to rely on $? in my script to detect failures.
       failOnStderr: False
       workingDirectory: $(Build.SourcesDirectory)
 
@@ -258,7 +258,7 @@ jobs:
   # Run a PowerShell script to publish the logs of the Docker Compose service
   # used by integration tests.
   - task: PowerShell@2
-    name: 'publish_logs_of_compose_services_used_by_integration_tests'
+    name: 'publish_compose_service_logs'
     displayName: 'Publish compose service logs'
     condition: |
       and
@@ -272,8 +272,12 @@ jobs:
       arguments: >-
         -ComposeProjectName 'integration-test-prerequisites' `
         -LogsOutputFolder '$(Build.SourcesDirectory)/Tests/.ComposeService-Logs'
-      errorActionPreference: 'Stop'
-      failOnStderr: True
+      errorActionPreference: 'Continue'
+      # Docker Compose commands write to standard error stream, thus tricking Azure DevOps
+      # into thinking this PowerShell script has failed, which isn't the case.
+      # Due to this limitation (see more here: https://github.com/docker/compose/issues/5590),
+      # I need to rely on $? in my script to detect failures.
+      failOnStderr: False
       workingDirectory: $(Build.SourcesDirectory)
       
   # Publish integration test results.

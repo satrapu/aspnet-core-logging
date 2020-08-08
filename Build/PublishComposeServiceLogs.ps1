@@ -6,7 +6,7 @@ Param(
     [String]
     $ComposeProjectName = 'aspnet-core-logging-it',
 
-    # The path to the folder where Docker Compose will write its logs
+    # The path to the folder where Docker Compose will write its logs.
     [String]
     $LogsOutputFolder
 )
@@ -16,7 +16,7 @@ $LsCommandOutput = docker container ls -a `
                                     --format "{{ .ID }}" `
                                     | Out-String
 
-if ($LASTEXITCODE -ne 0)
+if (!$?)
 {
     Write-Output "##vso[task.LogIssue type=error;]Failed to identify compose services for project: $ComposeProjectName"
     Write-Output "##vso[task.complete result=Failed;]"
@@ -28,11 +28,11 @@ Write-Output "Found the following container IDs: $LsCommandOutput"
 $LsCommandOutput.Split([System.Environment]::NewLine, [System.StringSplitOptions]::RemoveEmptyEntries) | ForEach-Object {
     $ContainerId = $_
     $ComposeServiceLabelsAsJson = docker inspect --format '{{ json .Config.Labels }}' `
-                                                 $ContainerId `
+                                                 "$ContainerId" `
                                                  | Out-String `
                                                  | ConvertFrom-Json
 
-    if ($LASTEXITCODE -ne 0)
+    if (!$?)
     {
         Write-Output "##vso[task.LogIssue type=error;]Failed to inspect container with ID: $ContainerId"
         Write-Output "##vso[task.complete result=Failed;]"
@@ -43,7 +43,7 @@ $LsCommandOutput.Split([System.Environment]::NewLine, [System.StringSplitOptions
     $ComposeServiceName = $ComposeServiceLabelsAsJson.$ComposeServiceNameLabel
     $LogFileName = "$ComposeServiceName--$ContainerId.log"
     $LogFilePath = Join-Path -Path $LogsOutputFolder $LogFileName
-    
+
     $PublishLogsInfoMessage = "About to publish logs for compose service with container id: " `
                             + "`"$($ComposeService.ContainerId)`" and service name: " `
                             + "`"$($ComposeService.ServiceName)`" to file: `"$LogFilePath`" ..."
@@ -54,11 +54,17 @@ $LsCommandOutput.Split([System.Environment]::NewLine, [System.StringSplitOptions
        New-Item -Path "$LogsOutputFolder" -ItemType "Directory"
     }
 
-docker logs --tail "all" `
+    docker logs --tail "all" `
                 --details `
                 "$ContainerId" `
-                | Out-String `
                 | Out-File -Force -FilePath "$LogFilePath"
+
+    if (!$?)
+    {
+        Write-Output "##vso[task.LogIssue type=error;]Failed to fetch logs for container with ID: $ContainerId"
+        Write-Output "##vso[task.complete result=Failed;]"
+        exit 3;
+    }
 }
 
 exit 0;

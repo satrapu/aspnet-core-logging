@@ -39,7 +39,7 @@ Param(
     $ComposeLogsOutputFilePath
 )
 
-Write-Output "Current script path: $PSScriptRoot"
+Write-Output "Current script path is: $PSScriptRoot"
 $ComposeFilePath = Join-Path -Path $PSScriptRoot $RelativePathToComposeFile
 
 if (![System.IO.File]::Exists($ComposeFilePath))
@@ -99,7 +99,7 @@ Write-Output $CreateVolmeInfoMessage
 # works on Windows-based Azure DevOps agents
 docker volume create "db4it_data"
 
-if ($LASTEXITCODE -ne 0)
+if(!$?)
 {
     Write-Output "##vso[task.LogIssue type=error;]Failed to create external Docker volume for project: $ComposeProjectName"
     Write-Output "##vso[task.complete result=Failed;]"
@@ -114,7 +114,7 @@ docker-compose --file="$ComposeFilePath" `
                --project-name="$ComposeProjectName" `
                up -d
 
-if ($LASTEXITCODE -ne 0)
+if(!$?)
 {
     Write-Output "##vso[artifact.upload]$LogsCommandOutputFileName"
     Write-Output "##vso[task.LogIssue type=error;]Failed to start compose services for project: $ComposeProjectName"
@@ -127,7 +127,7 @@ $LsCommandOutput = docker container ls -a `
                                     --format "{{ .ID }}" `
                                     | Out-String
 
-if ($LASTEXITCODE -ne 0)
+if (!$?)
 {
     Write-Output "##vso[task.LogIssue type=error;]Failed to identify compose services for project: $ComposeProjectName"
     Write-Output "##vso[task.complete result=Failed;]"
@@ -143,7 +143,7 @@ $LsCommandOutput.Split([System.Environment]::NewLine, [System.StringSplitOptions
                                                  | Out-String `
                                                  | ConvertFrom-Json
 
-    if ($LASTEXITCODE -ne 0)
+    if(!$?)
     {
         Write-Output "##vso[task.LogIssue type=error;]Failed to inspect container with ID: $ContainerId"
         Write-Output "##vso[task.complete result=Failed;]"
@@ -184,10 +184,10 @@ do
     foreach ($ComposeService in $ComposeServices)
     {
             $IsServiceHealthy = docker inspect "$($ComposeService.ContainerId)" `
-                                           --format "{{.State.Health.Status}}" `
-                                           | Select-String -Pattern 'healthy' -SimpleMatch -Quiet
+                                               --format "{{.State.Health.Status}}" `
+                                               | Select-String -Pattern 'healthy' -SimpleMatch -Quiet
 
-        if ($LASTEXITCODE -ne 0)
+        if (!$?)
         {
             Write-Output "##vso[task.LogIssue type=error;]Failed to fetch health state for compose service " `
                        + "with name: $($ComposeService.ServiceName)"
@@ -238,7 +238,7 @@ foreach ($ComposeService in $ComposeServices)
     Write-Output "About to fetch port mappings for compose service with name: $($ComposeService.ServiceName) ..."
     $PortCommandOutput = docker port "$($ComposeService.ContainerId)" | Out-String
 
-    if ($LASTEXITCODE -ne 0)
+    if (!$?)
     {
         Write-Output "##vso[task.LogIssue type=error;]Failed to fetch port mappings for compose service " `
                      "with name: $($ComposeService.ServiceName)"
