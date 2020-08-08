@@ -271,7 +271,7 @@ jobs:
       filePath: '$(Build.SourcesDirectory)/Build/PublishComposeServiceLogs.ps1'
       arguments: >-
         -ComposeProjectName 'integration-test-prerequisites' `
-        -LogsOutputFolder '$(Build.SourcesDirectory)/Tests/.ComposeService-Logs/$(Agent.OS)-$(Agent.OSArchitecture)'
+        -LogsOutputFolder '$(Build.SourcesDirectory)/Tests/.ComposeService-Logs'
       errorActionPreference: 'Continue'
       # Docker Compose commands write to standard error stream, thus tricking Azure DevOps
       # into thinking this PowerShell script has failed, which isn't the case.
