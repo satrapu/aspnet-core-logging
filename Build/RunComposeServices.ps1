@@ -114,6 +114,11 @@ docker-compose --file="$ComposeFilePath" `
 
 if ($LASTEXITCODE -ne 0)
 {
+    $LogsCommandOutputFileName = "docker-compose-logs-command-output--$(Agent.OS)-$(Agent.OSArchitecture)-$(Build.BuildNumber)-$(Build.BuildID).txt"
+    docker-compose logs --tail="all" `
+                        --timestamps `
+                        | Out-File $LogsCommandOutputFileName
+    Write-Output "##vso[artifact.upload]$LogsCommandOutputFileName"
     Write-Output "##vso[task.LogIssue type=error;]Failed to start compose services for project: $ComposeProjectName"
     Write-Output "##vso[task.complete result=Failed;]"
     exit 4;
