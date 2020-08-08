@@ -58,6 +58,18 @@ $EnvironmentFileLines = Get-Content -Path $ComposeEnvironmentFilePath
 
 foreach ($EnvironmentFileLine in $EnvironmentFileLines)
 {
+    if($EnvironmentFileLine.Trim().Length -eq 0)
+    {
+        # Ignore empty lines
+        continue;
+    }
+    
+    if($EnvironmentFileLine.StartsWith('#'))
+    {
+        # Ignore lines representing comments
+        continue;
+    }
+    
     # Each line of text will be split using first delimiter only
     $EnvironmentFileLineParts = $EnvironmentFileLine.Split('=', 2)
     $EnvironmentVariableName = $EnvironmentFileLineParts[0]
