@@ -52,7 +52,8 @@ $LsCommandOutput.Split([System.Environment]::NewLine, [System.StringSplitOptions
     docker logs --tail "all" `
                 --details `
                 "$ContainerId" `
-                | Out-File $LogFilePath
+                | Out-String `
+                | Out-File -FilePath "$LogFilePath"
 }
 
 exit 0;

@@ -260,12 +260,18 @@ jobs:
   - task: PowerShell@2
     name: 'publish_logs_of_compose_services_used_by_integration_tests'
     displayName: 'Publish compose service logs'
+    condition: |
+      and
+      (
+          succeededOrFailed()
+        , eq(${{ parameters.publishPipelineArtifacts }}, True)
+      )
     inputs:
       targetType: 'filePath'
       filePath: '$(Build.SourcesDirectory)/Build/PublishComposeServiceLogs.ps1'
       arguments: >-
         -ComposeProjectName 'integration-test-prerequisites' `
-        -LogsOutputFolder '$(Build.SourcesDirectory)/Tests/ComposeService-Logs'
+        -LogsOutputFolder '$(Build.SourcesDirectory)/Tests/.ComposeService-Logs'
       errorActionPreference: 'Stop'
       failOnStderr: True
       workingDirectory: $(Build.SourcesDirectory)
@@ -282,24 +288,6 @@ jobs:
       mergeTestResults: True
       buildConfiguration: ${{ parameters.build.configuration }}
       publishRunAttachments: True
-  
-  # Publish test results as pipeline artifacts.
-  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/artifacts/pipeline-artifacts?view=azure-devops&tabs=yaml#publish-a-pipeline-artifact.
-  #
-  # This task will make use of the ~/Tests/.artifactignore file.
-  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/artifacts/pipeline-artifacts?view=azure-devops&tabs=yaml#using-artifactignore-files.
-  - task: PublishPipelineArtifact@1
-    name: 'publish_test_results_as_pipeline_artifacts'
-    displayName: 'Publish test results as pipeline artifacts'
-    condition: |
-      and
-      (
-          succeededOrFailed()
-        , eq(${{ parameters.publishPipelineArtifacts }}, True)
-      )
-    inputs:
-      artifact: 'test-artifacts-$(Agent.OS)-$(Agent.OSArchitecture)-$(Build.BuildNumber)-$(Build.BuildID)'
-      path: '$(Build.SourcesDirectory)/Tests'
 
   # Install reportgenerator tool to be able to generate code coverage related reports using 'dotnet tool install' command.
   # See more about this command here: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-tool-install.
@@ -320,7 +308,7 @@ jobs:
   - script: >-
       reportgenerator 
       "-reports:$(Build.SourcesDirectory)/Tests/**/coverage.opencover.xml"
-      "-targetdir:$(Build.SourcesDirectory)/.CodeCoverageReport"
+      "-targetdir:$(Build.SourcesDirectory)/Tests/.CodeCoverageReport"
       "-reporttypes:Cobertura"
     name: 'generate_code_coverage_report'
     displayName: 'Generate code coverage report'
@@ -333,8 +321,26 @@ jobs:
     inputs:
       codeCoverageTool: 'Cobertura'
       pathToSources: '$(Build.SourcesDirectory)/Sources'
-      summaryFileLocation: '$(Build.SourcesDirectory)/.CodeCoverageReport/Cobertura.xml'
-      reportDirectory: '$(Build.SourcesDirectory)/.CodeCoverageReport'
+      summaryFileLocation: '$(Build.SourcesDirectory)/Tests/.CodeCoverageReport/Cobertura.xml'
+      reportDirectory: '$(Build.SourcesDirectory)/Tests/.CodeCoverageReport'
+      
+  # Publish test related artifacts.
+  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/artifacts/pipeline-artifacts?view=azure-devops&tabs=yaml#publish-a-pipeline-artifact.
+  #
+  # This task will make use of the ~/Tests/.artifactignore file.
+  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/artifacts/pipeline-artifacts?view=azure-devops&tabs=yaml#using-artifactignore-files.
+  - task: PublishPipelineArtifact@1
+    name: 'publish_test_related_artifacts'
+    displayName: 'Publish test related artifacts'
+    condition: |
+      and
+      (
+          succeededOrFailed()
+        , eq(${{ parameters.publishPipelineArtifacts }}, True)
+      )
+    inputs:
+      artifact: 'test-artifacts-$(Agent.OS)-$(Agent.OSArchitecture)-$(Build.BuildNumber)-$(Build.BuildID)'
+      path: '$(Build.SourcesDirectory)/Tests'
 
   - task: SonarSource.sonarcloud.ce096e50-6155-4de8-8800-4221aaeed4a1.SonarCloudAnalyze@1
     name: 'run_sonar_analysis'

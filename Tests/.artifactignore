@@ -6,10 +6,11 @@
 
 # Publish code coverage results
 !**/coverage.opencover.xml
+!**/Tests/.CodeCoverageReport
 
 # Publish application logs generated while running integration tests
 !**/Logs/*.log
 
 # Publish logs generated when starting the Docker Compose services
 # used by integration tests
-!**/Tests/ComposeService-Logs/*
+!**/Tests/.ComposeService-Logs/*
