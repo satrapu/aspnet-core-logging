@@ -10,5 +10,6 @@
 # Publish application logs generated while running integration tests
 !**/Logs/*.log
 
-# Publish Docker Compose logs
-!**/Tests/docker-compose-logs.txt
+# Publish logs generated when starting the Docker Compose services
+# used by integration tests
+!**/Tests/ComposeService-Logs/*

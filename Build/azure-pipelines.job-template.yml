@@ -219,8 +219,7 @@ jobs:
            'db_username'='${{ parameters.integrationTests.databaseUsername }}'; `
            'db_password'='${{ parameters.integrationTests.databasePassword }}'; `
            'db_data_volume'='${{ parameters.integrationTests.databaseDockerContainerVolumePath }}'; `
-         } `
-        -ComposeLogsOutputFilePath  '$(Build.SourcesDirectory)/Tests/docker-compose-logs.txt'
+         }
       errorActionPreference: 'continue'
       # Docker Compose commands write to standard error stream, thus tricking Azure DevOps
       # into thinking this PowerShell script has failed, which isn't the case.
@@ -256,6 +255,21 @@ jobs:
         Password=${{ parameters.integrationTests.databasePassword }};
       GENERATEJWT__SECRET: $(IntegrationTests.GenerateJwt.Secret)
 
+  # Run a PowerShell script to publish the logs of the Docker Compose service
+  # used by integration tests.
+  - task: PowerShell@2
+    name: 'publish_logs_of_compose_services_used_by_integration_tests'
+    displayName: 'Publish compose service logs'
+    inputs:
+      targetType: 'filePath'
+      filePath: '$(Build.SourcesDirectory)/Build/PublishComposeServiceLogs.ps1'
+      arguments: >-
+        -ComposeProjectName 'integration-test-prerequisites' `
+        -LogsOutputFolder '$(Build.SourcesDirectory)/Tests/ComposeService-Logs'
+      errorActionPreference: 'Stop'
+      failOnStderr: True
+      workingDirectory: $(Build.SourcesDirectory)
+      
   # Publish integration test results.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=azure-devops&tabs=yaml.
   - task: PublishTestResults@2
@@ -268,7 +282,7 @@ jobs:
       mergeTestResults: True
       buildConfiguration: ${{ parameters.build.configuration }}
       publishRunAttachments: True
-
+  
   # Publish test results as pipeline artifacts.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/artifacts/pipeline-artifacts?view=azure-devops&tabs=yaml#publish-a-pipeline-artifact.
   #

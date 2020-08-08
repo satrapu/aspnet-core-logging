@@ -287,8 +287,5 @@ foreach ($ComposeService in $ComposeServices)
     }
 }
 
-docker-compose logs --tail="all" `
-                    --timestamps
-
 # Everything it's OK at this point, so exit this script the nice way :)
 exit 0;
