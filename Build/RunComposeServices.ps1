@@ -81,6 +81,17 @@ $ComposeStartInfoMessage = "About to start compose services declared in file: `"
                          + "and environment file: `"$ComposeEnvironmentFilePath`" ..."
 Write-Output $ComposeStartInfoMessage
 
+# satrapu 2020-07-08 See whetehr manually creating the external volumes 
+# works on Windows-based Azure DevOps agents
+docker volume create db4it_data
+
+if ($LASTEXITCODE -ne 0)
+{
+    Write-Output "##vso[task.LogIssue type=error;]Failed to start compose services for project: $ComposeProjectName"
+    Write-Output "##vso[task.complete result=Failed;]"
+    exit 3;
+}
+
 docker-compose --file="$ComposeFilePath" `
                --project-name="$ComposeProjectName" `
                up -d
@@ -89,7 +100,7 @@ if ($LASTEXITCODE -ne 0)
 {
     Write-Output "##vso[task.LogIssue type=error;]Failed to start compose services for project: $ComposeProjectName"
     Write-Output "##vso[task.complete result=Failed;]"
-    exit 3;
+    exit 4;
 }
 
 $LsCommandOutput = docker container ls -a `
@@ -101,7 +112,7 @@ if ($LASTEXITCODE -ne 0)
 {
     Write-Output "##vso[task.LogIssue type=error;]Failed to identify compose services for project: $ComposeProjectName"
     Write-Output "##vso[task.complete result=Failed;]"
-    exit 4;
+    exit 5;
 }
 
 Write-Output "Found the following container IDs: $LsCommandOutput"
@@ -112,12 +123,12 @@ $LsCommandOutput.Split([System.Environment]::NewLine, [System.StringSplitOptions
     $ComposeServiceLabelsAsJson = docker inspect --format '{{ json .Config.Labels }}' $ContainerId `
                                                  | Out-String `
                                                  | ConvertFrom-Json
-    
+
     if ($LASTEXITCODE -ne 0)
     {
         Write-Output "##vso[task.LogIssue type=error;]Failed to inspect container with ID: $ContainerId"
         Write-Output "##vso[task.complete result=Failed;]"
-        exit 5;
+        exit 6;
     }
 
     $ComposeServiceNameLabel = 'com.docker.compose.service'
@@ -127,8 +138,9 @@ $LsCommandOutput.Split([System.Environment]::NewLine, [System.StringSplitOptions
         ContainerId = $ContainerId
         ServiceName = $ComposeServiceName
     }
+    
     $ComposeServices.Add($ComposeService)
-
+    
     $ComposeServiceInfoMessage = "Found compose service with container id: `"$($ComposeService.ContainerId)`" " `
                                + "and service name: `"$($ComposeService.ServiceName)`""
     Write-Output $ComposeServiceInfoMessage
@@ -152,19 +164,19 @@ do
 
     foreach ($ComposeService in $ComposeServices)
     {
-        $IsServiceReady = docker inspect $ComposeService.ContainerId `
-                                         --format "{{.State.Health.Status}}" `
-                                         | Select-String -Pattern 'healthy' -SimpleMatch -Quiet
+            $IsServiceHealthy = docker inspect "$($ComposeService.ContainerId)" `
+                                           --format "{{.State.Health.Status}}" `
+                                           | Select-String -Pattern 'healthy' -SimpleMatch -Quiet
 
         if ($LASTEXITCODE -ne 0)
         {
             Write-Output "##vso[task.LogIssue type=error;]Failed to fetch health state for compose service " `
                        + "with name: $($ComposeService.ServiceName)"
             Write-Output "##vso[task.complete result=Failed;]"
-            exit 6;
+            exit 7;
         }
 
-        if ($IsServiceReady -eq $false)
+        if ($IsServiceHealthy -eq $false)
         {
             Write-Output "Service: $($ComposeService.ServiceName) from project: $ComposeProjectName is not healthy yet"
             $AreAllServicesReady = $false
@@ -199,32 +211,50 @@ if ($AreAllServicesReady -eq $false)
                   + "are still not running after checking for $NumberOfTries times; will stop here"
     Write-Output "##vso[task.LogIssue type=error;]$ErrorMessage"
     Write-Output "##vso[task.complete result=Failed;]"
-    exit 7;
+    exit 8;
 }
 
 foreach ($ComposeService in $ComposeServices)
 {
     Write-Output "About to fetch port mappings for compose service with name: $($ComposeService.ServiceName) ..."
-    
-    $Ports = docker inspect --format '{{ json .NetworkSettings.Ports }}' $($ComposeService.ContainerId) | Out-String
+    $PortCommandOutput = docker port "$($ComposeService.ContainerId)" | Out-String
 
     if ($LASTEXITCODE -ne 0)
     {
-        $ErrorMessage = "##vso[task.LogIssue type=error;]Failed to fetch ports for compose service with name: $($ComposeService.ServiceName)"
-        Write-Output $ErrorMessage
+        Write-Output "##vso[task.LogIssue type=error;]Failed to fetch port mappings for compose service " `
+                     "with name: $($ComposeService.ServiceName)"
         Write-Output "##vso[task.complete result=Failed;]"
-        exit 8;
+        exit 9;
     }
     
-    Write-Output "Found ports: $Ports"
-    
-    $Ports | ConvertFrom-Json | Get-Member | foreach {
-        $PortEntry = $_
-        Write-Output "Processing port entry: `"$PortEntry`" ..."
-        $ContainerPort = $PortEntry.Key.Split('/', [System.StringSplitOptions]::RemoveEmptyEntries)[0]
-        $HostPort = $PortEntry.Value.HostPort
+    if($PortCommandOutput.Length -eq 0)
+    {
+        Write-Output "This compose service has no port mappings"
+        break;
+    }
+
+    Write-Output "Found port mappings: $PortCommandOutput"
+    $RawPortMappings = $PortCommandOutput.Split([System.Environment]::NewLine, [System.StringSplitOptions]::RemoveEmptyEntries)
+
+    foreach ($RawPortMapping in $RawPortMappings)
+    {
+        Write-Output "Processing port mapping: `"$RawPortMapping`" ..."
+
+        # Port mapping looks like this: 5432/tcp -> 0.0.0.0:32769
+        # The part on the left side of the ' -> ' string represents container port info,
+        # while the part of the right represents host port info.
+        #
+        # To find the container port, one need to extract it from string '5432/tcp' - in this case, 
+        # the container port is: 5432.
+        # To find the host port, one need to extract it from string '0.0.0.0:32769' - in this case, 
+        # the host port is: 32769.
+        $RawPortMappingParts = $RawPortMapping.Split(' -> ', [System.StringSplitOptions]::RemoveEmptyEntries)
+        $RawContainerPort = $RawPortMappingParts[0]
+        $RawHostPort = $RawPortMappingParts[1]
+        $ContainerPort = $RawContainerPort.Split('/', [System.StringSplitOptions]::RemoveEmptyEntries)[0]
+        $HostPort = $RawHostPort.Split(':', [System.StringSplitOptions]::RemoveEmptyEntries)[1]
         Write-Output "Container port: $ContainerPort is mapped to host port: $HostPort"
-        
+
         # For each port mapping an Azure DevOps pipeline variable will be created with a name following 
         # the convention: compose.project.<COMPOSE_PROJECT_NAME>.service.<COMPOSE_SERVICE_NAME>.port.<CONTAINER_PORT>.
         # The variable value will be set to the host port.
@@ -234,7 +264,7 @@ foreach ($ComposeService in $ComposeServices)
         $VariableName = "compose.project.$ComposeProjectName.service.$($ComposeService.ServiceName).port.$ContainerPort"
         Write-Output "##vso[task.setvariable variable=$VariableName]$HostPort"
         Write-Output "##[command]Variable $VariableName has been set to: $HostPort"
-        Write-Output "Finished processing port mapping: `"$PortEntry`""
+        Write-Output "Finished processing port mapping: `"$RawPortMapping`"`n`n"
     }
 }
 

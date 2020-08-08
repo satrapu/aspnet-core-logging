@@ -26,4 +26,8 @@ services:
     ports:
       - "5432"
     volumes:
-      - ${db_data_volume}
+      - db4it_data:"${db_data_volume}"
+        
+volumes:
+  - db4it_data:
+      external: true
