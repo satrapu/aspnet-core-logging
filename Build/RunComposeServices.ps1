@@ -92,10 +92,10 @@ if ($ExtraEnvironmentVariables -ne $null)
     }
 }
 
-$CreateVolmeInfoMessage = "About to create Docker volume needed by compose services declared in file: `"$ComposeFilePath`" " `
-                         + "using project name: `"$ComposeProjectName`" " `
-                         + "and environment file: `"$ComposeEnvironmentFilePath`" ..."
-Write-Output $CreateVolmeInfoMessage
+$InfoMessage = "About to create Docker volume needed by compose services declared in file: `"$ComposeFilePath`" " `
+             + "using project name: `"$ComposeProjectName`" " `
+             + "and environment file: `"$ComposeEnvironmentFilePath`" ..."
+Write-Output $InfoMessage
 
 # satrapu 2020-07-08 See whether manually creating the external volumes 
 # works on Windows-based Azure DevOps agents
@@ -108,10 +108,10 @@ if(!$?)
     exit 3;
 }
 
-$ComposeStartInfoMessage = "About to start compose services declared in file: `"$ComposeFilePath`" " `
-                         + "using project name: `"$ComposeProjectName`" " `
-                         + "and environment file: `"$ComposeEnvironmentFilePath`" ..."
-Write-Output $ComposeStartInfoMessage
+$InfoMessage = "About to start compose services declared in file: `"$ComposeFilePath`" " `
+             + "using project name: `"$ComposeProjectName`" " `
+             + "and environment file: `"$ComposeEnvironmentFilePath`" ..."
+Write-Output $InfoMessage
 
 # Do not check whether this command has ended successfully since it's writing to 
 # standard error stream, thus tricking runtime into thinking it failed.
@@ -159,9 +159,9 @@ $LsCommandOutput.Split([System.Environment]::NewLine, [System.StringSplitOptions
     
     $ComposeServices.Add($ComposeService)
     
-    $ComposeServiceInfoMessage = "Found compose service with container id: `"$($ComposeService.ContainerId)`" " `
-                               + "and service name: `"$($ComposeService.ServiceName)`""
-    Write-Output $ComposeServiceInfoMessage
+    $InfoMessage = "Found compose service with container id: `"$($ComposeService.ContainerId)`" " `
+                 + "and service name: `"$($ComposeService.ServiceName)`""
+    Write-Output $InfoMessage
 }
 
 if ($ComposeServices.Count -eq 1)
@@ -205,7 +205,7 @@ do
         }
         else
         {
-            Write-Output "Service: $($ComposeService.ServiceName) from project: $ComposeProjectName is not healthy yet"
+            Write-Output "Service with name: $($ComposeService.ServiceName) from project: $ComposeProjectName is not healthy yet"
             $AreAllServicesReady = $false
             continue;
         }
@@ -232,13 +232,18 @@ if ($AreAllServicesReady -eq $false)
 
 foreach ($ComposeService in $ComposeServices)
 {
-    Write-Output "About to fetch port mappings for compose service with name: $($ComposeService.ServiceName) ..."
+    $InfoMessage = 'About to fetch port mappings for compose service ' `
+                 + "with container id: `"$($ComposeService.ContainerId)`" " `
+                 + "and service name: `"$($ComposeService.ServiceName)`" ..." `
+    Write-Output $InfoMessage
     $PortCommandOutput = docker port "$($ComposeService.ContainerId)" | Out-String
 
     if (!$?)
     {
-        Write-Output "##vso[task.LogIssue type=error;]Failed to fetch port mappings for compose service " `
-                     "with name: $($ComposeService.ServiceName)"
+        $ErrorMessage = 'Failed to fetch port mappings for compose service ' `
+                      + "with container id: `"$($ComposeService.ContainerId)`" " `
+                      + "and service name: `"$($ComposeService.ServiceName)`"" `
+        Write-Output "##vso[task.LogIssue type=error;]$ErrorMessage"
         Write-Output "##vso[task.complete result=Failed;]"
         exit 8;
     }
