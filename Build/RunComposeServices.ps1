@@ -116,7 +116,6 @@ docker-compose --file="$ComposeFilePath" `
 
 if(!$?)
 {
-    Write-Output "##vso[artifact.upload]$LogsCommandOutputFileName"
     Write-Output "##vso[task.LogIssue type=error;]Failed to start compose services for project: $ComposeProjectName"
     Write-Output "##vso[task.complete result=Failed;]"
     exit 4;
