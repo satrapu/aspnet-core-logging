@@ -35,8 +35,6 @@ Param(
     $ExtraEnvironmentVariables
 )
 
-$ErrorActionPreference = 'Stop'
-
 Write-Output "Current script path: $PSScriptRoot"
 $ComposeFilePath = Join-Path -Path $PSScriptRoot $RelativePathToComposeFile
 
