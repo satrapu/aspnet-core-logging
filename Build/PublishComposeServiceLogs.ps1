@@ -44,8 +44,8 @@ $LsCommandOutput.Split([System.Environment]::NewLine, [System.StringSplitOptions
     $LogFileName = "$ComposeServiceName--$ContainerId.log"
     $LogFilePath = Join-Path -Path $LogsOutputFolder $LogFileName
     
-    $PublishLogsInfoMessage = "About to publish logs for compose service with container id: "
-                            + "`"$($ComposeService.ContainerId)`" and service name: "
+    $PublishLogsInfoMessage = "About to publish logs for compose service with container id: " `
+                            + "`"$($ComposeService.ContainerId)`" and service name: " `
                             + "`"$($ComposeService.ServiceName)`" to file: `"$LogFilePath`" ..."
     Write-Output $PublishLogsInfoMessage
     
