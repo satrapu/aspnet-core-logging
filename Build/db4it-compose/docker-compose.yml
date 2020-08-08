@@ -5,7 +5,7 @@ version: "3.7"
 
 services:
   db4it:
-    image: "${db_docker_image}"
+    image: ${db_docker_image}
     healthcheck:
       test: >
         pg_isready \
@@ -20,14 +20,14 @@ services:
     stdin_open: false
     tty: false
     environment:
-      POSTGRES_DB: "${db_name}"
-      POSTGRES_USER: "${db_username}"
-      POSTGRES_PASSWORD: "${db_password}"
+      POSTGRES_DB: ${db_name}
+      POSTGRES_USER: ${db_username}
+      POSTGRES_PASSWORD: ${db_password}
     ports:
-      - "5432"
+      - 5432
     volumes:
-      - db4it_data:"${db_data_volume}"
+      - db4it_data:${db_data_volume}
         
 volumes:
-  - db4it_data:
-      external: true
+  db4it_data:
+    external: true
