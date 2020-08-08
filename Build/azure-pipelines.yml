@@ -118,4 +118,4 @@ jobs:
       databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
       databasePassword: '$(IntegrationTests.Database.Todo.Password)'
       databaseDockerImage: 'stellirin/postgres-windows:12'
-      databaseDockerContainerVolumePath: 'C:\db4it'
+      databaseDockerContainerVolumePath: 'C:\\db4it'
