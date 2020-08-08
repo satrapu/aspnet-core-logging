@@ -48,8 +48,13 @@ $LsCommandOutput.Split([System.Environment]::NewLine, [System.StringSplitOptions
                             + "`"$($ComposeService.ContainerId)`" and service name: " `
                             + "`"$($ComposeService.ServiceName)`" to file: `"$LogFilePath`" ..."
     Write-Output $PublishLogsInfoMessage
-    
-    docker logs --tail "all" `
+
+    if (![System.IO.File]::Exists($LogsOutputFolder))
+    {
+       New-Item -Path "$LogsOutputFolder" -ItemType "Directory"
+    }
+
+docker logs --tail "all" `
                 --details `
                 "$ContainerId" `
                 | Out-String `
