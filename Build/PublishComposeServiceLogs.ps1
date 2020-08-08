@@ -53,7 +53,7 @@ $LsCommandOutput.Split([System.Environment]::NewLine, [System.StringSplitOptions
                 --details `
                 "$ContainerId" `
                 | Out-String `
-                | Out-File -FilePath "$LogFilePath"
+                | Out-File -Force -FilePath "$LogFilePath"
 }
 
 exit 0;
