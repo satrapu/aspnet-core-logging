@@ -47,8 +47,8 @@ $LsCommandOutput.Split([System.Environment]::NewLine, [System.StringSplitOptions
     $LogFilePath = Join-Path -Path $LogsOutputFolder $LogFileName
 
     $PublishLogsInfoMessage = "About to publish logs for compose service with container id: " `
-                            + "`"$($ComposeService.ContainerId)`" and service name: " `
-                            + "`"$($ComposeService.ServiceName)`" to file: `"$LogFilePath`" ..."
+                            + "`"$ContainerId`" and service name: " `
+                            + "`"$ComposeServiceName`" to file: `"$LogFilePath`" ..."
     Write-Output $PublishLogsInfoMessage
 
     if (![System.IO.File]::Exists($LogsOutputFolder))
@@ -58,8 +58,9 @@ $LsCommandOutput.Split([System.Environment]::NewLine, [System.StringSplitOptions
 
     docker logs --tail "all" `
                 --details `
+                --timestamps `
                 "$ContainerId" `
-                | Out-File -Force -FilePath "$LogFilePath"
+                | Out-File -FilePath "$LogFilePath"
 
     if (!$?)
     {
