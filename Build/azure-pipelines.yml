@@ -83,12 +83,12 @@ jobs:
       buildBreaker:
         enabled: True
     integrationTests:
-      databaseDockerImage: 'postgres:12-alpine'
       databaseHost: 'localhost'
       databaseName: '$(IntegrationTests.Database.Todo.Name)'
       databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
       databasePassword: '$(IntegrationTests.Database.Todo.Password)'
-      databaseContainerVolumePath: '/var/lib/postgresql/data'
+      databaseDockerImage: 'postgres:12-alpine'
+      databaseDockerContainerVolumePath: '/var/lib/postgresql/data'
       
 - template: './azure-pipelines.job-template.yml'
   parameters:
@@ -98,12 +98,12 @@ jobs:
     pool:
       vmImage: 'macOS-10.15'
     integrationTests:
-      databaseDockerImage: 'postgres:12-alpine'
       databaseHost: 'localhost'
       databaseName: '$(IntegrationTests.Database.Todo.Name)'
       databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
       databasePassword: '$(IntegrationTests.Database.Todo.Password)'
-      databaseContainerVolumePath: '/var/lib/postgresql/data'
+      databaseDockerImage: 'postgres:12-alpine'
+      databaseDockerContainerVolumePath: '/var/lib/postgresql/data'
       
 - template: './azure-pipelines.job-template.yml'
   parameters:
@@ -113,9 +113,9 @@ jobs:
     pool:
       vmImage: 'windows-2019'
     integrationTests:
-      databaseDockerImage: 'stellirin/postgres-windows:12'
       databaseHost: 'localhost'
       databaseName: '$(IntegrationTests.Database.Todo.Name)'
       databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
       databasePassword: '$(IntegrationTests.Database.Todo.Password)'
-      databaseContainerVolumePath: 'C:/pgsql/data'
+      databaseDockerImage: 'stellirin/postgres-windows:12'
+      databaseDockerContainerVolumePath: 'C:/pgsql/data'
