@@ -242,7 +242,7 @@ foreach ($ComposeService in $ComposeServices)
     {
         $ErrorMessage = 'Failed to fetch port mappings for compose service ' `
                       + "with container id: `"$($ComposeService.ContainerId)`" " `
-                      + "and service name: `"$($ComposeService.ServiceName)`"" `
+                      + "and service name: `"$($ComposeService.ServiceName)`""
         Write-Output "##vso[task.LogIssue type=error;]$ErrorMessage"
         Write-Output "##vso[task.complete result=Failed;]"
         exit 8;
