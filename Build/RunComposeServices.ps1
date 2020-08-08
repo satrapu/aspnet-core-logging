@@ -132,7 +132,7 @@ if ((!$?) -or ($LsCommandOutput.Length -eq 0))
     exit 4;
 }
 
-Write-Output "Found the following container IDs: $LsCommandOutput"
+Write-Output "Found the following container(s) under compose project $($ComposeProjectName): $LsCommandOutput"
 
 $ComposeServices = [System.Collections.Generic.List[psobject]]::new()
 $LsCommandOutput.Split([System.Environment]::NewLine, [System.StringSplitOptions]::RemoveEmptyEntries) | ForEach-Object {
@@ -215,7 +215,7 @@ do
     {
         break;
     }
-
+    
     $NumberOfTries++
 } until ($NumberOfTries -eq $MaxNumberOfTries)
 
