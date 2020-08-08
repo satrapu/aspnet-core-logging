@@ -234,8 +234,8 @@ foreach ($ComposeService in $ComposeServices)
 {
     $InfoMessage = 'About to fetch port mappings for compose service ' `
                  + "with container id: `"$($ComposeService.ContainerId)`" " `
-                 + "and service name: `"$($ComposeService.ServiceName)`" ..." `
-    Write-Output $InfoMessage
+                 + "and service name: `"$($ComposeService.ServiceName)`" ..."
+    Write-Output "$InfoMessage"
     $PortCommandOutput = docker port "$($ComposeService.ContainerId)" | Out-String
 
     if (!$?)
