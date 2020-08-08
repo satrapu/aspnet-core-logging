@@ -23,12 +23,12 @@ Param(
     # reached healthy state.
     [Int32]
     [ValidateRange(250, [Int32]::MaxValue)]
-    $HealthCheckIntervalInMilliseconds = 250,
+    $HealthCheckIntervalInMilliseconds = 1000,
 
     # The maximum amount of retries before giving up and considering that the compose services are not running.
     [Int32]
     [ValidateRange(1, [Int32]::MaxValue)]
-    $MaxNumberOfTries = 120,
+    $MaxNumberOfTries = 60,
 
     # An optional dictionary storing variables which will be passed to the containers started via Docker Compose.
     [hashtable]
@@ -137,7 +137,8 @@ Write-Output "Found the following container IDs: $LsCommandOutput"
 $ComposeServices = [System.Collections.Generic.List[psobject]]::new()
 $LsCommandOutput.Split([System.Environment]::NewLine, [System.StringSplitOptions]::RemoveEmptyEntries) | ForEach-Object {
     $ContainerId = $_
-    $ComposeServiceLabelsAsJson = docker inspect --format '{{ json .Config.Labels }}' $ContainerId `
+    $ComposeServiceLabelsAsJson = docker inspect --format '{{ json .Config.Labels }}' `
+                                                 $ContainerId `
                                                  | Out-String `
                                                  | ConvertFrom-Json
 
@@ -181,27 +182,32 @@ do
 
     foreach ($ComposeService in $ComposeServices)
     {
-            $IsServiceHealthy = docker inspect "$($ComposeService.ContainerId)" `
-                                               --format "{{.State.Health.Status}}" `
-                                               | Select-String -Pattern 'healthy' -SimpleMatch -Quiet
+        $IsServiceHealthy = docker inspect "$($ComposeService.ContainerId)" `
+                                           --format "{{.State.Health.Status}}" `
+                                           | Select-String -Pattern 'healthy' -SimpleMatch -Quiet
 
         if (!$?)
         {
             Write-Output "##vso[task.LogIssue type=error;]Failed to fetch health state for compose service " `
-                       + "with name: $($ComposeService.ServiceName)"
+                       + "with container id: `"$($ComposeService.ContainerId)`" " `
+                       + "and service name: `"$($ComposeService.ServiceName)`" " `
+                       + "from project: $ComposeProjectName"
             Write-Output "##vso[task.complete result=Failed;]"
             exit 6;
         }
 
-        if ($IsServiceHealthy -eq $false)
+        # satrapu 2020-08-08 Print message for debugging purposes
+        Write-Output "IsServiceHealthy=$IsServiceHealthy"
+        
+        if ($IsServiceHealthy -eq $true)
+        {
+            Write-Output "Service with name: $($ComposeService.ServiceName) from project: $ComposeProjectName is healthy"
+        }
+        else
         {
             Write-Output "Service: $($ComposeService.ServiceName) from project: $ComposeProjectName is not healthy yet"
             $AreAllServicesReady = $false
             continue;
-        }
-        else
-        {
-            Write-Output "Service: $($ComposeService.ServiceName) from project: $ComposeProjectName is healthy"
         }
     }
 
@@ -213,14 +219,7 @@ do
     $NumberOfTries++
 } until ($NumberOfTries -eq $MaxNumberOfTries)
 
-if ($ComposeServices.Count -eq 1)
-{
-    Write-Output "Finished checking whether compose service is healthy or not"
-}
-else
-{
-    Write-Output "Finished checking whether compose services are healthy or not"
-}
+Write-Output "Finished checking heath state"
 
 if ($AreAllServicesReady -eq $false)
 {
