@@ -97,7 +97,7 @@ Write-Output $CreateVolmeInfoMessage
 
 # satrapu 2020-07-08 See whether manually creating the external volumes 
 # works on Windows-based Azure DevOps agents
-docker volume create "db4it_data"
+docker volume create --name="db4it_data"
 
 if(!$?)
 {
