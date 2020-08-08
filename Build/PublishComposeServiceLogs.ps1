@@ -1,5 +1,4 @@
-﻿# This script starts the Docker Compose services residing in a given compose file and will also
-# create one Azure DevOps variable per port per service.
+﻿# This script saves the compose service log files to a given folder.
 Param(
     # Docker Compose project name.
     # See more here: https://docs.docker.com/compose/reference/overview/#use--p-to-specify-a-project-name.
@@ -11,7 +10,9 @@ Param(
     $LogsOutputFolder
 )
 
-Write-Output "Start publishing logs for compose services from project: $ComposeProjectName"
+$InfoMessage = "The log files of compose services from project: $ComposeProjectName " `
+             + "will be written to folder: `"$LogsOutputFolder`""
+Write-Output "$InfoMessage"
 
 $LsCommandOutput = docker container ls -a `
                                     --filter "label=com.docker.compose.project=$ComposeProjectName" `
@@ -22,10 +23,10 @@ if ((!$?) -or ($LsCommandOutput.Length -eq 0))
 {
     Write-Output "##vso[task.LogIssue type=error;]Failed to identify compose services for project: $ComposeProjectName"
     Write-Output "##vso[task.complete result=Failed;]"
-    exit 1;
+    exit 4;
 }
 
-Write-Output "Found the following container IDs: $LsCommandOutput"
+Write-Output "Found the following container(s) under compose project $($ComposeProjectName): $LsCommandOutput"
 
 $LsCommandOutput.Split([System.Environment]::NewLine, [System.StringSplitOptions]::RemoveEmptyEntries) | ForEach-Object {
     $ContainerId = $_
