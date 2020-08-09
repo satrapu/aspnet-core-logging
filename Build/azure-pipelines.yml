@@ -88,7 +88,10 @@ jobs:
       databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
       databasePassword: '$(IntegrationTests.Database.Todo.Password)'
       databaseDockerImage: 'postgres:12-alpine'
-      composeProjectName: 'integration-test-prerequisites-$(Build.BuildID)'
+      # Since 'composeProjectName' job parameter will be part of a user-defined variable name,
+      # carefully pick its name in order to obey the rules defined here: 
+      # https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&tabs=yaml%2Cbatch#variable-characters
+      composeProjectName: 'integrationTestPrerequisites_$(Build.BuildID)'
       
 - template: './azure-pipelines.job-template.yml'
   parameters:
@@ -103,7 +106,7 @@ jobs:
       databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
       databasePassword: '$(IntegrationTests.Database.Todo.Password)'
       databaseDockerImage: 'postgres:12-alpine'
-      composeProjectName: 'integration-test-prerequisites-$(Build.BuildID)'
+      composeProjectName: 'integrationTestPrerequisites_$(Build.BuildID)'
       
 - template: './azure-pipelines.job-template.yml'
   parameters:
@@ -118,4 +121,4 @@ jobs:
       databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
       databasePassword: '$(IntegrationTests.Database.Todo.Password)'
       databaseDockerImage: 'stellirin/postgres-windows:12'
-      composeProjectName: 'integration-test-prerequisites-$(Build.BuildID)'
+      composeProjectName: 'integrationTestPrerequisites_$(Build.BuildID)'
