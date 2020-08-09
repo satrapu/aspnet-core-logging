@@ -59,15 +59,9 @@ $EnvironmentFileLines = Get-Content -Path $ComposeEnvironmentFilePath
 
 foreach ($EnvironmentFileLine in $EnvironmentFileLines)
 {
-    if($EnvironmentFileLine.Trim().Length -eq 0)
+    if(($EnvironmentFileLine.Trim().Length -eq 0) -or ($EnvironmentFileLine.StartsWith('#')))
     {
-        # Ignore empty lines
-        continue;
-    }
-    
-    if($EnvironmentFileLine.StartsWith('#'))
-    {
-        # Ignore lines representing comments
+        # Ignore empty lines and those representing comments
         continue;
     }
     
@@ -95,7 +89,7 @@ $InfoMessage = "About to start compose services declared in file: `"$ComposeFile
 Write-Output $InfoMessage
 
 # Do not check whether this command has ended successfully since it's writing to 
-# standard error stream, thus tricking runtime into thinking it failed.
+# standard error stream, thus tricking runtime into thinking it has failed.
 docker-compose --file="$ComposeFilePath" `
                --project-name="$ComposeProjectName" `
                up `
