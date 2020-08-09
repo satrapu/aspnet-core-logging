@@ -17,7 +17,7 @@ parameters:
       enabled: False
   publishPipelineArtifacts: True
   integrationTests:
-    databaseHost: 'localhost'
+    databaseHost: ''
     databaseName: ''
     databaseUsername: ''
     databasePassword: ''

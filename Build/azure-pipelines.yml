@@ -83,6 +83,7 @@ jobs:
       buildBreaker:
         enabled: True
     integrationTests:
+      databaseHost: 'localhost'
       databaseName: '$(IntegrationTests.Database.Todo.Name)'
       databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
       databasePassword: '$(IntegrationTests.Database.Todo.Password)'
@@ -97,6 +98,7 @@ jobs:
     pool:
       vmImage: 'macOS-10.15'
     integrationTests:
+      databaseHost: 'localhost'
       databaseName: '$(IntegrationTests.Database.Todo.Name)'
       databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
       databasePassword: '$(IntegrationTests.Database.Todo.Password)'
@@ -111,6 +113,7 @@ jobs:
     pool:
       vmImage: 'windows-2019'
     integrationTests:
+      databaseHost: 'localhost'
       databaseName: '$(IntegrationTests.Database.Todo.Name)'
       databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
       databasePassword: '$(IntegrationTests.Database.Todo.Password)'
