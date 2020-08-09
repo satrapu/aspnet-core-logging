@@ -22,6 +22,7 @@ parameters:
     databaseUsername: ''
     databasePassword: ''
     databaseDockerImage: ''
+    composeProjectName: ''
 
 jobs:
 - job: ${{ parameters.job.name }}
@@ -208,9 +209,9 @@ jobs:
       targetType: 'filePath'
       filePath: '$(Build.SourcesDirectory)/Build/RunComposeServices.ps1'
       arguments: >-
+        -ComposeProjectName '${{ parameters.integrationTests.composeProjectName }}' `
         -RelativePathToComposeFile './db4it-compose/docker-compose.yml' `
         -RelativePathToEnvironmentFile './db4it-compose/.env' `
-        -ComposeProjectName 'integration-test-prerequisites' `
         -ExtraEnvironmentVariables `
          @{ `
            'db_docker_image'='${{ parameters.integrationTests.databaseDockerImage }}'; `
@@ -248,7 +249,7 @@ jobs:
     env:
       CONNECTIONSTRINGS__TODOFORINTEGRATIONTESTS: >-
         Host=${{ parameters.integrationTests.databaseHost }};
-        Port=$(compose.project.integration-test-prerequisites.service.db4it.port.5432);
+        Port=$(compose.project.${{ parameters.integrationTests.composeProjectName }}.service.db4it.port.5432);
         Database=${{ parameters.integrationTests.databaseName }};
         Username=${{ parameters.integrationTests.databaseUsername }};
         Password=${{ parameters.integrationTests.databasePassword }};
@@ -269,7 +270,7 @@ jobs:
       targetType: 'filePath'
       filePath: '$(Build.SourcesDirectory)/Build/PublishComposeServiceLogs.ps1'
       arguments: >-
-        -ComposeProjectName 'integration-test-prerequisites' `
+        -ComposeProjectName '${{ parameters.integrationTests.composeProjectName }}' `
         -LogsOutputFolder '$(Build.SourcesDirectory)/Tests/.ComposeService-Logs'
       # Docker Compose commands write to standard error stream, thus tricking Azure DevOps
       # into thinking this PowerShell script has failed, which isn't the case.
