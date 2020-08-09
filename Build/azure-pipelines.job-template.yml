@@ -222,8 +222,7 @@ jobs:
       # into thinking this PowerShell script has failed, which isn't the case.
       # Due to this limitation (see more here: https://github.com/docker/compose/issues/5590),
       # I need to rely on $? in my script to detect failures.
-      # Thus, set errorActionPreference to 'Continue' and
-      # set failOnStderr to False.
+      # Thus, set 'errorActionPreference' property to 'Continue' and set 'failOnStderr' property to False.
       errorActionPreference: 'Continue'
       failOnStderr: False
       workingDirectory: $(Build.SourcesDirectory)
@@ -255,11 +254,11 @@ jobs:
         Password=${{ parameters.integrationTests.databasePassword }};
       GENERATEJWT__SECRET: $(IntegrationTests.GenerateJwt.Secret)
 
-  # Run a PowerShell script to publish the logs of the Docker Compose service
-  # used by integration tests.
+  # Run a PowerShell script to export the logs of the Docker Compose service
+  # used by integration tests to a specific folder.
   - task: PowerShell@2
-    name: 'publish_compose_service_logs'
-    displayName: 'Publish compose service logs'
+    name: 'export_compose_service_logs'
+    displayName: 'Export compose service logs'
     condition: |
       and
       (
@@ -276,8 +275,7 @@ jobs:
       # into thinking this PowerShell script has failed, which isn't the case.
       # Due to this limitation (see more here: https://github.com/docker/compose/issues/5590),
       # I need to rely on $? in my script to detect failures.
-      # Thus, set errorActionPreference to 'Continue' and
-      # set failOnStderr to False.
+      # Thus, set 'errorActionPreference' property to 'Continue' and set 'failOnStderr' property to False.
       errorActionPreference: 'Continue'
       failOnStderr: False
       workingDirectory: $(Build.SourcesDirectory)
