@@ -3,15 +3,15 @@
 **/*
 
 # Publish test results
-!**/TestResults/**.*
+!**/TestResults/TestResults.xml
 
 # Publish code coverage results
 !**/coverage.opencover.xml
-!**/Tests/.CodeCoverageReport
+!**/Tests/.CodeCoverageReport/Cobertura.xml
 
 # Publish application logs generated while running integration tests
 !**/Logs/*.log
 
 # Publish logs generated when starting the Docker Compose services
 # used by integration tests
-!**/Tests/.ComposeService-Logs/**.*
+!**/Tests/.ComposeService-Logs/**/*.log
