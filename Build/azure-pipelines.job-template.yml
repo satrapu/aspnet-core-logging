@@ -17,12 +17,15 @@ parameters:
       enabled: False
   publishPipelineArtifacts: True
   integrationTests:
-    databaseHost: ''
+    databaseHost: 'localhost'
     databaseName: ''
     databaseUsername: ''
     databasePassword: ''
     databaseDockerImage: ''
-    composeProjectName: ''
+    # Since 'composeProjectName' job parameter will be part of a user-defined variable name,
+    # carefully pick its name in order to obey the rules defined here: 
+    # https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&tabs=yaml%2Cbatch#variable-characters
+    composeProjectName: 'integrationTestPrerequisites'
 
 jobs:
 - job: ${{ parameters.job.name }}
