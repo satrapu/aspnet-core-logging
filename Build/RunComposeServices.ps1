@@ -253,7 +253,7 @@ foreach ($ComposeService in $ComposeServices)
         # The variable value will be set to the host port.
         # Using the port mapping from above and assuming the project name is 'aspnet-core-logging-it' and 
         # the service is named 'db-v12', the following variable will be created:
-        #   'compose.project.aspnet-core-logging-it.services.db-v12.ports.5432' with value: '32769'
+        #   'compose.project.aspnet-core-logging-it.services.db-v12.port.5432' with value: '32769'
         $VariableName = "compose.project.$ComposeProjectName.service.$($ComposeService.ServiceName).port.$ContainerPort"
         Write-Output "##vso[task.setvariable variable=$VariableName]$HostPort"
         Write-Output "##[command]Variable $VariableName has been set to: $HostPort"
