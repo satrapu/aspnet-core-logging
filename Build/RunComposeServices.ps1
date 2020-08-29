@@ -112,10 +112,10 @@ Write-Output "Found the following container(s) under compose project $($ComposeP
 $ComposeServices = [System.Collections.Generic.List[psobject]]::new()
 $LsCommandOutput.Split([System.Environment]::NewLine, [System.StringSplitOptions]::RemoveEmptyEntries) | ForEach-Object {
     $ContainerId = $_
-    $ComposeServiceLabelsAsJson = docker inspect --format '{{ json .Config.Labels }}' `
-                                                 $ContainerId `
-                                                 | Out-String `
-                                                 | ConvertFrom-Json
+    $ComposeServiceLabels = docker inspect --format '{{ json .Config.Labels }}' `
+                                           $ContainerId `
+                                           | Out-String `
+                                           | ConvertFrom-Json
 
     if(!$?)
     {
@@ -125,7 +125,7 @@ $LsCommandOutput.Split([System.Environment]::NewLine, [System.StringSplitOptions
     }
 
     $ComposeServiceNameLabel = 'com.docker.compose.service'
-    $ComposeServiceName = $ComposeServiceLabelsAsJson.$ComposeServiceNameLabel
+    $ComposeServiceName = $ComposeServiceLabels.$ComposeServiceNameLabel
 
     $ComposeService = New-Object PSObject -Property @{
         ContainerId = $ContainerId
