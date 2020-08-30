@@ -25,7 +25,3 @@ services:
       POSTGRES_PASSWORD: "${db_password}"
     ports:
       - 5432
-      - 6677
-      - 7788
-      - 8899
-      - 9900
