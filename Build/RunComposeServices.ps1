@@ -112,10 +112,10 @@ Write-Output "Found the following container(s) under compose project $($ComposeP
 $ComposeServices = [System.Collections.Generic.List[psobject]]::new()
 $LsCommandOutput.Split([System.Environment]::NewLine, [System.StringSplitOptions]::RemoveEmptyEntries) | ForEach-Object {
     $ContainerId = $_
-    $ComposeServiceLabels = docker inspect --format '{{ json .Config.Labels }}' `
-                                           $ContainerId `
-                                           | Out-String `
-                                           | ConvertFrom-Json
+    $ComposeServiceLabels = docker container inspect --format '{{ json .Config.Labels }}' `
+                                                     $ContainerId `
+                                                     | Out-String `
+                                                     | ConvertFrom-Json
 
     if(!$?)
     {
@@ -157,9 +157,9 @@ do
 
     foreach ($ComposeService in $ComposeServices)
     {
-        $IsServiceHealthy = docker inspect "$($ComposeService.ContainerId)" `
-                                           --format "{{.State.Health.Status}}" `
-                                           | Select-String -Pattern 'healthy' -SimpleMatch -Quiet
+        $IsServiceHealthy = docker container inspect "$($ComposeService.ContainerId)" `
+                                                     --format "{{.State.Health.Status}}" `
+                                                     | Select-String -Pattern 'healthy' -SimpleMatch -Quiet
 
         if (!$?)
         {
@@ -208,7 +208,7 @@ foreach ($ComposeService in $ComposeServices)
                  + "with container id: `"$($ComposeService.ContainerId)`" " `
                  + "and service name: `"$($ComposeService.ServiceName)`" ..."
     Write-Output "$InfoMessage"
-    $PortCommandOutput = docker port "$($ComposeService.ContainerId)" | Out-String
+    $PortCommandOutput = docker container port "$($ComposeService.ContainerId)" | Out-String
 
     if (!$?)
     {
