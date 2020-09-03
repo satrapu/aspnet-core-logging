@@ -25,3 +25,11 @@ services:
       POSTGRES_PASSWORD: "${db_password}"
     ports:
       - 5432
+    volumes: 
+      - type: volume
+        source: db4it_data
+        target: ${db_volume_target}
+
+volumes: 
+  db4it_data:
+    external: true

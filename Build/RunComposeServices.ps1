@@ -83,6 +83,15 @@ if ($ExtraEnvironmentVariables -ne $null)
     }
 }
 
+docker volume create --name=db4it_data
+
+if ((!$?) )
+{
+    Write-Output "##vso[task.LogIssue type=error;]Failed to create external Docker volume for project: $ComposeProjectName"
+    Write-Output "##vso[task.complete result=Failed;]"
+    exit 123;
+}
+
 $InfoMessage = "About to start compose services declared in file: `"$ComposeFilePath`" " `
              + "using project name: `"$ComposeProjectName`" " `
              + "and environment file: `"$ComposeEnvironmentFilePath`" ..."

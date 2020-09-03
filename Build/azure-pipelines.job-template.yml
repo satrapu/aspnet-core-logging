@@ -22,6 +22,7 @@ parameters:
     databaseUsername: ''
     databasePassword: ''
     databaseDockerImage: ''
+    databaseVolumeTarget: ''
     composeProjectName: ''
 
 jobs:
@@ -218,6 +219,7 @@ jobs:
            'db_name'='${{ parameters.integrationTests.databaseName }}'; `
            'db_username'='${{ parameters.integrationTests.databaseUsername }}'; `
            'db_password'='${{ parameters.integrationTests.databasePassword }}'; `
+           'db_volume_target'='${{ parameters.integrationTests.databaseVolumeTarget }}'; `
          }
       # Docker Compose commands write to standard error stream, thus tricking Azure DevOps
       # into thinking this PowerShell script has failed, which isn't the case.
