@@ -12,6 +12,7 @@ resources:
   - repository: 'aspnet_core_logging'
     type: 'github'
     name: 'satrapu/aspnet-core-logging'
+    clean: True
     # The value of the "endpoint" element must match the service connection name 
     # declared in Project Settings -> Service connections section of your Azure DevOps organization.
     endpoint: 'satrapu'
@@ -44,7 +45,7 @@ variables:
   # Specifies the version of the .NET Core SDK to install and use when running this pipeline.
   # All releases can be found here: https://dotnet.microsoft.com/download/dotnet-core.
   - name: 'DotNetCore_SDK_Version'
-    value: '3.1.300'
+    value: '3.1.302'
 
   # Specifies the version of the ReportGenerator tool used for generating code coverage reports.
   # All releases can be found here: https://github.com/danielpalme/ReportGenerator/releases.
@@ -81,27 +82,14 @@ jobs:
       enabled: True
       buildBreaker:
         enabled: True
-    db4it:
-      dockerImage: 'postgres'
-      dockerImageTag: '12-alpine'
-      dockerContainerName: 'db4it'
-      dockerPortMapping: '9876:5432/tcp'
-      dockerHostPortBuildVariableName: 'db4it.dockerHostPort'
-      dockerContainerEnvironmentVariables: >-
-        -e "POSTGRES_DB=$(IntegrationTests.Database.Todo.Name)"
-        -e "POSTGRES_USER=$(IntegrationTests.Database.Todo.Username)"
-        -e "POSTGRES_PASSWORD=$(IntegrationTests.Database.Todo.Password)"
-      databaseConnectionString: 
-        value: >-
-          Host=localhost;
-          Port=9876;
-          Database=$(IntegrationTests.Database.Todo.Name);
-          Username=$(IntegrationTests.Database.Todo.Username);
-          Password=$(IntegrationTests.Database.Todo.Password);
-        portPlaceholder: '__DockerHostPort__'
-      databaseReadinessStrategy: 'log-polling'
-      dockerContainerLogPatternForDatabaseReady: 'database system is ready to accept connections'
-
+    integrationTests:
+      databaseHost: 'localhost'
+      databaseName: '$(IntegrationTests.Database.Todo.Name)'
+      databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
+      databasePassword: '$(IntegrationTests.Database.Todo.Password)'
+      databaseDockerImage: 'postgres:12-alpine'
+      composeProjectName: 'integration-test-prerequisites'
+      
 - template: './azure-pipelines.job-template.yml'
   parameters:
     job:
@@ -109,34 +97,14 @@ jobs:
       displayName: 'Run on macOS'
     pool:
       vmImage: 'macOS-10.15'
-    db4it:
-      dockerImage: 'postgres'
-      dockerImageTag: '12-alpine'
-      dockerContainerName: 'db4it'
-      dockerPortMapping: '5432/tcp'
-      dockerHostPortBuildVariableName: 'db4it.dockerHostPort'
-      dockerContainerEnvironmentVariables: >-
-        -e "POSTGRES_DB=$(IntegrationTests.Database.Todo.Name)"
-        -e "POSTGRES_USER=$(IntegrationTests.Database.Todo.Username)"
-        -e "POSTGRES_PASSWORD=$(IntegrationTests.Database.Todo.Password)"
-      dockerContainerLogPatternForDatabaseReady: 'database system is ready to accept connections'
-      databaseConnectionString: 
-        value: >-
-          Host=localhost;
-          Port=__DockerHostPort__;
-          Database=$(IntegrationTests.Database.Todo.Name);
-          Username=$(IntegrationTests.Database.Todo.Username);
-          Password=$(IntegrationTests.Database.Todo.Password);
-        portPlaceholder: '__DockerHostPort__'
-      databaseReadinessStrategy: 'healthcheck'
-      dockerContainerHealthcheckCommand: >-
-        pg_isready
-        --host=localhost
-        --port=5432
-        --dbname=$(IntegrationTests.Database.Todo.Name)
-        --username=$(IntegrationTests.Database.Todo.Username)
-        --quiet
-
+    integrationTests:
+      databaseHost: 'localhost'
+      databaseName: '$(IntegrationTests.Database.Todo.Name)'
+      databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
+      databasePassword: '$(IntegrationTests.Database.Todo.Password)'
+      databaseDockerImage: 'postgres:12-alpine'
+      composeProjectName: 'integration-test-prerequisites'
+      
 - template: './azure-pipelines.job-template.yml'
   parameters:
     job:
@@ -144,23 +112,10 @@ jobs:
       displayName: 'Run on Windows'
     pool:
       vmImage: 'windows-2019'
-    db4it:
-      dockerImage: 'stellirin/postgres-windows'
-      dockerImageTag: '12'
-      dockerContainerName: 'db4it'
-      dockerPortMapping: '5432'
-      dockerHostPortBuildVariableName: 'db4it.dockerHostPort'
-      dockerContainerEnvironmentVariables: >-
-        -e "POSTGRES_DB=$(IntegrationTests.Database.Todo.Name)"
-        -e "POSTGRES_USER=$(IntegrationTests.Database.Todo.Username)"
-        -e "POSTGRES_PASSWORD=$(IntegrationTests.Database.Todo.Password)"
-      databaseConnectionString: 
-        value: >-
-          Host=localhost;
-          Port=__DockerHostPort__;
-          Database=$(IntegrationTests.Database.Todo.Name);
-          Username=$(IntegrationTests.Database.Todo.Username);
-          Password=$(IntegrationTests.Database.Todo.Password);
-        portPlaceholder: '__DockerHostPort__'
-      databaseReadinessStrategy: 'log-polling'
-      dockerContainerLogPatternForDatabaseReady: 'PostgreSQL init process complete; ready for start up.'
+    integrationTests:
+      databaseHost: 'localhost'
+      databaseName: '$(IntegrationTests.Database.Todo.Name)'
+      databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
+      databasePassword: '$(IntegrationTests.Database.Todo.Password)'
+      databaseDockerImage: 'stellirin/postgres-windows:12'
+      composeProjectName: 'integration-test-prerequisites'

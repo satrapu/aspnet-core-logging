@@ -9,10 +9,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{398FFE78
 		Build\azure-pipelines.yml = Build\azure-pipelines.yml
 		Directory.Build.props = Directory.Build.props
 		Directory.Build.targets = Directory.Build.targets
-		Build\Provision-Docker-container-using-healthcheck.ps1 = Build\Provision-Docker-container-using-healthcheck.ps1
-		Build\Provision-Docker-container-using-log-polling.ps1 = Build\Provision-Docker-container-using-log-polling.ps1
 		Build\start-docker-on-macOS.sh = Build\start-docker-on-macOS.sh
 		Build\SonarBuildBreaker.ps1 = Build\SonarBuildBreaker.ps1
+		Build\RunComposeServices.ps1 = Build\RunComposeServices.ps1
+		Build\db4it-compose\.gitignore = Build\db4it-compose\.gitignore
+		Build\db4it-compose\.env = Build\db4it-compose\.env
+		Build\db4it-compose\docker-compose.yml = Build\db4it-compose\docker-compose.yml
+		Build\PublishComposeServiceLogs.ps1 = Build\PublishComposeServiceLogs.ps1
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sources", "Sources", "{ED7A5363-C21A-4D47-A2A5-67DEB1E0DDE3}"

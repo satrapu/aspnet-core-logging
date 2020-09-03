@@ -1,4 +1,17 @@
-# Ensure only test and code coverage results can be published as pipeline artifacts when a build is running via Azure Pipelines
+# Ensure only specific items are published as artifacts when running an Azure Pipeline.
+# See more about this file here: https://docs.microsoft.com/en-us/azure/devops/artifacts/reference/artifactignore?view=azure-devops.
 **/*
-!**/TestResults/*
+
+# Publish test results
+!**/TestResults/TestResults.xml
+
+# Publish code coverage results
 !**/coverage.opencover.xml
+!**/Tests/.CodeCoverageReport/Cobertura.xml
+
+# Publish application logs generated while running integration tests
+!**/Logs/*.log
+
+# Publish logs generated when starting the Docker Compose services
+# used by integration tests
+!**/Tests/.ComposeService-Logs/**/*.log

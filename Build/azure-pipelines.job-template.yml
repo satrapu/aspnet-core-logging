@@ -5,6 +5,10 @@ parameters:
   pool: ''
   build:
     configuration: 'Release'
+  # Since currently downloading an archive containing a cache of restored 
+  # NuGet packages takes considerably more time than just doing a restore 
+  # with each build, this feature has been turned off.
+  cacheRestoredNuGetPackages: False
   sonar:
     enabled: False
     runAnalysisTimeoutInMinutes: 5
@@ -12,19 +16,13 @@ parameters:
     buildBreaker:
       enabled: False
   publishPipelineArtifacts: True
-  db4it:
-    dockerImage: ''
-    dockerImageTag: ''
-    dockerContainerName: ''
-    dockerPortMapping: ''
-    dockerHostPortBuildVariableName: ''
-    dockerContainerEnvironmentVariables: ''
-    dockerContainerLogPatternForDatabaseReady: ''
-    dockerContainerHealthcheckCommand: ''
-    databaseConnectionString:
-      value: ''
-      portPlaceholder: ''
-    databaseReadinessStrategy: ''
+  integrationTests:
+    databaseHost: ''
+    databaseName: ''
+    databaseUsername: ''
+    databasePassword: ''
+    databaseDockerImage: ''
+    composeProjectName: ''
 
 jobs:
 - job: ${{ parameters.job.name }}
@@ -79,7 +77,7 @@ jobs:
       and
       (
           succeeded()
-        , eq( ${{ parameters.sonar.enabled }}, True)
+        , eq(${{ parameters.sonar.enabled }}, True)
       )
     inputs:
       packageType: 'sdk'
@@ -93,7 +91,7 @@ jobs:
       and
       (
           succeeded()
-        , eq( ${{ parameters.sonar.enabled }}, True)
+        , eq(${{ parameters.sonar.enabled }}, True)
       )
     inputs:
       SonarCloud: 'sonar-cloud'
@@ -108,16 +106,23 @@ jobs:
         sonar.coverage.exclusions=**/Tests/**/*.cs,**/Sources/Todo.Persistence/**/TodoDbContextModelSnapshot.cs,**/Sources/Todo.WebApi/**/Startup.cs 
 
   # Cache NuGet packages to avoid having to restore them during each build.
-  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/release/caching?view=azure-devops#netnuget.
+  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/release/caching?view=azure-devops#netnuget
+  # and here: https://docs.microsoft.com/en-us/azure/devops/pipelines/release/caching?view=azure-devops#conditioning-on-cache-restoration.
   - task: Cache@2
     name: 'cache_restored_nuget_packages'
     displayName: Cache restored NuGet packages
+    condition: |
+      and
+      (
+          succeeded()
+        , eq(${{ parameters.cacheRestoredNuGetPackages }}, True)
+      )
     inputs:
       key: 'nuget | "$(Agent.OS)" | **/packages.lock.json,!**/bin/**'
       restoreKeys: |
         nuget | "$(Agent.OS)"
       path: $(NUGET_PACKAGES)
-      cacheHitVar: CacheRestoredNuGetPackages
+      cacheHitVar: CacheRestoredForNuGetPackages
       
   # Restore NuGet packages using 'dotnet restore' command.
   # See more about this command here: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-restore?source=docs.
@@ -130,7 +135,12 @@ jobs:
       --locked-mode
     name: 'restore_nuget_packages'
     displayName: 'Restore NuGet packages'
-    condition: ne(variables['CacheRestoredNuGetPackages'], True)
+    condition: |
+      and
+      (
+          succeeded()
+        , ne(variables['CacheRestoredForNuGetPackages'], 'true')
+      )
       
   # Compile source code using 'dotnet build' command.
   # See more about this command here: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-build.
@@ -177,7 +187,7 @@ jobs:
       buildConfiguration: ${{ parameters.build.configuration }}
       publishRunAttachments: True
 
-  # Install and start Docker Engine on macOS.
+  # Install and start Docker Engine on macOS based agents only.
   # See more here: https://github.com/microsoft/azure-pipelines-image-generation/issues/738#issuecomment-527013065.
   - script: |
       chmod +x $(Build.SourcesDirectory)/Build/start-docker-on-macOS.sh
@@ -188,80 +198,35 @@ jobs:
       and
       (
           succeeded()
-        , eq( variables['Agent.OS'], 'Darwin')
+        , eq(variables['Agent.OS'], 'Darwin')
       )
 
-  # Runs a PowerShell script to start a Docker container hosting the database to be targeted by the integration tests.
-  # Checking whether the database is ready for processing incoming queries is done using Docker 
-  # logs command (https://docs.docker.com/engine/reference/commandline/logs/).
+  # Run a PowerShell script to start compose services needed when running integration tests.
   - task: PowerShell@2
-    name: 'provision_db4it_docker_container_using_log_polling'
-    displayName: 'Provision db4it Docker container using log-polling'
-    condition: |
-      and
-      (
-          succeeded()
-        , eq( '${{ parameters.db4it.databaseReadinessStrategy }}', 'log-polling')
-      )
+    name: 'start_compose_services_used_by_integration_tests'
+    displayName: 'Start compose services used by integration tests'
     inputs:
       targetType: 'filePath'
-      filePath: '$(Build.SourcesDirectory)/Build/Provision-Docker-container-using-log-polling.ps1'
+      filePath: '$(Build.SourcesDirectory)/Build/RunComposeServices.ps1'
       arguments: >-
-        -DockerImageName '${{ parameters.db4it.dockerImage }}'
-        -DockerImageTag '${{ parameters.db4it.dockerImageTag }}'
-        -ContainerName '${{ parameters.db4it.dockerContainerName }}'
-        -PortMapping '${{ parameters.db4it.dockerPortMapping }}'
-        -DockerHostPortBuildVariableName '${{ parameters.db4it.dockerHostPortBuildVariableName}}'
-        -ContainerEnvironmentVariables '${{ parameters.db4it.dockerContainerEnvironmentVariables }}'
-        -ContainerLogPatternForDatabaseReady '${{ parameters.db4it.dockerContainerLogPatternForDatabaseReady }}'
-        -SleepingTimeInMillis 250
-        -MaxNumberOfTries 120
-      errorActionPreference: 'stop'
-      failOnStderr: True
+        -ComposeProjectName '${{ parameters.integrationTests.composeProjectName }}' `
+        -RelativePathToComposeFile './db4it-compose/docker-compose.yml' `
+        -RelativePathToEnvironmentFile './db4it-compose/.env' `
+        -ExtraEnvironmentVariables `
+         @{ `
+           'db_docker_image'='${{ parameters.integrationTests.databaseDockerImage }}'; `
+           'db_name'='${{ parameters.integrationTests.databaseName }}'; `
+           'db_username'='${{ parameters.integrationTests.databaseUsername }}'; `
+           'db_password'='${{ parameters.integrationTests.databasePassword }}'; `
+         }
+      # Docker Compose commands write to standard error stream, thus tricking Azure DevOps
+      # into thinking this PowerShell script has failed, which isn't the case.
+      # Due to this limitation (see more here: https://github.com/docker/compose/issues/5590),
+      # I need to rely on $? in my script to detect failures.
+      # Thus, set 'errorActionPreference' property to 'Continue' and set 'failOnStderr' property to False.
+      errorActionPreference: 'Continue'
+      failOnStderr: False
       workingDirectory: $(Build.SourcesDirectory)
-
-  # Runs a PowerShell script to start a Docker container hosting the database to be targeted by the integration tests.
-  # Checking whether the database is ready for processing incoming queries is done using Docker healthcheck 
-  # support (https://docs.docker.com/engine/reference/run/#healthcheck).
-  - task: PowerShell@2
-    name: 'provision_db4it_docker_container_using_healthcheck'
-    displayName: 'Provision db4it Docker container using healthcheck'
-    condition: |
-      and
-      (
-          succeeded()
-        , eq( '${{ parameters.db4it.databaseReadinessStrategy }}', 'healthcheck')
-      )
-    inputs:
-      targetType: 'filePath'
-      filePath: '$(Build.SourcesDirectory)/Build/Provision-Docker-container-using-healthcheck.ps1'
-      arguments: >-
-        -DockerImageName '${{ parameters.db4it.dockerImage }}'
-        -DockerImageTag '${{ parameters.db4it.dockerImageTag }}'
-        -ContainerName '${{ parameters.db4it.dockerContainerName }}'
-        -PortMapping '${{ parameters.db4it.dockerPortMapping }}'
-        -DockerHostPortBuildVariableName '${{ parameters.db4it.dockerHostPortBuildVariableName}}'
-        -ContainerEnvironmentVariables '${{ parameters.db4it.dockerContainerEnvironmentVariables }}'
-        -HealthCheckCommand '${{ parameters.db4it.dockerContainerHealthcheckCommand }}'
-        -HealthCheckIntervalInMilliseconds 250
-        -MaxNumberOfTries 120
-      errorActionPreference: 'stop'
-      failOnStderr: True
-      workingDirectory: $(Build.SourcesDirectory)
-
-  # Run a PowerShell script to ensure the connection string pointing to the database to be targeted by the 
-  # integration tests uses the appropriate port.
-  - task: PowerShell@2
-    name: 'normalize_db_connection_string_pointing_to_db4it'
-    displayName: 'Normalize database connection string pointing to db4it Docker container'
-    inputs:
-      targetType: 'inline'
-      errorActionPreference: 'stop'
-      script: |
-        Write-Output "The Docker host port mapped to container '${{ parameters.db4it.dockerContainerName }}' is: $(${{ parameters.db4it.dockerHostPortBuildVariableName }})"
-        $normalizedDatabaseConnectionString = "${{ parameters.db4it.databaseConnectionString.value }}" -replace '${{ parameters.db4it.databaseConnectionString.portPlaceholder }}', $(${{ parameters.db4it.dockerHostPortBuildVariableName }})
-        Write-Output "##vso[task.setvariable variable=DatabaseConnectionStrings.Todo]$normalizedDatabaseConnectionString"
-        Write-Output "The normalized database connection string is: $normalizedDatabaseConnectionString"
 
   # Run integration tests and collect code coverage metrics using 'dotnet test' command.
   # See more about this command here: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-test.
@@ -282,9 +247,40 @@ jobs:
     name: 'run_integration_tests'
     displayName: 'Run integration tests'
     env:
-      CONNECTIONSTRINGS__TODOFORINTEGRATIONTESTS: $(DatabaseConnectionStrings.Todo)
+      CONNECTIONSTRINGS__TODOFORINTEGRATIONTESTS: >-
+        Host=${{ parameters.integrationTests.databaseHost }};
+        Port=$(compose.project.${{ parameters.integrationTests.composeProjectName }}.service.db4it.port.5432);
+        Database=${{ parameters.integrationTests.databaseName }};
+        Username=${{ parameters.integrationTests.databaseUsername }};
+        Password=${{ parameters.integrationTests.databasePassword }};
       GENERATEJWT__SECRET: $(IntegrationTests.GenerateJwt.Secret)
 
+  # Run a PowerShell script to export the logs of the Docker Compose service
+  # used by integration tests to a specific folder.
+  - task: PowerShell@2
+    name: 'export_compose_service_logs'
+    displayName: 'Export compose service logs'
+    condition: |
+      and
+      (
+          succeededOrFailed()
+        , eq(${{ parameters.publishPipelineArtifacts }}, True)
+      )
+    inputs:
+      targetType: 'filePath'
+      filePath: '$(Build.SourcesDirectory)/Build/PublishComposeServiceLogs.ps1'
+      arguments: >-
+        -ComposeProjectName '${{ parameters.integrationTests.composeProjectName }}' `
+        -LogsOutputFolder '$(Build.SourcesDirectory)/Tests/.ComposeService-Logs'
+      # Docker Compose commands write to standard error stream, thus tricking Azure DevOps
+      # into thinking this PowerShell script has failed, which isn't the case.
+      # Due to this limitation (see more here: https://github.com/docker/compose/issues/5590),
+      # I need to rely on $? in my script to detect failures.
+      # Thus, set 'errorActionPreference' property to 'Continue' and set 'failOnStderr' property to False.
+      errorActionPreference: 'Continue'
+      failOnStderr: False
+      workingDirectory: $(Build.SourcesDirectory)
+      
   # Publish integration test results.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=azure-devops&tabs=yaml.
   - task: PublishTestResults@2
@@ -297,24 +293,6 @@ jobs:
       mergeTestResults: True
       buildConfiguration: ${{ parameters.build.configuration }}
       publishRunAttachments: True
-
-  # Publish test results as pipeline artifacts.
-  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/artifacts/pipeline-artifacts?view=azure-devops&tabs=yaml#publish-a-pipeline-artifact.
-  #
-  # This task will make use of the ~/Tests/.artifactignore file.
-  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/artifacts/pipeline-artifacts?view=azure-devops&tabs=yaml#using-artifactignore-files.
-  - task: PublishPipelineArtifact@1
-    name: 'publish_test_results_as_pipeline_artifacts'
-    displayName: 'Publish test results as pipeline artifacts'
-    condition: |
-      and
-      (
-          succeededOrFailed()
-        , eq( ${{ parameters.publishPipelineArtifacts }}, True)
-      )
-    inputs:
-      artifact: 'test-results-$(Agent.OS)-$(Agent.OSArchitecture)-$(Build.BuildNumber)-$(Build.BuildID)'
-      path: '$(Build.SourcesDirectory)/Tests'
 
   # Install reportgenerator tool to be able to generate code coverage related reports using 'dotnet tool install' command.
   # See more about this command here: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-tool-install.
@@ -335,7 +313,7 @@ jobs:
   - script: >-
       reportgenerator 
       "-reports:$(Build.SourcesDirectory)/Tests/**/coverage.opencover.xml"
-      "-targetdir:$(Build.SourcesDirectory)/.CodeCoverageReport"
+      "-targetdir:$(Build.SourcesDirectory)/Tests/.CodeCoverageReport"
       "-reporttypes:Cobertura"
     name: 'generate_code_coverage_report'
     displayName: 'Generate code coverage report'
@@ -348,8 +326,26 @@ jobs:
     inputs:
       codeCoverageTool: 'Cobertura'
       pathToSources: '$(Build.SourcesDirectory)/Sources'
-      summaryFileLocation: '$(Build.SourcesDirectory)/.CodeCoverageReport/Cobertura.xml'
-      reportDirectory: '$(Build.SourcesDirectory)/.CodeCoverageReport'
+      summaryFileLocation: '$(Build.SourcesDirectory)/Tests/.CodeCoverageReport/Cobertura.xml'
+      reportDirectory: '$(Build.SourcesDirectory)/Tests/.CodeCoverageReport'
+      
+  # Publish test related artifacts.
+  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/artifacts/pipeline-artifacts?view=azure-devops&tabs=yaml#publish-a-pipeline-artifact.
+  #
+  # This task will make use of the ~/Tests/.artifactignore file.
+  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/artifacts/pipeline-artifacts?view=azure-devops&tabs=yaml#using-artifactignore-files.
+  - task: PublishPipelineArtifact@1
+    name: 'publish_test_related_artifacts'
+    displayName: 'Publish test related artifacts'
+    condition: |
+      and
+      (
+          succeededOrFailed()
+        , eq(${{ parameters.publishPipelineArtifacts }}, True)
+      )
+    inputs:
+      artifact: 'test-artifacts-$(Agent.OS)-$(Agent.OSArchitecture)-$(Build.BuildNumber)-$(Build.BuildID)'
+      path: '$(Build.SourcesDirectory)/Tests'
 
   - task: SonarSource.sonarcloud.ce096e50-6155-4de8-8800-4221aaeed4a1.SonarCloudAnalyze@1
     name: 'run_sonar_analysis'
@@ -360,7 +356,7 @@ jobs:
       and
       (
           succeeded()
-        , eq( ${{ parameters.sonar.enabled }}, True)
+        , eq(${{ parameters.sonar.enabled }}, True)
       )
 
   # Publish Sonar quality gate result to the remote server.
@@ -373,8 +369,8 @@ jobs:
       and
       (
           succeeded()
-        , eq( ${{ parameters.sonar.enabled }}, True)
-        , eq( ${{ parameters.sonar.buildBreaker.enabled }}, True)
+        , eq(${{ parameters.sonar.enabled }}, True)
+        , eq(${{ parameters.sonar.buildBreaker.enabled }}, True)
       )
       
   # Load the current Git branch name into a build variable to be later used when querying SonarCloud web API for the
@@ -387,9 +383,9 @@ jobs:
       and
       (
           succeeded()
-        , eq( ${{ parameters.sonar.enabled }}, True)
-        , eq( ${{ parameters.sonar.buildBreaker.enabled }}, True)
-        , eq( variables['Build.Reason'], 'PullRequest')
+        , eq(${{ parameters.sonar.enabled }}, True)
+        , eq(${{ parameters.sonar.buildBreaker.enabled }}, True)
+        , eq(variables['Build.Reason'], 'PullRequest')
       )
     inputs:
       targetType: 'inline'
@@ -408,9 +404,9 @@ jobs:
       and
       (
           succeeded()
-        , eq( ${{ parameters.sonar.enabled }}, True)
-        , eq( ${{ parameters.sonar.buildBreaker.enabled }}, True)
-        , ne( variables['Build.Reason'], 'PullRequest')
+        , eq(${{ parameters.sonar.enabled }}, True)
+        , eq(${{ parameters.sonar.buildBreaker.enabled }}, True)
+        , ne(variables['Build.Reason'], 'PullRequest')
       )
     inputs:
       targetType: 'inline'
@@ -428,8 +424,8 @@ jobs:
       and
       (
           succeeded()
-        , eq( ${{ parameters.sonar.enabled }}, True)
-        , eq( ${{ parameters.sonar.buildBreaker.enabled }}, True)
+        , eq(${{ parameters.sonar.enabled }}, True)
+        , eq(${{ parameters.sonar.buildBreaker.enabled }}, True)
       )
     inputs:
       targetType: 'inline'
@@ -451,8 +447,8 @@ jobs:
       and
       (
           succeeded()
-        , eq( ${{ parameters.sonar.enabled }}, True)
-        , eq( ${{ parameters.sonar.buildBreaker.enabled }}, True)
+        , eq(${{ parameters.sonar.enabled }}, True)
+        , eq(${{ parameters.sonar.buildBreaker.enabled }}, True)
       )
     inputs:
       targetType: 'filePath'

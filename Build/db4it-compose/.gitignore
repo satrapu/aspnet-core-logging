@@ -1,0 +1,2 @@
+# Un-ingnore .env file since it's no longer containing sensitive data
+!.env
