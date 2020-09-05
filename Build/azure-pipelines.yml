@@ -61,13 +61,22 @@ variables:
     value: 'satrapu'
     
 stages:
-  - stage: 'instal_prerequisites'
+  - stage: 'checkout'
+    displayName: 'Checkout'
+
+  - stage: 'prerequisites'
     displayName: 'Prerequisites'
-    pool:
-      vmImage: 'ubuntu-18.04'
-    dependsOn:
-    jobs:
-    - template: './azure-pipelines.job-template.prerequisites.yml'
-  - stage: 'Build'
-  - stage: 'Test'
-  - stage: 'Code Quality'
+    dependsOn: 'checkout'
+
+  - stage: 'build'
+    displayName: 'Build'
+    dependsOn: 'prerequisites'
+
+  - stage: 'test'
+    displayName: 'Run Tests'
+    dependsOn: 'build'
+
+  - stage: 'code-quality'
+    displayName: 'Ensure Code Quality'
+    dependsOn: 'test'
+
