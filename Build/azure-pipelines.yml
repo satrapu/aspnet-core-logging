@@ -10,6 +10,8 @@ resources:
   repositories: 
   # See more about repositories here: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=azure-devops&tabs=schema%2Cparameter-schema#repository-resource.
   - repository: self
+    type: 'github'
+    name: 'satrapu/aspnet-core-logging'
     clean: True
     # The value of the "endpoint" element must match the service connection name 
     # declared in Project Settings -> Service connections section of your Azure DevOps organization.
@@ -85,13 +87,13 @@ stages:
   - stage: 'checkout'
     displayName: 'Checkout'
     jobs:
-      - template: './azure-pipelines.job-templates.checkout.yml'
+      - template: azure-pipelines.job-templates.checkout.yml@self
 
   - stage: 'prerequisites'
     displayName: 'Prerequisites'
     dependsOn: 'checkout'
     jobs:
-      - template: './azure-pipelines.job-templates.prerequisites.yml'
+      - template: azure-pipelines.job-templates.prerequisites.yml@self
         parameters:
           dotNetCoreSdkVersion: $(DotNetCore_SDK_Version)
           cacheRestoredNuGetPackages: False
