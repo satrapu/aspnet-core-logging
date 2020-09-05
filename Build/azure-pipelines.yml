@@ -63,20 +63,49 @@ variables:
 stages:
   - stage: 'checkout'
     displayName: 'Checkout'
+    jobs:
+      - job:
+        displayName: Checkout source code
+        steps:
+          - script: echo 'Checking out source code'
 
   - stage: 'prerequisites'
     displayName: 'Prerequisites'
     dependsOn: 'checkout'
+    jobs:
+      - job:
+        displayName: 'Install prerequisites'
+        steps:
+          - script: echo 'Installing prerequisites'
 
   - stage: 'build'
     displayName: 'Build'
     dependsOn: 'prerequisites'
+    jobs:
+      - job:
+        displayName: 'Build web API'
+        steps:
+          - script: echo 'Building ASP.NET Core web API'
 
   - stage: 'test'
     displayName: 'Run Tests'
     dependsOn: 'build'
+    jobs:
+      - job:
+        displayName: Run unit tests
+        steps:
+          - script: echo 'Running unit tests'
+      - job:
+        displayName: Run integration tests
+        steps:
+          - script: echo 'Running integration tests'
 
-  - stage: 'code-quality'
+  - stage: 'code_quality'
     displayName: 'Ensure Code Quality'
     dependsOn: 'test'
+    jobs:
+    - job:
+      displayName: Run Sonar
+      steps:
+        - script: echo 'Running Sonar analysis'
 
