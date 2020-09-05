@@ -1,3 +1,4 @@
+jobs:
 - job: 'checkout'
   displayName: 'Checkout source code'
   continueOnError: False

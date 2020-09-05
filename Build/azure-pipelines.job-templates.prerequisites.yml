@@ -9,6 +9,7 @@ parameters:
       projectKey: ''
       projectVersion: ''
 
+jobs:
 - job: 'setup_prerequisites'
   displayName: 'Setup Prerequisites'
   continueOnError: False
