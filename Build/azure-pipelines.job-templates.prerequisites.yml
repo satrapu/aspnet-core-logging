@@ -25,7 +25,7 @@ jobs:
       displayName: 'Install .NET Core SDK required by application'
       inputs:
         packageType: 'sdk'
-        version: ${{ parameters.application.dotNetCoreSdkVersion }}
+        version: ${{ parameters.dotNetCoreSdkVersion }}
         
     # Install a specific .NET Core SDK as needed by the Azure DevOps extension used for running Sonar scans.
     # See more about running Sonar analysis on Azure DevOps here: https://docs.sonarqube.org/latest/analysis/scan/sonarscanner-for-azure-devops/.
