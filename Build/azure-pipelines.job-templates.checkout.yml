@@ -1,3 +1,6 @@
+parameters:
+  outputArtifactName: ''
+
 jobs:
 - job: 'checkout'
   displayName: 'Checkout source code'
@@ -7,4 +10,7 @@ jobs:
       clean: True
       fetchDepth: 1
       lfs: False
+
+    - publish: '$(System.DefaultWorkingDirectory)'
+      artifact: ${{ parameters.outputArtifactName }}
   

@@ -1,4 +1,6 @@
 parameters:
+  inputArtifactName: ''
+  outputArtifactName: ''
   dotNetCoreSdkVersion: ''
   cacheRestoredNuGetPackages: True
   sonar:
@@ -15,6 +17,9 @@ jobs:
   continueOnError: False
   steps:
     - checkout: none
+
+    - download: current
+      artifact: ${{ parameters.inputArtifactName }}
     # Install specific .NET Core SDK version used for building the application.
     # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/tool/dotnet-core-tool-installer?view=azure-devops.
     # Installing a specific .NET Core SDK version is needed to avoid installing a .NET Core global tool in a following task and 
@@ -99,3 +104,6 @@ jobs:
             succeeded()
           , ne(variables['CacheRestoredForNuGetPackages'], 'true')
         )
+
+    - publish: '$(System.DefaultWorkingDirectory)'
+      artifact: ${{ parameters.outputArtifactName }}
