@@ -27,6 +27,27 @@ resources:
 
 # See more about Azure Pipelines variables here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&tabs=yaml%2Cbatch.
 variables:
+  # Environment variable used when caching restored NuGet packages.
+  # See more about this variable here: https://docs.microsoft.com/en-us/nuget/reference/cli-reference/cli-ref-environment-variables.
+  # See more about caching NuGet packages here: https://docs.microsoft.com/en-us/azure/devops/pipelines/release/caching?view=azure-devops#netnuget.
+  - name: 'NUGET_PACKAGES'
+    value: '$(Pipeline.Workspace)/.nuget/packages'
+
+  # Avoid caching NuGet packages each time a build runs on an Azure DevOps agent.
+  # See more here: http://donovanbrown.com/post/Stop-wasting-time-during-NET-Core-builds.
+  - name: 'DOTNET_SKIP_FIRST_TIME_EXPERIENCE'
+    value: '1'
+
+  # Disable .NET Core telemetry.
+  # See more here: https://docs.microsoft.com/en-us/dotnet/core/tools/telemetry#how-to-opt-out.
+  - name: 'DOTNET_CLI_TELEMETRY_OPTOUT'
+    value: '1'
+
+  # Disable Core CLR tracing.
+  # See more here: https://docs.microsoft.com/en-us/dotnet/core/dependency-loading/default-probing#how-do-i-debug-the-probing-properties-construction.
+  - name: 'COREHOST_TRACE'
+    value: '0'
+
   # Load group containing variables applicable to all pipelines belonging to this project.
   - group: 'GlobalVariables'
 
@@ -64,19 +85,24 @@ stages:
   - stage: 'checkout'
     displayName: 'Checkout'
     jobs:
-      - job:
-        displayName: Checkout source code
-        steps:
-          - script: echo 'Checking out source code'
+      - template: './azure-pipelines.job-templates.checkout.yml'
 
   - stage: 'prerequisites'
     displayName: 'Prerequisites'
     dependsOn: 'checkout'
     jobs:
-      - job:
-        displayName: 'Install prerequisites'
-        steps:
-          - script: echo 'Installing prerequisites'
+      - template: './azure-pipelines.job-templates.prerequisites.yml'
+        parameters:
+          dotNetCoreSdkVersion: $(DotNetCore_SDK_Version)
+          cacheRestoredNuGetPackages: False
+          sonar:
+            enabled: True
+            sonarCloudEndpointName: 'sonar-cloud'
+            sonarCloudOrganization: 'satrapu-github'
+            sonarCloudProjectKey: 'aspnet-core-logging'
+             # The 'CurrentProject.Version' variable has been declared inside 
+             # the 'GlobalVariables' variable group.
+            projectVersion: $(CurrentProject.Version)
 
   - stage: 'build'
     displayName: 'Build'
@@ -85,6 +111,7 @@ stages:
       - job:
         displayName: 'Build web API'
         steps:
+          - checkout: none
           - script: echo 'Building ASP.NET Core web API'
 
   - stage: 'test'
@@ -94,10 +121,12 @@ stages:
       - job:
         displayName: Run unit tests
         steps:
+          - checkout: none
           - script: echo 'Running unit tests'
       - job:
         displayName: Run integration tests
         steps:
+          - checkout: none
           - script: echo 'Running integration tests'
 
   - stage: 'code_quality'
@@ -107,5 +136,6 @@ stages:
     - job:
       displayName: Run Sonar
       steps:
+        - checkout: none
         - script: echo 'Running Sonar analysis'
 

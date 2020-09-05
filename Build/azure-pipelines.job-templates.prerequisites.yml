@@ -1,0 +1,100 @@
+parameters:
+  dotNetCoreSdkVersion: ''
+  cacheRestoredNuGetPackages: True
+  sonar:
+    enabled: False
+    sonarCloud:
+      endpointName: ''
+      organization: ''
+      projectKey: ''
+      projectVersion: ''
+
+- job: 'setup_prerequisites'
+  displayName: 'Setup Prerequisites'
+  continueOnError: False
+  steps:
+    - checkout: none
+    # Install specific .NET Core SDK version used for building the application.
+    # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/tool/dotnet-core-tool-installer?view=azure-devops.
+    # Installing a specific .NET Core SDK version is needed to avoid installing a .NET Core global tool in a following task and 
+    # then have Azure DevOps complain that it cannot find it.
+    # This issue is documented here: https://github.com/Microsoft/azure-pipelines-tasks/issues/8291.
+    - task: UseDotNet@2
+      name: 'install_dotnetcore_sdk_required_by_application'
+      displayName: 'Install .NET Core SDK required by application'
+      inputs:
+        packageType: 'sdk'
+        version: ${{ parameters.application.dotNetCoreSdkVersion }}
+        
+    # Install a specific .NET Core SDK as needed by the Azure DevOps extension used for running Sonar scans.
+    # See more about running Sonar analysis on Azure DevOps here: https://docs.sonarqube.org/latest/analysis/scan/sonarscanner-for-azure-devops/.
+    - task: UseDotNet@2
+      name: 'install_dotnetcore_sdk_required_by_sonarsource_extension'
+      displayName: 'Install .NET Core SDK required by Sonar Azure DevOps extension'
+      condition: |
+        and
+        (
+            succeeded()
+          , eq(${{ parameters.sonar.enabled }}, True)
+        )
+      inputs:
+        packageType: 'sdk'
+        version: '2.1.803'
+
+    # Prepares SonarCloud analysis.
+    - task: SonarSource.sonarcloud.14d9cde6-c1da-4d55-aa01-2965cd301255.SonarCloudPrepare@1
+      name: 'prepare_analysis_on_sonar'
+      displayName: 'Prepare analysis on SonarCloud'
+      condition: |
+        and
+        (
+            succeeded()
+          , eq(${{ parameters.sonar.enabled }}, True)
+        )
+      inputs:
+        SonarCloud: ${{ parameters.sonar.sonarCloud.endpointName }}
+        organization: ${{ parameters.sonar.sonarCloud.organization }}
+        projectKey: ${{ parameters.sonar.sonarCloud.projectKey }}
+        projectVersion: ${{ parameters.sonar.sonarCloud.projectVersion }}
+        extraProperties: |
+          sonar.sourceEncoding=UTF-8
+          sonar.cs.nunit.reportsPaths=**/TestResults/*.*
+          sonar.cs.opencover.reportsPaths=**/coverage.opencover.xml
+          sonar.coverage.exclusions=**/Tests/**/*.cs,**/Sources/Todo.Persistence/**/TodoDbContextModelSnapshot.cs,**/Sources/Todo.WebApi/**/Startup.cs 
+
+    # Cache NuGet packages to avoid having to restore them during each build.
+    # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/release/caching?view=azure-devops#netnuget
+    # and here: https://docs.microsoft.com/en-us/azure/devops/pipelines/release/caching?view=azure-devops#conditioning-on-cache-restoration.
+    - task: Cache@2
+      name: 'cache_restored_nuget_packages'
+      displayName: Cache restored NuGet packages
+      condition: |
+        and
+        (
+            succeeded()
+          , eq(${{ parameters.cacheRestoredNuGetPackages }}, True)
+        )
+      inputs:
+        key: 'nuget | "$(Agent.OS)" | **/packages.lock.json,!**/bin/**'
+        restoreKeys: |
+          nuget | "$(Agent.OS)"
+        path: $(NUGET_PACKAGES)
+        cacheHitVar: CacheRestoredForNuGetPackages
+        
+    # Restore NuGet packages using 'dotnet restore' command.
+    # See more about this command here: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-restore?source=docs.
+    #
+    # The command used for generating the lock files is:
+    # dotnet restore ./Todo.sln --configfile ./nuget.config --use-lock-file --lock-file-path packages.lock.json
+    - script: >-
+        dotnet restore $(Build.SourcesDirectory)/Todo.sln 
+        --configfile $(Build.SourcesDirectory)/nuget.config
+        --locked-mode
+      name: 'restore_nuget_packages'
+      displayName: 'Restore NuGet packages'
+      condition: |
+        and
+        (
+            succeeded()
+          , ne(variables['CacheRestoredForNuGetPackages'], 'true')
+        )
