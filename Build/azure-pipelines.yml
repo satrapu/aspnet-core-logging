@@ -60,61 +60,14 @@ variables:
   - name: 'IntegrationTests.Database.Todo.Username'
     value: 'satrapu'
     
-# Define multiple jobs, one per supported operating system (Linux, macOS and Windows).
-# See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/phases?view=azure-devops&tabs=yaml
-#
-# The list of virtual machine images used for running these operating systems can be found here: 
-# https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/hosted?view=azure-devops&tabs=yaml#use-a-microsoft-hosted-agent.
-#
-# Will use job templates, since all supported operating systems will run the same job.
-# See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=azure-devops&tabs=schema%2Cparameter-schema#job-templates
-# and here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/templates?view=azure-devops.
-jobs:
-- template: './azure-pipelines.job-template.yml'
-  parameters:
-    job:
-      name: 'linux'
-      displayName: 'Run on Linux'
+stages:
+  - stage: 'instal_prerequisites'
+    displayName: 'Prerequisites'
     pool:
       vmImage: 'ubuntu-18.04'
-    sonar:
-      enabled: True
-      buildBreaker:
-        enabled: True
-    integrationTests:
-      databaseHost: 'localhost'
-      databaseName: '$(IntegrationTests.Database.Todo.Name)'
-      databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
-      databasePassword: '$(IntegrationTests.Database.Todo.Password)'
-      databaseDockerImage: 'postgres:12-alpine'
-      composeProjectName: 'integration-test-prerequisites'
-      
-- template: './azure-pipelines.job-template.yml'
-  parameters:
-    job:
-      name: 'macOS'
-      displayName: 'Run on macOS'
-    pool:
-      vmImage: 'macOS-10.15'
-    integrationTests:
-      databaseHost: 'localhost'
-      databaseName: '$(IntegrationTests.Database.Todo.Name)'
-      databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
-      databasePassword: '$(IntegrationTests.Database.Todo.Password)'
-      databaseDockerImage: 'postgres:12-alpine'
-      composeProjectName: 'integration-test-prerequisites'
-      
-- template: './azure-pipelines.job-template.yml'
-  parameters:
-    job:
-      name: 'windows'
-      displayName: 'Run on Windows'
-    pool:
-      vmImage: 'windows-2019'
-    integrationTests:
-      databaseHost: 'localhost'
-      databaseName: '$(IntegrationTests.Database.Todo.Name)'
-      databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
-      databasePassword: '$(IntegrationTests.Database.Todo.Password)'
-      databaseDockerImage: 'stellirin/postgres-windows:12'
-      composeProjectName: 'integration-test-prerequisites'
+    dependsOn:
+    jobs:
+    - template: './azure-pipelines.job-template.prerequisites.yml'
+  - stage: 'Build'
+  - stage: 'Test'
+  - stage: 'Code Quality'
