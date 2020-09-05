@@ -82,12 +82,17 @@ variables:
   # Represents the user used for accessing the database to be targeted by integration tests
   - name: 'IntegrationTests.Database.Todo.Username'
     value: 'satrapu'
-    
+
+pool:
+  vmImage: 'ubuntu-18.04'
+
 stages:
   - stage: 'checkout'
     displayName: 'Checkout'
     jobs:
       - template: azure-pipelines.job-templates.checkout.yml@self
+        parameters:
+          outputArtifactName: 'CheckoutOutput'
 
   - stage: 'prerequisites'
     displayName: 'Prerequisites'
@@ -95,6 +100,8 @@ stages:
     jobs:
       - template: azure-pipelines.job-templates.prerequisites.yml@self
         parameters:
+          inputArtifactName: 'CheckoutOutput'
+          outputArtifactName: 'PrerequisitesOutput'
           dotNetCoreSdkVersion: $(DotNetCore_SDK_Version)
           cacheRestoredNuGetPackages: False
           sonar:
