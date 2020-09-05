@@ -97,12 +97,13 @@ stages:
           cacheRestoredNuGetPackages: False
           sonar:
             enabled: True
-            sonarCloudEndpointName: 'sonar-cloud'
-            sonarCloudOrganization: 'satrapu-github'
-            sonarCloudProjectKey: 'aspnet-core-logging'
-             # The 'CurrentProject.Version' variable has been declared inside 
-             # the 'GlobalVariables' variable group.
-            projectVersion: $(CurrentProject.Version)
+            sonarCloud:
+              endpointName: 'sonar-cloud'
+              organization: 'satrapu-github'
+              projectKey: 'aspnet-core-logging'
+              # The 'CurrentProject.Version' variable has been declared inside 
+              # the 'GlobalVariables' variable group.
+              projectVersion: $(CurrentProject.Version)
 
   - stage: 'build'
     displayName: 'Build'
