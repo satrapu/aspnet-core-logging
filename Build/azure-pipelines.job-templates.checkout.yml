@@ -3,9 +3,8 @@ jobs:
   displayName: 'Checkout source code'
   continueOnError: False
   steps:
-    steps:
-      - checkout: self
-        clean: True
-        fetchDepth: 1
-        lfs: False
+    - checkout: self
+      clean: True
+      fetchDepth: 1
+      lfs: False
   
