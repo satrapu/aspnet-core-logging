@@ -9,22 +9,21 @@ name: '$(SourceBranchName)_$(Date:yyyyMMdd).$(Rev:rrr)'
 resources:
   repositories: 
   # See more about repositories here: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=azure-devops&tabs=schema%2Cparameter-schema#repository-resource.
-  - repository: 'aspnet_core_logging'
-    type: 'github'
-    name: 'satrapu/aspnet-core-logging'
+  - repository: self
     clean: True
     # The value of the "endpoint" element must match the service connection name 
     # declared in Project Settings -> Service connections section of your Azure DevOps organization.
     endpoint: 'satrapu'
-
-# Build multiple branches.
-# See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/build/ci-build-git?view=azure-devops&tabs=yaml.
-trigger:
- - master
- - feature/*
- - bugfix/*
- - hotfix/*
- - release/*
+    # Build multiple branches.
+    # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/build/ci-build-git?view=azure-devops&tabs=yaml.
+    trigger:
+      branches:
+        include:
+          - master
+          - feature/*
+          - bugfix/*
+          - hotfix/*
+          - release/*
 
 # See more about Azure Pipelines variables here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&tabs=yaml%2Cbatch.
 variables:
