@@ -180,7 +180,7 @@ jobs:
           Username=$(IntegrationTests.Database.Todo.Username);
           Password=$(IntegrationTests.Database.Todo.Password);  
     sonar:
-      enabled: True
+      enabled: False
       buildBreaker:
         enabled: True
     publishPipelineArtifacts: True
