@@ -185,6 +185,6 @@ jobs:
       databaseReadinessStrategy: 'log-polling'
       dockerContainerLogPatternForDatabaseReady: 'PostgreSQL init process complete; ready for start up.'
     sonar:
-      enabled: True
+      enabled: False
       buildBreaker:
         enabled: True
