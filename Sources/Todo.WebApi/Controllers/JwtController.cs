@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Todo.WebApi.Authorization;
 using Todo.WebApi.Models;
 
 namespace Todo.WebApi.Controllers
@@ -59,7 +60,11 @@ namespace Todo.WebApi.Controllers
                 Subject = new ClaimsIdentity(new[]
                 {
                     new Claim(ClaimTypes.NameIdentifier, userNameAsBase64),
-                    new Claim("scope", string.Join(' ', "get:todo", "create:todo", "update:todo", "delete:todo")),
+                    new Claim("scope", string.Join(' '
+                                                           , Policies.TodoItems.CreateTodoItem
+                                                           , Policies.TodoItems.DeleteTodoItem
+                                                           , Policies.TodoItems.GetTodoItems
+                                                           , Policies.TodoItems.UpdateTodoItem))
                 }),
                 Expires = DateTime.UtcNow.AddMonths(6),
                 Issuer = generateJwtOptions.Issuer,
