@@ -11,6 +11,7 @@ services:
       - "5432:5432/tcp"
     networks: 
       - local_postgresql
+      - local_seq
     environment:
       - POSTGRES_USER=${DB_DEV_POSTGRES_USER}
       - POSTGRES_PASSWORD=${DB_DEV_POSTGRES_PASSWORD}
@@ -47,6 +48,24 @@ services:
     depends_on:
       - aspnet-core-logging-dev
       - aspnet-core-logging-it
+    
+  seq:
+    container_name: seq
+    image: datalust/seq:2020.2
+    restart: unless-stopped
+    volumes:
+      - seq_data:/data
+    ports:
+      # Ingestion port
+      - "5341:5341/tcp"
+      # UI port
+      - "8888:80/tcp"
+    networks:
+      - local_seq
+    environment:
+      - ACCEPT_EULA=Y
+    depends_on:
+      - aspnet-core-logging-dev
 
 volumes:
   aspnet-core-logging-dev_data:
@@ -55,6 +74,9 @@ volumes:
     external: true
   pgadmin_data:
     external: true
+  seq_data:
+    external: true
 
 networks:
   local_postgresql:
+  local_seq:

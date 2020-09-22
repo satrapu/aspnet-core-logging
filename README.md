@@ -36,6 +36,7 @@ This project has several posts associated with it:
       - [Option 1: Manually run database migrations](#option-1-manually-run-database-migrations)
       - [Option 2: Run database migrations at application startup](#option-2-run-database-migrations-at-application-startup)
 - [Inspect MiniProfiler results](#inspect-miniprofiler-results)
+- [Inspect log events using Seq](#inspect-log-events-using-seq)
 
 ## Build
 
@@ -81,6 +82,12 @@ docker volume create --name=aspnet-core-logging-it_data
 
 ```bash
 docker volume create --name=pgadmin_data
+```
+
+- Volume used by Seq tool
+
+```bash
+docker volume create --name=seq_data
 ```
 
 #### Create .env file
@@ -236,3 +243,7 @@ If you enable [MiniProfiler](https://miniprofiler.com/) by setting the configura
 - List all requests: [https://localhost:5001/miniprofiler/results-index](https://localhost:5001/miniprofiler/results-index)
 - Inspect current request: [https://localhost:5001/miniprofiler/results](https://localhost:5001/miniprofiler/results)
 - List all requests as JSON: [https://localhost:5001/miniprofiler/results-list](https://localhost:5001/miniprofiler/results-list)
+
+### Inspect log events using Seq
+
+In order to inspect application log events generated via [Serilog](https://serilog.net/), navigate to [http://localhost:8888](http://localhost:8888), which will open [Seq](https://datalust.co/seq) UI. 
