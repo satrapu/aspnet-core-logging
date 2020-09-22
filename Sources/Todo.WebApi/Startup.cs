@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,12 +14,14 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 using Todo.Persistence;
 using Todo.Services;
 using Todo.WebApi.Authorization;
 using Todo.WebApi.ExceptionHandling;
 using Todo.WebApi.Logging;
 using Todo.WebApi.Models;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace Todo.WebApi
 {
@@ -27,8 +30,6 @@ namespace Todo.WebApi
     /// </summary>
     public class Startup
     {
-        private readonly bool shouldUseMiniProfiler;
-
         /// <summary>
         /// Creates a new instance of the <see cref="Startup"/> class.
         /// </summary>
@@ -38,14 +39,15 @@ namespace Todo.WebApi
         {
             Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             WebHostingEnvironment = webHostEnvironment ?? throw new ArgumentNullException(nameof(webHostEnvironment));
-
-            shouldUseMiniProfiler = bool.TryParse(Configuration["MiniProfiler:Enable"], out bool enableMiniProfiler) &&
-                                    enableMiniProfiler;
+            ShouldUseMiniProfiler = bool.TryParse(Configuration["MiniProfiler:Enable"], out bool enableMiniProfiler)
+                                    && enableMiniProfiler;
         }
 
         private IConfiguration Configuration { get; }
 
         private IWebHostEnvironment WebHostingEnvironment { get; }
+
+        private bool ShouldUseMiniProfiler { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -53,17 +55,21 @@ namespace Todo.WebApi
             // Configure logging
             services.AddLogging(loggingBuilder =>
             {
-                if (WebHostingEnvironment.IsProduction())
+                // Ensures the LOGS_HOME environment variable points to a folder where Serilog will write
+                // application log files
+                string homeDirectoryForLogs = Environment.GetEnvironmentVariable("LOGS_HOME");
+
+                if (string.IsNullOrWhiteSpace(homeDirectoryForLogs))
                 {
-                    loggingBuilder.ClearProviders();
+                    var currentWorkingDirectory = new DirectoryInfo(Directory.GetCurrentDirectory());
+                    DirectoryInfo logsDirectory = currentWorkingDirectory.CreateSubdirectory("Logs");
+                    Environment.SetEnvironmentVariable("LOGS_HOME", logsDirectory.FullName);
                 }
 
-                // https://github.com/huorswords/Microsoft.Extensions.Logging.Log4Net.AspNetCore
-                var log4NetProviderOptions = Configuration.GetSection("Log4NetCore").Get<Log4NetProviderOptions>();
-                loggingBuilder.AddLog4Net(log4NetProviderOptions);
-
-                // https://github.com/huorswords/Microsoft.Extensions.Logging.Log4Net.AspNetCore#net-core-20---logging-debug-level-messages
-                loggingBuilder.SetMinimumLevel(LogLevel.Debug);
+                loggingBuilder.ClearProviders();
+                loggingBuilder.AddSerilog(new LoggerConfiguration()
+                    .ReadFrom.Configuration(Configuration)
+                    .CreateLogger());
             });
 
             // Configure EF Core
@@ -137,7 +143,7 @@ namespace Todo.WebApi
 
             // Configure MiniProfiler for Web API and EF Core only when inside development environment.
             // Based on: https://dotnetthoughts.net/using-miniprofiler-in-aspnetcore-webapi/.
-            if (shouldUseMiniProfiler)
+            if (ShouldUseMiniProfiler)
             {
                 services.AddMemoryCache();
                 services.AddMiniProfiler(options =>
@@ -184,7 +190,7 @@ namespace Todo.WebApi
             applicationBuilder.UseExceptionHandler(localApplicationBuilder =>
                 localApplicationBuilder.UseCustomExceptionHandler(WebHostingEnvironment));
 
-            if (shouldUseMiniProfiler)
+            if (ShouldUseMiniProfiler)
             {
                 applicationBuilder.UseMiniProfiler();
             }
@@ -203,17 +209,7 @@ namespace Todo.WebApi
         private void OnApplicationStarted(IApplicationBuilder applicationBuilder, ILogger logger)
         {
             logger.LogInformation("Application has started");
-            bool shouldMigrateDatabase = Configuration.GetValue<bool>("MigrateDatabase");
-
-            if (shouldMigrateDatabase)
-            {
-                logger.LogInformation("Migrating database has been turned on");
-                MigrateDatabase(applicationBuilder, logger);
-            }
-            else
-            {
-                logger.LogInformation("Migrating database has been turned off");
-            }
+            MigrateDatabase(applicationBuilder, logger);
         }
 
         private void OnApplicationStopping(ILogger logger)
@@ -228,6 +224,15 @@ namespace Todo.WebApi
 
         private void MigrateDatabase(IApplicationBuilder applicationBuilder, ILogger logger)
         {
+            bool shouldMigrateDatabase = Configuration.GetValue<bool>("MigrateDatabase");
+
+            if (!shouldMigrateDatabase)
+            {
+                logger.LogInformation("Migrating database has been turned off");
+                return;
+            }
+
+            logger.LogInformation("Migrating database has been turned on");
             using var serviceScope = applicationBuilder.ApplicationServices.GetRequiredService<IServiceScopeFactory>()
                 .CreateScope();
             using var todoDbContext = serviceScope.ServiceProvider.GetService<TodoDbContext>();
