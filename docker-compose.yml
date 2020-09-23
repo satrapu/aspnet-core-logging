@@ -11,7 +11,6 @@ services:
       - "5432:5432/tcp"
     networks: 
       - local_postgresql
-      - local_seq
     environment:
       - POSTGRES_USER=${DB_DEV_POSTGRES_USER}
       - POSTGRES_PASSWORD=${DB_DEV_POSTGRES_PASSWORD}
@@ -34,7 +33,7 @@ services:
 
   pgadmin:
     container_name: pgadmin-ui
-    image: dpage/pgadmin4:4.23
+    image: dpage/pgadmin4:4.26
     restart: unless-stopped
     volumes:
       - pgadmin_data:/var/lib/pgadmin
@@ -64,8 +63,6 @@ services:
       - local_seq
     environment:
       - ACCEPT_EULA=Y
-    depends_on:
-      - aspnet-core-logging-dev
 
 volumes:
   aspnet-core-logging-dev_data:
