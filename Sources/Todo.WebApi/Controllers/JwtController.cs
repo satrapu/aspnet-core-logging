@@ -1,13 +1,16 @@
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Todo.WebApi.Authorization;
+using Todo.WebApi.Logging;
 using Todo.WebApi.Models;
 
 namespace Todo.WebApi.Controllers
@@ -25,11 +28,14 @@ namespace Todo.WebApi.Controllers
     public class JwtController : ControllerBase
     {
         private readonly GenerateJwtOptions generateJwtOptions;
+        private readonly ILogger logger;
 
-        public JwtController(IOptionsMonitor<GenerateJwtOptions> generateJwtOptionsMonitor)
+        public JwtController(IOptionsMonitor<GenerateJwtOptions> generateJwtOptionsMonitor,
+            ILogger<JwtController> logger)
         {
             // Options pattern: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-3.1.
             generateJwtOptions = generateJwtOptionsMonitor.CurrentValue;
+            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         /// <summary>
@@ -41,11 +47,17 @@ namespace Todo.WebApi.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> GenerateTokenAsync([FromBody] GenerateJwtModel generateJwtModel)
         {
-            JwtModel jwtModel = await Task
-                .FromResult(GenerateToken(generateJwtModel.UserName, generateJwtModel.Password))
-                .ConfigureAwait(false);
+            using (logger.BeginScope(new Dictionary<string, object>
+            {
+                [BusinessFlowNames.ScopeKey] = BusinessFlowNames.Authentication.GenerateJwtToken
+            }))
+            {
+                JwtModel jwtModel = await Task
+                    .FromResult(GenerateToken(generateJwtModel.UserName, generateJwtModel.Password))
+                    .ConfigureAwait(false);
 
-            return Ok(jwtModel);
+                return Ok(jwtModel);
+            }
         }
 
         // ReSharper disable once UnusedParameter.Local
@@ -61,10 +73,10 @@ namespace Todo.WebApi.Controllers
                 {
                     new Claim(ClaimTypes.NameIdentifier, userNameAsBase64),
                     new Claim("scope", string.Join(' '
-                                                           , Policies.TodoItems.CreateTodoItem
-                                                           , Policies.TodoItems.DeleteTodoItem
-                                                           , Policies.TodoItems.GetTodoItems
-                                                           , Policies.TodoItems.UpdateTodoItem))
+                        , Policies.TodoItems.CreateTodoItem
+                        , Policies.TodoItems.DeleteTodoItem
+                        , Policies.TodoItems.GetTodoItems
+                        , Policies.TodoItems.UpdateTodoItem))
                 }),
                 Expires = DateTime.UtcNow.AddMonths(6),
                 Issuer = generateJwtOptions.Issuer,
@@ -77,7 +89,7 @@ namespace Todo.WebApi.Controllers
 
             var jwtModel = new JwtModel
             {
-                AccessToken = jwtSecurityTokenHandler.WriteToken(securityToken),
+                AccessToken = jwtSecurityTokenHandler.WriteToken(securityToken)
             };
 
             return jwtModel;

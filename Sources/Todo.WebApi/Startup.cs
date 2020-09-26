@@ -69,7 +69,7 @@ namespace Todo.WebApi
                 loggingBuilder.ClearProviders();
                 loggingBuilder.AddSerilog(new LoggerConfiguration()
                     .ReadFrom.Configuration(Configuration)
-                    .CreateLogger());
+                    .CreateLogger(), dispose: true);
             });
 
             // Configure EF Core
@@ -181,8 +181,7 @@ namespace Todo.WebApi
         public void Configure(IApplicationBuilder applicationBuilder, IHostApplicationLifetime hostApplicationLifetime,
             ILogger<Startup> logger)
         {
-            // The HTTP logging middleware *must* be the first one inside the ASP.NET Core request pipeline to ensure
-            // all requests and their responses are properly logged
+            applicationBuilder.UseConversationId();
             applicationBuilder.UseHttpLogging();
 
             // The exception handling middleware *must* be the second one inside the ASP.NET Core request pipeline

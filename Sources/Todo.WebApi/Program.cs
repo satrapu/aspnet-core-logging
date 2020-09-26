@@ -18,7 +18,8 @@ namespace Todo.WebApi
         /// <param name="args"></param>
         public static void Main(string[] args)
         {
-            // Configure Serilog logger for this console application
+            // Configure Serilog logger for this console application.
+            // This logger is different than the one defined inside Startup class.
             Logger logger = new LoggerConfiguration()
                 .Enrich.FromLogContext()
                 .WriteTo.Console()
@@ -46,9 +47,10 @@ namespace Todo.WebApi
                     .ConfigureAppConfiguration((hostBuilderContext, configurationBuilder) =>
                     {
                         configurationBuilder.Sources.Clear();
-                        configurationBuilder.AddJsonFile("appsettings.json", false)
+                        configurationBuilder.SetBasePath(hostBuilderContext.HostingEnvironment.ContentRootPath)
+                            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                             .AddJsonFile($"appsettings.{hostBuilderContext.HostingEnvironment.EnvironmentName}.json",
-                                true)
+                                optional: true, reloadOnChange: true)
                             .AddEnvironmentVariables()
                             .AddCommandLine(args);
                     })
