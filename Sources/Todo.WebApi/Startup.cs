@@ -228,12 +228,13 @@ namespace Todo.WebApi
 
         private void MigrateDatabase(IApplicationBuilder applicationBuilder, ILogger logger)
         {
-            using var serviceScope = applicationBuilder.ApplicationServices.GetRequiredService<IServiceScopeFactory>()
+            using IServiceScope serviceScope = applicationBuilder.ApplicationServices
+                .GetRequiredService<IServiceScopeFactory>()
                 .CreateScope();
             using var todoDbContext = serviceScope.ServiceProvider.GetService<TodoDbContext>();
-            string database = todoDbContext.Database.GetDbConnection().Database;
+            string databaseName = todoDbContext.Database.GetDbConnection().Database;
 
-            logger.LogInformation("About to migrate database {Database} ...", database);
+            logger.LogInformation("About to migrate database {Database} ...", databaseName);
 
             try
             {
@@ -241,11 +242,11 @@ namespace Todo.WebApi
             }
             catch (Exception exception)
             {
-                logger.LogError(exception, "Failed to migrate database {Database}", database);
-                throw;
+                logger.LogCritical(exception, "Failed to migrate database {Database}", databaseName);
+                throw new ApplicationException($"Failed to migrate database {databaseName}", exception);
             }
 
-            logger.LogInformation("Database {Database} has been migrated", database);
+            logger.LogInformation("Database {Database} has been migrated", databaseName);
         }
     }
 }
