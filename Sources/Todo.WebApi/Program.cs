@@ -18,8 +18,9 @@ namespace Todo.WebApi
         /// <param name="args"></param>
         public static void Main(string[] args)
         {
-            // Configure Serilog logger for this console application.
-            // This logger is different than the one defined inside Startup class.
+            // Configure Serilog logger for this class only.
+            // This logger is different than the one defined inside Startup class, which will be used by the rest of
+            // the classes found inside Todo ASP.NET Core Web API.
             Logger logger = new LoggerConfiguration()
                 .Enrich.FromLogContext()
                 .WriteTo.Console()
@@ -33,6 +34,7 @@ namespace Todo.WebApi
             catch (Exception exception)
             {
                 logger.Fatal(exception, "Todo ASP.NET Core Web API failed to start");
+                throw;
             }
             finally
             {
@@ -54,7 +56,22 @@ namespace Todo.WebApi
                             .AddEnvironmentVariables()
                             .AddCommandLine(args);
                     })
-                    .ConfigureWebHostDefaults(localHostBuilder => { localHostBuilder.UseStartup<Startup>(); });
+                    .ConfigureWebHostDefaults(localHostBuilder =>
+                    {
+                        // Ensure that when an error occurs during startup, host will exit.
+                        // See more about capturing startup errors here:
+                        // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/web-host?view=aspnetcore-3.1#capture-startup-errors.
+                        localHostBuilder.CaptureStartupErrors(false);
+
+                        // Ensure the application captures detailed errors.
+                        // See more about detailed errors here:
+                        // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/web-host?view=aspnetcore-3.1#detailed-errors.
+                        localHostBuilder.UseSetting(WebHostDefaults.DetailedErrorsKey, bool.TrueString);
+
+                        // See more about the Startup class here:
+                        // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/startup?view=aspnetcore-3.1.
+                        localHostBuilder.UseStartup<Startup>();
+                    });
             return hostBuilder;
         }
     }
