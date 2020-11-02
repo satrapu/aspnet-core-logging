@@ -16,8 +16,11 @@ using Todo.WebApi.Models;
 namespace Todo.WebApi.Controllers
 {
     /// <summary>
-    /// Creates JSON web tokens to be used when authentication and authorize users accessing this web API.
+    /// Creates JSON web tokens to be used by the users of this web API for authorization purposes.
+    /// <br/>
     /// Based on: https://dotnetcoretutorials.com/2020/01/15/creating-and-validating-jwt-tokens-in-asp-net-core/.
+    /// <br/>
+    /// <br/>
     /// WARNING: This controller is *not* ready for production! It has been written for experimenting purposes only,
     /// so the logic of generating a JSON web token for a given user name and password has been greatly simplified.
     /// In the future, a better mechanism will be implemented.
