@@ -49,7 +49,7 @@ namespace Todo.WebApi.Controllers
         {
             using (logger.BeginScope(new Dictionary<string, object>
             {
-                [BusinessFlowNames.ScopeKey] = BusinessFlowNames.Authentication.GenerateJwtToken
+                [BusinessFlowNames.ScopeKey] = BusinessFlowNames.Security.GenerateJwtToken
             }))
             {
                 JwtModel jwtModel = await Task
