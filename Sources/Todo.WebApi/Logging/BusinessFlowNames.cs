@@ -17,7 +17,7 @@
             /// <summary>
             /// Business flow used for generating a JSON web token to be used for authorization purposes.
             /// </summary>
-            public static readonly string GenerateJwtToken = $"{Prefix}/{nameof(GenerateJwtToken)}";
+            public static readonly string GenerateJsonWebToken = $"{Prefix}/{nameof(GenerateJsonWebToken)}";
         }
 
         /// <summary>
