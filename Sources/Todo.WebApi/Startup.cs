@@ -94,39 +94,44 @@ namespace Todo.WebApi
             string tokenIssuer = generateJwtOptions.GetValue<string>("Issuer");
             string tokenAudience = generateJwtOptions.GetValue<string>("Audience");
 
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
+            services
+                .AddAuthentication(options =>
                 {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey =
-                        new SymmetricSecurityKey(Encoding.UTF8.GetBytes(generateJwtOptions.GetValue<string>("Secret"))),
-                    ValidateIssuer = true,
-                    ValidIssuer = tokenIssuer,
-                    ValidateAudience = true,
-                    ValidAudience = tokenAudience,
-                    ValidateLifetime = true,
-                    ClockSkew = TimeSpan.Zero,
-                    // Ensure the User.Identity.Name is set to the user identifier and not to the user name.
-                    NameClaimType = ClaimTypes.NameIdentifier
-                };
-                options.Events = new JwtBearerEvents
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(options =>
                 {
-                    OnAuthenticationFailed = context =>
+                    options.TokenValidationParameters = new TokenValidationParameters
                     {
-                        if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey =
+                            new SymmetricSecurityKey(
+                                Encoding.UTF8.GetBytes(generateJwtOptions.GetValue<string>("Secret"))),
+                        ValidateIssuer = true,
+                        ValidIssuer = tokenIssuer,
+                        ValidateAudience = true,
+                        ValidAudience = tokenAudience,
+                        ValidateLifetime = true,
+                        ClockSkew = TimeSpan.Zero,
+                        // Ensure the User.Identity.Name is set to the user identifier and not to the user name.
+                        NameClaimType = ClaimTypes.NameIdentifier
+                    };
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnAuthenticationFailed = context =>
                         {
-                            context.Response.Headers.Add("Token-Expired", "true");
-                        }
+                            if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+                            {
+                                // Add a custom HTTP header to the response in case the application detected that the current
+                                // request is accompanied by an expired security token.
+                                context.Response.Headers.Add("Token-Expired", "true");
+                            }
 
-                        return Task.CompletedTask;
-                    }
-                };
-            });
+                            return Task.CompletedTask;
+                        }
+                    };
+                });
 
             services.AddAuthorization(options =>
             {
@@ -145,16 +150,18 @@ namespace Todo.WebApi
             // Based on: https://dotnetthoughts.net/using-miniprofiler-in-aspnetcore-webapi/.
             if (ShouldUseMiniProfiler)
             {
-                services.AddMemoryCache();
-                services.AddMiniProfiler(options =>
-                {
-                    // MiniProfiler URLs (assuming options.RouteBasePath has been set to '/miniprofiler')
-                    // - show all requests:         /miniprofiler/results-index
-                    // - show current request:      /miniprofiler/results
-                    // - show all requests as JSON: /miniprofiler/results-list
-                    options.RouteBasePath = Configuration.GetValue<string>("MiniProfiler:RouteBasePath");
-                    options.EnableServerTimingHeader = true;
-                }).AddEntityFramework();
+                services
+                    .AddMemoryCache()
+                    .AddMiniProfiler(options =>
+                    {
+                        // MiniProfiler URLs (assuming options.RouteBasePath has been set to '/miniprofiler')
+                        // - show all requests:         /miniprofiler/results-index
+                        // - show current request:      /miniprofiler/results
+                        // - show all requests as JSON: /miniprofiler/results-list
+                        options.RouteBasePath = Configuration.GetValue<string>("MiniProfiler:RouteBasePath");
+                        options.EnableServerTimingHeader = true;
+                    })
+                    .AddEntityFramework();
             }
 
             // Configure ASP.NET Web API services
@@ -184,8 +191,8 @@ namespace Todo.WebApi
             applicationBuilder.UseConversationId();
             applicationBuilder.UseHttpLogging();
 
-            // The exception handling middleware *must* be the second one inside the ASP.NET Core request pipeline
-            // to ensure any unhandled exception is eventually handled
+            // The exception handling middleware must be added inside the ASP.NET Core request pipeline
+            // as soon as possible to ensure any unhandled exception is eventually handled.
             applicationBuilder.UseExceptionHandler(localApplicationBuilder =>
                 localApplicationBuilder.UseCustomExceptionHandler(WebHostingEnvironment));
 
