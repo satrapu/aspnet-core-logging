@@ -31,8 +31,8 @@ namespace Todo.WebApi.Infrastructure
 
         protected override void ConfigureWebHost(IWebHostBuilder webHostBuilder)
         {
-            var configurationBuilder = new ConfigurationBuilder();
-            IConfigurationRoot testConfiguration = configurationBuilder.AddJsonFile("appsettings.json", false)
+            IConfigurationRoot testConfiguration = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", false)
                 .AddJsonFile($"appsettings.{EnvironmentName}.json", false)
                 .AddEnvironmentVariables()
                 .Build();
@@ -103,7 +103,7 @@ namespace Todo.WebApi.Infrastructure
                 };
 
                 LogConnectionString(connectionStringBuilder.ConnectionString, serviceProvider);
-                
+
                 dbContextOptionsBuilder.UseNpgsql(connectionStringBuilder.ConnectionString)
                     .EnableSensitiveDataLogging()
                     .EnableDetailedErrors()
@@ -117,12 +117,12 @@ namespace Todo.WebApi.Infrastructure
             {
                 Password = new string('*', 5)
             };
-                
+
             ILogger logger = serviceProvider.GetRequiredService<ILogger<TestWebApplicationFactory>>();
-            logger.LogInformation("Will use connection string: {ConnectionStringWithObfuscatedPassword}", 
+            logger.LogInformation("Will use connection string: {ConnectionStringWithObfuscatedPassword}",
                 connectionStringBuilder.ConnectionString);
         }
-        
+
         private static void SetupDatabase(IServiceCollection services)
         {
             ServiceProvider serviceProvider = services.BuildServiceProvider();

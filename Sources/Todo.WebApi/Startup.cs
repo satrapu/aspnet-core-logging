@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,12 +14,14 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 using Todo.Persistence;
 using Todo.Services;
 using Todo.WebApi.Authorization;
 using Todo.WebApi.ExceptionHandling;
 using Todo.WebApi.Logging;
 using Todo.WebApi.Models;
+using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace Todo.WebApi
 {
@@ -27,8 +30,6 @@ namespace Todo.WebApi
     /// </summary>
     public class Startup
     {
-        private readonly bool shouldUseMiniProfiler;
-
         /// <summary>
         /// Creates a new instance of the <see cref="Startup"/> class.
         /// </summary>
@@ -38,14 +39,15 @@ namespace Todo.WebApi
         {
             Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             WebHostingEnvironment = webHostEnvironment ?? throw new ArgumentNullException(nameof(webHostEnvironment));
-
-            shouldUseMiniProfiler = bool.TryParse(Configuration["MiniProfiler:Enable"], out bool enableMiniProfiler) &&
-                                    enableMiniProfiler;
+            ShouldUseMiniProfiler = bool.TryParse(Configuration["MiniProfiler:Enable"], out bool enableMiniProfiler)
+                                    && enableMiniProfiler;
         }
 
         private IConfiguration Configuration { get; }
 
         private IWebHostEnvironment WebHostingEnvironment { get; }
+
+        private bool ShouldUseMiniProfiler { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -53,17 +55,21 @@ namespace Todo.WebApi
             // Configure logging
             services.AddLogging(loggingBuilder =>
             {
-                if (WebHostingEnvironment.IsProduction())
+                // Ensures the LOGS_HOME environment variable points to a folder where Serilog will write
+                // application log files
+                string homeDirectoryForLogs = Environment.GetEnvironmentVariable("LOGS_HOME");
+
+                if (string.IsNullOrWhiteSpace(homeDirectoryForLogs))
                 {
-                    loggingBuilder.ClearProviders();
+                    var currentWorkingDirectory = new DirectoryInfo(Directory.GetCurrentDirectory());
+                    DirectoryInfo logsDirectory = currentWorkingDirectory.CreateSubdirectory("Logs");
+                    Environment.SetEnvironmentVariable("LOGS_HOME", logsDirectory.FullName);
                 }
 
-                // https://github.com/huorswords/Microsoft.Extensions.Logging.Log4Net.AspNetCore
-                var log4NetProviderOptions = Configuration.GetSection("Log4NetCore").Get<Log4NetProviderOptions>();
-                loggingBuilder.AddLog4Net(log4NetProviderOptions);
-
-                // https://github.com/huorswords/Microsoft.Extensions.Logging.Log4Net.AspNetCore#net-core-20---logging-debug-level-messages
-                loggingBuilder.SetMinimumLevel(LogLevel.Debug);
+                loggingBuilder.ClearProviders();
+                loggingBuilder.AddSerilog(new LoggerConfiguration()
+                    .ReadFrom.Configuration(Configuration)
+                    .CreateLogger(), dispose: true);
             });
 
             // Configure EF Core
@@ -88,39 +94,44 @@ namespace Todo.WebApi
             string tokenIssuer = generateJwtOptions.GetValue<string>("Issuer");
             string tokenAudience = generateJwtOptions.GetValue<string>("Audience");
 
-            services.AddAuthentication(options =>
-            {
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            }).AddJwtBearer(options =>
-            {
-                options.TokenValidationParameters = new TokenValidationParameters
+            services
+                .AddAuthentication(options =>
                 {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey =
-                        new SymmetricSecurityKey(Encoding.UTF8.GetBytes(generateJwtOptions.GetValue<string>("Secret"))),
-                    ValidateIssuer = true,
-                    ValidIssuer = tokenIssuer,
-                    ValidateAudience = true,
-                    ValidAudience = tokenAudience,
-                    ValidateLifetime = true,
-                    ClockSkew = TimeSpan.Zero,
-                    // Ensure the User.Identity.Name is set to the user identifier and not to the user name.
-                    NameClaimType = ClaimTypes.NameIdentifier
-                };
-                options.Events = new JwtBearerEvents
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(options =>
                 {
-                    OnAuthenticationFailed = context =>
+                    options.TokenValidationParameters = new TokenValidationParameters
                     {
-                        if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey =
+                            new SymmetricSecurityKey(
+                                Encoding.UTF8.GetBytes(generateJwtOptions.GetValue<string>("Secret"))),
+                        ValidateIssuer = true,
+                        ValidIssuer = tokenIssuer,
+                        ValidateAudience = true,
+                        ValidAudience = tokenAudience,
+                        ValidateLifetime = true,
+                        ClockSkew = TimeSpan.Zero,
+                        // Ensure the User.Identity.Name is set to the user identifier and not to the user name.
+                        NameClaimType = ClaimTypes.NameIdentifier
+                    };
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnAuthenticationFailed = context =>
                         {
-                            context.Response.Headers.Add("Token-Expired", "true");
-                        }
+                            if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+                            {
+                                // Add a custom HTTP header to the response in case the application detected that the current
+                                // request is accompanied by an expired security token.
+                                context.Response.Headers.Add("Token-Expired", "true");
+                            }
 
-                        return Task.CompletedTask;
-                    }
-                };
-            });
+                            return Task.CompletedTask;
+                        }
+                    };
+                });
 
             services.AddAuthorization(options =>
             {
@@ -137,18 +148,20 @@ namespace Todo.WebApi
 
             // Configure MiniProfiler for Web API and EF Core only when inside development environment.
             // Based on: https://dotnetthoughts.net/using-miniprofiler-in-aspnetcore-webapi/.
-            if (shouldUseMiniProfiler)
+            if (ShouldUseMiniProfiler)
             {
-                services.AddMemoryCache();
-                services.AddMiniProfiler(options =>
-                {
-                    // MiniProfiler URLs (assuming options.RouteBasePath has been set to '/miniprofiler')
-                    // - show all requests:         /miniprofiler/results-index
-                    // - show current request:      /miniprofiler/results
-                    // - show all requests as JSON: /miniprofiler/results-list
-                    options.RouteBasePath = Configuration.GetValue<string>("MiniProfiler:RouteBasePath");
-                    options.EnableServerTimingHeader = true;
-                }).AddEntityFramework();
+                services
+                    .AddMemoryCache()
+                    .AddMiniProfiler(options =>
+                    {
+                        // MiniProfiler URLs (assuming options.RouteBasePath has been set to '/miniprofiler')
+                        // - show all requests:         /miniprofiler/results-index
+                        // - show current request:      /miniprofiler/results
+                        // - show all requests as JSON: /miniprofiler/results-list
+                        options.RouteBasePath = Configuration.GetValue<string>("MiniProfiler:RouteBasePath");
+                        options.EnableServerTimingHeader = true;
+                    })
+                    .AddEntityFramework();
             }
 
             // Configure ASP.NET Web API services
@@ -175,16 +188,15 @@ namespace Todo.WebApi
         public void Configure(IApplicationBuilder applicationBuilder, IHostApplicationLifetime hostApplicationLifetime,
             ILogger<Startup> logger)
         {
-            // The HTTP logging middleware *must* be the first one inside the ASP.NET Core request pipeline to ensure
-            // all requests and their responses are properly logged
+            applicationBuilder.UseConversationId();
             applicationBuilder.UseHttpLogging();
 
-            // The exception handling middleware *must* be the second one inside the ASP.NET Core request pipeline
-            // to ensure any unhandled exception is eventually handled
+            // The exception handling middleware must be added inside the ASP.NET Core request pipeline
+            // as soon as possible to ensure any unhandled exception is eventually handled.
             applicationBuilder.UseExceptionHandler(localApplicationBuilder =>
                 localApplicationBuilder.UseCustomExceptionHandler(WebHostingEnvironment));
 
-            if (shouldUseMiniProfiler)
+            if (ShouldUseMiniProfiler)
             {
                 applicationBuilder.UseMiniProfiler();
             }
@@ -203,17 +215,7 @@ namespace Todo.WebApi
         private void OnApplicationStarted(IApplicationBuilder applicationBuilder, ILogger logger)
         {
             logger.LogInformation("Application has started");
-            bool shouldMigrateDatabase = Configuration.GetValue<bool>("MigrateDatabase");
-
-            if (shouldMigrateDatabase)
-            {
-                logger.LogInformation("Migrating database has been turned on");
-                MigrateDatabase(applicationBuilder, logger);
-            }
-            else
-            {
-                logger.LogInformation("Migrating database has been turned off");
-            }
+            MigrateDatabase(applicationBuilder, logger);
         }
 
         private void OnApplicationStopping(ILogger logger)
@@ -228,13 +230,21 @@ namespace Todo.WebApi
 
         private void MigrateDatabase(IApplicationBuilder applicationBuilder, ILogger logger)
         {
-            using IServiceScope serviceScope = applicationBuilder.ApplicationServices
-                .GetRequiredService<IServiceScopeFactory>()
+            bool shouldMigrateDatabase = Configuration.GetValue<bool>("MigrateDatabase");
+
+            if (!shouldMigrateDatabase)
+            {
+                logger.LogInformation("Migrating database has been turned off");
+                return;
+            }
+
+            logger.LogInformation("Migrating database has been turned on");
+            using var serviceScope = applicationBuilder.ApplicationServices.GetRequiredService<IServiceScopeFactory>()
                 .CreateScope();
             using var todoDbContext = serviceScope.ServiceProvider.GetService<TodoDbContext>();
-            string databaseName = todoDbContext.Database.GetDbConnection().Database;
+            string database = todoDbContext.Database.GetDbConnection().Database;
 
-            logger.LogInformation("About to migrate database {Database} ...", databaseName);
+            logger.LogInformation("About to migrate database {Database} ...", database);
 
             try
             {
@@ -242,11 +252,11 @@ namespace Todo.WebApi
             }
             catch (Exception exception)
             {
-                logger.LogCritical(exception, "Failed to migrate database {Database}", databaseName);
-                throw new ApplicationException($"Failed to migrate database {databaseName}", exception);
+                logger.LogError(exception, "Failed to migrate database {Database}", database);
+                throw;
             }
 
-            logger.LogInformation("Database {Database} has been migrated", databaseName);
+            logger.LogInformation("Database {Database} has been migrated", database);
         }
     }
 }

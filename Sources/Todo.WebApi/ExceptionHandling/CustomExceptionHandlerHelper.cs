@@ -19,6 +19,8 @@ namespace Todo.WebApi.ExceptionHandling
     /// </summary>
     public static class CustomExceptionHandlerHelper
     {
+        private const string ErrorId = "errorId";
+        
         public static void UseCustomExceptionHandler(this IApplicationBuilder applicationBuilder,
             IHostEnvironment hostEnvironment)
         {
@@ -61,7 +63,7 @@ namespace Todo.WebApi.ExceptionHandling
             // assigned to fix it.
             logger.LogError(unhandledException,
                 "An unhandled exception has been caught; its associated id is: {ErrorId}",
-                problemDetails.Extensions["errorId"]);
+                problemDetails.Extensions[ErrorId]);
 
             // Since the ProblemDetails instance is always serialized as JSON, the web API will not be able to
             // correctly handle 'Accept' HTTP header.
@@ -80,7 +82,7 @@ namespace Todo.WebApi.ExceptionHandling
                 Status = (int) ConvertToHttpStatusCode(exception),
                 Title = title,
                 Detail = details,
-                Extensions = {{"errorId", Guid.NewGuid().ToString("N")}}
+                Extensions = {{ErrorId, Guid.NewGuid().ToString("N")}}
             };
             return problemDetails;
         }
