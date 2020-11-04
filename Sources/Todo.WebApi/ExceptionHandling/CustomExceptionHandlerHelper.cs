@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Npgsql;
 using Todo.Services;
 
 namespace Todo.WebApi.ExceptionHandling
@@ -91,6 +92,17 @@ namespace Todo.WebApi.ExceptionHandling
             return exception switch
             {
                 EntityNotFoundException _ => HttpStatusCode.NotFound,
+
+                // Return HTTP status code 503 in case calling the underlying database resulted in an exception.
+                // See more here: https://stackoverflow.com/q/1434315.
+                NpgsqlException _ => HttpStatusCode.ServiceUnavailable,
+
+                // Also return HTTP status code 503 in case the inner exception is caused by calling the underlying
+                // database.
+                { } someException when
+                    someException.InnerException is NpgsqlException => HttpStatusCode.ServiceUnavailable,
+
+                // Fallback to HTTP status code 500.
                 _ => HttpStatusCode.InternalServerError
             };
         }
