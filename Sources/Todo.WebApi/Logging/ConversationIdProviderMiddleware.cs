@@ -31,8 +31,11 @@ namespace Todo.WebApi.Logging
                 || string.IsNullOrWhiteSpace(conversationId))
             {
                 conversationId = Guid.NewGuid().ToString("N");
+                httpContext.Request.Headers.Add(ConversationId, conversationId);
             }
 
+            httpContext.Response.Headers.Add(ConversationId, conversationId);
+            
             using (logger.BeginScope(new Dictionary<string, object>
             {
                 [ConversationId] = conversationId.ToString()
