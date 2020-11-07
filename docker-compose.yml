@@ -33,7 +33,7 @@ services:
 
   pgadmin:
     container_name: pgadmin-ui
-    image: dpage/pgadmin4:4.23
+    image: dpage/pgadmin4:4.26
     restart: unless-stopped
     volumes:
       - pgadmin_data:/var/lib/pgadmin
@@ -47,6 +47,22 @@ services:
     depends_on:
       - aspnet-core-logging-dev
       - aspnet-core-logging-it
+    
+  seq:
+    container_name: seq
+    image: datalust/seq:2020.2
+    restart: unless-stopped
+    volumes:
+      - seq_data:/data
+    ports:
+      # Ingestion port
+      - "5341:5341/tcp"
+      # UI port
+      - "8888:80/tcp"
+    networks:
+      - local_seq
+    environment:
+      - ACCEPT_EULA=Y
 
 volumes:
   aspnet-core-logging-dev_data:
@@ -55,6 +71,9 @@ volumes:
     external: true
   pgadmin_data:
     external: true
+  seq_data:
+    external: true
 
 networks:
   local_postgresql:
+  local_seq:
