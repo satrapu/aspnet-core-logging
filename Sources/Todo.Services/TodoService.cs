@@ -212,21 +212,10 @@ namespace Todo.Services
 
         private static IQueryable<TodoItem> PaginateItems(IQueryable<TodoItem> todoItems, TodoItemQuery todoItemQuery)
         {
-            IQueryable<TodoItem> result = todoItems;
-            int pageIndex = TodoItemQuery.DefaultPageIndex;
-            int pageSize = TodoItemQuery.DefaultPageSize;
+            int pageIndex = todoItemQuery.PageIndex ?? TodoItemQuery.DefaultPageIndex;
+            int pageSize = todoItemQuery.PageSize ?? TodoItemQuery.DefaultPageSize;
 
-            if (todoItemQuery.PageIndex.HasValue)
-            {
-                pageIndex = todoItemQuery.PageIndex.Value;
-            }
-
-            if (todoItemQuery.PageSize.HasValue)
-            {
-                pageSize = todoItemQuery.PageSize.Value;
-            }
-
-            result = result.Skip(pageIndex * pageSize).Take(pageSize);
+            IQueryable<TodoItem> result = todoItems.Skip(pageIndex * pageSize).Take(pageSize);
             return result;
         }
     }
