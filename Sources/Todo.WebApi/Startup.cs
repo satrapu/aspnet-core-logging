@@ -30,6 +30,14 @@ namespace Todo.WebApi
     /// </summary>
     public class Startup
     {
+        private const string LogsHomeEnvironmentVariable = "LOGS_HOME";
+
+        private IConfiguration Configuration { get; }
+
+        private IWebHostEnvironment WebHostingEnvironment { get; }
+
+        private bool ShouldUseMiniProfiler { get; }
+
         /// <summary>
         /// Creates a new instance of the <see cref="Startup"/> class.
         /// </summary>
@@ -43,27 +51,21 @@ namespace Todo.WebApi
                                     && enableMiniProfiler;
         }
 
-        private IConfiguration Configuration { get; }
-
-        private IWebHostEnvironment WebHostingEnvironment { get; }
-
-        private bool ShouldUseMiniProfiler { get; }
-
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             // Configure logging
             services.AddLogging(loggingBuilder =>
             {
-                // Ensures the LOGS_HOME environment variable points to a folder where Serilog will write
-                // application log files
-                string homeDirectoryForLogs = Environment.GetEnvironmentVariable("LOGS_HOME");
+                // Ensure the environment variable pointing to a folder where Serilog will write application log files
+                // exists when application services are configured
+                string logsHomeDirectoryPath = Environment.GetEnvironmentVariable(LogsHomeEnvironmentVariable);
 
-                if (string.IsNullOrWhiteSpace(homeDirectoryForLogs))
+                if (string.IsNullOrWhiteSpace(logsHomeDirectoryPath) || !Directory.Exists(logsHomeDirectoryPath))
                 {
                     var currentWorkingDirectory = new DirectoryInfo(Directory.GetCurrentDirectory());
-                    DirectoryInfo logsDirectory = currentWorkingDirectory.CreateSubdirectory("Logs");
-                    Environment.SetEnvironmentVariable("LOGS_HOME", logsDirectory.FullName);
+                    DirectoryInfo logsHomeDirectory = currentWorkingDirectory.CreateSubdirectory("Logs");
+                    Environment.SetEnvironmentVariable(LogsHomeEnvironmentVariable, logsHomeDirectory.FullName);
                 }
 
                 loggingBuilder.ClearProviders();
@@ -188,6 +190,10 @@ namespace Todo.WebApi
         public void Configure(IApplicationBuilder applicationBuilder, IHostApplicationLifetime hostApplicationLifetime,
             ILogger<Startup> logger)
         {
+            logger.LogInformation(
+                "The {LogsHomeEnvironmentVariable} environment variable now points to directory: {LogsHomeDirectory}",
+                LogsHomeEnvironmentVariable, Environment.GetEnvironmentVariable(LogsHomeEnvironmentVariable));
+            
             applicationBuilder.UseConversationId();
             applicationBuilder.UseHttpLogging();
 
