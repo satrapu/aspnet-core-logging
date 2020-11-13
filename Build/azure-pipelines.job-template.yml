@@ -167,7 +167,10 @@ jobs:
   
   # Run dotnet-format tool and generate a report with its outcome.  
   - script: >-
-      dotnet-format --check --report $(Build.SourcesDirectory)/.dotnet-format-report.json
+      dotnet-format 
+      --check
+      --verbosity diagnostic
+      --report $(Build.SourcesDirectory)/.dotnet-format-report.json
     name: 'run_dotnet_format'
     displayName: 'Enforce code style & formatting rules'
     condition: |
