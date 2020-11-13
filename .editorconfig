@@ -1,0 +1,47 @@
+# Read more about EditorConfig support in JetBrains Rider 
+# here: https://www.jetbrains.com/help/rider/Using_EditorConfig.html.
+
+# Ensure the EditorConfig settings found here cannot be overriden by those found in higher directories
+root = true
+
+# C# files
+[*.cs]
+charset = utf-8
+
+# Indentation and spacing
+indent_size = 4
+indent_style = space
+tab_width = 4
+
+# New line preferences
+end_of_line = crlf
+insert_final_newline = true
+
+# Organize usings
+dotnet_separate_import_directive_groups = true
+dotnet_sort_system_directives_first = true
+csharp_using_directive_placement = outside_namespace:error
+
+# Modifier settings
+dotnet_style_require_accessibility_modifiers = always:warning
+csharp_prefer_static_local_function = true:warning
+csharp_preferred_modifier_order = public,private,protected,internal,static,extern,new,virtual,abstract,sealed,override,readonly,unsafe,volatile,async:warning
+
+# Avoid "this." and "Me." if not necessary
+dotnet_style_qualification_for_field = false:error
+dotnet_style_qualification_for_property = false:error
+dotnet_style_qualification_for_method = false:error
+dotnet_style_qualification_for_event = false:error
+
+# Use language keywords instead of framework type names for type references
+dotnet_style_predefined_type_for_locals_parameters_members = true:error
+dotnet_style_predefined_type_for_member_access = true:error
+
+# Prefer read-only on fields
+dotnet_style_readonly_field = true:warning
+
+
+
+file_header_template = unset
+
+max_line_length = 80
