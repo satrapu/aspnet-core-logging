@@ -50,7 +50,7 @@ services:
     
   seq:
     container_name: seq
-    image: datalust/seq:2020.2
+    image: datalust/seq:2020.4
     restart: unless-stopped
     volumes:
       - seq_data:/data
