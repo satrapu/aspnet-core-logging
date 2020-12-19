@@ -201,7 +201,7 @@ All of the commands below should be executed from the folder where you have chec
 dotnet tool install dotnet-ef --global
 ```
 
-:exclamation: Please restart the terminal where you have run the above command to ensure `dotnet ef` is recognized.
+:exclamation: Please restart the terminal after running the above command to ensure the following `dotnet ef` commands do not fail.
 
 - Update dotnet-ef to latest version, if requested to do so
 
