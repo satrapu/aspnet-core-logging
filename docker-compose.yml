@@ -33,7 +33,7 @@ services:
 
   pgadmin:
     container_name: pgadmin-ui
-    image: dpage/pgadmin4:4.26
+    image: dpage/pgadmin4:4.29
     restart: unless-stopped
     volumes:
       - pgadmin_data:/var/lib/pgadmin
