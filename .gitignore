@@ -9,6 +9,7 @@ obj/
 # Rider IDE artifacts
 .idea/
 mono_crash.mem.*
+Todo.sln.DotSettings.user
 
 # Application logs
 Logs/
