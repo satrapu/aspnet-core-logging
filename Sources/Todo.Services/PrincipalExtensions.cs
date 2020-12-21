@@ -20,6 +20,11 @@ namespace Todo.Services
                 throw new ArgumentNullException(nameof(principal));
             }
 
+            if (principal.Identity == null)
+            {
+                throw new ArgumentNullException($"{nameof(principal)}.{nameof(principal.Identity)}");
+            }
+
             return principal.Identity?.Name;
         }
     }

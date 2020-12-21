@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Security.Principal;
+using Moq;
 
 namespace Todo.Services
 {
@@ -85,7 +86,10 @@ namespace Todo.Services
         [TestCaseSource(nameof(GetValidPrincipals))]
         public void GetName_UsingValidPrincipal_MustReturnExpectedName(IPrincipal validPrincipal)
         {
+            // Arrange & Act
             string userName = validPrincipal.GetName();
+
+            // Assert
             userName.Should().NotBeNullOrWhiteSpace("because principal name must means something");
         }
 
@@ -95,9 +99,32 @@ namespace Todo.Services
         [Test]
         public void GetName_UsingNullAsPrincipal_MustThrowException()
         {
+            // Arrange & Act
             Action actionExpectedToFail = () => PrincipalExtensions.GetName(null);
+
+            // Assert
             actionExpectedToFail.Should().ThrowExactly<ArgumentNullException>()
                 .And.ParamName.Should().Be("principal", "because a null principal does not have a name");
+        }
+
+        /// <summary>
+        /// Tests <see cref="PrincipalExtensions.GetName"/> method.
+        /// </summary>
+        [Test]
+        public void GetName_UsingNullAsPrincipalIdentity_MustThrowException()
+        {
+            // Arrange
+            var principalMock = new Mock<IPrincipal>();
+            principalMock.SetupGet(principal => principal.Identity).Returns(() => null);
+            IPrincipal mockedPrincipal = principalMock.Object;
+
+            // Act
+            Action actionExpectedToFail = () => mockedPrincipal.GetName();
+
+            // Assert
+            actionExpectedToFail.Should().ThrowExactly<ArgumentNullException>()
+                .And.ParamName.Should().Be("principal.Identity",
+                    "because a principal with a null identity does not have a name");
         }
     }
 }
