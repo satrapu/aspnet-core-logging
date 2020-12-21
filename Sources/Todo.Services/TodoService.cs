@@ -54,8 +54,8 @@ namespace Todo.Services
             IQueryable<TodoItemInfo> todoItemInfos = ProjectItems(todoItems);
             IList<TodoItemInfo> result = await todoItemInfos.ToListAsync().ConfigureAwait(false);
 
-            logger.LogInformation("Fetched {TodoItemsCount} todo item(s) for user {UserId} using query {TodoItemQuery}",
-                result.Count, todoItemQuery.Owner.GetUserId(), todoItemQuery);
+            logger.LogInformation("Fetched {TodoItemsCount} todo item(s) for user [{User}] using query {TodoItemQuery}",
+                result.Count, todoItemQuery.Owner.GetName(), todoItemQuery);
 
             return result;
         }
@@ -64,7 +64,7 @@ namespace Todo.Services
         {
             Validator.ValidateObject(newTodoItemInfo, new ValidationContext(newTodoItemInfo), true);
 
-            var newTodoItem = new TodoItem(newTodoItemInfo.Name, newTodoItemInfo.User.GetUserId())
+            var newTodoItem = new TodoItem(newTodoItemInfo.Name, newTodoItemInfo.User.GetName())
             {
                 // ReSharper disable once PossibleInvalidOperationException
                 IsComplete = newTodoItemInfo.IsComplete.Value
@@ -73,7 +73,7 @@ namespace Todo.Services
             await todoDbContext.TodoItems.AddAsync(newTodoItem);
             await todoDbContext.SaveChangesAsync().ConfigureAwait(false);
 
-            logger.LogInformation("Item with id {TodoItemId} has been added by user {UserId}"
+            logger.LogInformation("Item with id {TodoItemId} has been added by user [{User}]"
                 , newTodoItem.Id, newTodoItem.CreatedBy);
 
             return newTodoItem.Id;
@@ -88,13 +88,13 @@ namespace Todo.Services
             // ReSharper disable once PossibleInvalidOperationException
             existingTodoItem.IsComplete = updateTodoItemInfo.IsComplete.Value;
             existingTodoItem.Name = updateTodoItemInfo.Name;
-            existingTodoItem.LastUpdatedBy = updateTodoItemInfo.User.GetUserId();
+            existingTodoItem.LastUpdatedBy = updateTodoItemInfo.User.GetName();
             existingTodoItem.LastUpdatedOn = DateTime.UtcNow;
 
             todoDbContext.TodoItems.Update(existingTodoItem);
             await todoDbContext.SaveChangesAsync().ConfigureAwait(false);
 
-            logger.LogInformation("Item with id {TodoItemId} has been updated by user {UserId}"
+            logger.LogInformation("Item with id {TodoItemId} has been updated by user [{User}]"
                 , existingTodoItem.Id, existingTodoItem.LastUpdatedBy);
         }
 
@@ -108,14 +108,14 @@ namespace Todo.Services
             todoDbContext.TodoItems.Remove(existingTodoItem);
             await todoDbContext.SaveChangesAsync().ConfigureAwait(false);
 
-            logger.LogInformation("Item with id {TodoItemId} has been deleted by user {UserId}"
-                , deleteTodoItemInfo.Id, deleteTodoItemInfo.User.GetUserId());
+            logger.LogInformation("Item with id {TodoItemId} has been deleted by user [{User}]"
+                , deleteTodoItemInfo.Id, deleteTodoItemInfo.User.GetName());
         }
 
         private async Task<TodoItem> GetExistingTodoItem(long? id, ClaimsPrincipal owner)
         {
             TodoItem existingTodoItem = await todoDbContext.TodoItems.SingleOrDefaultAsync(todoItem =>
-                todoItem.Id == id && todoItem.CreatedBy == owner.GetUserId()).ConfigureAwait(false);
+                todoItem.Id == id && todoItem.CreatedBy == owner.GetName()).ConfigureAwait(false);
 
             if (existingTodoItem == null)
             {
@@ -128,7 +128,7 @@ namespace Todo.Services
         private IQueryable<TodoItem> FilterItems(TodoItemQuery todoItemQuery)
         {
             IQueryable<TodoItem> todoItems =
-                todoDbContext.TodoItems.Where(todoItem => todoItem.CreatedBy == todoItemQuery.Owner.GetUserId());
+                todoDbContext.TodoItems.Where(todoItem => todoItem.CreatedBy == todoItemQuery.Owner.GetName());
 
             if (todoItemQuery.Id.HasValue)
             {

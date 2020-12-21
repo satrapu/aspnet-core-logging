@@ -62,7 +62,7 @@ namespace Todo.Services
                 $"[{nameof(Id)}={Id}",
                 $"{nameof(NamePattern)}={NamePattern}",
                 $"{nameof(IsComplete)}={IsComplete}",
-                $"{nameof(Owner)}={Owner.GetUserId()}",
+                $"{nameof(Owner)}={Owner.GetName()}",
                 $"{nameof(PageIndex)}={PageIndex}",
                 $"{nameof(PageSize)}={PageSize}",
                 $"{nameof(SortBy)}={SortBy}",
