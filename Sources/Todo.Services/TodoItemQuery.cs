@@ -51,7 +51,7 @@ namespace Todo.Services
 
         /// <summary>
         /// Gets or sets whether the todo items to be fetched using this query will be sorted using
-        /// the <seealso cref="SortBy"/> property in an ascending order.
+        /// the <see cref="SortBy"/> property in an ascending order.
         /// </summary>
         public bool? IsSortAscending { get; set; }
 

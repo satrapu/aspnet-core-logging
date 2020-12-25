@@ -39,14 +39,14 @@ namespace Todo.Persistence.Entities
         /// <summary>
         /// Gets or sets the identifier of the user who last updated this item.
         /// <br/>
-        /// When a user creates an item, this property is set to the same value as the <seealso cref="CreatedBy"/> one.
+        /// When a user creates an item, this property is set to the same value as the <see cref="CreatedBy"/> one.
         /// </summary>
         public string LastUpdatedBy { get; set; }
 
         /// <summary>
         /// Gets or sets the date when this item was last updated.
         /// <br/>
-        /// When a user creates an item, this property is set to the same value as the <seealso cref="CreatedOn"/> one.
+        /// When a user creates an item, this property is set to the same value as the <see cref="CreatedOn"/> one.
         /// </summary>
         public DateTime? LastUpdatedOn { get; set; }
         
