@@ -183,6 +183,9 @@ namespace Todo.WebApi
             // Configure options used for customizing generating JWT tokens.
             // Options pattern: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-3.1.
             services.Configure<GenerateJwtOptions>(generateJwtOptions);
+
+            // Register application flows.
+            services.AddScoped<FetchTodoItemsFlow>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -193,7 +196,7 @@ namespace Todo.WebApi
             logger.LogInformation(
                 "The {LogsHomeEnvironmentVariable} environment variable now points to directory: {LogsHomeDirectory}",
                 LogsHomeEnvironmentVariable, Environment.GetEnvironmentVariable(LogsHomeEnvironmentVariable));
-            
+
             applicationBuilder.UseConversationId();
             applicationBuilder.UseHttpLogging();
 

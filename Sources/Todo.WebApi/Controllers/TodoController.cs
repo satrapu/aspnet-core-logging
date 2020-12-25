@@ -17,12 +17,15 @@ namespace Todo.WebApi.Controllers
     [ApiController]
     public class TodoController : ControllerBase
     {
+        private readonly FetchTodoItemsFlow fetchTodoItemsFlow;
         private readonly ITodoService todoService;
         private readonly ILogger logger;
 
-        public TodoController(ITodoService todoService, ILogger<TodoController> logger)
+        public TodoController(ITodoService todoService, FetchTodoItemsFlow fetchTodoItemsFlow,
+            ILogger<TodoController> logger)
         {
             this.todoService = todoService ?? throw new ArgumentNullException(nameof(todoService));
+            this.fetchTodoItemsFlow = fetchTodoItemsFlow ?? throw new ArgumentNullException(nameof(fetchTodoItemsFlow));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -30,30 +33,25 @@ namespace Todo.WebApi.Controllers
         [Authorize(Policy = Policies.TodoItems.GetTodoItems)]
         public async IAsyncEnumerable<TodoItemModel> GetByQueryAsync([FromQuery] TodoItemQueryModel todoItemQueryModel)
         {
-            using (logger.BeginScope(new Dictionary<string, object>
+            var todoItemQuery = new TodoItemQuery
             {
-                [BusinessFlowNames.ScopeKey] = BusinessFlowNames.Crud.GetTodoItems
-            }))
+                Id = todoItemQueryModel.Id,
+                IsComplete = todoItemQueryModel.IsComplete,
+                NamePattern = todoItemQueryModel.NamePattern,
+                Owner = User,
+                PageIndex = todoItemQueryModel.PageIndex,
+                PageSize = todoItemQueryModel.PageSize,
+                IsSortAscending = todoItemQueryModel.IsSortAscending,
+                SortBy = todoItemQueryModel.SortBy
+            };
+            // var transactionalApplicationFlow =
+            //     new TransactionalApplicationFlow(BusinessFlowNames.Crud.GetTodoItems, User, logger);
+            IList<TodoItemInfo> todoItemInfos =
+                await fetchTodoItemsFlow.ExecuteAsync(todoItemQuery, User).ConfigureAwait(false);
+
+            foreach (TodoItemInfo todoItemInfo in todoItemInfos)
             {
-                var todoItemQuery = new TodoItemQuery
-                {
-                    Id = todoItemQueryModel.Id,
-                    IsComplete = todoItemQueryModel.IsComplete,
-                    NamePattern = todoItemQueryModel.NamePattern,
-                    Owner = User,
-                    PageIndex = todoItemQueryModel.PageIndex,
-                    PageSize = todoItemQueryModel.PageSize,
-                    IsSortAscending = todoItemQueryModel.IsSortAscending,
-                    SortBy = todoItemQueryModel.SortBy
-                };
-
-                IList<TodoItemInfo> todoItemInfos =
-                    await todoService.GetByQueryAsync(todoItemQuery).ConfigureAwait(false);
-
-                foreach (TodoItemInfo todoItemInfo in todoItemInfos)
-                {
-                    yield return MapFrom(todoItemInfo);
-                }
+                yield return MapFrom(todoItemInfo);
             }
         }
 

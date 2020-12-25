@@ -4,14 +4,14 @@ using System.Security.Principal;
 namespace Todo.Services
 {
     /// <summary>
-    /// Contains extension methods applicable to <seealso cref="IPrincipal"/> instances.
+    /// Contains extension methods applicable to <see cref="IPrincipal"/> instances.
     /// </summary>
     public static class PrincipalExtensions
     {
         /// <summary>
         /// Gets the name associated with the given <param name="principal"/> instance.
         /// </summary>
-        /// <param name="principal">The <seealso cref="IPrincipal"/> instance whose name is to be fetched.</param>
+        /// <param name="principal">The <see cref="IPrincipal"/> instance whose name is to be fetched.</param>
         /// <returns>The name associated with the given <paramref name="principal"/>.</returns>
         public static string GetName(this IPrincipal principal)
         {
@@ -26,6 +26,23 @@ namespace Todo.Services
             }
 
             return principal.Identity?.Name;
+        }
+
+        /// <summary>
+        /// Gets the name associated with the given <param name="principal"/> instance or a default value,
+        /// in case <paramref name="principal"/> is null.
+        /// </summary>
+        /// <param name="principal">The <see cref="IPrincipal"/> instance whose name is to be fetched.</param>
+        /// <param name="defaultName">The default value to use in case <paramref name="principal"/> is null.</param>
+        /// <returns>The name associated with the given <paramref name="principal"/>.</returns>
+        public static string GetNameOrDefault(this IPrincipal principal, string defaultName = "<unknown-principal>")
+        {
+            if (principal == null)
+            {
+                return defaultName;
+            }
+
+            return GetName(principal);
         }
     }
 }
