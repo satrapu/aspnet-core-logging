@@ -6,11 +6,12 @@ using Microsoft.Extensions.Logging;
 namespace Todo.Services
 {
     /// <summary>
-    /// Application flow used for fetching <see cref="TodoItemInfo"/> instances matching a given query.
+    /// An <see cref="IFetchTodoItemsFlow"/> implementation.
     /// </summary>
-    public class FetchTodoItemsFlow : BaseApplicationFlow<TodoItemQuery, IList<TodoItemInfo>>
+    public class FetchTodoItemsFlow : BaseApplicationFlow<TodoItemQuery, IList<TodoItemInfo>>, IFetchTodoItemsFlow
     {
         private readonly ITodoService todoService;
+
         public FetchTodoItemsFlow(ITodoService todoService, ILogger<FetchTodoItemsFlow> logger) :
             base("Crud/FetchItems", logger)
         {

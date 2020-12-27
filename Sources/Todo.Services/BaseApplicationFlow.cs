@@ -40,7 +40,7 @@ namespace Todo.Services
                 {
                     logger.LogInformation("User [{User}] has started application flow [{ApplicationFlow}] ...",
                         flowInitiatorName, flowName);
-                    TOutput output = await ExecuteFlowAsync(input).ConfigureAwait(false);
+                    TOutput output = await ExecuteAsync(input).ConfigureAwait(false);
                     isSuccess = true;
                     return output;
                 }
@@ -55,7 +55,7 @@ namespace Todo.Services
             }
         }
 
-        private async Task<TOutput> ExecuteFlowAsync(TInput input)
+        private async Task<TOutput> ExecuteAsync(TInput input)
         {
             Validator.ValidateObject(input, new ValidationContext(input), validateAllProperties: true);
 
@@ -72,6 +72,11 @@ namespace Todo.Services
             return output;
         }
 
+        /// <summary>
+        /// Contains the steps needed to implement this particular flow.
+        /// </summary>
+        /// <param name="input">The flow input.</param>
+        /// <returns>The flow output.</returns>
         protected abstract Task<TOutput> ExecuteFlowStepsAsync(TInput input);
     }
 }

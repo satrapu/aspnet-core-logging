@@ -185,7 +185,7 @@ namespace Todo.WebApi
             services.Configure<GenerateJwtOptions>(generateJwtOptions);
 
             // Register application flows.
-            services.AddScoped<FetchTodoItemsFlow>();
+            services.AddScoped<IFetchTodoItemsFlow, FetchTodoItemsFlow>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

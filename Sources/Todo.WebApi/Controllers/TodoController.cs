@@ -17,11 +17,11 @@ namespace Todo.WebApi.Controllers
     [ApiController]
     public class TodoController : ControllerBase
     {
-        private readonly FetchTodoItemsFlow fetchTodoItemsFlow;
+        private readonly IFetchTodoItemsFlow fetchTodoItemsFlow;
         private readonly ITodoService todoService;
         private readonly ILogger logger;
 
-        public TodoController(ITodoService todoService, FetchTodoItemsFlow fetchTodoItemsFlow,
+        public TodoController(ITodoService todoService, IFetchTodoItemsFlow fetchTodoItemsFlow,
             ILogger<TodoController> logger)
         {
             this.todoService = todoService ?? throw new ArgumentNullException(nameof(todoService));
