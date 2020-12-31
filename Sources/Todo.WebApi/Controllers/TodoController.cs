@@ -44,8 +44,7 @@ namespace Todo.WebApi.Controllers
                 IsSortAscending = todoItemQueryModel.IsSortAscending,
                 SortBy = todoItemQueryModel.SortBy
             };
-            // var transactionalApplicationFlow =
-            //     new TransactionalApplicationFlow(ApplicationFlowNames.Crud.GetTodoItems, User, logger);
+            
             IList<TodoItemInfo> todoItemInfos =
                 await fetchTodoItemsFlow.ExecuteAsync(todoItemQuery, User).ConfigureAwait(false);
 
