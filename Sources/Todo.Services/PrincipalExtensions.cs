@@ -13,6 +13,8 @@ namespace Todo.Services
         /// </summary>
         /// <param name="principal">The <see cref="IPrincipal"/> instance whose name is to be fetched.</param>
         /// <returns>The name associated with the given <paramref name="principal"/>.</returns>
+        /// <exception cref="ArgumentNullException">Thrown in case the given <paramref name="principal"/> is null
+        /// or its <see cref="IPrincipal.Identity"/> property is null.</exception>
         public static string GetName(this IPrincipal principal)
         {
             if (principal == null)
@@ -25,7 +27,7 @@ namespace Todo.Services
                 throw new ArgumentNullException($"{nameof(principal)}.{nameof(principal.Identity)}");
             }
 
-            return principal.Identity?.Name;
+            return principal.Identity.Name;
         }
 
         /// <summary>
