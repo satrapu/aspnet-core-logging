@@ -45,7 +45,7 @@ namespace Todo.WebApi.Controllers
                 SortBy = todoItemQueryModel.SortBy
             };
             // var transactionalApplicationFlow =
-            //     new TransactionalApplicationFlow(BusinessFlowNames.Crud.GetTodoItems, User, logger);
+            //     new TransactionalApplicationFlow(ApplicationFlowNames.Crud.GetTodoItems, User, logger);
             IList<TodoItemInfo> todoItemInfos =
                 await fetchTodoItemsFlow.ExecuteAsync(todoItemQuery, User).ConfigureAwait(false);
 
@@ -61,7 +61,7 @@ namespace Todo.WebApi.Controllers
         {
             using (logger.BeginScope(new Dictionary<string, object>
             {
-                [BusinessFlowNames.ScopeKey] = BusinessFlowNames.Crud.GetTodoItem
+                [ApplicationFlowNames.ScopeKey] = ApplicationFlowNames.Crud.GetTodoItem
             }))
             {
                 var todoItemQuery = new TodoItemQuery
@@ -89,7 +89,7 @@ namespace Todo.WebApi.Controllers
         {
             using (logger.BeginScope(new Dictionary<string, object>
             {
-                [BusinessFlowNames.ScopeKey] = BusinessFlowNames.Crud.CreateTodoItem
+                [ApplicationFlowNames.ScopeKey] = ApplicationFlowNames.Crud.CreateTodoItem
             }))
             {
                 var newTodoItemInfo = new NewTodoItemInfo
@@ -110,7 +110,7 @@ namespace Todo.WebApi.Controllers
         {
             using (logger.BeginScope(new Dictionary<string, object>
             {
-                [BusinessFlowNames.ScopeKey] = BusinessFlowNames.Crud.UpdateTodoItem
+                [ApplicationFlowNames.ScopeKey] = ApplicationFlowNames.Crud.UpdateTodoItem
             }))
             {
                 var updateTodoItemInfo = new UpdateTodoItemInfo
@@ -132,7 +132,7 @@ namespace Todo.WebApi.Controllers
         {
             using (logger.BeginScope(new Dictionary<string, object>
             {
-                [BusinessFlowNames.ScopeKey] = BusinessFlowNames.Crud.DeleteTodoItem
+                [ApplicationFlowNames.ScopeKey] = ApplicationFlowNames.Crud.DeleteTodoItem
             }))
             {
                 var deleteTodoItemInfo = new DeleteTodoItemInfo
