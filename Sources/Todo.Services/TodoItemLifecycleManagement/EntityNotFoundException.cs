@@ -1,7 +1,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace Todo.Services
+namespace Todo.Services.TodoItemLifecycleManagement
 {
     /// <summary>
     /// Thrown when failed to fetch an entity using a key.

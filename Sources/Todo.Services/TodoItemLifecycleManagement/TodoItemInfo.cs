@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Todo.Services
+namespace Todo.Services.TodoItemLifecycleManagement
 {
     public class TodoItemInfo
     {

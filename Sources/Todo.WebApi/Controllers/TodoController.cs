@@ -1,11 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using Todo.Services;
+using Todo.ApplicationFlows.TodoItems;
+using Todo.Services.TodoItemLifecycleManagement;
 using Todo.WebApi.Authorization;
 using Todo.WebApi.Logging;
 using Todo.WebApi.Models;
@@ -18,14 +18,19 @@ namespace Todo.WebApi.Controllers
     public class TodoController : ControllerBase
     {
         private readonly IFetchTodoItemsFlow fetchTodoItemsFlow;
-        private readonly ITodoService todoService;
+        private readonly IFetchTodoItemByIdFlow fetchTodoItemByIdFlow;
+        private readonly ITodoItemService todoItemService;
         private readonly ILogger logger;
 
-        public TodoController(ITodoService todoService, IFetchTodoItemsFlow fetchTodoItemsFlow,
+        public TodoController(ITodoItemService todoItemService,
+            IFetchTodoItemsFlow fetchTodoItemsFlow,
+            IFetchTodoItemByIdFlow fetchTodoItemByIdFlow,
             ILogger<TodoController> logger)
         {
-            this.todoService = todoService ?? throw new ArgumentNullException(nameof(todoService));
+            this.todoItemService = todoItemService ?? throw new ArgumentNullException(nameof(todoItemService));
             this.fetchTodoItemsFlow = fetchTodoItemsFlow ?? throw new ArgumentNullException(nameof(fetchTodoItemsFlow));
+            this.fetchTodoItemByIdFlow =
+                fetchTodoItemByIdFlow ?? throw new ArgumentNullException(nameof(fetchTodoItemByIdFlow));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -44,7 +49,7 @@ namespace Todo.WebApi.Controllers
                 IsSortAscending = todoItemQueryModel.IsSortAscending,
                 SortBy = todoItemQueryModel.SortBy
             };
-            
+
             IList<TodoItemInfo> todoItemInfos =
                 await fetchTodoItemsFlow.ExecuteAsync(todoItemQuery, User).ConfigureAwait(false);
 
@@ -58,28 +63,15 @@ namespace Todo.WebApi.Controllers
         [Authorize(Policy = Policies.TodoItems.GetTodoItems)]
         public async Task<ActionResult<TodoItemModel>> GetByIdAsync(long id)
         {
-            using (logger.BeginScope(new Dictionary<string, object>
+            TodoItemInfo todoItemInfo = await fetchTodoItemByIdFlow.ExecuteAsync(id, User).ConfigureAwait(false);
+
+            if (todoItemInfo == null)
             {
-                [ApplicationFlowNames.ScopeKey] = ApplicationFlowNames.Crud.GetTodoItem
-            }))
-            {
-                var todoItemQuery = new TodoItemQuery
-                {
-                    Id = id,
-                    Owner = User
-                };
-
-                IList<TodoItemInfo> todoItemInfoList =
-                    await todoService.GetByQueryAsync(todoItemQuery).ConfigureAwait(false);
-                TodoItemModel model = todoItemInfoList.Select(MapFrom).FirstOrDefault();
-
-                if (model == null)
-                {
-                    return NotFound();
-                }
-
-                return Ok(model);
+                return NotFound();
             }
+
+            TodoItemModel result = MapFrom(todoItemInfo);
+            return Ok(result);
         }
 
         [HttpPost]
@@ -98,7 +90,7 @@ namespace Todo.WebApi.Controllers
                     User = User
                 };
 
-                long newlyCreatedEntityId = await todoService.AddAsync(newTodoItemInfo).ConfigureAwait(false);
+                long newlyCreatedEntityId = await todoItemService.AddAsync(newTodoItemInfo).ConfigureAwait(false);
                 return Created($"api/todo/{newlyCreatedEntityId}", newlyCreatedEntityId);
             }
         }
@@ -120,7 +112,7 @@ namespace Todo.WebApi.Controllers
                     User = User
                 };
 
-                await todoService.UpdateAsync(updateTodoItemInfo).ConfigureAwait(false);
+                await todoItemService.UpdateAsync(updateTodoItemInfo).ConfigureAwait(false);
                 return NoContent();
             }
         }
@@ -140,7 +132,7 @@ namespace Todo.WebApi.Controllers
                     User = User
                 };
 
-                await todoService.DeleteAsync(deleteTodoItemInfo).ConfigureAwait(false);
+                await todoItemService.DeleteAsync(deleteTodoItemInfo).ConfigureAwait(false);
                 return NoContent();
             }
         }

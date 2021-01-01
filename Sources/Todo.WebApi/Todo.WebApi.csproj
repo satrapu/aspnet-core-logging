@@ -15,10 +15,6 @@
         <PackageReference Include="Serilog.Sinks.Seq" />
     </ItemGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\Todo.Services\Todo.Services.csproj" />
-    </ItemGroup>
-
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
         <CodeAnalysisRuleSet>Todo.WebApi.ruleset</CodeAnalysisRuleSet>
     </PropertyGroup>
@@ -33,6 +29,10 @@
         <None Update="appsettings.Development.json">
             <DependentUpon>appsettings.json</DependentUpon>
         </None>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\Todo.ApplicationFlows\Todo.ApplicationFlows.csproj" />
     </ItemGroup>
 
 </Project>

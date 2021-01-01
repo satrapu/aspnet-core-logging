@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using System.Security.Principal;
 using Moq;
+using Todo.Services.Security;
 
 namespace Todo.Services
 {

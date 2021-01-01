@@ -1,8 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Security.Claims;
+using System.Security.Principal;
 using System.Text;
+using Todo.Services.Security;
 
-namespace Todo.Services
+namespace Todo.Services.TodoItemLifecycleManagement
 {
     public class TodoItemQuery
     {
@@ -28,7 +29,7 @@ namespace Todo.Services
         /// Gets or sets the user who has created the todo items to be fetched using this query.
         /// </summary>
         [Required]
-        public ClaimsPrincipal Owner { get; set; }
+        public IPrincipal Owner { get; set; }
 
         /// <summary>
         /// Gets or sets the maximum number of todo items to be fetched using this query.
@@ -62,7 +63,7 @@ namespace Todo.Services
                 $"[{nameof(Id)}={Id}",
                 $"{nameof(NamePattern)}={NamePattern}",
                 $"{nameof(IsComplete)}={IsComplete}",
-                $"{nameof(Owner)}={Owner.GetName()}",
+                $"{nameof(Owner)}={Owner.GetNameOrDefault()}",
                 $"{nameof(PageIndex)}={PageIndex}",
                 $"{nameof(PageSize)}={PageSize}",
                 $"{nameof(SortBy)}={SortBy}",

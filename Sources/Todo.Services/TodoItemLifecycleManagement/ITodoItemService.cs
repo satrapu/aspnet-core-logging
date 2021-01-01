@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Todo.Services
+namespace Todo.Services.TodoItemLifecycleManagement
 {
     /// <summary>
     /// Manages the lifecycle of todo items.
     /// </summary>
-    public interface ITodoService
+    public interface ITodoItemService
     {
         /// <summary>
         /// Fetches all todo items found inside the underlying persistent storage which match a given set of conditions.

@@ -1566,6 +1566,12 @@
           "System.Xml.ReaderWriter": "4.3.0"
         }
       },
+      "todo.applicationflows": {
+        "type": "Project",
+        "dependencies": {
+          "Todo.Services": "1.0.0"
+        }
+      },
       "todo.persistence": {
         "type": "Project",
         "dependencies": {
@@ -1577,6 +1583,7 @@
       "todo.services": {
         "type": "Project",
         "dependencies": {
+          "Microsoft.IdentityModel.Tokens": "5.5.0",
           "Todo.Persistence": "1.0.0"
         }
       }

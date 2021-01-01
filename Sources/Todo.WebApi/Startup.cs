@@ -15,8 +15,11 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
+using Todo.ApplicationFlows.Security;
+using Todo.ApplicationFlows.TodoItems;
 using Todo.Persistence;
-using Todo.Services;
+using Todo.Services.Security;
+using Todo.Services.TodoItemLifecycleManagement;
 using Todo.WebApi.Authorization;
 using Todo.WebApi.ExceptionHandling;
 using Todo.WebApi.Logging;
@@ -166,11 +169,12 @@ namespace Todo.WebApi
                     .AddEntityFramework();
             }
 
-            // Configure ASP.NET Web API services
+            // Configure ASP.NET Web API services.
             services.AddControllers();
 
-            // Configure Todo Web API services
-            services.AddScoped<ITodoService, TodoService>();
+            // Configure Todo Web API services.
+            services.AddSingleton<IJwtService, JwtService>();
+            services.AddScoped<ITodoItemService, TodoItemService>();
 
             // Register service with 2 interfaces.
             // See more here: https://andrewlock.net/how-to-register-a-service-with-multiple-interfaces-for-in-asp-net-core-di/.
@@ -185,7 +189,9 @@ namespace Todo.WebApi
             services.Configure<GenerateJwtOptions>(generateJwtOptions);
 
             // Register application flows.
+            services.AddScoped<IGenerateJwtFlow, GenerateJwtFlow>();
             services.AddScoped<IFetchTodoItemsFlow, FetchTodoItemsFlow>();
+            services.AddScoped<IFetchTodoItemByIdFlow, FetchTodoItemByIdFlow>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

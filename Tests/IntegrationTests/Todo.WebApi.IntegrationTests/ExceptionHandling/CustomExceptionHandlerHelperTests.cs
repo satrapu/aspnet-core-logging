@@ -12,12 +12,13 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using Todo.Services;
+using Todo.Services.TodoItemLifecycleManagement;
 using Todo.WebApi.Infrastructure;
 
 namespace Todo.WebApi.ExceptionHandling
 {
     /// <summary>
-    /// Contains integration tests targeting <see cref="CustomExceptionHandlerHelper"/> class.
+    /// Contains integration tests targeting <see cref="CustomExceptionHandler"/> class.
     /// </summary>
     [TestFixture]
     public class CustomErrorHandlerHelperTests
@@ -37,7 +38,7 @@ namespace Todo.WebApi.ExceptionHandling
         }
 
         /// <summary>
-        /// Tests <see cref="CustomExceptionHandlerHelper.WriteResponse"/> method.
+        /// Tests <see cref="CustomExceptionHandler.WriteResponse"/> method.
         /// </summary>
         [Test]
         public async Task WriteResponse_AgainstEndpointThrowingException_MustHandleException()
@@ -81,21 +82,21 @@ namespace Todo.WebApi.ExceptionHandling
                 webHostBuilder.ConfigureTestServices(services =>
                 {
                     ServiceDescriptor serviceDescriptor = services.SingleOrDefault(localServiceDescriptor =>
-                        localServiceDescriptor.ServiceType == typeof(TodoService));
+                        localServiceDescriptor.ServiceType == typeof(TodoItemService));
 
                     if (serviceDescriptor != null)
                     {
                         services.Remove(serviceDescriptor);
                     }
 
-                    services.AddScoped<ITodoService, TodoServiceWhichThrowsException>();
+                    services.AddScoped<ITodoItemService, TodoItemServiceWhichThrowsException>();
                 });
 
                 base.ConfigureWebHost(webHostBuilder);
             }
         }
 
-        private class TodoServiceWhichThrowsException : ITodoService
+        private class TodoItemServiceWhichThrowsException : ITodoItemService
         {
             public Task<IList<TodoItemInfo>> GetByQueryAsync(TodoItemQuery todoItemQuery)
             {

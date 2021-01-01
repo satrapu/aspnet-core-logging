@@ -10,30 +10,40 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Npgsql;
-using Todo.Services;
+using Todo.Services.TodoItemLifecycleManagement;
 
 namespace Todo.WebApi.ExceptionHandling
 {
     /// <summary>
+    /// Contains extension methods applicable to <see cref="IApplicationBuilder"/> instances
+    /// for handling exceptions thrown by this web API.
+    /// <br/>
     /// Based on https://andrewlock.net/creating-a-custom-error-handler-middleware-function/.
     /// </summary>
-    public static class CustomExceptionHandlerHelper
+    public static class CustomExceptionHandler
     {
         private const string ErrorId = "errorId";
-        
+
+        /// <summary>
+        /// Configures handling the exceptions thrown by any part of this web API.
+        /// </summary>
+        /// <param name="applicationBuilder">The <see cref="IApplicationBuilder"/> instance which needs to be
+        /// configured to handle exceptions.</param>
+        /// <param name="hostEnvironment">The <see cref="IHostEnvironment"/> instance inside which this
+        /// web API runs.</param>
         public static void UseCustomExceptionHandler(this IApplicationBuilder applicationBuilder,
             IHostEnvironment hostEnvironment)
         {
             ILogger logger = applicationBuilder.ApplicationServices.GetRequiredService<ILoggerFactory>()
-                .CreateLogger(nameof(CustomExceptionHandlerHelper));
+                .CreateLogger(nameof(CustomExceptionHandler));
 
-            if (hostEnvironment.IsDevelopment())
+            if (hostEnvironment.IsStaging() || hostEnvironment.IsProduction())
             {
-                applicationBuilder.Use((httpContext, _) => WriteResponse(httpContext, logger, true));
+                applicationBuilder.Use((httpContext, _) => WriteResponse(httpContext, logger, false));
             }
             else
             {
-                applicationBuilder.Use((httpContext, _) => WriteResponse(httpContext, logger, false));
+                applicationBuilder.Use((httpContext, _) => WriteResponse(httpContext, logger, true));
             }
         }
 
@@ -74,14 +84,11 @@ namespace Todo.WebApi.ExceptionHandling
 
         private static ProblemDetails ConvertToProblemDetails(Exception exception, bool includeDetails)
         {
-            string title = includeDetails ? $"An error occured: {exception.Message}" : "An error occured";
-            string details = includeDetails ? exception.ToString() : null;
-
             var problemDetails = new ProblemDetails
             {
                 Status = (int) ConvertToHttpStatusCode(exception),
-                Title = title,
-                Detail = details,
+                Title = "An error occured while trying to process the current request",
+                Detail = includeDetails ? exception.ToString() : string.Empty,
                 Extensions = {{ErrorId, Guid.NewGuid().ToString("N")}}
             };
             return problemDetails;
@@ -97,10 +104,9 @@ namespace Todo.WebApi.ExceptionHandling
                 // See more here: https://stackoverflow.com/q/1434315.
                 NpgsqlException _ => HttpStatusCode.ServiceUnavailable,
 
-                // Also return HTTP status code 503 in case the inner exception is caused by calling the underlying
-                // database.
-                { } someException when
-                    someException.InnerException is NpgsqlException => HttpStatusCode.ServiceUnavailable,
+                // Also return HTTP status code 503 in case the inner exception was thrown by a call made against the
+                // underlying database.
+                {InnerException: NpgsqlException _} => HttpStatusCode.ServiceUnavailable,
 
                 // Fallback to HTTP status code 500.
                 _ => HttpStatusCode.InternalServerError

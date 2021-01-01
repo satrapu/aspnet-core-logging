@@ -8,11 +8,12 @@ using Microsoft.Extensions.Logging;
 using Moq;
 using NUnit.Framework;
 using Todo.Persistence;
+using Todo.Services.TodoItemLifecycleManagement;
 
 namespace Todo.Services
 {
     /// <summary>
-    /// Contains unit tests targeting <see cref="TodoService"/> class.
+    /// Contains unit tests targeting <see cref="TodoItemService"/> class.
     /// </summary>
     [TestFixture]
     public class TodoServiceTests
@@ -21,70 +22,70 @@ namespace Todo.Services
             new DbContextOptionsBuilder<TodoDbContext>().Options;
 
         /// <summary>
-        /// Tests <see cref="TodoService"/> constructor.
+        /// Tests <see cref="TodoItemService"/> constructor.
         /// </summary>
         [Test]
         public void Constructor_WithValidArguments_MustSucceed()
         {
             var mockTodoDbContext = new DbContextMock<TodoDbContext>(DummyOptions);
-            var mockLogger = new Mock<ILogger<TodoService>>();
+            var mockLogger = new Mock<ILogger<TodoItemService>>();
 
             try
             {
-                var todoService = new TodoService(mockTodoDbContext.Object, mockLogger.Object);
+                var todoService = new TodoItemService(mockTodoDbContext.Object, mockLogger.Object);
                 todoService.Should().NotBeNull();
             }
             catch
             {
-                Assert.Fail($"Expected to create an instance of the {nameof(TodoService)} class using valid arguments");
+                Assert.Fail($"Expected to create an instance of the {nameof(TodoItemService)} class using valid arguments");
             }
         }
 
         /// <summary>
-        /// Tests <see cref="TodoService"/> constructor.
+        /// Tests <see cref="TodoItemService"/> constructor.
         /// </summary>
         [Test]
         public void Constructor_WithNullDbContext_ThrowsException()
         {
             TodoDbContext todoDbContext = null;
-            var mockLogger = new Mock<ILogger<TodoService>>();
+            var mockLogger = new Mock<ILogger<TodoItemService>>();
 
             // ReSharper disable once ExpressionIsAlwaysNull
             // ReSharper disable once ObjectCreationAsStatement
-            Action createService = () => new TodoService(todoDbContext, mockLogger.Object);
+            Action createService = () => new TodoItemService(todoDbContext, mockLogger.Object);
             createService.Should()
                 .Throw<ArgumentNullException>(
-                    $"must not create {nameof(TodoService)} with a null {nameof(TodoDbContext)}")
+                    $"must not create {nameof(TodoItemService)} with a null {nameof(TodoDbContext)}")
                 .And.ParamName.Should().Be(nameof(todoDbContext), "the EF Core context is null");
         }
 
         /// <summary>
-        /// Tests <see cref="TodoService"/> constructor.
+        /// Tests <see cref="TodoItemService"/> constructor.
         /// </summary>
         [Test]
         public void Constructor_WithNullLogger_ThrowsException()
         {
             var mockTodoDbContext = new DbContextMock<TodoDbContext>(DummyOptions);
-            ILogger<TodoService> logger = null;
+            ILogger<TodoItemService> logger = null;
 
             // ReSharper disable once ExpressionIsAlwaysNull
             // ReSharper disable once ObjectCreationAsStatement
-            Action createService = () => new TodoService(mockTodoDbContext.Object, logger);
+            Action createService = () => new TodoItemService(mockTodoDbContext.Object, logger);
             createService.Should()
                 .Throw<ArgumentNullException>(
-                    $"must not create {nameof(TodoService)} with a null {nameof(ILogger<TodoService>)}")
+                    $"must not create {nameof(TodoItemService)} with a null {nameof(ILogger<TodoItemService>)}")
                 .And.ParamName.Should().Be(nameof(logger), "the logger is null");
         }
 
         /// <summary>
-        /// Tests <see cref="TodoService.GetByQueryAsync"/> method.
+        /// Tests <see cref="TodoItemService.GetByQueryAsync"/> method.
         /// </summary>
         [Test]
         public void GetByQueryAsync_UsingNullAsQuery_MustThrowException()
         {
             var mockTodoDbContext = new DbContextMock<TodoDbContext>(DummyOptions);
-            var mockLogger = new Mock<ILogger<TodoService>>();
-            var todoService = new TodoService(mockTodoDbContext.Object, mockLogger.Object);
+            var mockLogger = new Mock<ILogger<TodoItemService>>();
+            var todoService = new TodoItemService(mockTodoDbContext.Object, mockLogger.Object);
             TodoItemQuery todoItemQuery = null;
 
             // ReSharper disable once ExpressionIsAlwaysNull

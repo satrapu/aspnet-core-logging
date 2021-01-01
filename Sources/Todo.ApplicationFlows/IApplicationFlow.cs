@@ -1,7 +1,7 @@
 ﻿using System.Security.Principal;
 using System.Threading.Tasks;
 
-namespace Todo.Services
+namespace Todo.ApplicationFlows
 {
     /// <summary>
     /// An application flow represents the implementation of one specific full blown feature requested by the business.

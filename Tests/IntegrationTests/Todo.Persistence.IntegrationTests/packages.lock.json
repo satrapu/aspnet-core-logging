@@ -1717,6 +1717,12 @@
           "System.Xml.XmlDocument": "4.3.0"
         }
       },
+      "todo.applicationflows": {
+        "type": "Project",
+        "dependencies": {
+          "Todo.Services": "1.0.0"
+        }
+      },
       "todo.persistence": {
         "type": "Project",
         "dependencies": {
@@ -1728,6 +1734,7 @@
       "todo.services": {
         "type": "Project",
         "dependencies": {
+          "Microsoft.IdentityModel.Tokens": "5.5.0",
           "Todo.Persistence": "1.0.0"
         }
       },
@@ -1741,7 +1748,7 @@
           "Serilog.AspNetCore": "3.4.0",
           "Serilog.Enrichers.Thread": "3.1.0",
           "Serilog.Sinks.Seq": "4.0.0",
-          "Todo.Services": "1.0.0"
+          "Todo.ApplicationFlows": "1.0.0"
         }
       }
     }

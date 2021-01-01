@@ -6,8 +6,9 @@ using System.Security.Principal;
 using System.Threading.Tasks;
 using System.Transactions;
 using Microsoft.Extensions.Logging;
+using Todo.Services.Security;
 
-namespace Todo.Services
+namespace Todo.ApplicationFlows
 {
     /// <summary>
     /// Base class for all application flows.
@@ -16,15 +17,20 @@ namespace Todo.Services
     {
         private readonly string flowName;
         private readonly ILogger logger;
+        private readonly bool validateInput;
 
         /// <summary>
         /// Creates a new instance of a particular application flow.
         /// </summary>
         /// <param name="flowName">The name used for identifying the flow.</param>
-        /// <param name="logger">The <see cref="ILogger"/> instance used for logging any message originating from the flow.</param>
-        /// <exception cref="ArgumentException">Thrown in case the given <paramref name="flowName"/> is null or white-space only.</exception>
+        /// <param name="logger">The <see cref="ILogger"/> instance used for logging any message originating
+        /// from the flow.</param>
+        /// <param name="validateInput">If set to <code>true</code>, the input will be validated before executing
+        /// the flow.</param>
+        /// <exception cref="ArgumentException">Thrown in case the given <paramref name="flowName"/> is null or
+        /// white-space only.</exception>
         /// <exception cref="ArgumentNullException">Thrown when the given <paramref name="logger"/> is null</exception>
-        protected BaseApplicationFlow(string flowName, ILogger logger)
+        protected BaseApplicationFlow(string flowName, ILogger logger, bool validateInput = true)
         {
             if (string.IsNullOrWhiteSpace(flowName))
             {
@@ -33,6 +39,7 @@ namespace Todo.Services
 
             this.flowName = flowName;
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.validateInput = validateInput;
         }
 
         /// <summary>
@@ -53,7 +60,7 @@ namespace Todo.Services
                 {
                     logger.LogInformation("User [{FlowInitiator}] has started application flow [{ApplicationFlow}] ...",
                         flowInitiatorName, flowName);
-                    TOutput output = await ExecuteAsync(input).ConfigureAwait(false);
+                    TOutput output = await InternalExecuteAsync(input, flowInitiator).ConfigureAwait(false);
                     isSuccess = true;
                     return output;
                 }
@@ -73,10 +80,14 @@ namespace Todo.Services
         /// wrapping the flow in a transaction and finally executing each flow step.
         /// </summary>
         /// <param name="input">The flow input.</param>
+        /// <param name="flowInitiator">The user who initiated executing this flow.</param>
         /// <returns>The flow output.</returns>
-        private async Task<TOutput> ExecuteAsync(TInput input)
+        private async Task<TOutput> InternalExecuteAsync(TInput input, IPrincipal flowInitiator)
         {
-            Validator.ValidateObject(input, new ValidationContext(input), validateAllProperties: true);
+            if (validateInput)
+            {
+                Validator.ValidateObject(input, new ValidationContext(input), validateAllProperties: true);
+            }
 
             var transactionOptions = new TransactionOptions
             {
@@ -86,7 +97,7 @@ namespace Todo.Services
 
             using var transactionScope = new TransactionScope(TransactionScopeOption.Required, transactionOptions,
                 TransactionScopeAsyncFlowOption.Enabled);
-            TOutput output = await ExecuteFlowStepsAsync(input).ConfigureAwait(false);
+            TOutput output = await ExecuteFlowStepsAsync(input, flowInitiator).ConfigureAwait(false);
             transactionScope.Complete();
             return output;
         }
@@ -95,7 +106,8 @@ namespace Todo.Services
         /// Executes the steps of this particular flow.
         /// </summary>
         /// <param name="input">The flow input.</param>
+        /// <param name="flowInitiator">The user who initiated executing this flow.</param>
         /// <returns>The flow output.</returns>
-        protected abstract Task<TOutput> ExecuteFlowStepsAsync(TInput input);
+        protected abstract Task<TOutput> ExecuteFlowStepsAsync(TInput input, IPrincipal flowInitiator);
     }
 }

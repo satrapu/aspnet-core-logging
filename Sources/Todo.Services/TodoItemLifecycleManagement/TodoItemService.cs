@@ -9,14 +9,14 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Todo.Persistence;
 using Todo.Persistence.Entities;
+using Todo.Services.Security;
 
-namespace Todo.Services
+namespace Todo.Services.TodoItemLifecycleManagement
 {
     /// <summary>
-    /// An <see cref="ITodoService"/> implementation which persists <see cref="TodoItem"/> instances
-    /// using Entity Framework Core.
+    /// An <see cref="ITodoItemService"/> implementation which persists data using Entity Framework Core.
     /// </summary>
-    public class TodoService : ITodoService
+    public class TodoItemService : ITodoItemService
     {
         private readonly TodoDbContext todoDbContext;
         private readonly ILogger logger;
@@ -27,12 +27,12 @@ namespace Todo.Services
         private static readonly Expression<Func<TodoItem, object>> DefaultKeySelector = todoItem => todoItem.Id;
 
         /// <summary>
-        /// Creates a new instance of the <see cref="TodoService"/> class.
+        /// Creates a new instance of the <see cref="TodoItemService"/> class.
         /// </summary>
         /// <param name="todoDbContext">Provides access to the underlying database storing
         /// <see cref="TodoItem"/> instances.</param>
         /// <param name="logger">Provides logging services.</param>
-        public TodoService(TodoDbContext todoDbContext, ILogger<TodoService> logger)
+        public TodoItemService(TodoDbContext todoDbContext, ILogger<TodoItemService> logger)
         {
             this.todoDbContext = todoDbContext ?? throw new ArgumentNullException(nameof(todoDbContext));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
@@ -45,7 +45,7 @@ namespace Todo.Services
             IQueryable<TodoItem> todoItems = FilterItems(todoItemQuery)
                 // Read more about query tags here: 
                 // https://docs.microsoft.com/en-us/ef/core/querying/tags
-                .TagWith($"{nameof(TodoService)}#{nameof(GetByQueryAsync)}")
+                .TagWith($"{nameof(TodoItemService)}#{nameof(GetByQueryAsync)}")
                 // Read more about no tracking queries here:
                 // https://docs.microsoft.com/en-us/ef/core/querying/tracking#no-tracking-queries
                 .AsNoTracking();
