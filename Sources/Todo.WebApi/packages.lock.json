@@ -1584,6 +1584,7 @@
         "type": "Project",
         "dependencies": {
           "Microsoft.IdentityModel.Tokens": "5.5.0",
+          "System.IdentityModel.Tokens.Jwt": "5.5.0",
           "Todo.Persistence": "1.0.0"
         }
       }
