@@ -21,12 +21,13 @@ namespace Todo.ApplicationFlows.TodoItems
             this.todoItemService = todoItemService ?? throw new ArgumentNullException(nameof(todoItemService));
         }
 
-        protected override async Task<TodoItemInfo> ExecuteFlowStepsAsync(long input,
-            IPrincipal flowInitiator)
+        protected override async Task<TodoItemInfo> ExecuteFlowStepsAsync(long input, IPrincipal flowInitiator)
         {
             var todoItemQuery = new TodoItemQuery
             {
                 Id = input,
+                // Ensure that the application fetches data belonging to the current user only (usually the one
+                // initiating the current flow).
                 Owner = flowInitiator
             };
 

@@ -23,7 +23,10 @@ namespace Todo.ApplicationFlows.TodoItems
         protected override async Task<IList<TodoItemInfo>> ExecuteFlowStepsAsync(TodoItemQuery input,
             IPrincipal flowInitiator)
         {
-            return await todoItemService.GetByQueryAsync(input);
+            // Ensure that the application fetches data belonging to the current user only (usually the one initiating
+            // the current flow).
+            input.Owner = flowInitiator;
+            return await todoItemService.GetByQueryAsync(input).ConfigureAwait(false);
         }
     }
 }
