@@ -295,7 +295,7 @@ namespace Todo.WebApi.Controllers
                 response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
                 response = await httpClient.GetAsync($"{BaseUrl}/{id}").ConfigureAwait(false);
-                response.IsSuccessStatusCode.Should().BeTrue("an entity has been previously update");
+                response.IsSuccessStatusCode.Should().BeTrue("an entity has been previously updated");
                 response.StatusCode.Should().Be(HttpStatusCode.OK);
 
                 TodoItemModel todoItemModel =
