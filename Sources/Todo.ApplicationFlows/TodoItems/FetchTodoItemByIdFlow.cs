@@ -16,7 +16,7 @@ namespace Todo.ApplicationFlows.TodoItems
         private readonly ITodoItemService todoItemService;
 
         public FetchTodoItemByIdFlow(ITodoItemService todoItemService, ILogger<FetchTodoItemsFlow> logger) :
-            base("TodoItem/FetchById", logger, validateInput: false)
+            base("TodoItem/FetchById", logger)
         {
             this.todoItemService = todoItemService ?? throw new ArgumentNullException(nameof(todoItemService));
         }
