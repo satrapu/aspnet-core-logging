@@ -1,5 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.Security.Claims;
+using System.Security.Principal;
 
 namespace Todo.Services.TodoItemLifecycleManagement
 {
@@ -10,6 +10,6 @@ namespace Todo.Services.TodoItemLifecycleManagement
         public long? Id { get; set; }
 
         [Required]
-        public ClaimsPrincipal User { get; set; }
+        public IPrincipal Owner { get; set; }
     }
 }

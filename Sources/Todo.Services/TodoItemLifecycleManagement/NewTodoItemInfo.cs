@@ -14,6 +14,6 @@ namespace Todo.Services.TodoItemLifecycleManagement
         public bool? IsComplete { get; set; }
 
         [Required]
-        public IPrincipal User { get; set; }
+        public IPrincipal Owner { get; set; }
     }
 }
