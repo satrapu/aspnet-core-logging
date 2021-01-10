@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Todo.Services.Security
+﻿namespace Todo.Services.Security
 {
     /// <summary>
     /// Contains the details needed to generate a JSON web token based on a user name and password.
@@ -9,6 +7,7 @@ namespace Todo.Services.Security
     {
         public string UserName { get; set; }
 
+        // ReSharper disable once UnusedAutoPropertyAccessor.Global
         public string Password { get; set; }
 
         public string Audience { get; set; }
