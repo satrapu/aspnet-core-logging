@@ -14,6 +14,7 @@ namespace Todo.ApplicationFlows
     /// </summary>
     public abstract class BaseApplicationFlow<TInput, TOutput> : IApplicationFlow<TInput, TOutput>
     {
+        private const string ApplicationFlowName = "ApplicationFlowName";
         private readonly string flowName;
         private readonly ILogger logger;
 
@@ -45,7 +46,7 @@ namespace Todo.ApplicationFlows
         /// <returns></returns>
         public async Task<TOutput> ExecuteAsync(TInput input, IPrincipal flowInitiator)
         {
-            using (logger.BeginScope(new Dictionary<string, object> {["ApplicationFlowName"] = flowName}))
+            using (logger.BeginScope(new Dictionary<string, object> {[ApplicationFlowName] = flowName}))
             {
                 bool isSuccess = false;
                 Stopwatch stopwatch = Stopwatch.StartNew();
@@ -53,7 +54,8 @@ namespace Todo.ApplicationFlows
 
                 try
                 {
-                    logger.LogInformation("User [{FlowInitiator}] has started application flow [{ApplicationFlow}] ...",
+                    logger.LogInformation(
+                        "User [{FlowInitiator}] has started application flow [{ApplicationFlowName}] ...",
                         flowInitiatorName, flowName);
                     TOutput output = await InternalExecuteAsync(input, flowInitiator).ConfigureAwait(false);
                     isSuccess = true;
@@ -62,9 +64,10 @@ namespace Todo.ApplicationFlows
                 finally
                 {
                     stopwatch.Stop();
-                    logger.LogInformation("User [{FlowInitiator}] has finished application flow [{ApplicationFlow}] "
-                                          + "with the outcome: [{ApplicationFlowOutcome}]; "
-                                          + "time taken: [{ApplicationFlowDuration}]",
+                    logger.LogInformation(
+                        "User [{FlowInitiator}] has finished application flow [{ApplicationFlowName}] "
+                        + "with the outcome: [{ApplicationFlowOutcome}]; "
+                        + "time taken: [{ApplicationFlowDuration}]",
                         flowInitiatorName, flowName, isSuccess ? "success" : "failure", stopwatch.Elapsed);
                 }
             }
