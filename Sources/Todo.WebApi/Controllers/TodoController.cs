@@ -19,18 +19,22 @@ namespace Todo.WebApi.Controllers
     {
         private readonly IFetchTodoItemsFlow fetchTodoItemsFlow;
         private readonly IFetchTodoItemByIdFlow fetchTodoItemByIdFlow;
+        private readonly IAddTodoItemFlow addTodoItemFlow;
         private readonly ITodoItemService todoItemService;
         private readonly ILogger logger;
 
         public TodoController(ITodoItemService todoItemService,
             IFetchTodoItemsFlow fetchTodoItemsFlow,
             IFetchTodoItemByIdFlow fetchTodoItemByIdFlow,
+            IAddTodoItemFlow addTodoItemFlow,
             ILogger<TodoController> logger)
         {
             this.todoItemService = todoItemService ?? throw new ArgumentNullException(nameof(todoItemService));
             this.fetchTodoItemsFlow = fetchTodoItemsFlow ?? throw new ArgumentNullException(nameof(fetchTodoItemsFlow));
             this.fetchTodoItemByIdFlow =
                 fetchTodoItemByIdFlow ?? throw new ArgumentNullException(nameof(fetchTodoItemByIdFlow));
+            this.addTodoItemFlow =
+                addTodoItemFlow ?? throw new ArgumentNullException(nameof(addTodoItemFlow));
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
@@ -78,21 +82,14 @@ namespace Todo.WebApi.Controllers
         [Authorize(Policy = Policies.TodoItems.CreateTodoItem)]
         public async Task<IActionResult> CreateAsync(NewTodoItemModel newTodoItemModel)
         {
-            using (logger.BeginScope(new Dictionary<string, object>
+            var newTodoItemInfo = new NewTodoItemInfo
             {
-                [ApplicationFlowNames.ScopeKey] = ApplicationFlowNames.Crud.CreateTodoItem
-            }))
-            {
-                var newTodoItemInfo = new NewTodoItemInfo
-                {
-                    IsComplete = newTodoItemModel.IsComplete,
-                    Name = newTodoItemModel.Name,
-                    User = User
-                };
+                IsComplete = newTodoItemModel.IsComplete,
+                Name = newTodoItemModel.Name
+            };
 
-                long newlyCreatedEntityId = await todoItemService.AddAsync(newTodoItemInfo).ConfigureAwait(false);
-                return Created($"api/todo/{newlyCreatedEntityId}", newlyCreatedEntityId);
-            }
+            long newlyCreatedEntityId = await addTodoItemFlow.ExecuteAsync(newTodoItemInfo, User).ConfigureAwait(false);
+            return Created($"api/todo/{newlyCreatedEntityId}", newlyCreatedEntityId);
         }
 
         [HttpPut("{id:long}")]
@@ -109,7 +106,7 @@ namespace Todo.WebApi.Controllers
                     Id = id,
                     IsComplete = updateTodoItemModel.IsComplete,
                     Name = updateTodoItemModel.Name,
-                    User = User
+                    Owner = User
                 };
 
                 await todoItemService.UpdateAsync(updateTodoItemInfo).ConfigureAwait(false);
@@ -129,7 +126,7 @@ namespace Todo.WebApi.Controllers
                 var deleteTodoItemInfo = new DeleteTodoItemInfo
                 {
                     Id = id,
-                    User = User
+                    Owner = User
                 };
 
                 await todoItemService.DeleteAsync(deleteTodoItemInfo).ConfigureAwait(false);
