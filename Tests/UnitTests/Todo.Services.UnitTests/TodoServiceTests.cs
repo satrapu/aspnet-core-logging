@@ -92,7 +92,7 @@ namespace Todo.Services
             Func<Task<IList<TodoItemInfo>>> getByQueryAsync = async () =>
                 await todoService.GetByQueryAsync(todoItemQuery).ConfigureAwait(false);
             getByQueryAsync.Should().Throw<ArgumentNullException>("service cannot fetch data using a null query")
-                .And.ParamName.Should().Be("instance", "the query is null");
+                .And.ParamName.Should().Be(nameof(todoItemQuery), "the query is null");
         }
     }
 }
