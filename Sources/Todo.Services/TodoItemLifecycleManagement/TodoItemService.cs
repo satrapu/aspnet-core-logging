@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Security.Claims;
+using System.Security.Principal;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -40,6 +40,11 @@ namespace Todo.Services.TodoItemLifecycleManagement
 
         public async Task<IList<TodoItemInfo>> GetByQueryAsync(TodoItemQuery todoItemQuery)
         {
+            if (todoItemQuery == null)
+            {
+                throw new ArgumentNullException(nameof(todoItemQuery));
+            }
+
             Validator.ValidateObject(todoItemQuery, new ValidationContext(todoItemQuery), true);
 
             IQueryable<TodoItem> todoItems = FilterItems(todoItemQuery)
@@ -62,13 +67,19 @@ namespace Todo.Services.TodoItemLifecycleManagement
 
         public async Task<long> AddAsync(NewTodoItemInfo newTodoItemInfo)
         {
+            if (newTodoItemInfo == null)
+            {
+                throw new ArgumentNullException(nameof(newTodoItemInfo));
+            }
+
             Validator.ValidateObject(newTodoItemInfo, new ValidationContext(newTodoItemInfo), true);
 
-            var newTodoItem = new TodoItem(newTodoItemInfo.Name, newTodoItemInfo.User.GetName())
+            var newTodoItem = new TodoItem(newTodoItemInfo.Name, newTodoItemInfo.Owner.GetName());
+
+            if (newTodoItemInfo.IsComplete.HasValue)
             {
-                // ReSharper disable once PossibleInvalidOperationException
-                IsComplete = newTodoItemInfo.IsComplete.Value
-            };
+                newTodoItem.IsComplete = newTodoItemInfo.IsComplete.Value;
+            }
 
             await todoDbContext.TodoItems.AddAsync(newTodoItem);
             await todoDbContext.SaveChangesAsync().ConfigureAwait(false);
@@ -81,14 +92,19 @@ namespace Todo.Services.TodoItemLifecycleManagement
 
         public async Task UpdateAsync(UpdateTodoItemInfo updateTodoItemInfo)
         {
+            if (updateTodoItemInfo == null)
+            {
+                throw new ArgumentNullException(nameof(updateTodoItemInfo));
+            }
+
             Validator.ValidateObject(updateTodoItemInfo, new ValidationContext(updateTodoItemInfo), true);
 
-            TodoItem existingTodoItem = await GetExistingTodoItem(updateTodoItemInfo.Id, updateTodoItemInfo.User)
+            TodoItem existingTodoItem = await GetExistingTodoItem(updateTodoItemInfo.Id, updateTodoItemInfo.Owner)
                 .ConfigureAwait(false);
             // ReSharper disable once PossibleInvalidOperationException
             existingTodoItem.IsComplete = updateTodoItemInfo.IsComplete.Value;
             existingTodoItem.Name = updateTodoItemInfo.Name;
-            existingTodoItem.LastUpdatedBy = updateTodoItemInfo.User.GetName();
+            existingTodoItem.LastUpdatedBy = updateTodoItemInfo.Owner.GetName();
             existingTodoItem.LastUpdatedOn = DateTime.UtcNow;
 
             todoDbContext.TodoItems.Update(existingTodoItem);
@@ -100,22 +116,28 @@ namespace Todo.Services.TodoItemLifecycleManagement
 
         public async Task DeleteAsync(DeleteTodoItemInfo deleteTodoItemInfo)
         {
+            if (deleteTodoItemInfo == null)
+            {
+                throw new ArgumentNullException(nameof(deleteTodoItemInfo));
+            }
+
             Validator.ValidateObject(deleteTodoItemInfo, new ValidationContext(deleteTodoItemInfo), true);
 
-            TodoItem existingTodoItem = await GetExistingTodoItem(deleteTodoItemInfo.Id, deleteTodoItemInfo.User)
+            TodoItem existingTodoItem = await GetExistingTodoItem(deleteTodoItemInfo.Id, deleteTodoItemInfo.Owner)
                 .ConfigureAwait(false);
 
             todoDbContext.TodoItems.Remove(existingTodoItem);
             await todoDbContext.SaveChangesAsync().ConfigureAwait(false);
 
             logger.LogInformation("Item with id {TodoItemId} has been deleted by user [{User}]"
-                , deleteTodoItemInfo.Id, deleteTodoItemInfo.User.GetName());
+                , deleteTodoItemInfo.Id, deleteTodoItemInfo.Owner.GetName());
         }
 
-        private async Task<TodoItem> GetExistingTodoItem(long? id, ClaimsPrincipal owner)
+        private async Task<TodoItem> GetExistingTodoItem(long? id, IPrincipal owner)
         {
-            TodoItem existingTodoItem = await todoDbContext.TodoItems.SingleOrDefaultAsync(todoItem =>
-                todoItem.Id == id && todoItem.CreatedBy == owner.GetName()).ConfigureAwait(false);
+            TodoItem existingTodoItem = await todoDbContext.TodoItems
+                .SingleOrDefaultAsync(todoItem => todoItem.Id == id && todoItem.CreatedBy == owner.GetName())
+                .ConfigureAwait(false);
 
             if (existingTodoItem == null)
             {

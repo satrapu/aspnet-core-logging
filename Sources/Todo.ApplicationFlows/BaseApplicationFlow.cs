@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Security.Principal;
 using System.Threading.Tasks;
@@ -17,7 +16,6 @@ namespace Todo.ApplicationFlows
     {
         private readonly string flowName;
         private readonly ILogger logger;
-        private readonly bool validateInput;
 
         /// <summary>
         /// Creates a new instance of a particular application flow.
@@ -25,12 +23,10 @@ namespace Todo.ApplicationFlows
         /// <param name="flowName">The name used for identifying the flow.</param>
         /// <param name="logger">The <see cref="ILogger"/> instance used for logging any message originating
         /// from the flow.</param>
-        /// <param name="validateInput">If set to <code>true</code>, the input will be validated before executing
-        /// the flow.</param>
         /// <exception cref="ArgumentException">Thrown in case the given <paramref name="flowName"/> is null or
         /// white-space only.</exception>
         /// <exception cref="ArgumentNullException">Thrown when the given <paramref name="logger"/> is null</exception>
-        protected BaseApplicationFlow(string flowName, ILogger logger, bool validateInput = true)
+        protected BaseApplicationFlow(string flowName, ILogger logger)
         {
             if (string.IsNullOrWhiteSpace(flowName))
             {
@@ -39,7 +35,6 @@ namespace Todo.ApplicationFlows
 
             this.flowName = flowName;
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-            this.validateInput = validateInput;
         }
 
         /// <summary>
@@ -84,11 +79,6 @@ namespace Todo.ApplicationFlows
         /// <returns>The flow output.</returns>
         private async Task<TOutput> InternalExecuteAsync(TInput input, IPrincipal flowInitiator)
         {
-            if (validateInput)
-            {
-                Validator.ValidateObject(input, new ValidationContext(input), validateAllProperties: true);
-            }
-
             var transactionOptions = new TransactionOptions
             {
                 IsolationLevel = IsolationLevel.ReadCommitted,
