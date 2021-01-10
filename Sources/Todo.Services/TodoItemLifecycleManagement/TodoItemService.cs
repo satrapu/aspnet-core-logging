@@ -101,9 +101,12 @@ namespace Todo.Services.TodoItemLifecycleManagement
 
             TodoItem existingTodoItem = await GetExistingTodoItem(updateTodoItemInfo.Id, updateTodoItemInfo.Owner)
                 .ConfigureAwait(false);
-            // ReSharper disable once PossibleInvalidOperationException
-            existingTodoItem.IsComplete = updateTodoItemInfo.IsComplete.Value;
-            existingTodoItem.Name = updateTodoItemInfo.Name;
+
+            if (updateTodoItemInfo.IsComplete.HasValue)
+            {
+                existingTodoItem.IsComplete = updateTodoItemInfo.IsComplete.Value;
+            }
+
             existingTodoItem.LastUpdatedBy = updateTodoItemInfo.Owner.GetName();
             existingTodoItem.LastUpdatedOn = DateTime.UtcNow;
 
