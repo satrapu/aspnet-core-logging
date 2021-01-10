@@ -107,6 +107,7 @@ namespace Todo.Services.TodoItemLifecycleManagement
                 existingTodoItem.IsComplete = updateTodoItemInfo.IsComplete.Value;
             }
 
+            existingTodoItem.Name = updateTodoItemInfo.Name;
             existingTodoItem.LastUpdatedBy = updateTodoItemInfo.Owner.GetName();
             existingTodoItem.LastUpdatedOn = DateTime.UtcNow;
 
