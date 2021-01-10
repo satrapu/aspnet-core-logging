@@ -11,7 +11,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
-using Todo.Services;
 using Todo.Services.TodoItemLifecycleManagement;
 using Todo.WebApi.Infrastructure;
 
