@@ -9,7 +9,7 @@ namespace Todo.ApplicationFlows.Security
     /// <summary>
     /// An <see cref="IGenerateJwtFlow"/> implementation.
     /// </summary>
-    public class GenerateJwtFlow : BaseApplicationFlow<GenerateJwtInfo, JwtInfo>, IGenerateJwtFlow
+    public class GenerateJwtFlow : NonTransactionalBaseApplicationFlow<GenerateJwtInfo, JwtInfo>, IGenerateJwtFlow
     {
         private readonly IJwtService jwtService;
 

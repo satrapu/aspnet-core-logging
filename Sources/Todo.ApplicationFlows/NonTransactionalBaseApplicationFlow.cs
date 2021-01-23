@@ -10,9 +10,9 @@ using Todo.Services.Security;
 namespace Todo.ApplicationFlows
 {
     /// <summary>
-    /// Base class for all application flows.
+    /// Base class for all application flows which do not need transactions.
     /// </summary>
-    public abstract class BaseApplicationFlow<TInput, TOutput> : IApplicationFlow<TInput, TOutput>
+    public abstract class NonTransactionalBaseApplicationFlow<TInput, TOutput> : IApplicationFlow<TInput, TOutput>
     {
         private const string ApplicationFlowName = "ApplicationFlowName";
         private readonly string flowName;
@@ -27,7 +27,7 @@ namespace Todo.ApplicationFlows
         /// <exception cref="ArgumentException">Thrown in case the given <paramref name="flowName"/> is null or
         /// white-space only.</exception>
         /// <exception cref="ArgumentNullException">Thrown when the given <paramref name="logger"/> is null</exception>
-        protected BaseApplicationFlow(string flowName, ILogger logger)
+        protected NonTransactionalBaseApplicationFlow(string flowName, ILogger logger)
         {
             if (string.IsNullOrWhiteSpace(flowName))
             {
@@ -80,18 +80,9 @@ namespace Todo.ApplicationFlows
         /// <param name="input">The flow input.</param>
         /// <param name="flowInitiator">The user who initiated executing this flow.</param>
         /// <returns>The flow output.</returns>
-        private async Task<TOutput> InternalExecuteAsync(TInput input, IPrincipal flowInitiator)
+        protected virtual async Task<TOutput> InternalExecuteAsync(TInput input, IPrincipal flowInitiator)
         {
-            var transactionOptions = new TransactionOptions
-            {
-                IsolationLevel = IsolationLevel.ReadCommitted,
-                Timeout = TimeSpan.FromSeconds(value: 60)
-            };
-
-            using var transactionScope = new TransactionScope(TransactionScopeOption.Required, transactionOptions,
-                TransactionScopeAsyncFlowOption.Enabled);
             TOutput output = await ExecuteFlowStepsAsync(input, flowInitiator).ConfigureAwait(false);
-            transactionScope.Complete();
             return output;
         }
 
