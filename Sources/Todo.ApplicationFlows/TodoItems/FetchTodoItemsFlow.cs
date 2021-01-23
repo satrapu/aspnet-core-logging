@@ -10,7 +10,7 @@ namespace Todo.ApplicationFlows.TodoItems
     /// <summary>
     /// An <see cref="IFetchTodoItemsFlow"/> implementation.
     /// </summary>
-    public class FetchTodoItemsFlow : BaseApplicationFlow<TodoItemQuery, IList<TodoItemInfo>>, IFetchTodoItemsFlow
+    public class FetchTodoItemsFlow : TransactionalBaseApplicationFlow<TodoItemQuery, IList<TodoItemInfo>>, IFetchTodoItemsFlow
     {
         private readonly ITodoItemService todoItemService;
 

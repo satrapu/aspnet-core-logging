@@ -11,11 +11,11 @@ namespace Todo.ApplicationFlows.TodoItems
     /// <summary>
     /// An <see cref="IFetchTodoItemByIdFlow"/> implementation.
     /// </summary>
-    public class FetchTodoItemByIdFlow : BaseApplicationFlow<long, TodoItemInfo>, IFetchTodoItemByIdFlow
+    public class FetchTodoItemByIdFlow : TransactionalBaseApplicationFlow<long, TodoItemInfo>, IFetchTodoItemByIdFlow
     {
         private readonly ITodoItemService todoItemService;
 
-        public FetchTodoItemByIdFlow(ITodoItemService todoItemService, ILogger<FetchTodoItemsFlow> logger) :
+        public FetchTodoItemByIdFlow(ITodoItemService todoItemService, ILogger<FetchTodoItemByIdFlow> logger) :
             base("TodoItem/FetchById", logger)
         {
             this.todoItemService = todoItemService ?? throw new ArgumentNullException(nameof(todoItemService));
