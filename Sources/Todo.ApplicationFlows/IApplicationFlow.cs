@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 namespace Todo.ApplicationFlows
 {
     /// <summary>
-    /// An application flow represents the implementation of one specific full blown feature requested by the business.
+    /// An application flow implements a specific feature needed for business or technical reasons.
     /// </summary>
     /// <typeparam name="TInput">The type of the input needed to execute this flow.</typeparam>
     /// <typeparam name="TOutput">The type of the outcome of this flow.</typeparam>
