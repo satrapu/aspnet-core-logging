@@ -6,6 +6,9 @@ using Todo.Services.TodoItemLifecycleManagement;
 
 namespace Todo.ApplicationFlows.TodoItems
 {
+    /// <summary>
+    /// An <see cref="IAddTodoItemFlow"/> implementation.
+    /// </summary>
     public class AddTodoItemFlow : TransactionalBaseApplicationFlow<NewTodoItemInfo, long>, IAddTodoItemFlow
     {
         private readonly ITodoItemService todoItemService;
