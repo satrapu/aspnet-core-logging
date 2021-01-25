@@ -20,7 +20,7 @@ namespace Todo.WebApi.Logging
         public void GivenAnHttpRequestIsToBePerformed()
         {
             testWebApplicationFactory =
-                new TestWebApplicationFactory(MethodBase.GetCurrentMethod().DeclaringType?.Name);
+                new TestWebApplicationFactory(MethodBase.GetCurrentMethod()?.DeclaringType?.Name);
         }
 
         [OneTimeTearDown]
@@ -42,6 +42,7 @@ namespace Todo.WebApi.Logging
 
             // Act
             HttpResponseMessage httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
+            httpResponseMessage.LogToConsole("unknown endpoint");
 
             // Assert
             httpResponseMessage.IsSuccessStatusCode.Should().BeFalse();
@@ -60,6 +61,7 @@ namespace Todo.WebApi.Logging
 
             // Act
             HttpResponseMessage httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
+            httpResponseMessage.LogToConsole("well known endpoint");
 
             // Assert
             httpResponseMessage.IsSuccessStatusCode.Should().BeTrue();
