@@ -26,7 +26,7 @@ namespace Todo.ApplicationFlows.TodoItems
             // Ensure that the application fetches data belonging to the current user only (usually the one initiating
             // the current flow).
             input.Owner = flowInitiator;
-            return await todoItemService.GetByQueryAsync(input).ConfigureAwait(false);
+            return await todoItemService.GetByQueryAsync(input);
         }
     }
 }

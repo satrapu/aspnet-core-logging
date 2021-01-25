@@ -57,7 +57,7 @@ namespace Todo.Services.TodoItemLifecycleManagement
             todoItems = SortItems(todoItems, todoItemQuery);
             todoItems = PaginateItems(todoItems, todoItemQuery);
             IQueryable<TodoItemInfo> todoItemInfos = ProjectItems(todoItems);
-            IList<TodoItemInfo> result = await todoItemInfos.ToListAsync().ConfigureAwait(false);
+            IList<TodoItemInfo> result = await todoItemInfos.ToListAsync();
 
             logger.LogInformation("Fetched {TodoItemsCount} todo item(s) for user [{User}] using query {TodoItemQuery}",
                 result.Count, todoItemQuery.Owner.GetName(), todoItemQuery);
@@ -82,7 +82,7 @@ namespace Todo.Services.TodoItemLifecycleManagement
             }
 
             await todoDbContext.TodoItems.AddAsync(newTodoItem);
-            await todoDbContext.SaveChangesAsync().ConfigureAwait(false);
+            await todoDbContext.SaveChangesAsync();
 
             logger.LogInformation("Item with id {TodoItemId} has been added by user [{User}]"
                 , newTodoItem.Id, newTodoItem.CreatedBy);
@@ -99,8 +99,7 @@ namespace Todo.Services.TodoItemLifecycleManagement
 
             Validator.ValidateObject(updateTodoItemInfo, new ValidationContext(updateTodoItemInfo), true);
 
-            TodoItem existingTodoItem = await GetExistingTodoItem(updateTodoItemInfo.Id, updateTodoItemInfo.Owner)
-                .ConfigureAwait(false);
+            TodoItem existingTodoItem = await GetExistingTodoItem(updateTodoItemInfo.Id, updateTodoItemInfo.Owner);
 
             if (updateTodoItemInfo.IsComplete.HasValue)
             {
@@ -112,7 +111,7 @@ namespace Todo.Services.TodoItemLifecycleManagement
             existingTodoItem.LastUpdatedOn = DateTime.UtcNow;
 
             todoDbContext.TodoItems.Update(existingTodoItem);
-            await todoDbContext.SaveChangesAsync().ConfigureAwait(false);
+            await todoDbContext.SaveChangesAsync();
 
             logger.LogInformation("Item with id {TodoItemId} has been updated by user [{User}]"
                 , existingTodoItem.Id, existingTodoItem.LastUpdatedBy);
@@ -127,11 +126,10 @@ namespace Todo.Services.TodoItemLifecycleManagement
 
             Validator.ValidateObject(deleteTodoItemInfo, new ValidationContext(deleteTodoItemInfo), true);
 
-            TodoItem existingTodoItem = await GetExistingTodoItem(deleteTodoItemInfo.Id, deleteTodoItemInfo.Owner)
-                .ConfigureAwait(false);
-
+            TodoItem existingTodoItem = await GetExistingTodoItem(deleteTodoItemInfo.Id, deleteTodoItemInfo.Owner);
+            
             todoDbContext.TodoItems.Remove(existingTodoItem);
-            await todoDbContext.SaveChangesAsync().ConfigureAwait(false);
+            await todoDbContext.SaveChangesAsync();
 
             logger.LogInformation("Item with id {TodoItemId} has been deleted by user [{User}]"
                 , deleteTodoItemInfo.Id, deleteTodoItemInfo.Owner.GetName());
@@ -140,8 +138,7 @@ namespace Todo.Services.TodoItemLifecycleManagement
         private async Task<TodoItem> GetExistingTodoItem(long? id, IPrincipal owner)
         {
             TodoItem existingTodoItem = await todoDbContext.TodoItems
-                .SingleOrDefaultAsync(todoItem => todoItem.Id == id && todoItem.CreatedBy == owner.GetName())
-                .ConfigureAwait(false);
+                .SingleOrDefaultAsync(todoItem => todoItem.Id == id && todoItem.CreatedBy == owner.GetName());
 
             if (existingTodoItem == null)
             {

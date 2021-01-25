@@ -89,8 +89,8 @@ namespace Todo.Services
             TodoItemQuery todoItemQuery = null;
 
             // ReSharper disable once ExpressionIsAlwaysNull
-            Func<Task<IList<TodoItemInfo>>> getByQueryAsync = async () =>
-                await todoService.GetByQueryAsync(todoItemQuery).ConfigureAwait(false);
+            Func<Task<IList<TodoItemInfo>>> getByQueryAsync =
+                async () => await todoService.GetByQueryAsync(todoItemQuery);
             getByQueryAsync.Should().Throw<ArgumentNullException>("service cannot fetch data using a null query")
                 .And.ParamName.Should().Be(nameof(todoItemQuery), "the query is null");
         }

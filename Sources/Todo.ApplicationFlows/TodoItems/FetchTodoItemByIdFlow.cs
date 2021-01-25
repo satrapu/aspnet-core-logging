@@ -32,7 +32,7 @@ namespace Todo.ApplicationFlows.TodoItems
             };
 
             IList<TodoItemInfo> todoItemInfos =
-                await todoItemService.GetByQueryAsync(todoItemQuery).ConfigureAwait(false);
+                await todoItemService.GetByQueryAsync(todoItemQuery);
             TodoItemInfo result = todoItemInfos.FirstOrDefault();
             return result;
         }

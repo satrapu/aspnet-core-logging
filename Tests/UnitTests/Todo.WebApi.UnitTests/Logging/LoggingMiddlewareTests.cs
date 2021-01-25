@@ -54,7 +54,7 @@ namespace Todo.WebApi.Logging
                                                             , httpObjectConverterMock.Object
                                                             , loggerMock.Object);
 
-                await loggingMiddleware.Invoke(new DefaultHttpContext()).ConfigureAwait(false);
+                await loggingMiddleware.Invoke(new DefaultHttpContext());
             }
             catch (Exception exception)
             {
@@ -84,7 +84,7 @@ namespace Todo.WebApi.Logging
                                                             , httpObjectConverterMock.Object
                                                             , loggerMock.Object);
 
-                await loggingMiddleware.Invoke(new DefaultHttpContext()).ConfigureAwait(false);
+                await loggingMiddleware.Invoke(new DefaultHttpContext());
             }
             catch (Exception exception)
             {

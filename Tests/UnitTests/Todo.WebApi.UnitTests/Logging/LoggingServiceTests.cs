@@ -68,7 +68,7 @@ namespace Todo.WebApi.Logging
                 var loggerMock = new Mock<ILogger<LoggingService>>();
                 var loggingService = new LoggingService(loggerMock.Object);
                 // ReSharper disable once ExpressionIsAlwaysNull
-                await loggingService.ToLogMessageAsync(httpRequest).ConfigureAwait(false);
+                await loggingService.ToLogMessageAsync(httpRequest);
                 Assert.Fail("Must not create log message using null HTTP request");
             }
             catch (Exception expectedException)
@@ -93,7 +93,7 @@ namespace Todo.WebApi.Logging
                 var loggerMock = new Mock<ILogger<LoggingService>>();
                 var loggingService = new LoggingService(loggerMock.Object);
                 // ReSharper disable once ExpressionIsAlwaysNull
-                await loggingService.ToLogMessageAsync(httpResponse).ConfigureAwait(false);
+                await loggingService.ToLogMessageAsync(httpResponse);
                 Assert.Fail("Must not create log message using null HTTP response");
             }
             catch (Exception expectedException)

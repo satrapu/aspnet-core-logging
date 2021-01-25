@@ -60,7 +60,7 @@ namespace Todo.WebApi.Controllers
                 Password = generateJwtModel.Password
             };
 
-            JwtInfo jwtInfo = await generateJwtFlow.ExecuteAsync(generateJwtInfo, User).ConfigureAwait(false);
+            JwtInfo jwtInfo = await generateJwtFlow.ExecuteAsync(generateJwtInfo, User);
 
             var jwtModel = new JwtModel
             {

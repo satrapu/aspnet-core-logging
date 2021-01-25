@@ -79,7 +79,7 @@ namespace Todo.WebApi.ExceptionHandling
             // correctly handle 'Accept' HTTP header.
             // @satrapu April 1st 2020: Find a way to use ASP.NET Core content negotiation to serialize
             // the ProblemDetails instance in the format expected by the client.
-            await JsonSerializer.SerializeAsync(httpContext.Response.Body, problemDetails).ConfigureAwait(false);
+            await JsonSerializer.SerializeAsync(httpContext.Response.Body, problemDetails);
         }
 
         private static ProblemDetails ConvertToProblemDetails(Exception exception, bool includeDetails)

@@ -21,7 +21,7 @@ namespace Todo.ApplicationFlows.Security
 
         protected override async Task<JwtInfo> ExecuteFlowStepsAsync(GenerateJwtInfo input, IPrincipal flowInitiator)
         {
-            return await jwtService.GenerateJwtAsync(input).ConfigureAwait(false);
+            return await jwtService.GenerateJwtAsync(input);
         }
     }
 }

@@ -43,27 +43,23 @@ namespace Todo.WebApi.ExceptionHandling
         public async Task WriteResponse_AgainstEndpointThrowingException_MustHandleException()
         {
             // Arrange
-            using HttpClient httpClient =
-                await webApplicationFactoryWhichThrowsException.CreateClientWithJwtAsync().ConfigureAwait(false);
+            using HttpClient httpClient = await webApplicationFactoryWhichThrowsException.CreateClientWithJwtAsync();
             var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, "api/todo");
 
             // Act
-            HttpResponseMessage httpResponseMessage =
-                await httpClient.SendAsync(httpRequestMessage).ConfigureAwait(false);
+            HttpResponseMessage httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
 
             // Assert
             httpResponseMessage.IsSuccessStatusCode.Should()
                 .BeFalse("the endpoint was supposed to throw a hard-coded exception");
             httpResponseMessage.StatusCode.Should()
                 .Be(HttpStatusCode.NotFound, "the hard-coded exception was mapped to HTTP status 404");
-            byte[] problemDetailsAsBytes =
-                await httpResponseMessage.Content.ReadAsByteArrayAsync().ConfigureAwait(false);
+            byte[] problemDetailsAsBytes = await httpResponseMessage.Content.ReadAsByteArrayAsync();
             await using var memoryStream = new MemoryStream(problemDetailsAsBytes);
 
             // Must use System.Text.Json.JsonSerializer instead of Newtonsoft.Json.JsonSerializer to ensure
             // ProblemDetails.Extensions property is correctly deserialized and does not end up as an empty dictionary
-            ProblemDetails problemDetails =
-                await JsonSerializer.DeserializeAsync<ProblemDetails>(memoryStream).ConfigureAwait(false);
+            ProblemDetails problemDetails = await JsonSerializer.DeserializeAsync<ProblemDetails>(memoryStream);
             problemDetails.Extensions.TryGetValue("errorId", out object errorId).Should()
                 .BeTrue("an id must accompany the unhandled exception");
             errorId?.ToString().Should()

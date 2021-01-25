@@ -41,7 +41,7 @@ namespace Todo.ApplicationFlows
 
             using var transactionScope = new TransactionScope(TransactionScopeOption.Required, transactionOptions,
                 TransactionScopeAsyncFlowOption.Enabled);
-            TOutput output = await base.InternalExecuteAsync(input, flowInitiator).ConfigureAwait(false);
+            TOutput output = await base.InternalExecuteAsync(input, flowInitiator);
             transactionScope.Complete();
             return output;
         }

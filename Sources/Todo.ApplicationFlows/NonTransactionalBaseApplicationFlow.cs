@@ -57,7 +57,7 @@ namespace Todo.ApplicationFlows
                     logger.LogInformation(
                         "User [{FlowInitiator}] has started application flow [{ApplicationFlowName}] ...",
                         flowInitiatorName, flowName);
-                    TOutput output = await InternalExecuteAsync(input, flowInitiator).ConfigureAwait(false);
+                    TOutput output = await InternalExecuteAsync(input, flowInitiator);
                     isSuccess = true;
                     return output;
                 }
@@ -82,7 +82,7 @@ namespace Todo.ApplicationFlows
         /// <returns>The flow output.</returns>
         protected virtual async Task<TOutput> InternalExecuteAsync(TInput input, IPrincipal flowInitiator)
         {
-            TOutput output = await ExecuteFlowStepsAsync(input, flowInitiator).ConfigureAwait(false);
+            TOutput output = await ExecuteFlowStepsAsync(input, flowInitiator);
             return output;
         }
 

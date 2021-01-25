@@ -54,8 +54,7 @@ namespace Todo.WebApi.Controllers
                 SortBy = todoItemQueryModel.SortBy
             };
 
-            IList<TodoItemInfo> todoItemInfos =
-                await fetchTodoItemsFlow.ExecuteAsync(todoItemQuery, User).ConfigureAwait(false);
+            IList<TodoItemInfo> todoItemInfos = await fetchTodoItemsFlow.ExecuteAsync(todoItemQuery, User);
 
             foreach (TodoItemInfo todoItemInfo in todoItemInfos)
             {
@@ -67,7 +66,7 @@ namespace Todo.WebApi.Controllers
         [Authorize(Policy = Policies.TodoItems.GetTodoItems)]
         public async Task<ActionResult<TodoItemModel>> GetByIdAsync(long id)
         {
-            TodoItemInfo todoItemInfo = await fetchTodoItemByIdFlow.ExecuteAsync(id, User).ConfigureAwait(false);
+            TodoItemInfo todoItemInfo = await fetchTodoItemByIdFlow.ExecuteAsync(id, User);
 
             if (todoItemInfo == null)
             {
@@ -88,7 +87,7 @@ namespace Todo.WebApi.Controllers
                 Name = newTodoItemModel.Name
             };
 
-            long newlyCreatedEntityId = await addTodoItemFlow.ExecuteAsync(newTodoItemInfo, User).ConfigureAwait(false);
+            long newlyCreatedEntityId = await addTodoItemFlow.ExecuteAsync(newTodoItemInfo, User);
             return Created($"api/todo/{newlyCreatedEntityId}", newlyCreatedEntityId);
         }
 
@@ -109,7 +108,7 @@ namespace Todo.WebApi.Controllers
                     Owner = User
                 };
 
-                await todoItemService.UpdateAsync(updateTodoItemInfo).ConfigureAwait(false);
+                await todoItemService.UpdateAsync(updateTodoItemInfo);
                 return NoContent();
             }
         }
@@ -129,7 +128,7 @@ namespace Todo.WebApi.Controllers
                     Owner = User
                 };
 
-                await todoItemService.DeleteAsync(deleteTodoItemInfo).ConfigureAwait(false);
+                await todoItemService.DeleteAsync(deleteTodoItemInfo);
                 return NoContent();
             }
         }
