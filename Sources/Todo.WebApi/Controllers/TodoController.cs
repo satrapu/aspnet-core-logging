@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Todo.ApplicationFlows.TodoItems;
 using Todo.Services.TodoItemLifecycleManagement;
 using Todo.WebApi.Authorization;
-using Todo.WebApi.Logging;
 using Todo.WebApi.Models;
 
 namespace Todo.WebApi.Controllers
@@ -20,22 +18,21 @@ namespace Todo.WebApi.Controllers
         private readonly IFetchTodoItemsFlow fetchTodoItemsFlow;
         private readonly IFetchTodoItemByIdFlow fetchTodoItemByIdFlow;
         private readonly IAddTodoItemFlow addTodoItemFlow;
-        private readonly ITodoItemService todoItemService;
-        private readonly ILogger logger;
+        private readonly IUpdateTodoItemFlow updateTodoItemFlow;
+        private readonly IDeleteTodoItemFlow deleteTodoItemFlow;
 
-        public TodoController(ITodoItemService todoItemService,
-            IFetchTodoItemsFlow fetchTodoItemsFlow,
+        public TodoController(IFetchTodoItemsFlow fetchTodoItemsFlow,
             IFetchTodoItemByIdFlow fetchTodoItemByIdFlow,
             IAddTodoItemFlow addTodoItemFlow,
-            ILogger<TodoController> logger)
+            IUpdateTodoItemFlow updateTodoItemFlow,
+            IDeleteTodoItemFlow deleteTodoItemFlow)
         {
-            this.todoItemService = todoItemService ?? throw new ArgumentNullException(nameof(todoItemService));
             this.fetchTodoItemsFlow = fetchTodoItemsFlow ?? throw new ArgumentNullException(nameof(fetchTodoItemsFlow));
             this.fetchTodoItemByIdFlow =
                 fetchTodoItemByIdFlow ?? throw new ArgumentNullException(nameof(fetchTodoItemByIdFlow));
-            this.addTodoItemFlow =
-                addTodoItemFlow ?? throw new ArgumentNullException(nameof(addTodoItemFlow));
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.addTodoItemFlow = addTodoItemFlow ?? throw new ArgumentNullException(nameof(addTodoItemFlow));
+            this.updateTodoItemFlow = updateTodoItemFlow ?? throw new ArgumentNullException(nameof(updateTodoItemFlow));
+            this.deleteTodoItemFlow = deleteTodoItemFlow ?? throw new ArgumentNullException(nameof(deleteTodoItemFlow));
         }
 
         [HttpGet]
@@ -95,42 +92,30 @@ namespace Todo.WebApi.Controllers
         [Authorize(Policy = Policies.TodoItems.UpdateTodoItem)]
         public async Task<IActionResult> UpdateAsync(long id, [FromBody] UpdateTodoItemModel updateTodoItemModel)
         {
-            using (logger.BeginScope(new Dictionary<string, object>
+            var updateTodoItemInfo = new UpdateTodoItemInfo
             {
-                [ApplicationFlowNames.ScopeKey] = ApplicationFlowNames.Crud.UpdateTodoItem
-            }))
-            {
-                var updateTodoItemInfo = new UpdateTodoItemInfo
-                {
-                    Id = id,
-                    IsComplete = updateTodoItemModel.IsComplete,
-                    Name = updateTodoItemModel.Name,
-                    Owner = User
-                };
+                Id = id,
+                IsComplete = updateTodoItemModel.IsComplete,
+                Name = updateTodoItemModel.Name,
+                Owner = User
+            };
 
-                await todoItemService.UpdateAsync(updateTodoItemInfo);
-                return NoContent();
-            }
+            await updateTodoItemFlow.ExecuteAsync(updateTodoItemInfo, User);
+            return NoContent();
         }
 
         [HttpDelete("{id:long}")]
         [Authorize(Policy = Policies.TodoItems.DeleteTodoItem)]
         public async Task<IActionResult> DeleteAsync(long id)
         {
-            using (logger.BeginScope(new Dictionary<string, object>
+            var deleteTodoItemInfo = new DeleteTodoItemInfo
             {
-                [ApplicationFlowNames.ScopeKey] = ApplicationFlowNames.Crud.DeleteTodoItem
-            }))
-            {
-                var deleteTodoItemInfo = new DeleteTodoItemInfo
-                {
-                    Id = id,
-                    Owner = User
-                };
+                Id = id,
+                Owner = User
+            };
 
-                await todoItemService.DeleteAsync(deleteTodoItemInfo);
-                return NoContent();
-            }
+            await deleteTodoItemFlow.ExecuteAsync(deleteTodoItemInfo, User);
+            return NoContent();
         }
 
         private static TodoItemModel MapFrom(TodoItemInfo todoItemInfo)
