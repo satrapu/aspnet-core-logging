@@ -48,7 +48,6 @@ namespace Todo.WebApi.ExceptionHandling
 
             // Act
             HttpResponseMessage httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
-            httpResponseMessage.LogToConsole("endpoint which throws exception");
 
             // Assert
             httpResponseMessage.IsSuccessStatusCode.Should()

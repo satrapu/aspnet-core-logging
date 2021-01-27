@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -55,8 +57,16 @@ namespace Todo.WebApi.Infrastructure
         public async Task<HttpClient> CreateClientWithJwtAsync()
         {
             string accessToken = await GetAccessTokenAsync();
-            HttpClient httpClient = CreateClient();
+            HttpClient httpClient = CreateClientWithLoggingCapabilities();
             httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
+            return httpClient;
+        }
+
+        private HttpClient CreateClientWithLoggingCapabilities()
+        {
+            ILoggerFactory loggerFactory = Server.Services.GetService<ILoggerFactory>();
+            ILogger logger = loggerFactory.CreateLogger<TestWebApplicationFactory>();
+            HttpClient httpClient = CreateDefaultClient(new LoggingHandler(new HttpClientHandler(), logger));
             return httpClient;
         }
 
@@ -68,7 +78,7 @@ namespace Todo.WebApi.Infrastructure
                 Password = $"password-{Guid.NewGuid():N}",
             };
 
-            using HttpClient httpClient = CreateClient();
+            using HttpClient httpClient = CreateClientWithLoggingCapabilities();
             HttpResponseMessage httpResponseMessage = await httpClient.PostAsJsonAsync("api/jwt", generateJwtModel);
 
             if (!httpResponseMessage.IsSuccessStatusCode)
@@ -136,7 +146,7 @@ namespace Todo.WebApi.Infrastructure
             }
             catch (Exception exception)
             {
-                logger.LogError("Failed to run migrations against test database {TestDatabaseName}", exception,
+                logger.LogError(exception, "Failed to run migrations against test database {TestDatabaseName}",
                     databaseName);
                 throw;
             }
@@ -149,16 +159,71 @@ namespace Todo.WebApi.Infrastructure
             logger.LogInformation("About to delete test database {TestDatabaseName} ...", databaseName);
             bool hasDeleteDatabase = todoDbContext.Database.EnsureDeleted();
 
-            logger.LogInformation(
-                hasDeleteDatabase
-                    ? "Test database {TestDatabaseName} has been successfully deleted"
-                    : "Could not find any test database {TestDatabaseName} to delete", databaseName);
+            // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
+            if (hasDeleteDatabase)
+            {
+                logger.LogInformation("Test database {TestDatabaseName} has been successfully deleted", databaseName);
+            }
+            else
+            {
+                logger.LogInformation("Could not find any test database {TestDatabaseName} to delete", databaseName);
+            }
 
             logger.LogInformation("About to run migrations against test database {TestDatabaseName} ...", databaseName);
             IMigrator databaseMigrator = todoDbContext.GetInfrastructure().GetRequiredService<IMigrator>();
             databaseMigrator.Migrate();
             logger.LogInformation("Migrations have been successfully run against test database {TestDatabaseName}",
                 databaseName);
+        }
+    }
+
+    public class LoggingHandler : DelegatingHandler
+    {
+        private readonly ILogger logger;
+
+        public LoggingHandler(HttpMessageHandler innerHandler, ILogger logger) : base(innerHandler)
+        {
+            this.logger = logger;
+        }
+
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
+            CancellationToken cancellationToken)
+        {
+            var stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine("-- REQUEST: BEGIN --");
+            stringBuilder.AppendLine($"{request}\nContent:\n\t");
+
+            if (request.Content != null)
+            {
+                stringBuilder.AppendLine(await request.Content.ReadAsStringAsync());
+            }
+            else
+            {
+                stringBuilder.AppendLine("N/A");
+            }
+
+            stringBuilder.AppendLine("-- REQUEST: END --");
+
+            HttpResponseMessage response = await base.SendAsync(request, cancellationToken);
+
+            stringBuilder.AppendLine("-- RESPONSE: BEGIN --");
+            stringBuilder.AppendLine($"{response}\nContent:\n\t");
+
+            if (request.Content != null)
+            {
+                stringBuilder.AppendLine(await response.Content.ReadAsStringAsync());
+            }
+            else
+            {
+                stringBuilder.AppendLine("N/A");
+            }
+
+            stringBuilder.AppendLine("-- RESPONSE: END --");
+
+            // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
+            logger.LogInformation(stringBuilder.ToString());
+
+            return response;
         }
     }
 }

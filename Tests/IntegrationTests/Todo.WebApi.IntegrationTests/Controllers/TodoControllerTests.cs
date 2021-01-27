@@ -25,11 +25,6 @@ namespace Todo.WebApi.Controllers
     {
         private TestWebApplicationFactory testWebApplicationFactory;
         private const string BaseUrl = "api/todo";
-        private const string ResponseDescriptionForCreatingTodoItem = "create todo item";
-        private const string ResponseDescriptionForUpdatingTodoItem = "update todo item";
-        private const string ResponseDescriptionForFetchingTodoItemsByQuery = "fetch todo items by query";
-        private const string ResponseDescriptionForFetchingTodoItemById = "fetch todo item by id";
-        private const string ResponseDescriptionForDeletingTodoItemById = "delete todo item";
 
         [OneTimeSetUp]
         public void GivenAnHttpRequestIsToBePerformed()
@@ -65,7 +60,6 @@ namespace Todo.WebApi.Controllers
 
                 // Act
                 HttpResponseMessage response = await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemModel);
-                response.LogToConsole(ResponseDescriptionForCreatingTodoItem);
 
                 // Assert
                 response.IsSuccessStatusCode.Should().BeTrue();
@@ -107,7 +101,6 @@ namespace Todo.WebApi.Controllers
                 };
 
                 HttpResponseMessage response = await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemModel);
-                response.LogToConsole(ResponseDescriptionForCreatingTodoItem);
                 response.IsSuccessStatusCode.Should().BeTrue();
                 response.StatusCode.Should().Be(HttpStatusCode.Created);
                 id = await response.Content.ReadAsAsync<long>();
@@ -127,7 +120,6 @@ namespace Todo.WebApi.Controllers
 
                 // Act
                 response = await httpClient.GetAsync(requestUri);
-                response.LogToConsole(ResponseDescriptionForFetchingTodoItemsByQuery);
 
                 // Assert
                 response.IsSuccessStatusCode.Should().BeTrue();
@@ -174,14 +166,12 @@ namespace Todo.WebApi.Controllers
                 };
 
                 HttpResponseMessage response = await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemModel);
-                response.LogToConsole(ResponseDescriptionForCreatingTodoItem);
                 response.IsSuccessStatusCode.Should().BeTrue();
                 response.StatusCode.Should().Be(HttpStatusCode.Created);
                 id = await response.Content.ReadAsAsync<long>();
 
                 // Act
                 response = await httpClient.GetAsync($"{BaseUrl}/{id}");
-                response.LogToConsole(ResponseDescriptionForFetchingTodoItemById);
 
                 // Assert
                 response.IsSuccessStatusCode.Should().BeTrue();
@@ -226,7 +216,6 @@ namespace Todo.WebApi.Controllers
                 };
 
                 HttpResponseMessage response = await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemModel);
-                response.LogToConsole(ResponseDescriptionForCreatingTodoItem);
                 response.IsSuccessStatusCode.Should().BeTrue();
                 response.StatusCode.Should().Be(HttpStatusCode.Created);
                 id = await response.Content.ReadAsAsync<long>();
@@ -234,7 +223,6 @@ namespace Todo.WebApi.Controllers
 
                 // Act
                 response = await httpClient.GetAsync($"{BaseUrl}/{nonExistentId}");
-                response.LogToConsole(ResponseDescriptionForDeletingTodoItemById);
 
                 // Assert
                 response.StatusCode.Should()
@@ -273,7 +261,6 @@ namespace Todo.WebApi.Controllers
                 };
 
                 HttpResponseMessage response = await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemInfo);
-                response.LogToConsole(ResponseDescriptionForCreatingTodoItem);
                 response.IsSuccessStatusCode.Should().BeTrue("a new entity has been created");
                 id = await response.Content.ReadAsAsync<long>();
 
@@ -285,7 +272,6 @@ namespace Todo.WebApi.Controllers
 
                 // Act
                 response = await httpClient.PutAsJsonAsync($"{BaseUrl}/{id}", updateTodoItemModel);
-                response.LogToConsole(ResponseDescriptionForUpdatingTodoItem);
 
                 // Assert
                 response.IsSuccessStatusCode.Should().BeTrue("an entity has been previously created");
@@ -330,20 +316,16 @@ namespace Todo.WebApi.Controllers
 
             using HttpClient httpClient = await testWebApplicationFactory.CreateClientWithJwtAsync();
             HttpResponseMessage response = await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemInfo);
-            response.LogToConsole(ResponseDescriptionForCreatingTodoItem);
             response.IsSuccessStatusCode.Should().BeTrue("a new entity has been created");
             long? id = await response.Content.ReadAsAsync<long>();
 
             // Act
             response = await httpClient.DeleteAsync($"{BaseUrl}/{id}");
-            response.LogToConsole(ResponseDescriptionForDeletingTodoItemById);
 
             // Assert
             response.IsSuccessStatusCode.Should().BeTrue("existing entity must be deleted");
             response = await httpClient.GetAsync($"{BaseUrl}/{id}");
             response.StatusCode.Should().Be(HttpStatusCode.NotFound, "existing entity has already been deleted");
         }
-
-        
     }
 }

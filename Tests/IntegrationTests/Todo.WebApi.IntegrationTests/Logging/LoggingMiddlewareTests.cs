@@ -42,7 +42,6 @@ namespace Todo.WebApi.Logging
 
             // Act
             HttpResponseMessage httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
-            httpResponseMessage.LogToConsole("unknown endpoint");
 
             // Assert
             httpResponseMessage.IsSuccessStatusCode.Should().BeFalse();
@@ -61,7 +60,6 @@ namespace Todo.WebApi.Logging
 
             // Act
             HttpResponseMessage httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
-            httpResponseMessage.LogToConsole("well known endpoint");
 
             // Assert
             httpResponseMessage.IsSuccessStatusCode.Should().BeTrue();

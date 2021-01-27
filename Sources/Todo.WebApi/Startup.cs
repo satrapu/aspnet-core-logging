@@ -190,11 +190,11 @@ namespace Todo.WebApi
 
             // Register application flows.
             services.AddScoped<IGenerateJwtFlow, GenerateJwtFlow>();
-            services.AddScoped<IFetchTodoItemsFlow, FetchTodoItemsFlow>();
-            services.AddScoped<IFetchTodoItemByIdFlow, FetchTodoItemByIdFlow>();
-            services.AddScoped<IAddTodoItemFlow, AddTodoItemFlow>();
-            services.AddScoped<IUpdateTodoItemFlow, UpdateTodoItemFlow>();
-            services.AddScoped<IDeleteTodoItemFlow, DeleteTodoItemFlow>();
+            // services.AddScoped<IFetchTodoItemsFlow, FetchTodoItemsFlow>();
+            // services.AddScoped<IFetchTodoItemByIdFlow, FetchTodoItemByIdFlow>();
+            // services.AddScoped<IAddTodoItemFlow, AddTodoItemFlow>();
+            // services.AddScoped<IUpdateTodoItemFlow, UpdateTodoItemFlow>();
+            // services.AddScoped<IDeleteTodoItemFlow, DeleteTodoItemFlow>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
