@@ -16,7 +16,6 @@ using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using Todo.ApplicationFlows.Security;
-using Todo.ApplicationFlows.TodoItems;
 using Todo.Persistence;
 using Todo.Services.Security;
 using Todo.Services.TodoItemLifecycleManagement;
