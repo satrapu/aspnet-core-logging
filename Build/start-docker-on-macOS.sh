@@ -10,9 +10,13 @@ set -o nounset
 # http://web.archive.org/web/20110314180918/http://www.davidpashley.com/articles/writing-robust-shell-scripts.html#id2577574.
 set -o errexit
 
-echo 'Installing Docker ...'
+echo 'Installing Docker Desktop for Mac ...'
 brew install --cask docker
-echo 'Docker has been installed'
+echo 'Docker Desktop for Mac has been installed'
+
+echo 'Starting Docker Desktop for Mac'
+open /Applications/Docker.app
+echo 'Docker Desktop for Mac has started'
 
 echo 'Checking Docker version ...'
 docker --version
