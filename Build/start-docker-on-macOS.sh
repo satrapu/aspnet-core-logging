@@ -11,7 +11,7 @@ set -o nounset
 set -o errexit
 
 echo 'Installing Docker ...'
-brew cask install docker
+brew install --cask docker
 echo 'Docker has been installed'
 
 echo 'Checking Docker version ...'
