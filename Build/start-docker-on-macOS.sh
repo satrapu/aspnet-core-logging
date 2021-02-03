@@ -16,7 +16,7 @@ brew install --cask docker
 echo 'Docker Desktop for Mac has been installed'
 
 echo 'Starting Docker service ...'
-sudo /Applications/Docker.app/Contents/MacOS/Docker --quit-after-install --unattended
+/Applications/Docker.app/Contents/MacOS/Docker --quit-after-install --unattended
 /Applications/Docker.app/Contents/MacOS/Docker --unattended &
 
 retries=0
