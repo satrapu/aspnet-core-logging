@@ -45,7 +45,7 @@ namespace Todo.Services.TodoItemLifecycleManagement
                 throw new ArgumentNullException(nameof(todoItemQuery));
             }
 
-            Validator.ValidateObject(todoItemQuery, new ValidationContext(todoItemQuery), true);
+            Validator.ValidateObject(todoItemQuery, new ValidationContext(todoItemQuery), validateAllProperties: true);
 
             IQueryable<TodoItem> todoItems = FilterItems(todoItemQuery)
                 // Read more about query tags here: 
@@ -59,8 +59,8 @@ namespace Todo.Services.TodoItemLifecycleManagement
             IQueryable<TodoItemInfo> todoItemInfos = ProjectItems(todoItems);
             IList<TodoItemInfo> result = await todoItemInfos.ToListAsync();
 
-            logger.LogInformation("Fetched {TodoItemsCount} todo item(s) for user [{User}] using query {TodoItemQuery}",
-                result.Count, todoItemQuery.Owner.GetName(), todoItemQuery);
+            logger.LogInformation("Fetched todo item(s) for user [{User}] using query {TodoItemQuery}",
+                todoItemQuery.Owner.GetName(), todoItemQuery);
 
             return result;
         }
@@ -72,7 +72,8 @@ namespace Todo.Services.TodoItemLifecycleManagement
                 throw new ArgumentNullException(nameof(newTodoItemInfo));
             }
 
-            Validator.ValidateObject(newTodoItemInfo, new ValidationContext(newTodoItemInfo), true);
+            Validator.ValidateObject(newTodoItemInfo, new ValidationContext(newTodoItemInfo),
+                validateAllProperties: true);
 
             var newTodoItem = new TodoItem(newTodoItemInfo.Name, newTodoItemInfo.Owner.GetName());
 
@@ -97,7 +98,8 @@ namespace Todo.Services.TodoItemLifecycleManagement
                 throw new ArgumentNullException(nameof(updateTodoItemInfo));
             }
 
-            Validator.ValidateObject(updateTodoItemInfo, new ValidationContext(updateTodoItemInfo), true);
+            Validator.ValidateObject(updateTodoItemInfo, new ValidationContext(updateTodoItemInfo),
+                validateAllProperties: true);
 
             TodoItem existingTodoItem = await GetExistingTodoItem(updateTodoItemInfo.Id, updateTodoItemInfo.Owner);
 
@@ -124,10 +126,11 @@ namespace Todo.Services.TodoItemLifecycleManagement
                 throw new ArgumentNullException(nameof(deleteTodoItemInfo));
             }
 
-            Validator.ValidateObject(deleteTodoItemInfo, new ValidationContext(deleteTodoItemInfo), true);
+            Validator.ValidateObject(deleteTodoItemInfo, new ValidationContext(deleteTodoItemInfo),
+                validateAllProperties: true);
 
             TodoItem existingTodoItem = await GetExistingTodoItem(deleteTodoItemInfo.Id, deleteTodoItemInfo.Owner);
-            
+
             todoDbContext.TodoItems.Remove(existingTodoItem);
             await todoDbContext.SaveChangesAsync();
 
