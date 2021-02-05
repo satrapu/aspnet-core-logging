@@ -12,7 +12,7 @@ set -o errexit
 
 # Install latest version of Docker Desktop for Mac
 echo 'Installing Docker Desktop for Mac ...'
-brew cask install docker
+brew install --cask docker
 
 # Allow Docker.app to run without confirmation
 xattr -d -r com.apple.quarantine /Applications/Docker.app
