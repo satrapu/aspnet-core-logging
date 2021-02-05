@@ -83,6 +83,33 @@ namespace Todo.WebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [Test]
+        public async Task GetByQueryAsync_UsingInvalidJsonWebToken_ReturnsHttpStatusCodeUnauthorized()
+        {
+            // Arrange
+            using HttpClient httpClient = testWebApplicationFactory.CreateClient();
+
+            var queryString = new Dictionary<string, string>
+            {
+                {nameof(TodoItemQueryModel.PageIndex), 0.ToString()},
+                {nameof(TodoItemQueryModel.PageSize), 5.ToString()},
+                {nameof(TodoItemQueryModel.SortBy), nameof(TodoItem.CreatedOn)},
+                {nameof(TodoItemQueryModel.IsSortAscending), bool.FalseString}
+            };
+            string requestUri = QueryHelpers.AddQueryString(BaseUrl, queryString);
+
+            // Act
+            HttpResponseMessage response = await httpClient.GetAsync(requestUri);
+
+            // Assert
+            response.IsSuccessStatusCode.Should().BeFalse();
+            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+        }
+
+        /// <summary>
+        /// Ensures method <see cref="TodoController.GetByQueryAsync" /> works as expected.
+        /// </summary>
+        /// <returns></returns>
+        [Test]
         public async Task GetByQueryAsync_UsingDefaults_ReturnsExpectedResult()
         {
             // Arrange
