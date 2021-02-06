@@ -9,7 +9,7 @@ namespace Todo.Services.TodoItemLifecycleManagement
     {
         public const int DefaultPageIndex = 0;
         public const int DefaultPageSize = 25;
-        
+
         /// <summary>
         /// Gets or sets the id of the todo item to be fetched using this query.
         /// </summary>
@@ -17,6 +17,9 @@ namespace Todo.Services.TodoItemLifecycleManagement
 
         /// <summary>
         /// Gets or sets the pattern the name of the todo items must match to be fetched using this query.
+        /// <br/>
+        /// This pattern may contain wildcards - see more here:
+        /// https://docs.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbfunctionsextensions.like?view=efcore-3.1.
         /// </summary>
         public string NamePattern { get; set; }
 
