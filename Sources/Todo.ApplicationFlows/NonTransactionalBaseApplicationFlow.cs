@@ -54,7 +54,7 @@ namespace Todo.ApplicationFlows
                 try
                 {
                     logger.LogInformation(
-                        "User [{FlowInitiator}] has started application flow [{ApplicationFlowName}] ...",
+                        "User [{FlowInitiator}] has started executing application flow [{ApplicationFlowName}] ...",
                         flowInitiatorName, flowName);
                     TOutput output = await InternalExecuteAsync(input, flowInitiator);
                     isSuccess = true;
@@ -64,7 +64,7 @@ namespace Todo.ApplicationFlows
                 {
                     stopwatch.Stop();
                     logger.LogInformation(
-                        "User [{FlowInitiator}] has finished application flow [{ApplicationFlowName}] "
+                        "User [{FlowInitiator}] has finished executing application flow [{ApplicationFlowName}] "
                         + "with the outcome: [{ApplicationFlowOutcome}]; "
                         + "time taken: [{ApplicationFlowDuration}]",
                         flowInitiatorName, flowName, isSuccess ? "success" : "failure", stopwatch.Elapsed);
