@@ -9,7 +9,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.WebUtilities;
 using NUnit.Framework;
 using Todo.Persistence.Entities;
-using Todo.WebApi.Infrastructure;
+using Todo.TestInfrastructure;
 using Todo.WebApi.Models;
 
 namespace Todo.WebApi.Controllers
@@ -62,8 +62,8 @@ namespace Todo.WebApi.Controllers
                 HttpResponseMessage response = await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemModel);
 
                 // Assert
-                response.IsSuccessStatusCode.Should().BeTrue();
-                response.StatusCode.Should().Be(HttpStatusCode.Created);
+                response.IsSuccessStatusCode.Should().BeTrue("an entity has been created");
+                response.StatusCode.Should().Be(HttpStatusCode.Created, "an entity has been created");
 
                 id = await response.Content.ReadAsAsync<long>();
                 id.Should().BeGreaterOrEqualTo(1);
@@ -79,11 +79,30 @@ namespace Todo.WebApi.Controllers
         }
 
         /// <summary>
+        /// Ensures method <see cref="TodoController.CreateAsync" /> works as expected.
+        /// </summary>
+        /// <returns></returns>
+        [Test]
+        public async Task CreateAsync_UsingInvalidTodoItem_ReturnsBadRequestHttpStatusCode()
+        {
+            // Arrange
+            using HttpClient httpClient = await testWebApplicationFactory.CreateClientWithJwtAsync();
+            var invalidModel = new NewTodoItemModel();
+
+            // Act
+            HttpResponseMessage response = await httpClient.PostAsJsonAsync(BaseUrl, invalidModel);
+
+            // Assert
+            response.IsSuccessStatusCode.Should().BeFalse("input model is invalid");
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest, "input model is invalid");
+        }
+
+        /// <summary>
         /// Ensures method <see cref="TodoController.GetByQueryAsync" /> works as expected.
         /// </summary>
         /// <returns></returns>
         [Test]
-        public async Task GetByQueryAsync_UsingInvalidJsonWebToken_ReturnsHttpStatusCodeUnauthorized()
+        public async Task GetByQueryAsync_UsingInvalidJsonWebToken_ReturnsUnauthorizedHttpStatusCode()
         {
             // Arrange
             using HttpClient httpClient = testWebApplicationFactory.CreateClient();
@@ -225,7 +244,7 @@ namespace Todo.WebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [Test]
-        public async Task GetByIdAsync_UsingNonExistingId_ReturnsNotFoundStatusCode()
+        public async Task GetByIdAsync_UsingNonExistingId_ReturnsNotFoundHttpStatusCode()
         {
             // Arrange
             using HttpClient httpClient = await testWebApplicationFactory.CreateClientWithJwtAsync();
@@ -234,7 +253,8 @@ namespace Todo.WebApi.Controllers
             try
             {
                 string nameSuffix = Guid.NewGuid().ToString("N");
-                string name = $"it--{nameof(GetByIdAsync_UsingNonExistingId_ReturnsNotFoundStatusCode)}--{nameSuffix}";
+                string name =
+                    $"it--{nameof(GetByIdAsync_UsingNonExistingId_ReturnsNotFoundHttpStatusCode)}--{nameSuffix}";
 
                 var newTodoItemModel = new NewTodoItemModel
                 {
@@ -252,6 +272,7 @@ namespace Todo.WebApi.Controllers
                 response = await httpClient.GetAsync($"{BaseUrl}/{nonExistentId}");
 
                 // Assert
+                response.IsSuccessStatusCode.Should().BeFalse("must not find something which does not exist");
                 response.StatusCode.Should()
                     .Be(HttpStatusCode.NotFound, "must not find something which does not exist");
             }

@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using NUnit.Framework;
 using Todo.Services.TodoItemLifecycleManagement;
-using Todo.WebApi.Infrastructure;
+using Todo.TestInfrastructure;
 
 namespace Todo.WebApi.ExceptionHandling
 {

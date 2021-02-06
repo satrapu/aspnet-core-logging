@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
@@ -15,11 +14,13 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using Npgsql;
 using Todo.Persistence;
+using Todo.WebApi;
 using Todo.WebApi.Models;
 
-namespace Todo.WebApi.Infrastructure
+namespace Todo.TestInfrastructure
 {
     public class TestWebApplicationFactory : WebApplicationFactory<Startup>
     {
@@ -34,14 +35,14 @@ namespace Todo.WebApi.Infrastructure
         protected override void ConfigureWebHost(IWebHostBuilder webHostBuilder)
         {
             IConfigurationRoot testConfiguration = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json", false)
-                .AddJsonFile($"appsettings.{EnvironmentName}.json", false)
+                .AddJsonFile("appsettings.json", optional: false)
+                .AddJsonFile($"appsettings.{EnvironmentName}.json", optional: false)
                 .AddEnvironmentVariables()
                 .Build();
 
             webHostBuilder.UseConfiguration(testConfiguration);
             webHostBuilder.UseEnvironment(EnvironmentName);
-            webHostBuilder.ConfigureTestServices(services =>
+            webHostBuilder.ConfigureServices(services =>
             {
                 // Don't run IHostedServices when running tests
                 services.RemoveAll(typeof(IHostedService));
@@ -79,14 +80,16 @@ namespace Todo.WebApi.Infrastructure
             };
 
             using HttpClient httpClient = CreateClientWithLoggingCapabilities();
-            HttpResponseMessage httpResponseMessage = await httpClient.PostAsJsonAsync("api/jwt", generateJwtModel);
+            HttpResponseMessage httpResponseMessage = await httpClient.PostAsync("api/jwt",
+                new StringContent(JsonConvert.SerializeObject(generateJwtModel), Encoding.UTF8, "application/json"));
 
             if (!httpResponseMessage.IsSuccessStatusCode)
             {
                 throw new CouldNotGetJwtException(httpResponseMessage);
             }
 
-            JwtModel jwtModel = await httpResponseMessage.Content.ReadAsAsync<JwtModel>();
+            JwtModel jwtModel =
+                JsonConvert.DeserializeObject<JwtModel>(await httpResponseMessage.Content.ReadAsStringAsync());
             return jwtModel.AccessToken;
         }
 

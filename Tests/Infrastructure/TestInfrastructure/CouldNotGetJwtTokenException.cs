@@ -1,7 +1,7 @@
 using System;
 using System.Net.Http;
 
-namespace Todo.WebApi.Infrastructure
+namespace Todo.TestInfrastructure
 {
     public class CouldNotGetJwtException : Exception
     {
