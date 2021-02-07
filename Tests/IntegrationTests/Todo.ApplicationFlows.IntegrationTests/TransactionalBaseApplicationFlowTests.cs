@@ -58,20 +58,22 @@ namespace Todo.ApplicationFlows
             ILogger logger = loggerFactory.CreateLogger<ApplicationFlowServingTestingPurposes>();
             string namePrefix = $"todo-item--{Guid.NewGuid():N}";
 
+            ITodoItemService localTodoItemService = todoItemService;
+            
             // This flow is expected to fail since the service is unable to persist invalid models
             async Task<object> FlowExpectedToThrowExceptionAsync()
             {
-                await todoItemService.AddAsync(new NewTodoItemInfo
+                await localTodoItemService.AddAsync(new NewTodoItemInfo
                 {
                     Name = $"{namePrefix}--#1",
                     Owner = flowInitiator
                 });
-                await todoItemService.AddAsync(new NewTodoItemInfo
+                await localTodoItemService.AddAsync(new NewTodoItemInfo
                 {
                     Name = $"{namePrefix}--#2",
                     Owner = flowInitiator
                 });
-                await todoItemService.AddAsync(new NewTodoItemInfo
+                await localTodoItemService.AddAsync(new NewTodoItemInfo
                 {
                     Name = $"{namePrefix}--#3",
                     Owner = flowInitiator
@@ -92,6 +94,9 @@ namespace Todo.ApplicationFlows
                 NamePattern = $"{namePrefix}%"
             };
 
+            // Get a new instance of ITodoItemService service to ensure data will be fetched from
+            // a new DbContext.
+            todoItemService = testWebApplicationFactory.Services.GetRequiredService<ITodoItemService>();
             IList<TodoItemInfo> list = await todoItemService.GetByQueryAsync(query);
             list.Count.Should().Be(expected: 0, "the application flow failed to persist todo items");
         }
@@ -120,21 +125,23 @@ namespace Todo.ApplicationFlows
             string namePrefix = $"todo-item--{Guid.NewGuid():N}";
 
             // This flow is expected to fail since the service is unable to persist invalid models
+            ITodoItemService localTodoItemService = todoItemService;
+
             async Task<object> FlowExpectedToSucceedAsync()
             {
-                await todoItemService.AddAsync(new NewTodoItemInfo
+                await localTodoItemService.AddAsync(new NewTodoItemInfo
                 {
                     Name = $"{namePrefix}--#1",
                     IsComplete = false,
                     Owner = flowInitiator
                 });
-                await todoItemService.AddAsync(new NewTodoItemInfo
+                await localTodoItemService.AddAsync(new NewTodoItemInfo
                 {
                     Name = $"{namePrefix}--#2",
                     IsComplete = false,
                     Owner = flowInitiator
                 });
-                await todoItemService.AddAsync(new NewTodoItemInfo
+                await localTodoItemService.AddAsync(new NewTodoItemInfo
                 {
                     Name = $"{namePrefix}--#3",
                     IsComplete = false,
@@ -155,6 +162,9 @@ namespace Todo.ApplicationFlows
                 NamePattern = $"{namePrefix}%"
             };
 
+            // Get a new instance of ITodoItemService service to ensure data will be fetched from
+            // a new DbContext.
+            todoItemService = testWebApplicationFactory.Services.GetRequiredService<ITodoItemService>();
             IList<TodoItemInfo> list = await todoItemService.GetByQueryAsync(query);
             list.Count.Should().Be(expected: 3, "several todo items have been previously created");
         }
