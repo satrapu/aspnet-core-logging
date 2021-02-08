@@ -12,6 +12,8 @@ set -o errexit
 
 # Install latest version of Docker Desktop for Mac
 echo 'Installing Docker Desktop for Mac ...'
+start=$SECONDS
+
 brew install --cask docker &>/dev/null
 
 # Allow Docker.app to run without confirmation
@@ -23,10 +25,14 @@ sudo /bin/cp /Applications/Docker.app/Contents/Resources/com.docker.vmnetd.plist
 sudo /bin/chmod 544 /Library/PrivilegedHelperTools/com.docker.vmnetd
 sudo /bin/chmod 644 /Library/LaunchDaemons/com.docker.vmnetd.plist
 sudo /bin/launchctl load /Library/LaunchDaemons/com.docker.vmnetd.plist
-echo 'Docker Desktop for Mac has been installed'
+
+end=$SECONDS
+duration=$(( end - start ))
+echo "Docker Desktop for Mac has been installed in $duration seconds"
 
 printf '\n\n'
 echo 'Starting Docker Desktop for Mac, if necessary ...'
+start=$SECONDS
 open -g -a Docker.app || exit
 
 # Wait for the server to start up, if applicable.
@@ -36,7 +42,10 @@ while ! docker system info &>/dev/null; do
   sleep 5
 done
 (( i )) && printf '\n'
-echo 'Docker Desktop for Mac is ready to be used'
+
+end=$SECONDS
+duration=$(( end - start ))
+echo "Docker Desktop for Mac is ready to be used (after $duration seconds)"
 
 printf '\n\n'
 echo 'Displaying Docker version ...'
