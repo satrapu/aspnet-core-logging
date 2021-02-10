@@ -38,9 +38,9 @@ namespace Todo.ApplicationFlows
         /// Ensures method <see cref="TransactionalBaseApplicationFlow{TInput,TOutput}.ExecuteAsync" />
         /// works as expected.
         /// <br/>
-        /// Given an application flow containing several steps which are expected to fail, then the flow must also fail.
-        /// Each such step is supposed to persist one todo item to the underlying database, but since the flow will fail,
-        /// the test checks whether database contain any such items.
+        /// Given an application flow containing several steps which are expected to fail, then the entire flow must
+        /// fail too. Each such step is supposed to persist one todo item to the underlying database, but since the
+        /// flow will fail, the test checks whether database contain any such items.
         /// </summary>
         [Test]
         public async Task ExecuteAsync_WhenOneFlowStepThrowsException_MustThrowException()
@@ -59,7 +59,7 @@ namespace Todo.ApplicationFlows
             string namePrefix = $"todo-item--{Guid.NewGuid():N}";
 
             ITodoItemService localTodoItemService = todoItemService;
-            
+
             // This flow is expected to fail since the service is unable to persist invalid models
             async Task<object> FlowExpectedToThrowExceptionAsync()
             {
