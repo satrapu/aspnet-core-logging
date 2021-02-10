@@ -6,13 +6,17 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
-        <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" />
-        <PackageReference Include="MiniProfiler.AspNetCore.Mvc" />
-        <PackageReference Include="MiniProfiler.EntityFrameworkCore" />
-        <PackageReference Include="Serilog.AspNetCore" />
-        <PackageReference Include="Serilog.Enrichers.Thread" />
-        <PackageReference Include="Serilog.Sinks.Seq" />
+        <ProjectReference Include="..\Todo.ApplicationFlows\Todo.ApplicationFlows.csproj"/>
+    </ItemGroup>
+    
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer"/>
+        <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore"/>
+        <PackageReference Include="MiniProfiler.AspNetCore.Mvc"/>
+        <PackageReference Include="MiniProfiler.EntityFrameworkCore"/>
+        <PackageReference Include="Serilog.AspNetCore"/>
+        <PackageReference Include="Serilog.Enrichers.Thread"/>
+        <PackageReference Include="Serilog.Sinks.Seq"/>
     </ItemGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
@@ -23,16 +27,6 @@
         <CodeAnalysisRuleSet>Todo.WebApi.ruleset</CodeAnalysisRuleSet>
     </PropertyGroup>
 
-    <ItemGroup>
-        <None Remove="Logs\**" />
-        <None Remove="mono_crash.mem.*.blob" />
-        <None Update="appsettings.Development.json">
-            <DependentUpon>appsettings.json</DependentUpon>
-        </None>
-    </ItemGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\Todo.ApplicationFlows\Todo.ApplicationFlows.csproj" />
-    </ItemGroup>
 
 </Project>
