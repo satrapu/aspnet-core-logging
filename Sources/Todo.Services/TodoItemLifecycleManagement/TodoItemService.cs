@@ -100,7 +100,7 @@ namespace Todo.Services.TodoItemLifecycleManagement
             return newTodoItem.Id;
         }
 
-        public async Task UpdateAsync(UpdateTodoItemInfo updateTodoItemInfo)
+        public Task UpdateAsync(UpdateTodoItemInfo updateTodoItemInfo)
         {
             if (updateTodoItemInfo == null)
             {
@@ -110,6 +110,11 @@ namespace Todo.Services.TodoItemLifecycleManagement
             Validator.ValidateObject(updateTodoItemInfo, new ValidationContext(updateTodoItemInfo),
                 validateAllProperties: true);
 
+            return InternalUpdateAsync(updateTodoItemInfo);
+        }
+
+        private async Task InternalUpdateAsync(UpdateTodoItemInfo updateTodoItemInfo)
+        {
             TodoItem existingTodoItem = await GetExistingTodoItem(updateTodoItemInfo.Id, updateTodoItemInfo.Owner);
 
             if (updateTodoItemInfo.IsComplete.HasValue)
