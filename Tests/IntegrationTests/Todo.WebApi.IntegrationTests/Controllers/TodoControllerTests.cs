@@ -35,12 +35,20 @@ namespace Todo.WebApi.Controllers
         private const string BecauseMustNotFindSomethingWhichDoesNotExist =
             "must not find something which does not exist";
 
+        /// <summary>
+        /// Ensures the appropriate <see cref="TestWebApplicationFactory"/> instance has been created before running
+        /// any test method found in this class.
+        /// </summary>
         [OneTimeSetUp]
         public void GivenAnHttpRequestIsToBePerformed()
         {
             webApplicationFactory = new TestWebApplicationFactory(MethodBase.GetCurrentMethod()?.DeclaringType?.Name);
         }
 
+        /// <summary>
+        /// Ensure the <see cref="TestWebApplicationFactory"/> instance is properly disposed after all test methods
+        /// found inside this class have been run.
+        /// </summary>
         [OneTimeTearDown]
         public void Cleanup()
         {
@@ -48,7 +56,8 @@ namespace Todo.WebApi.Controllers
         }
 
         /// <summary>
-        /// Ensures method <see cref="TodoController.CreateAsync" /> works as expected.
+        /// Ensures method <see cref="TodoController.CreateAsync" /> fails in case the current request is not
+        /// accompanied by a JWT.
         /// </summary>
         /// <returns></returns>
         [Test]
@@ -67,11 +76,11 @@ namespace Todo.WebApi.Controllers
         }
 
         /// <summary>
-        /// Ensures method <see cref="TodoController.CreateAsync" /> works as expected.
+        /// Ensures method <see cref="TodoController.CreateAsync" /> creates a new entity and returns its identifier.
         /// </summary>
         /// <returns></returns>
         [Test]
-        public async Task CreateAsync_UsingValidTodoItem_ReturnsTheSameInstance()
+        public async Task CreateAsync_UsingValidTodoItem_ReturnsExpectedId()
         {
             // Arrange
             using HttpClient httpClient = await webApplicationFactory.CreateClientWithJwtAsync();
@@ -81,7 +90,7 @@ namespace Todo.WebApi.Controllers
             {
                 var newTodoItemModel = new NewTodoItemModel
                 {
-                    Name = $"it--{nameof(CreateAsync_UsingValidTodoItem_ReturnsTheSameInstance)}--{Guid.NewGuid():N}",
+                    Name = $"it--{nameof(CreateAsync_UsingValidTodoItem_ReturnsExpectedId)}--{Guid.NewGuid():N}",
                     IsComplete = DateTime.UtcNow.Ticks % 2 == 0
                 };
 
@@ -106,7 +115,7 @@ namespace Todo.WebApi.Controllers
         }
 
         /// <summary>
-        /// Ensures method <see cref="TodoController.CreateAsync" /> works as expected.
+        /// Ensures method <see cref="TodoController.CreateAsync" /> fails in case the provided input is not valid.
         /// </summary>
         /// <returns></returns>
         [Test]
@@ -125,7 +134,8 @@ namespace Todo.WebApi.Controllers
         }
 
         /// <summary>
-        /// Ensures method <see cref="TodoController.GetByQueryAsync" /> works as expected.
+        /// Ensures method <see cref="TodoController.GetByQueryAsync" /> fails in case the current request is not
+        /// accompanied by a JWT.
         /// </summary>
         /// <returns></returns>
         [Test]
@@ -152,7 +162,8 @@ namespace Todo.WebApi.Controllers
         }
 
         /// <summary>
-        /// Ensures method <see cref="TodoController.GetByQueryAsync" /> works as expected.
+        /// Ensures method <see cref="TodoController.GetByQueryAsync" /> returns the expected outcome
+        /// when using a valid query.
         /// </summary>
         /// <returns></returns>
         [Test]
@@ -217,7 +228,8 @@ namespace Todo.WebApi.Controllers
         }
 
         /// <summary>
-        /// Ensures method <see cref="TodoController.GetByIdAsync" /> works as expected.
+        /// Ensures method <see cref="TodoController.GetByIdAsync" /> fails in case the current request is not
+        /// accompanied by a JWT.
         /// </summary>
         /// <returns></returns>
         [Test]
@@ -236,7 +248,7 @@ namespace Todo.WebApi.Controllers
         }
 
         /// <summary>
-        /// Ensures method <see cref="TodoController.GetByIdAsync" /> works as expected.
+        /// Ensures method <see cref="TodoController.GetByIdAsync" /> is able to find a newly created entity.
         /// </summary>
         /// <returns></returns>
         [Test]
@@ -286,7 +298,8 @@ namespace Todo.WebApi.Controllers
         }
 
         /// <summary>
-        /// Ensures method <see cref="TodoController.GetByIdAsync" /> works as expected.
+        /// Ensures method <see cref="TodoController.GetByIdAsync" /> fails in case the API does not find any entities
+        /// matching the given input query.
         /// </summary>
         /// <returns></returns>
         [Test]
@@ -332,7 +345,8 @@ namespace Todo.WebApi.Controllers
         }
 
         /// <summary>
-        /// Ensures method <see cref="TodoController.UpdateAsync" /> works as expected.
+        /// Ensures method <see cref="TodoController.UpdateAsync" /> fails in case the current request is not
+        /// accompanied by a JWT.
         /// </summary>
         /// <returns></returns>
         [Test]
@@ -352,7 +366,7 @@ namespace Todo.WebApi.Controllers
         }
 
         /// <summary>
-        /// Ensures method <see cref="TodoController.UpdateAsync" /> works as expected.
+        /// Ensures method <see cref="TodoController.UpdateAsync" /> successfully updates a newly created entity.
         /// </summary>
         /// <returns></returns>
         [Test]
@@ -411,7 +425,8 @@ namespace Todo.WebApi.Controllers
         }
 
         /// <summary>
-        /// Ensures method <see cref="TodoController.DeleteAsync" /> works as expected.
+        /// Ensures method <see cref="TodoController.DeleteAsync" /> fails in case the current request is not
+        /// accompanied by a JWT.
         /// </summary>
         /// <returns></returns>
         [Test]
@@ -430,7 +445,7 @@ namespace Todo.WebApi.Controllers
         }
 
         /// <summary>
-        /// Ensures method <see cref="TodoController.DeleteAsync" /> works as expected.
+        /// Ensures method <see cref="TodoController.DeleteAsync" /> successfully deletes a newly created entity.
         /// </summary>
         /// <returns></returns>
         [Test]

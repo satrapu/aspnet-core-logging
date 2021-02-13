@@ -37,10 +37,11 @@ namespace Todo.WebApi.ExceptionHandling
         }
 
         /// <summary>
-        /// Tests <see cref="CustomExceptionHandler.WriteResponse"/> method.
+        /// Ensures <see cref="CustomExceptionHandler.WriteResponse"/> method successfully converts an API exception
+        /// to an instance of the <see cref="ProblemDetails"/> class.
         /// </summary>
         [Test]
-        public async Task WriteResponse_AgainstEndpointThrowingException_MustHandleException()
+        public async Task WriteResponse_WhenApiThrowsException_MustConvertExceptionToInstanceOfProblemDetailsClass()
         {
             // Arrange
             using HttpClient httpClient = await webApplicationFactoryWhichThrowsException.CreateClientWithJwtAsync();
@@ -66,6 +67,10 @@ namespace Todo.WebApi.ExceptionHandling
                 .NotBeNullOrWhiteSpace("the id accompanying the unhandled exception must not be null or whitespace");
         }
 
+        /// <summary>
+        /// An <see cref="TestWebApplicationFactory"/> which throws an exception whenever one particular service
+        /// is called.
+        /// </summary>
         private class WebApplicationFactoryWhichThrowsException : TestWebApplicationFactory
         {
             public WebApplicationFactoryWhichThrowsException() : base(nameof(CustomErrorHandlerHelperTests))
@@ -91,6 +96,10 @@ namespace Todo.WebApi.ExceptionHandling
             }
         }
 
+        /// <summary>
+        /// An <see cref="ITodoItemService"/> implementation which throws an exception when any of its methods
+        /// are called.
+        /// </summary>
         private class TodoItemServiceWhichThrowsException : ITodoItemService
         {
             public Task<IList<TodoItemInfo>> GetByQueryAsync(TodoItemQuery todoItemQuery)
