@@ -52,6 +52,25 @@ namespace Todo.WebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [Test]
+        public async Task CreateAsync_UsingNoJsonWebToken_ReturnsUnauthorizedHttpStatusCode()
+        {
+            // Arrange
+            using HttpClient httpClient = webApplicationFactory.CreateClient();
+            var newTodoItemModel = new NewTodoItemModel();
+
+            // Act
+            HttpResponseMessage response = await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemModel);
+
+            // Assert
+            response.IsSuccessStatusCode.Should().BeFalse(BecauseCurrentRequestHasNoJwt);
+            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized, BecauseCurrentRequestHasNoJwt);
+        }
+
+        /// <summary>
+        /// Ensures method <see cref="TodoController.CreateAsync" /> works as expected.
+        /// </summary>
+        /// <returns></returns>
+        [Test]
         public async Task CreateAsync_UsingValidTodoItem_ReturnsTheSameInstance()
         {
             // Arrange
@@ -202,6 +221,25 @@ namespace Todo.WebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [Test]
+        public async Task GetByIdAsync_UsingNoJsonWebToken_ReturnsUnauthorizedHttpStatusCode()
+        {
+            // Arrange
+            using HttpClient httpClient = webApplicationFactory.CreateClient();
+            long? id = int.MaxValue;
+
+            // Act
+            HttpResponseMessage response = await httpClient.GetAsync($"{BaseUrl}/{id}");
+
+            // Assert
+            response.IsSuccessStatusCode.Should().BeFalse(BecauseCurrentRequestHasNoJwt);
+            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized, BecauseCurrentRequestHasNoJwt);
+        }
+
+        /// <summary>
+        /// Ensures method <see cref="TodoController.GetByIdAsync" /> works as expected.
+        /// </summary>
+        /// <returns></returns>
+        [Test]
         public async Task GetByIdAsync_UsingNewlyCreatedItem_ReturnsExpectedResult()
         {
             // Arrange
@@ -298,6 +336,26 @@ namespace Todo.WebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [Test]
+        public async Task UpdateAsync_UsingNoJsonWebToken_ReturnsUnauthorizedHttpStatusCode()
+        {
+            // Arrange
+            using HttpClient httpClient = webApplicationFactory.CreateClient();
+            long? id = int.MaxValue;
+            var updateTodoItemModel = new UpdateTodoItemModel();
+
+            // Act
+            HttpResponseMessage response = await httpClient.PutAsJsonAsync($"{BaseUrl}/{id}", updateTodoItemModel);
+
+            // Assert
+            response.IsSuccessStatusCode.Should().BeFalse(BecauseCurrentRequestHasNoJwt);
+            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized, BecauseCurrentRequestHasNoJwt);
+        }
+
+        /// <summary>
+        /// Ensures method <see cref="TodoController.UpdateAsync" /> works as expected.
+        /// </summary>
+        /// <returns></returns>
+        [Test]
         public async Task UpdateAsync_UsingNewlyCreatedTodoItem_MustSucceed()
         {
             // Arrange
@@ -350,6 +408,25 @@ namespace Todo.WebApi.Controllers
                     response.IsSuccessStatusCode.Should().BeTrue(BecauseCleanupMustSucceed);
                 }
             }
+        }
+
+        /// <summary>
+        /// Ensures method <see cref="TodoController.DeleteAsync" /> works as expected.
+        /// </summary>
+        /// <returns></returns>
+        [Test]
+        public async Task DeleteAsync_UsingNoJsonWebToken_ReturnsUnauthorizedHttpStatusCode()
+        {
+            // Arrange
+            using HttpClient httpClient = webApplicationFactory.CreateClient();
+            long? id = int.MaxValue;
+
+            // Act
+            HttpResponseMessage response = await httpClient.DeleteAsync($"{BaseUrl}/{id}");
+
+            // Assert
+            response.IsSuccessStatusCode.Should().BeFalse(BecauseCurrentRequestHasNoJwt);
+            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized, BecauseCurrentRequestHasNoJwt);
         }
 
         /// <summary>
