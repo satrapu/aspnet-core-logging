@@ -133,7 +133,7 @@ namespace Todo.Services.TodoItemLifecycleManagement
                 , existingTodoItem.Id, existingTodoItem.LastUpdatedBy);
         }
 
-        public async Task DeleteAsync(DeleteTodoItemInfo deleteTodoItemInfo)
+        public Task DeleteAsync(DeleteTodoItemInfo deleteTodoItemInfo)
         {
             if (deleteTodoItemInfo == null)
             {
@@ -143,6 +143,11 @@ namespace Todo.Services.TodoItemLifecycleManagement
             Validator.ValidateObject(deleteTodoItemInfo, new ValidationContext(deleteTodoItemInfo),
                 validateAllProperties: true);
 
+            return InternalDeleteAsync(deleteTodoItemInfo);
+        }
+
+        private async Task InternalDeleteAsync(DeleteTodoItemInfo deleteTodoItemInfo)
+        {
             TodoItem existingTodoItem = await GetExistingTodoItem(deleteTodoItemInfo.Id, deleteTodoItemInfo.Owner);
 
             todoDbContext.TodoItems.Remove(existingTodoItem);
