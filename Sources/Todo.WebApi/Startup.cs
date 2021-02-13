@@ -273,7 +273,7 @@ namespace Todo.WebApi
             }
             catch (Exception exception)
             {
-                logger.LogError(exception, "Failed to migrate database {Database}", database);
+                logger.LogCritical(exception, "Failed to migrate database {Database}", database);
                 throw;
             }
 

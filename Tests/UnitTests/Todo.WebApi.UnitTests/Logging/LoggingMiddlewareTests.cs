@@ -26,9 +26,9 @@ namespace Todo.WebApi.Logging
             var loggerMock = new Mock<ILogger<LoggingMiddleware>>();
 
             var loggingMiddleware = new LoggingMiddleware(requestDelegateMock.Object
-                                                        , httpContextLoggingHandlerMock.Object
-                                                        , httpObjectConverterMock.Object
-                                                        , loggerMock.Object);
+                , httpContextLoggingHandlerMock.Object
+                , httpObjectConverterMock.Object
+                , loggerMock.Object);
             loggingMiddleware.Should().NotBeNull();
         }
 
@@ -41,24 +41,25 @@ namespace Todo.WebApi.Logging
             try
             {
                 var requestDelegateMock = new Mock<RequestDelegate>();
-               
+
                 var httpContextLoggingHandlerMock = new Mock<IHttpContextLoggingHandler>();
                 httpContextLoggingHandlerMock.Setup(x => x.ShouldLog(It.IsAny<HttpContext>()))
-                                             .Returns(false);
+                    .Returns(false);
 
                 var httpObjectConverterMock = new Mock<IHttpObjectConverter>();
                 var loggerMock = new Mock<ILogger<LoggingMiddleware>>();
 
                 var loggingMiddleware = new LoggingMiddleware(requestDelegateMock.Object
-                                                            , httpContextLoggingHandlerMock.Object
-                                                            , httpObjectConverterMock.Object
-                                                            , loggerMock.Object);
+                    , httpContextLoggingHandlerMock.Object
+                    , httpObjectConverterMock.Object
+                    , loggerMock.Object);
 
                 await loggingMiddleware.Invoke(new DefaultHttpContext());
             }
-            catch (Exception exception)
+            catch (Exception unexpectedException)
             {
-                Assert.Fail($"Invoke method shouldn't have failed, but alas: {exception.Message}\n{exception.StackTrace}");
+                Assert.Fail(
+                    $"Invoke method shouldn't have failed, but alas: {unexpectedException.Message}\n{unexpectedException.StackTrace}");
             }
         }
 
@@ -74,21 +75,22 @@ namespace Todo.WebApi.Logging
 
                 var httpContextLoggingHandlerMock = new Mock<IHttpContextLoggingHandler>();
                 httpContextLoggingHandlerMock.Setup(x => x.ShouldLog(It.IsAny<HttpContext>()))
-                                             .Returns(true);
+                    .Returns(true);
 
                 var httpObjectConverterMock = new Mock<IHttpObjectConverter>();
                 var loggerMock = new Mock<ILogger<LoggingMiddleware>>();
 
                 var loggingMiddleware = new LoggingMiddleware(requestDelegateMock.Object
-                                                            , httpContextLoggingHandlerMock.Object
-                                                            , httpObjectConverterMock.Object
-                                                            , loggerMock.Object);
+                    , httpContextLoggingHandlerMock.Object
+                    , httpObjectConverterMock.Object
+                    , loggerMock.Object);
 
                 await loggingMiddleware.Invoke(new DefaultHttpContext());
             }
-            catch (Exception exception)
+            catch (Exception unexpectedException)
             {
-                Assert.Fail($"Invoke method shouldn't have failed, but alas: {exception.Message}\n{exception.StackTrace}");
+                Assert.Fail(
+                    $"Invoke method shouldn't have failed, but alas: {unexpectedException.Message}\n{unexpectedException.StackTrace}");
             }
         }
     }
