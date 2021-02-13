@@ -8,7 +8,7 @@
     <ItemGroup>
         <ProjectReference Include="..\Todo.ApplicationFlows\Todo.ApplicationFlows.csproj"/>
     </ItemGroup>
-    
+
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer"/>
         <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore"/>
@@ -26,7 +26,5 @@
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
         <CodeAnalysisRuleSet>Todo.WebApi.ruleset</CodeAnalysisRuleSet>
     </PropertyGroup>
-
-
-
+    
 </Project>
