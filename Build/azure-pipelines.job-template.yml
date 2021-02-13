@@ -150,6 +150,29 @@ jobs:
     name: 'build_sources'
     displayName: 'Build sources'
 
+  # Run architecture tests
+  - script: >-
+    dotnet test $(Build.SourcesDirectory)/Todo.sln
+    --no-build
+    --no-restore
+    --configuration ${{ parameters.build.configuration }}
+    --test-adapter-path "."
+    --logger "nunit"
+    -- NUnit.Where="cat == ArchitectureTests"
+    name: 'run_architecture_tests'
+    displayName: 'Run architecture tests'
+    
+  - task: PublishTestResults@2
+    name: 'publish_architecture_test_results'
+    displayName: 'Publish architecture test results'
+    condition: succeededOrFailed()
+    inputs:
+      testResultsFormat: 'NUnit'
+      testResultsFiles: '**/ArchitectureTests/**/TestResults/*'
+      mergeTestResults: True
+      buildConfiguration: ${{ parameters.build.configuration }}
+      publishRunAttachments: True
+    
   # Run unit tests and collect code coverage metrics using 'dotnet test' command.
   # See more about this command here: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-test.
   # See more about running selective tests here: https://docs.microsoft.com/en-us/dotnet/core/testing/selective-unit-tests#nunit.
