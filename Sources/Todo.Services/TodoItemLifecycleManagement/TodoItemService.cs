@@ -69,7 +69,7 @@ namespace Todo.Services.TodoItemLifecycleManagement
             return result;
         }
 
-        public async Task<long> AddAsync(NewTodoItemInfo newTodoItemInfo)
+        public Task<long> AddAsync(NewTodoItemInfo newTodoItemInfo)
         {
             if (newTodoItemInfo == null)
             {
@@ -79,6 +79,11 @@ namespace Todo.Services.TodoItemLifecycleManagement
             Validator.ValidateObject(newTodoItemInfo, new ValidationContext(newTodoItemInfo),
                 validateAllProperties: true);
 
+            return InternalAddAsync(newTodoItemInfo);
+        }
+
+        private async Task<long> InternalAddAsync(NewTodoItemInfo newTodoItemInfo)
+        {
             var newTodoItem = new TodoItem(newTodoItemInfo.Name, newTodoItemInfo.Owner.GetName());
 
             if (newTodoItemInfo.IsComplete.HasValue)
