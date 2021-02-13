@@ -96,7 +96,9 @@ namespace Todo.WebApi
 
             // Configure authentication & authorization using JSON web tokens
             IConfigurationSection generateJwtOptions = Configuration.GetSection("GenerateJwt");
+            // ReSharper disable once SettingNotFoundInConfiguration
             string tokenIssuer = generateJwtOptions.GetValue<string>("Issuer");
+            // ReSharper disable once SettingNotFoundInConfiguration
             string tokenAudience = generateJwtOptions.GetValue<string>("Audience");
 
             services
@@ -112,6 +114,7 @@ namespace Todo.WebApi
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey =
                             new SymmetricSecurityKey(
+                                // ReSharper disable once SettingNotFoundInConfiguration
                                 Encoding.UTF8.GetBytes(generateJwtOptions.GetValue<string>("Secret"))),
                         ValidateIssuer = true,
                         ValidIssuer = tokenIssuer,
