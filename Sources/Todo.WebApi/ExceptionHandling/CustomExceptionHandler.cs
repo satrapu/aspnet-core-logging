@@ -23,6 +23,7 @@ namespace Todo.WebApi.ExceptionHandling
     public static class CustomExceptionHandler
     {
         private const string ErrorId = "errorId";
+        private const string ProblemDetailContentType = "application/problem+json";
 
         /// <summary>
         /// Configures handling the exceptions thrown by any part of this web API.
@@ -36,15 +37,8 @@ namespace Todo.WebApi.ExceptionHandling
         {
             ILogger logger = applicationBuilder.ApplicationServices.GetRequiredService<ILoggerFactory>()
                 .CreateLogger(nameof(CustomExceptionHandler));
-
-            if (hostEnvironment.IsStaging() || hostEnvironment.IsProduction())
-            {
-                applicationBuilder.Use((httpContext, _) => WriteResponse(httpContext, logger, false));
-            }
-            else
-            {
-                applicationBuilder.Use((httpContext, _) => WriteResponse(httpContext, logger, true));
-            }
+            bool includeDetails = !hostEnvironment.IsStaging() && !hostEnvironment.IsProduction();
+            applicationBuilder.Use((httpContext, _) => WriteResponse(httpContext, logger, includeDetails));
         }
 
         private static async Task WriteResponse(HttpContext httpContext, ILogger logger, bool includeDetails)
@@ -62,7 +56,7 @@ namespace Todo.WebApi.ExceptionHandling
             ProblemDetails problemDetails = ConvertToProblemDetails(unhandledException, includeDetails);
 
             // ProblemDetails has it's own content type
-            httpContext.Response.ContentType = "application/problem+json";
+            httpContext.Response.ContentType = ProblemDetailContentType;
             httpContext.Response.StatusCode = problemDetails.Status ?? (int) HttpStatusCode.InternalServerError;
 
             // The exception is first logged by the Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware class,
