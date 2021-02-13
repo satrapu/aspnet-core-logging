@@ -38,7 +38,7 @@ namespace Todo.Services.TodoItemLifecycleManagement
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task<IList<TodoItemInfo>> GetByQueryAsync(TodoItemQuery todoItemQuery)
+        public Task<IList<TodoItemInfo>> GetByQueryAsync(TodoItemQuery todoItemQuery)
         {
             if (todoItemQuery == null)
             {
@@ -46,7 +46,11 @@ namespace Todo.Services.TodoItemLifecycleManagement
             }
 
             Validator.ValidateObject(todoItemQuery, new ValidationContext(todoItemQuery), validateAllProperties: true);
+            return InternalGetByQueryAsync(todoItemQuery);
+        }
 
+        private async Task<IList<TodoItemInfo>> InternalGetByQueryAsync(TodoItemQuery todoItemQuery)
+        {
             IQueryable<TodoItem> todoItems = FilterItems(todoItemQuery)
                 // Read more about query tags here: 
                 // https://docs.microsoft.com/en-us/ef/core/querying/tags
