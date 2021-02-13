@@ -32,7 +32,7 @@ namespace Todo.TestInfrastructure
             testDatabaseName = $"it--{applicationName}";
         }
 
-        protected override void ConfigureWebHost(IWebHostBuilder webHostBuilder)
+        protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             IConfigurationRoot testConfiguration = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json", optional: false)
@@ -40,9 +40,9 @@ namespace Todo.TestInfrastructure
                 .AddEnvironmentVariables()
                 .Build();
 
-            webHostBuilder.UseConfiguration(testConfiguration);
-            webHostBuilder.UseEnvironment(EnvironmentName);
-            webHostBuilder.ConfigureServices(services =>
+            builder.UseConfiguration(testConfiguration);
+            builder.UseEnvironment(EnvironmentName);
+            builder.ConfigureServices(services =>
             {
                 // Don't run IHostedServices when running tests
                 services.RemoveAll(typeof(IHostedService));

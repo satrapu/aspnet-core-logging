@@ -77,9 +77,9 @@ namespace Todo.WebApi.ExceptionHandling
             {
             }
 
-            protected override void ConfigureWebHost(IWebHostBuilder webHostBuilder)
+            protected override void ConfigureWebHost(IWebHostBuilder builder)
             {
-                webHostBuilder.ConfigureTestServices(services =>
+                builder.ConfigureTestServices(services =>
                 {
                     ServiceDescriptor serviceDescriptor = services.SingleOrDefault(localServiceDescriptor =>
                         localServiceDescriptor.ServiceType == typeof(TodoItemService));
@@ -92,7 +92,7 @@ namespace Todo.WebApi.ExceptionHandling
                     services.AddScoped<ITodoItemService, TodoItemServiceWhichThrowsException>();
                 });
 
-                base.ConfigureWebHost(webHostBuilder);
+                base.ConfigureWebHost(builder);
             }
         }
 
