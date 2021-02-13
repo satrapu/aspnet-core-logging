@@ -31,8 +31,7 @@ namespace Todo.ApplicationFlows.TodoItems
                 Owner = flowInitiator
             };
 
-            IList<TodoItemInfo> todoItemInfos =
-                await todoItemService.GetByQueryAsync(todoItemQuery);
+            IList<TodoItemInfo> todoItemInfos = await todoItemService.GetByQueryAsync(todoItemQuery);
             TodoItemInfo result = todoItemInfos.FirstOrDefault();
             return result;
         }
