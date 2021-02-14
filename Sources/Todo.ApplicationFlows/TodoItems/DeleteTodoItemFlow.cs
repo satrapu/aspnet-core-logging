@@ -2,6 +2,7 @@
 using System.Security.Principal;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Todo.Services.TodoItemLifecycleManagement;
 
 namespace Todo.ApplicationFlows.TodoItems
@@ -13,8 +14,9 @@ namespace Todo.ApplicationFlows.TodoItems
     {
         private readonly ITodoItemService todoItemService;
 
-        public DeleteTodoItemFlow(ITodoItemService todoItemService, ILogger<DeleteTodoItemFlow> logger) :
-            base("TodoItem/Delete", logger)
+        public DeleteTodoItemFlow(ITodoItemService todoItemService,
+            IOptionsMonitor<ApplicationFlowOptions> applicationFlowOptions, ILogger<DeleteTodoItemFlow> logger) :
+            base("TodoItem/Delete", applicationFlowOptions, logger)
         {
             this.todoItemService = todoItemService ?? throw new ArgumentNullException(nameof(todoItemService));
         }

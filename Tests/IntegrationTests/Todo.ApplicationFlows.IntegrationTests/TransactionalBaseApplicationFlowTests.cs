@@ -4,9 +4,11 @@ using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using System.Security.Principal;
 using System.Threading.Tasks;
+using System.Transactions;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using NUnit.Framework;
 using Todo.Services.TodoItemLifecycleManagement;
 using Todo.TestInfrastructure;
@@ -81,7 +83,11 @@ namespace Todo.ApplicationFlows
                 return null;
             }
 
-            var applicationFlow = new ApplicationFlowServingTestingPurposes(FlowExpectedToThrowExceptionAsync, logger);
+            IOptionsMonitor<ApplicationFlowOptions> applicationFlowOptions =
+                testWebApplicationFactory.Services.GetRequiredService<IOptionsMonitor<ApplicationFlowOptions>>();
+
+            var applicationFlow = new ApplicationFlowServingTestingPurposes(FlowExpectedToThrowExceptionAsync,
+                applicationFlowOptions, logger);
 
             // Act & Assert
             Assert.ThrowsAsync<ValidationException>(
@@ -124,7 +130,7 @@ namespace Todo.ApplicationFlows
             ILogger logger = loggerFactory.CreateLogger<ApplicationFlowServingTestingPurposes>();
             string namePrefix = $"todo-item--{Guid.NewGuid():N}";
 
-            // This flow is expected to fail since the service is unable to persist invalid models
+            // This flow is expected to succeed since the service is persisting valid models
             ITodoItemService localTodoItemService = todoItemService;
 
             async Task<object> FlowExpectedToSucceedAsync()
@@ -150,7 +156,11 @@ namespace Todo.ApplicationFlows
                 return null;
             }
 
-            var applicationFlow = new ApplicationFlowServingTestingPurposes(FlowExpectedToSucceedAsync, logger);
+            IOptionsMonitor<ApplicationFlowOptions> applicationFlowOptions =
+                testWebApplicationFactory.Services.GetRequiredService<IOptionsMonitor<ApplicationFlowOptions>>();
+
+            var applicationFlow = new ApplicationFlowServingTestingPurposes(FlowExpectedToSucceedAsync,
+                applicationFlowOptions, logger);
 
             // Act
             await applicationFlow.ExecuteAsync(input: null, flowInitiator);
@@ -169,12 +179,94 @@ namespace Todo.ApplicationFlows
             list.Count.Should().Be(expected: 3, "several todo items have been previously created");
         }
 
+        /// <summary>
+        /// Ensures <see cref="NonTransactionalBaseApplicationFlow{TInput,TOutput}.ExecuteAsync"/> method fails in case
+        /// of a transaction timeout.
+        /// </summary>
+        /// <returns></returns>
+        [Test]
+        public async Task ExecuteAsync_WhenTransactionTimesOut_MustThrowException()
+        {
+            // Arrange
+            TimeSpan transactionTimeOut = TimeSpan.FromMilliseconds(1);
+            string userName = $"test-user--{Guid.NewGuid():N}";
+            IIdentity identity = new GenericIdentity(userName);
+
+            string[] roles = {$"role--{Guid.NewGuid():N}"};
+            IPrincipal flowInitiator = new GenericPrincipal(identity, roles);
+
+            ITodoItemService todoItemService =
+                testWebApplicationFactory.Services.GetRequiredService<ITodoItemService>();
+            ILoggerFactory loggerFactory = testWebApplicationFactory.Services.GetRequiredService<ILoggerFactory>();
+            ILogger logger = loggerFactory.CreateLogger<ApplicationFlowServingTestingPurposes>();
+            string namePrefix = $"todo-item--{Guid.NewGuid():N}";
+
+            // This flow is expected to fail 
+            ITodoItemService localTodoItemService = todoItemService;
+
+            async Task<object> FlowExpectedToFailAsync()
+            {
+                await localTodoItemService.AddAsync(new NewTodoItemInfo
+                {
+                    Name = $"{namePrefix}--#1",
+                    IsComplete = false,
+                    Owner = flowInitiator
+                });
+                
+                await localTodoItemService.AddAsync(new NewTodoItemInfo
+                {
+                    Name = $"{namePrefix}--#2",
+                    IsComplete = false,
+                    Owner = flowInitiator
+                });
+
+                // Ensure this flow step will take more time to execute than the configured transaction timeout used
+                // by the application flow.
+                await Task.Delay(transactionTimeOut + TimeSpan.FromSeconds(1));
+
+                return null;
+            }
+
+            IOptionsMonitor<ApplicationFlowOptions> applicationFlowOptions =
+                testWebApplicationFactory.Services.GetRequiredService<IOptionsMonitor<ApplicationFlowOptions>>();
+
+            // Ensure the application flow will use a very short timeout value for its transaction.
+            applicationFlowOptions.CurrentValue.TransactionOptions.Timeout = transactionTimeOut;
+
+            var applicationFlow =
+                new ApplicationFlowServingTestingPurposes(FlowExpectedToFailAsync, applicationFlowOptions, logger);
+
+            // Act
+            Assert.ThrowsAsync<TransactionAbortedException>(
+                async () => await applicationFlow.ExecuteAsync(input: null, flowInitiator),
+                "application flow must fail in case of transaction timeout");
+
+            // Assert
+            var query = new TodoItemQuery
+            {
+                Owner = flowInitiator,
+                NamePattern = $"{namePrefix}%"
+            };
+
+            // Get a new instance of ITodoItemService service to ensure data will be fetched from
+            // a new DbContext.
+            todoItemService = testWebApplicationFactory.Services.GetRequiredService<ITodoItemService>();
+            IList<TodoItemInfo> list = await todoItemService.GetByQueryAsync(query);
+            list.Count.Should().Be(expected: 0, "no entities must be created in the event of a transaction timeout");
+        }
+
+        /// <summary>
+        /// A <see cref="TransactionalBaseApplicationFlow{TInput,TOutput}"/> which executes a given delegate.
+        /// <br/>
+        /// This class is intended to be used only for testing purposes.
+        /// </summary>
         private class ApplicationFlowServingTestingPurposes : TransactionalBaseApplicationFlow<object, object>
         {
             private readonly Func<Task<object>> applicationFlow;
 
-            public ApplicationFlowServingTestingPurposes(Func<Task<object>> applicationFlow, ILogger logger)
-                : base(nameof(ApplicationFlowServingTestingPurposes), logger)
+            public ApplicationFlowServingTestingPurposes(Func<Task<object>> applicationFlow,
+                IOptionsMonitor<ApplicationFlowOptions> applicationFlowOptions, ILogger logger)
+                : base(nameof(ApplicationFlowServingTestingPurposes), applicationFlowOptions, logger)
             {
                 this.applicationFlow = applicationFlow;
             }

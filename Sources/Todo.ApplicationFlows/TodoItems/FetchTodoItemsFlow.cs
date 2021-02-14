@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Security.Principal;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Todo.Services.TodoItemLifecycleManagement;
 
 namespace Todo.ApplicationFlows.TodoItems
@@ -10,12 +11,15 @@ namespace Todo.ApplicationFlows.TodoItems
     /// <summary>
     /// An <see cref="IFetchTodoItemsFlow"/> implementation.
     /// </summary>
-    public class FetchTodoItemsFlow : TransactionalBaseApplicationFlow<TodoItemQuery, IList<TodoItemInfo>>, IFetchTodoItemsFlow
+    public class FetchTodoItemsFlow : TransactionalBaseApplicationFlow<TodoItemQuery, IList<TodoItemInfo>>,
+        IFetchTodoItemsFlow
     {
         private readonly ITodoItemService todoItemService;
 
-        public FetchTodoItemsFlow(ITodoItemService todoItemService, ILogger<FetchTodoItemsFlow> logger) :
-            base("TodoItems/FetchByQuery", logger)
+        public FetchTodoItemsFlow(ITodoItemService todoItemService,
+            IOptionsMonitor<ApplicationFlowOptions> applicationFlowOptions,
+            ILogger<FetchTodoItemsFlow> logger) :
+            base("TodoItems/FetchByQuery", applicationFlowOptions, logger)
         {
             this.todoItemService = todoItemService ?? throw new ArgumentNullException(nameof(todoItemService));
         }

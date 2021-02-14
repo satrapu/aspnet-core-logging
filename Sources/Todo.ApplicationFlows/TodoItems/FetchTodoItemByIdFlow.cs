@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Principal;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Todo.Services.TodoItemLifecycleManagement;
 
 namespace Todo.ApplicationFlows.TodoItems
@@ -15,8 +16,9 @@ namespace Todo.ApplicationFlows.TodoItems
     {
         private readonly ITodoItemService todoItemService;
 
-        public FetchTodoItemByIdFlow(ITodoItemService todoItemService, ILogger<FetchTodoItemByIdFlow> logger) :
-            base("TodoItem/FetchById", logger)
+        public FetchTodoItemByIdFlow(ITodoItemService todoItemService,
+            IOptionsMonitor<ApplicationFlowOptions> applicationFlowOptions, ILogger<FetchTodoItemByIdFlow> logger) :
+            base("TodoItem/FetchById", applicationFlowOptions, logger)
         {
             this.todoItemService = todoItemService ?? throw new ArgumentNullException(nameof(todoItemService));
         }

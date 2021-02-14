@@ -15,6 +15,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
+using Todo.ApplicationFlows;
 using Todo.ApplicationFlows.Security;
 using Todo.ApplicationFlows.TodoItems;
 using Todo.Persistence;
@@ -190,6 +191,9 @@ namespace Todo.WebApi
             // Configure options used for customizing generating JWT tokens.
             // Options pattern: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-3.1.
             services.Configure<GenerateJwtOptions>(generateJwtOptions);
+
+            // Configure options used by application flows.
+            services.Configure<ApplicationFlowOptions>(Configuration.GetSection("ApplicationFlows"));
 
             // Register application flows.
             services.AddScoped<IGenerateJwtFlow, GenerateJwtFlow>();
