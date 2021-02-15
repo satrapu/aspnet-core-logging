@@ -56,9 +56,9 @@
       },
       "NUnit": {
         "type": "Direct",
-        "requested": "[3.12.0, )",
-        "resolved": "3.12.0",
-        "contentHash": "3oJTrcUcT9wmweBUwgUf0f1XIYy6RZq2ziV+RM95HMKAJGsHPN2i3MKK1dAPvDPMRLz799Llj4eyu/STB9Q7OA==",
+        "requested": "[3.13.1, )",
+        "resolved": "3.13.1",
+        "contentHash": "vWBvrSelmTYwqHWvO3dA63z7cOpaFR/3nJ9MMVLBkWeaWa7oiglPPm5g1h96B4i2XXqjFexxhR5MyMjmIJYPfg==",
         "dependencies": {
           "NETStandard.Library": "2.0.0"
         }
@@ -82,9 +82,9 @@
       },
       "NunitXml.TestLogger": {
         "type": "Direct",
-        "requested": "[2.1.62, )",
-        "resolved": "2.1.62",
-        "contentHash": "ahAktoVVWC86ErnobaI8bKuiYAz76PvcS5FnQv4/EXrXau86CLLHnkzL5rpyZxz+AF9kJle0zQoAZLeZripeGQ=="
+        "requested": "[3.0.91, )",
+        "resolved": "3.0.91",
+        "contentHash": "iKh/hoOnFKCz+ptCJRnU4KIs9fekK/Cj0lAXBZ3818AGuSVHNSAhgQpB3ur9qc6faYyeTE+awwWSjC8HV8BLww=="
       },
       "Microsoft.Bcl.AsyncInterfaces": {
         "type": "Transitive",
