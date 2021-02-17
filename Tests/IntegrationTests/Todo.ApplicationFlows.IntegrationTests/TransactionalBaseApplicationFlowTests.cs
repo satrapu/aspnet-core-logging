@@ -90,12 +90,14 @@ namespace Todo.ApplicationFlows
             var applicationFlow = new ApplicationFlowServingTestingPurposes(FlowExpectedToThrowExceptionAsync,
                 applicationFlowOptions, logger);
 
-            // Act & Assert
+            // Act
+            Func<Task> executeAsyncCall = async () => await applicationFlow.ExecuteAsync(input: null, flowInitiator);
+
+            // Assert
             using (new AssertionScope())
             {
-                Assert.ThrowsAsync<ValidationException>(
-                    async () => await applicationFlow.ExecuteAsync(input: null, flowInitiator),
-                    "application flow must fail in case of an error");
+                executeAsyncCall.Should()
+                    .ThrowExactly<ValidationException>("application flow must fail in case of an error");
 
                 var query = new TodoItemQuery
                 {
