@@ -63,8 +63,8 @@ namespace Todo.Services.TodoItemLifecycleManagement
             IQueryable<TodoItemInfo> todoItemInfos = ProjectItems(todoItems);
             IList<TodoItemInfo> result = await todoItemInfos.ToListAsync();
 
-            logger.LogInformation("Fetched todo item(s) for user [{User}] using query {TodoItemQuery}",
-                todoItemQuery.Owner.GetName(), todoItemQuery);
+            logger.LogInformation("Fetched {TodoItemsCount} todo item(s) for user [{User}] using query {TodoItemQuery}",
+                result.Count, todoItemQuery.Owner.GetName(), todoItemQuery);
 
             return result;
         }
