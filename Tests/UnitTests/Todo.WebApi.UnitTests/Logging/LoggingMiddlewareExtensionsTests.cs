@@ -16,16 +16,9 @@ namespace Todo.WebApi.Logging
         [Test]
         public void UseHttpLogging_UsingNullApplicationBuilder_MustThrowException()
         {
-            try
-            {
-                LoggingMiddlewareExtensions.UseHttpLogging(null);
-            }
-            catch (Exception expectedException)
-            {
-                expectedException.Should()
-                                 .NotBeNull()
-                                 .And.BeAssignableTo<ArgumentNullException>();
-            }
+            Action useHttpLogging = () => LoggingMiddlewareExtensions.UseHttpLogging(null);
+            useHttpLogging.Should()
+                .ThrowExactly<ArgumentNullException>("cannot enable logging middleware for a null application builder");
         }
     }
 }
