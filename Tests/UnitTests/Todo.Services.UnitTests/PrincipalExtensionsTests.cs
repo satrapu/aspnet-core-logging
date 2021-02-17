@@ -100,12 +100,17 @@ namespace Todo.Services
         [Test]
         public void GetName_UsingNullAsPrincipal_MustThrowException()
         {
-            // Arrange & Act
-            Action actionExpectedToFail = () => PrincipalExtensions.GetName(null);
+            // Arrange
+            IPrincipal principal = null;
+
+            // Act
+            // ReSharper disable once InvokeAsExtensionMethod
+            // ReSharper disable once ExpressionIsAlwaysNull
+            Action actionExpectedToFail = () => PrincipalExtensions.GetName(principal);
 
             // Assert
             actionExpectedToFail.Should().ThrowExactly<ArgumentNullException>()
-                .And.ParamName.Should().Be("principal", "because a null principal does not have a name");
+                .And.ParamName.Should().Be(nameof(principal), "because a null principal does not have a name");
         }
 
         /// <summary>
