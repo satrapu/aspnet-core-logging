@@ -321,7 +321,7 @@ jobs:
   # See more about this command here: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-tool-install.
   - script: >-
       dotnet tool install dotnet-reportgenerator-globaltool 
-      --global
+      --tool-path $(Build.SourcesDirectory)/Tests/.ReportGenerator
       --version $(ReportGenerator_Version)
     name: 'install_code_coverage_report_generator'
     displayName: 'Install code coverage report generator tool'
@@ -334,7 +334,7 @@ jobs:
   # In order to be able to see the report inside the Code Coverage tab on Azure DevOps, 
   # enable Azure Boards for your project, as documented here: https://developercommunity.visualstudio.com/solutions/403137/view.html.
   - script: >-
-      reportgenerator 
+      $(Build.SourcesDirectory)/Tests/.ReportGenerator/reportgenerator 
       "-reports:$(Build.SourcesDirectory)/Tests/**/coverage.opencover.xml"
       "-targetdir:$(Build.SourcesDirectory)/Tests/.CodeCoverageReport"
       "-reporttypes:Cobertura"
