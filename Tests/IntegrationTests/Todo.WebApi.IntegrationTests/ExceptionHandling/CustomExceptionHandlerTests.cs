@@ -20,7 +20,7 @@ namespace Todo.WebApi.ExceptionHandling
     /// Contains integration tests targeting <see cref="CustomExceptionHandler"/> class.
     /// </summary>
     [TestFixture]
-    public class CustomErrorHandlerHelperTests
+    public class CustomExceptionHandlerTests
     {
         private WebApplicationFactoryWhichThrowsException webApplicationFactoryWhichThrowsException;
 
@@ -73,7 +73,7 @@ namespace Todo.WebApi.ExceptionHandling
         /// </summary>
         private class WebApplicationFactoryWhichThrowsException : TestWebApplicationFactory
         {
-            public WebApplicationFactoryWhichThrowsException() : base(nameof(CustomErrorHandlerHelperTests))
+            public WebApplicationFactoryWhichThrowsException() : base(nameof(CustomExceptionHandlerTests))
             {
             }
 

@@ -11,8 +11,8 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\..\Sources\Todo.WebApi\Todo.WebApi.csproj"/>
-        <ProjectReference Include="..\..\Infrastructure\TestInfrastructure\TestInfrastructure.csproj"/>
+        <ProjectReference Include="..\..\..\Sources\Todo.WebApi\Todo.WebApi.csproj" />
+        <ProjectReference Include="..\..\Infrastructure\TestInfrastructure\TestInfrastructure.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -20,23 +20,23 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="FluentAssertions"/>
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing"/>
-        <PackageReference Include="Microsoft.AspNet.WebApi.Client"/>
-        <PackageReference Include="Microsoft.NET.Test.Sdk"/>
-        <PackageReference Include="NUnit"/>
-        <PackageReference Include="NUnit3TestAdapter"/>
-        <PackageReference Include="NunitXml.TestLogger"/>
+        <PackageReference Include="FluentAssertions" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+        <PackageReference Include="Microsoft.AspNet.WebApi.Client" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" />
+        <PackageReference Include="NUnit" />
+        <PackageReference Include="NUnit3TestAdapter" />
+        <PackageReference Include="NunitXml.TestLogger" />
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Remove="TestResults\**"/>
-        <EmbeddedResource Remove="TestResults\**"/>
-        <None Remove="TestResults\**"/>
+        <Compile Remove="TestResults\**" />
+        <EmbeddedResource Remove="TestResults\**" />
+        <None Remove="TestResults\**" />
     </ItemGroup>
 
     <ItemGroup>
-        <None Remove="coverage.opencover.xml"/>
+        <None Remove="coverage.opencover.xml" />
     </ItemGroup>
 
 </Project>
