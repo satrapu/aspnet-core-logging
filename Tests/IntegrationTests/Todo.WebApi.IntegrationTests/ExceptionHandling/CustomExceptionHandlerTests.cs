@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.TestHost;
@@ -51,20 +52,25 @@ namespace Todo.WebApi.ExceptionHandling
             HttpResponseMessage httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
 
             // Assert
-            httpResponseMessage.IsSuccessStatusCode.Should()
-                .BeFalse("the endpoint was supposed to throw a hard-coded exception");
-            httpResponseMessage.StatusCode.Should()
-                .Be(HttpStatusCode.NotFound, "the hard-coded exception was mapped to HTTP status 404");
-            byte[] problemDetailsAsBytes = await httpResponseMessage.Content.ReadAsByteArrayAsync();
-            await using var memoryStream = new MemoryStream(problemDetailsAsBytes);
+            using (new AssertionScope())
+            {
+                httpResponseMessage.IsSuccessStatusCode.Should()
+                    .BeFalse("the endpoint was supposed to throw a hard-coded exception");
+                httpResponseMessage.StatusCode.Should()
+                    .Be(HttpStatusCode.NotFound, "the hard-coded exception was mapped to HTTP status 404");
+                byte[] problemDetailsAsBytes = await httpResponseMessage.Content.ReadAsByteArrayAsync();
+                await using var memoryStream = new MemoryStream(problemDetailsAsBytes);
 
-            // Must use System.Text.Json.JsonSerializer instead of Newtonsoft.Json.JsonSerializer to ensure
-            // ProblemDetails.Extensions property is correctly deserialized and does not end up as an empty dictionary
-            ProblemDetails problemDetails = await JsonSerializer.DeserializeAsync<ProblemDetails>(memoryStream);
-            problemDetails.Extensions.TryGetValue("errorId", out object errorId).Should()
-                .BeTrue("an id must accompany the unhandled exception");
-            errorId?.ToString().Should()
-                .NotBeNullOrWhiteSpace("the id accompanying the unhandled exception must not be null or whitespace");
+                // Must use System.Text.Json.JsonSerializer instead of Newtonsoft.Json.JsonSerializer to ensure
+                // ProblemDetails.Extensions property is correctly deserialized and does not end up as an empty
+                // dictionary
+                ProblemDetails problemDetails = await JsonSerializer.DeserializeAsync<ProblemDetails>(memoryStream);
+                problemDetails.Extensions.TryGetValue("errorId", out object errorId).Should()
+                    .BeTrue("an id must accompany the unhandled exception");
+                errorId?.ToString().Should()
+                    .NotBeNullOrWhiteSpace(
+                        "the id accompanying the unhandled exception must not be null or whitespace");
+            }
         }
 
         /// <summary>

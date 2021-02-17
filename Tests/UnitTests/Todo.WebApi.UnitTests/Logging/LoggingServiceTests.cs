@@ -22,15 +22,18 @@ namespace Todo.WebApi.Logging
         {
             try
             {
+                // Arrange & Act
                 // ReSharper disable once ObjectCreationAsStatement
                 new LoggingService(null);
+
+                // Assert
                 Assert.Fail("Must not create instance using null argument");
             }
             catch (Exception expectedException)
             {
                 expectedException.Should()
-                                 .NotBeNull()
-                                 .And.BeAssignableTo<ArgumentNullException>();
+                    .NotBeNull()
+                    .And.BeAssignableTo<ArgumentNullException>();
             }
         }
 
@@ -42,16 +45,20 @@ namespace Todo.WebApi.Logging
         {
             try
             {
+                // Arrange
                 var loggerMock = new Mock<ILogger<LoggingService>>();
                 var loggingService = new LoggingService(loggerMock.Object);
+
+                // Act
                 loggingService.ShouldLog(null);
                 Assert.Fail("Must not log using null HTTP context");
             }
             catch (Exception expectedException)
             {
+                // Assert
                 expectedException.Should()
-                                 .NotBeNull()
-                                 .And.BeAssignableTo<ArgumentNullException>();
+                    .NotBeNull()
+                    .And.BeAssignableTo<ArgumentNullException>();
             }
         }
 
@@ -61,22 +68,26 @@ namespace Todo.WebApi.Logging
         [Test]
         public async Task ToLogMessageAsync_UsingNullHttpRequest_MustThrowException()
         {
+            // Arrange
             HttpRequest httpRequest = null;
 
             try
             {
                 var loggerMock = new Mock<ILogger<LoggingService>>();
                 var loggingService = new LoggingService(loggerMock.Object);
+
                 // ReSharper disable once ExpressionIsAlwaysNull
+                // Act
                 await loggingService.ToLogMessageAsync(httpRequest);
                 Assert.Fail("Must not create log message using null HTTP request");
             }
             catch (Exception expectedException)
             {
+                // Assert
                 expectedException.Should()
-                                 .NotBeNull()
-                                 .And.BeAssignableTo<ArgumentNullException>()
-                                 .And.Subject.As<ArgumentNullException>().ParamName.Should().Be(nameof(httpRequest));
+                    .NotBeNull()
+                    .And.BeAssignableTo<ArgumentNullException>()
+                    .And.Subject.As<ArgumentNullException>().ParamName.Should().Be(nameof(httpRequest));
             }
         }
 
@@ -86,22 +97,26 @@ namespace Todo.WebApi.Logging
         [Test]
         public async Task ToLogMessageAsync_UsingNullHttpResponse_MustThrowException()
         {
+            // Arrange
             HttpResponse httpResponse = null;
 
             try
             {
                 var loggerMock = new Mock<ILogger<LoggingService>>();
                 var loggingService = new LoggingService(loggerMock.Object);
+
+                // Act
                 // ReSharper disable once ExpressionIsAlwaysNull
                 await loggingService.ToLogMessageAsync(httpResponse);
                 Assert.Fail("Must not create log message using null HTTP response");
             }
             catch (Exception expectedException)
             {
+                // Assert
                 expectedException.Should()
-                                 .NotBeNull()
-                                 .And.BeAssignableTo<ArgumentNullException>()
-                                 .And.Subject.As<ArgumentNullException>().ParamName.Should().Be(nameof(httpResponse));
+                    .NotBeNull()
+                    .And.BeAssignableTo<ArgumentNullException>()
+                    .And.Subject.As<ArgumentNullException>().ParamName.Should().Be(nameof(httpResponse));
             }
         }
     }

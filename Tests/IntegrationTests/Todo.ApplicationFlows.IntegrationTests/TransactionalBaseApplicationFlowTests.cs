@@ -6,6 +6,7 @@ using System.Security.Principal;
 using System.Threading.Tasks;
 using System.Transactions;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -90,21 +91,24 @@ namespace Todo.ApplicationFlows
                 applicationFlowOptions, logger);
 
             // Act & Assert
-            Assert.ThrowsAsync<ValidationException>(
-                async () => await applicationFlow.ExecuteAsync(input: null, flowInitiator),
-                "application flow must fail in case of an error");
-
-            var query = new TodoItemQuery
+            using (new AssertionScope())
             {
-                Owner = flowInitiator,
-                NamePattern = $"{namePrefix}%"
-            };
+                Assert.ThrowsAsync<ValidationException>(
+                    async () => await applicationFlow.ExecuteAsync(input: null, flowInitiator),
+                    "application flow must fail in case of an error");
 
-            // Get a new instance of ITodoItemService service to ensure data will be fetched from
-            // a new DbContext.
-            todoItemService = testWebApplicationFactory.Services.GetRequiredService<ITodoItemService>();
-            IList<TodoItemInfo> list = await todoItemService.GetByQueryAsync(query);
-            list.Count.Should().Be(expected: 0, "the application flow failed to persist todo items");
+                var query = new TodoItemQuery
+                {
+                    Owner = flowInitiator,
+                    NamePattern = $"{namePrefix}%"
+                };
+
+                // Get a new instance of ITodoItemService service to ensure data will be fetched from
+                // a new DbContext.
+                todoItemService = testWebApplicationFactory.Services.GetRequiredService<ITodoItemService>();
+                IList<TodoItemInfo> list = await todoItemService.GetByQueryAsync(query);
+                list.Count.Should().Be(expected: 0, "the application flow failed to persist todo items");
+            }
         }
 
         /// <summary>
@@ -212,7 +216,7 @@ namespace Todo.ApplicationFlows
                     IsComplete = false,
                     Owner = flowInitiator
                 });
-                
+
                 await localTodoItemService.AddAsync(new NewTodoItemInfo
                 {
                     Name = $"{namePrefix}--#2",
@@ -236,23 +240,26 @@ namespace Todo.ApplicationFlows
             var applicationFlow =
                 new ApplicationFlowServingTestingPurposes(FlowExpectedToFailAsync, applicationFlowOptions, logger);
 
-            // Act
-            Assert.ThrowsAsync<TransactionAbortedException>(
-                async () => await applicationFlow.ExecuteAsync(input: null, flowInitiator),
-                "application flow must fail in case of transaction timeout");
-
-            // Assert
-            var query = new TodoItemQuery
+            // Act & Assert
+            using (new AssertionScope())
             {
-                Owner = flowInitiator,
-                NamePattern = $"{namePrefix}%"
-            };
+                Assert.ThrowsAsync<TransactionAbortedException>(
+                    async () => await applicationFlow.ExecuteAsync(input: null, flowInitiator),
+                    "application flow must fail in case of transaction timeout");
 
-            // Get a new instance of ITodoItemService service to ensure data will be fetched from
-            // a new DbContext.
-            todoItemService = testWebApplicationFactory.Services.GetRequiredService<ITodoItemService>();
-            IList<TodoItemInfo> list = await todoItemService.GetByQueryAsync(query);
-            list.Count.Should().Be(expected: 0, "no entities must be created in the event of a transaction timeout");
+                var query = new TodoItemQuery
+                {
+                    Owner = flowInitiator,
+                    NamePattern = $"{namePrefix}%"
+                };
+
+                // Get a new instance of ITodoItemService service to ensure data will be fetched from
+                // a new DbContext.
+                todoItemService = testWebApplicationFactory.Services.GetRequiredService<ITodoItemService>();
+                IList<TodoItemInfo> list = await todoItemService.GetByQueryAsync(query);
+                list.Count.Should().Be(expected: 0,
+                    "no entities must be created in the event of a transaction timeout");
+            }
         }
 
         /// <summary>
