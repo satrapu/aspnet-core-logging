@@ -242,12 +242,15 @@ namespace Todo.ApplicationFlows
             var applicationFlow =
                 new ApplicationFlowServingTestingPurposes(FlowExpectedToFailAsync, applicationFlowOptions, logger);
 
-            // Act & Assert
+            // Act
+            Func<Task> executeAsyncCall = async () => await applicationFlow.ExecuteAsync(input: null, flowInitiator);
+
+            // Assert
             using (new AssertionScope())
             {
-                Assert.ThrowsAsync<TransactionAbortedException>(
-                    async () => await applicationFlow.ExecuteAsync(input: null, flowInitiator),
-                    "application flow must fail in case of transaction timeout");
+                executeAsyncCall.Should()
+                    .ThrowExactly<TransactionAbortedException>(
+                        "application flow must fail in case of transaction timeout");
 
                 var query = new TodoItemQuery
                 {
