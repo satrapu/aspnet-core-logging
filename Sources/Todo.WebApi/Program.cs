@@ -28,7 +28,7 @@ namespace Todo.WebApi
 
             try
             {
-                logger.Information("About to start Todo ASP.NET Core Web API ...");
+                logger.Information("Todo ASP.NET Core Web API is starting ...");
                 CreateHostBuilder(args).Build().Run();
             }
             catch (Exception exception)

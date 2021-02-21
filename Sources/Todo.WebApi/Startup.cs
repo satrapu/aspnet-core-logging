@@ -239,18 +239,18 @@ namespace Todo.WebApi
 
         private void OnApplicationStarted(IApplicationBuilder applicationBuilder, ILogger logger)
         {
-            logger.LogInformation("Application has started");
             MigrateDatabase(applicationBuilder, logger);
+            logger.LogInformation("Todo ASP.NET Core Web API has started");
         }
 
         private void OnApplicationStopping(ILogger logger)
         {
-            logger.LogInformation("Application is stopping");
+            logger.LogInformation("Todo ASP.NET Core Web API is stopping ...");
         }
 
         private void OnApplicationStopped(ILogger logger)
         {
-            logger.LogInformation("Application has stopped");
+            logger.LogInformation("Todo ASP.NET Core Web API has stopped");
         }
 
         private void MigrateDatabase(IApplicationBuilder applicationBuilder, ILogger logger)
