@@ -28,8 +28,7 @@ namespace Todo.WebApi
 
             try
             {
-                logger.Information("Todo ASP.NET Core Web API is starting ...");
-                CreateHostBuilder(args).Build().Run();
+                CreateHostBuilder(args, logger).Build().Run();
             }
             catch (Exception exception)
             {
@@ -42,8 +41,9 @@ namespace Todo.WebApi
             }
         }
 
-        private static IHostBuilder CreateHostBuilder(string[] args)
+        private static IHostBuilder CreateHostBuilder(string[] args, ILogger logger)
         {
+            logger.Information("Configuring host builder needed to run Todo ASP.NET Core Web API ...");
             IHostBuilder hostBuilder =
                 Host.CreateDefaultBuilder(args)
                     .ConfigureAppConfiguration((hostBuilderContext, configurationBuilder) =>
@@ -72,6 +72,7 @@ namespace Todo.WebApi
                         // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/startup?view=aspnetcore-3.1.
                         localHostBuilder.UseStartup<Startup>();
                     });
+            logger.Information("Host builder needed to run Todo ASP.NET Core Web API has been configured");
             return hostBuilder;
         }
     }

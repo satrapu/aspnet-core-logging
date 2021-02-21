@@ -209,6 +209,7 @@ namespace Todo.WebApi
         public void Configure(IApplicationBuilder applicationBuilder, IHostApplicationLifetime hostApplicationLifetime,
             ILogger<Startup> logger)
         {
+            logger.LogInformation("Todo ASP.NET Core Web API is starting ...");
             logger.LogInformation(
                 "The {LogsHomeEnvironmentVariable} environment variable now points to directory: {LogsHomeDirectory}",
                 LogsHomeEnvironmentVariable, Environment.GetEnvironmentVariable(LogsHomeEnvironmentVariable));
