@@ -10,8 +10,8 @@ namespace Todo.ApplicationFlows
     /// <summary>
     /// Base class for all application flows which make use of transactions.
     /// </summary>
-    public abstract class
-        TransactionalBaseApplicationFlow<TInput, TOutput> : NonTransactionalBaseApplicationFlow<TInput, TOutput>
+    public abstract class TransactionalBaseApplicationFlow<TInput, TOutput>
+        : NonTransactionalBaseApplicationFlow<TInput, TOutput>
     {
         private readonly IOptionsMonitor<ApplicationFlowOptions> applicationFlowOptions;
 
