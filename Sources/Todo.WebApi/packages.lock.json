@@ -22,21 +22,21 @@
       },
       "MiniProfiler.AspNetCore.Mvc": {
         "type": "Direct",
-        "requested": "[4.2.1, )",
-        "resolved": "4.2.1",
-        "contentHash": "bWJT+t6BlrCDmR3TKopZ9sgEXX5kOIQqTznseKylkfnKmBKyYdFus1OmPZ0+2wp1XHrhS2uFOZtX6kbTLuveQg==",
+        "requested": "[4.2.22, )",
+        "resolved": "4.2.22",
+        "contentHash": "nzCEaZnh77U9jw+c/qu4CtwYUpHEf+FH1ZMbYKMzIXr8CNNPlypSR6AJEAwjo3bq9TIJIpBMZIaK3inRLUCg4g==",
         "dependencies": {
-          "MiniProfiler.AspNetCore": "4.2.1"
+          "MiniProfiler.AspNetCore": "4.2.22"
         }
       },
       "MiniProfiler.EntityFrameworkCore": {
         "type": "Direct",
-        "requested": "[4.2.1, )",
-        "resolved": "4.2.1",
-        "contentHash": "Bo1/j1K4NRnKWv8I9QDrgeeTvsRHM0B1hx5+XWBpD5PxGzevNcefEvt9UqMqRrdKtRzlDz+gHtq80rlyBMRH6Q==",
+        "requested": "[4.2.22, )",
+        "resolved": "4.2.22",
+        "contentHash": "DV8jDHmp7DVN3B/FevAaAqLDBnPYRxjS8NDF7ZAJ3/6ZqOGjhyvIG1e44XjUUOeUtmJQoPSwqmeX692Y6m+G/A==",
         "dependencies": {
           "Microsoft.EntityFrameworkCore.Relational": "2.0.0",
-          "MiniProfiler.Shared": "4.2.1"
+          "MiniProfiler.Shared": "4.2.22"
         }
       },
       "Serilog.AspNetCore": {
@@ -67,16 +67,14 @@
       },
       "Serilog.Sinks.Seq": {
         "type": "Direct",
-        "requested": "[4.0.0, )",
-        "resolved": "4.0.0",
-        "contentHash": "02HTAboPlG6+/u63+o4bffS5f9VOLMn0/76OsK+Ii90IufoTO6YWIEzZ84KUYjmQnjToe0lrVbLa7qOJdUCYbg==",
+        "requested": "[5.0.0, )",
+        "resolved": "5.0.0",
+        "contentHash": "jBVpmd7O5YdY9mOkn+k6hmjjrejeq7FOfT64MeMr0Rdmy+AeQbYKOirlOKuX/Vl0xvHWQEtICC34J7TZZkrY6g==",
         "dependencies": {
-          "NETStandard.Library": "1.6.1",
-          "Serilog": "2.5.0",
-          "Serilog.Formatting.Compact": "1.0.0",
+          "Serilog": "2.10.0",
+          "Serilog.Formatting.Compact": "1.1.0",
           "Serilog.Sinks.File": "4.0.0",
-          "Serilog.Sinks.PeriodicBatching": "2.1.1",
-          "System.Net.Http": "4.3.2"
+          "Serilog.Sinks.PeriodicBatching": "2.3.0"
         }
       },
       "Microsoft.Bcl.AsyncInterfaces": {
@@ -346,17 +344,17 @@
       },
       "MiniProfiler.AspNetCore": {
         "type": "Transitive",
-        "resolved": "4.2.1",
-        "contentHash": "AfVJg/dSgXE94O5X+hMueTijVLrg2g3vbKqusUQRMX5UQoi7ql/kWkDmsUOgnnO8SqlhfOq6SohgeaJT1HRLsw==",
+        "resolved": "4.2.22",
+        "contentHash": "bBirB5d4Q0Bgx05Zg4yzXSmOHZQV4ZJhmxU3DGya4FZxNBwjaVHchqEKY0MJW5XLZo8axMAQm4yywgCvUlTymA==",
         "dependencies": {
-          "MiniProfiler.Shared": "4.2.1",
+          "MiniProfiler.Shared": "4.2.22",
           "System.Text.Json": "4.6.0"
         }
       },
       "MiniProfiler.Shared": {
         "type": "Transitive",
-        "resolved": "4.2.1",
-        "contentHash": "IRfZWkix/ZXBJHbr1A8QXN092UxQ/W4Xfr047WAZS5fPmO1ANg35g8/OeZngLICJjG/MVVUO9KHL3yHdikMyFA==",
+        "resolved": "4.2.22",
+        "contentHash": "OOA99Iu7FjFrdYaADcWL78KK9Kq6M+hfnZac5577aSrx0UYOM2apKlhBPKzoPtGPTRtQNKe4RK00u/FmahcU3g==",
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection.Abstractions": "2.0.0",
           "Newtonsoft.Json": "10.0.3",
@@ -563,8 +561,8 @@
       },
       "Serilog": {
         "type": "Transitive",
-        "resolved": "2.9.0",
-        "contentHash": "QzcrD33A3+CsVvwi1I5CSei67ikQnkGrw7SscgL+vZTghaC2aNYg8fiUcedXHzKJFNjgje9rBjzwYGQTKEaXaA=="
+        "resolved": "2.10.0",
+        "contentHash": "+QX0hmf37a0/OZLxM3wL7V6/ADvC1XihXN4Kq/p6d8lCPfgkRdiuhbWlMaFjR9Av0dy5F0+MBeDmDdRZN/YwQA=="
       },
       "Serilog.Extensions.Hosting": {
         "type": "Transitive",
@@ -638,8 +636,8 @@
       },
       "Serilog.Sinks.PeriodicBatching": {
         "type": "Transitive",
-        "resolved": "2.1.1",
-        "contentHash": "L1iZtcEzQdEIYCPvhYJYB2RofPg+i1NhHJfS+DpXLyLSMS6OXebqaI1fxWhmJRIjD9D9BuXi23FkZTQDiP7cHw==",
+        "resolved": "2.3.0",
+        "contentHash": "UYKSjTMTlUY9T3OgzMmLDLD+z0qPfgvq/RvG0rKfyz+O+Zrjw3X/Xpv14J4WMcGVsOjUaR+k8n2MdmqVpJtI6A==",
         "dependencies": {
           "Serilog": "2.0.0",
           "System.Collections.Concurrent": "4.0.12",
@@ -1019,8 +1017,8 @@
       },
       "System.Net.Http": {
         "type": "Transitive",
-        "resolved": "4.3.2",
-        "contentHash": "y7hv0o0weI0j0mvEcBOdt1F3CAADiWlcw3e54m8TfYiRmBPDIsHElx8QUPDlY4x6yWXKPGN0Z2TuXCTPgkm5WQ==",
+        "resolved": "4.3.0",
+        "contentHash": "sYg+FtILtRQuYWSIAuNOELwVuVsxVyJGWQyOnlAzhV4xvhyFnON1bAzYYC+jjRW8JREM45R0R5Dgi8MTC5sEwA==",
         "dependencies": {
           "Microsoft.NETCore.Platforms": "1.1.0",
           "System.Collections": "4.3.0",
@@ -1566,6 +1564,12 @@
           "System.Xml.ReaderWriter": "4.3.0"
         }
       },
+      "todo.applicationflows": {
+        "type": "Project",
+        "dependencies": {
+          "Todo.Services": "1.0.0"
+        }
+      },
       "todo.persistence": {
         "type": "Project",
         "dependencies": {
@@ -1577,6 +1581,8 @@
       "todo.services": {
         "type": "Project",
         "dependencies": {
+          "Microsoft.IdentityModel.Tokens": "5.5.0",
+          "System.IdentityModel.Tokens.Jwt": "5.5.0",
           "Todo.Persistence": "1.0.0"
         }
       }

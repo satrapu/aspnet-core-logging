@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <OutputType>Library</OutputType>
+        <IsPackable>false</IsPackable>
+        <IsTestProject>true</IsTestProject>
+        <RootNamespace>Todo</RootNamespace>
+        <SonarQubeTestProject>True</SonarQubeTestProject>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\..\Sources\Todo.ApplicationFlows\Todo.ApplicationFlows.csproj" />
+        <ProjectReference Include="..\..\..\Sources\Todo.Persistence\Todo.Persistence.csproj" />
+        <ProjectReference Include="..\..\..\Sources\Todo.Services\Todo.Services.csproj" />
+        <ProjectReference Include="..\..\..\Sources\Todo.WebApi\Todo.WebApi.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="FluentAssertions" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" />
+        <PackageReference Include="NetArchTest.Rules" />
+        <PackageReference Include="NUnit" />
+        <PackageReference Include="NUnit3TestAdapter" />
+        <PackageReference Include="NunitXml.TestLogger" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Remove="TestResults\**" />
+        <EmbeddedResource Remove="TestResults\**" />
+        <None Remove="TestResults\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Remove="coverage.opencover.xml" />
+    </ItemGroup>
+
+</Project>

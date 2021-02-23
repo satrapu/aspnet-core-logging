@@ -41,7 +41,7 @@ namespace Todo.WebApi.Logging
                 [ConversationId] = conversationId.ToString()
             }))
             {
-                await nextRequestDelegate(httpContext).ConfigureAwait(false);
+                await nextRequestDelegate(httpContext);
             }
         }
     }

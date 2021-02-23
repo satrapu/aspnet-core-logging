@@ -1,44 +1,38 @@
 using System;
-using System.Collections.Generic;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Microsoft.IdentityModel.Tokens;
+using Todo.ApplicationFlows.Security;
+using Todo.Services.Security;
 using Todo.WebApi.Authorization;
-using Todo.WebApi.Logging;
 using Todo.WebApi.Models;
 
 namespace Todo.WebApi.Controllers
 {
     /// <summary>
-    /// Creates JSON web tokens to be used by the users of this web API for authorization purposes.
-    /// <br/>
-    /// Based on: https://dotnetcoretutorials.com/2020/01/15/creating-and-validating-jwt-tokens-in-asp-net-core/.
-    /// <br/>
-    /// <br/>
-    /// WARNING: This controller is *not* ready for production! It has been written for experimenting purposes only,
+    /// Creates JSON web tokens to be used by the users of this web API for authentication and authorization purposes.
+    /// </summary>
+    /// <remarks>
+    /// This controller is *not* ready for production! It has been written for experimenting purposes only,
     /// so the logic of generating a JSON web token for a given user name and password has been greatly simplified.
     /// In the future, a better mechanism will be implemented.
-    /// </summary>
+    /// </remarks>
     [Route("api/[controller]")]
     [Authorize]
     [ApiController]
     public class JwtController : ControllerBase
     {
+        private readonly IGenerateJwtFlow generateJwtFlow;
         private readonly GenerateJwtOptions generateJwtOptions;
-        private readonly ILogger logger;
 
-        public JwtController(IOptionsMonitor<GenerateJwtOptions> generateJwtOptionsMonitor,
-            ILogger<JwtController> logger)
+        public JwtController(IGenerateJwtFlow generateJwtFlow,
+            IOptionsMonitor<GenerateJwtOptions> generateJwtOptionsMonitor)
         {
+            this.generateJwtFlow = generateJwtFlow ?? throw new ArgumentNullException(nameof(generateJwtFlow));
+
             // Options pattern: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-3.1.
             generateJwtOptions = generateJwtOptionsMonitor.CurrentValue;
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         /// <summary>
@@ -50,52 +44,30 @@ namespace Todo.WebApi.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> GenerateTokenAsync([FromBody] GenerateJwtModel generateJwtModel)
         {
-            using (logger.BeginScope(new Dictionary<string, object>
+            var generateJwtInfo = new GenerateJwtInfo
             {
-                [BusinessFlowNames.ScopeKey] = BusinessFlowNames.Security.GenerateJsonWebToken
-            }))
-            {
-                JwtModel jwtModel = await Task
-                    .FromResult(GenerateToken(generateJwtModel.UserName, generateJwtModel.Password))
-                    .ConfigureAwait(false);
-
-                return Ok(jwtModel);
-            }
-        }
-
-        // ReSharper disable once UnusedParameter.Local
-        private JwtModel GenerateToken(string userName, string password)
-        {
-            byte[] userNameAsBytes = Encoding.UTF8.GetBytes(userName);
-            string userNameAsBase64 = Convert.ToBase64String(userNameAsBytes);
-            var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(generateJwtOptions.Secret));
-
-            var securityTokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new[]
-                {
-                    new Claim(ClaimTypes.NameIdentifier, userNameAsBase64),
-                    new Claim("scope", string.Join(' '
-                        , Policies.TodoItems.CreateTodoItem
-                        , Policies.TodoItems.DeleteTodoItem
-                        , Policies.TodoItems.GetTodoItems
-                        , Policies.TodoItems.UpdateTodoItem))
-                }),
-                Expires = DateTime.UtcNow.AddMonths(6),
-                Issuer = generateJwtOptions.Issuer,
                 Audience = generateJwtOptions.Audience,
-                SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256Signature),
+                Issuer = generateJwtOptions.Issuer,
+                Secret = generateJwtOptions.Secret,
+                Scopes = new[]
+                {
+                    Policies.TodoItems.CreateTodoItem,
+                    Policies.TodoItems.DeleteTodoItem,
+                    Policies.TodoItems.GetTodoItems,
+                    Policies.TodoItems.UpdateTodoItem
+                },
+                UserName = generateJwtModel.UserName,
+                Password = generateJwtModel.Password
             };
 
-            var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
-            SecurityToken securityToken = jwtSecurityTokenHandler.CreateToken(securityTokenDescriptor);
+            JwtInfo jwtInfo = await generateJwtFlow.ExecuteAsync(generateJwtInfo, User);
 
             var jwtModel = new JwtModel
             {
-                AccessToken = jwtSecurityTokenHandler.WriteToken(securityToken)
+                AccessToken = jwtInfo.AccessToken
             };
 
-            return jwtModel;
+            return Ok(jwtModel);
         }
     }
 }

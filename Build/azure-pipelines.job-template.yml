@@ -150,6 +150,29 @@ jobs:
     name: 'build_sources'
     displayName: 'Build sources'
 
+  # Run architecture tests
+  - script: >-
+      dotnet test $(Build.SourcesDirectory)/Todo.sln
+      --no-build
+      --no-restore
+      --configuration ${{ parameters.build.configuration }}
+      --test-adapter-path "."
+      --logger "nunit"
+      -- NUnit.Where="cat == ArchitectureTests"
+    name: 'run_architecture_tests'
+    displayName: 'Run architecture tests'
+    
+  - task: PublishTestResults@2
+    name: 'publish_architecture_test_results'
+    displayName: 'Publish architecture test results'
+    condition: succeededOrFailed()
+    inputs:
+      testResultsFormat: 'NUnit'
+      testResultsFiles: '**/ArchitectureTests/**/TestResults/*'
+      mergeTestResults: True
+      buildConfiguration: ${{ parameters.build.configuration }}
+      publishRunAttachments: True
+    
   # Run unit tests and collect code coverage metrics using 'dotnet test' command.
   # See more about this command here: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-test.
   # See more about running selective tests here: https://docs.microsoft.com/en-us/dotnet/core/testing/selective-unit-tests#nunit.
@@ -298,7 +321,7 @@ jobs:
   # See more about this command here: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-tool-install.
   - script: >-
       dotnet tool install dotnet-reportgenerator-globaltool 
-      --global
+      --tool-path $(Build.SourcesDirectory)/Tests/.ReportGenerator
       --version $(ReportGenerator_Version)
     name: 'install_code_coverage_report_generator'
     displayName: 'Install code coverage report generator tool'
@@ -311,7 +334,7 @@ jobs:
   # In order to be able to see the report inside the Code Coverage tab on Azure DevOps, 
   # enable Azure Boards for your project, as documented here: https://developercommunity.visualstudio.com/solutions/403137/view.html.
   - script: >-
-      reportgenerator 
+      $(Build.SourcesDirectory)/Tests/.ReportGenerator/reportgenerator 
       "-reports:$(Build.SourcesDirectory)/Tests/**/coverage.opencover.xml"
       "-targetdir:$(Build.SourcesDirectory)/Tests/.CodeCoverageReport"
       "-reporttypes:Cobertura"

@@ -15,8 +15,12 @@ using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
+using Todo.ApplicationFlows;
+using Todo.ApplicationFlows.Security;
+using Todo.ApplicationFlows.TodoItems;
 using Todo.Persistence;
-using Todo.Services;
+using Todo.Services.Security;
+using Todo.Services.TodoItemLifecycleManagement;
 using Todo.WebApi.Authorization;
 using Todo.WebApi.ExceptionHandling;
 using Todo.WebApi.Logging;
@@ -93,7 +97,9 @@ namespace Todo.WebApi
 
             // Configure authentication & authorization using JSON web tokens
             IConfigurationSection generateJwtOptions = Configuration.GetSection("GenerateJwt");
+            // ReSharper disable once SettingNotFoundInConfiguration
             string tokenIssuer = generateJwtOptions.GetValue<string>("Issuer");
+            // ReSharper disable once SettingNotFoundInConfiguration
             string tokenAudience = generateJwtOptions.GetValue<string>("Audience");
 
             services
@@ -109,6 +115,7 @@ namespace Todo.WebApi
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey =
                             new SymmetricSecurityKey(
+                                // ReSharper disable once SettingNotFoundInConfiguration
                                 Encoding.UTF8.GetBytes(generateJwtOptions.GetValue<string>("Secret"))),
                         ValidateIssuer = true,
                         ValidIssuer = tokenIssuer,
@@ -166,11 +173,12 @@ namespace Todo.WebApi
                     .AddEntityFramework();
             }
 
-            // Configure ASP.NET Web API services
+            // Configure ASP.NET Web API services.
             services.AddControllers();
 
-            // Configure Todo Web API services
-            services.AddScoped<ITodoService, TodoService>();
+            // Configure Todo Web API services.
+            services.AddSingleton<IJwtService, JwtService>();
+            services.AddScoped<ITodoItemService, TodoItemService>();
 
             // Register service with 2 interfaces.
             // See more here: https://andrewlock.net/how-to-register-a-service-with-multiple-interfaces-for-in-asp-net-core-di/.
@@ -183,6 +191,17 @@ namespace Todo.WebApi
             // Configure options used for customizing generating JWT tokens.
             // Options pattern: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-3.1.
             services.Configure<GenerateJwtOptions>(generateJwtOptions);
+
+            // Configure options used by application flows.
+            services.Configure<ApplicationFlowOptions>(Configuration.GetSection("ApplicationFlows"));
+
+            // Register application flows.
+            services.AddScoped<IGenerateJwtFlow, GenerateJwtFlow>();
+            services.AddScoped<IFetchTodoItemsFlow, FetchTodoItemsFlow>();
+            services.AddScoped<IFetchTodoItemByIdFlow, FetchTodoItemByIdFlow>();
+            services.AddScoped<IAddTodoItemFlow, AddTodoItemFlow>();
+            services.AddScoped<IUpdateTodoItemFlow, UpdateTodoItemFlow>();
+            services.AddScoped<IDeleteTodoItemFlow, DeleteTodoItemFlow>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -190,10 +209,11 @@ namespace Todo.WebApi
         public void Configure(IApplicationBuilder applicationBuilder, IHostApplicationLifetime hostApplicationLifetime,
             ILogger<Startup> logger)
         {
+            logger.LogInformation("Todo ASP.NET Core Web API is starting ...");
             logger.LogInformation(
                 "The {LogsHomeEnvironmentVariable} environment variable now points to directory: {LogsHomeDirectory}",
                 LogsHomeEnvironmentVariable, Environment.GetEnvironmentVariable(LogsHomeEnvironmentVariable));
-            
+
             applicationBuilder.UseConversationId();
             applicationBuilder.UseHttpLogging();
 
@@ -220,18 +240,18 @@ namespace Todo.WebApi
 
         private void OnApplicationStarted(IApplicationBuilder applicationBuilder, ILogger logger)
         {
-            logger.LogInformation("Application has started");
             MigrateDatabase(applicationBuilder, logger);
+            logger.LogInformation("Todo ASP.NET Core Web API has started");
         }
 
         private void OnApplicationStopping(ILogger logger)
         {
-            logger.LogInformation("Application is stopping");
+            logger.LogInformation("Todo ASP.NET Core Web API is stopping ...");
         }
 
         private void OnApplicationStopped(ILogger logger)
         {
-            logger.LogInformation("Application has stopped");
+            logger.LogInformation("Todo ASP.NET Core Web API has stopped");
         }
 
         private void MigrateDatabase(IApplicationBuilder applicationBuilder, ILogger logger)
@@ -258,7 +278,7 @@ namespace Todo.WebApi
             }
             catch (Exception exception)
             {
-                logger.LogError(exception, "Failed to migrate database {Database}", database);
+                logger.LogCritical(exception, "Failed to migrate database {Database}", database);
                 throw;
             }
 

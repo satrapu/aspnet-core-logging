@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 namespace Todo.WebApi.Logging
 {
@@ -95,7 +95,7 @@ namespace Todo.WebApi.Logging
             }
 
             stringBuilder.AppendLine();
-            stringBuilder.AppendLine(await httpRequest.Body.ReadAndResetAsync().ConfigureAwait(false));
+            stringBuilder.AppendLine(await httpRequest.Body.ReadAndResetAsync());
             stringBuilder.AppendLine($"--- REQUEST {httpRequest.HttpContext.TraceIdentifier}: END ---");
 
             var result = stringBuilder.ToString();
@@ -123,7 +123,7 @@ namespace Todo.WebApi.Logging
             }
 
             stringBuilder.AppendLine();
-            stringBuilder.AppendLine(await httpResponse.Body.ReadAndResetAsync().ConfigureAwait(false));
+            stringBuilder.AppendLine(await httpResponse.Body.ReadAndResetAsync());
             stringBuilder.AppendLine($"--- RESPONSE {httpResponse.HttpContext.TraceIdentifier}: END ---");
 
             var result = stringBuilder.ToString();

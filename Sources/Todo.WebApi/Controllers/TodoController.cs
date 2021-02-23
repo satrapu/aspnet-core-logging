@@ -1,13 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using Todo.Services;
+using Todo.ApplicationFlows.TodoItems;
+using Todo.Services.TodoItemLifecycleManagement;
 using Todo.WebApi.Authorization;
-using Todo.WebApi.Logging;
 using Todo.WebApi.Models;
 
 namespace Todo.WebApi.Controllers
@@ -17,43 +15,47 @@ namespace Todo.WebApi.Controllers
     [ApiController]
     public class TodoController : ControllerBase
     {
-        private readonly ITodoService todoService;
-        private readonly ILogger logger;
+        private readonly IFetchTodoItemsFlow fetchTodoItemsFlow;
+        private readonly IFetchTodoItemByIdFlow fetchTodoItemByIdFlow;
+        private readonly IAddTodoItemFlow addTodoItemFlow;
+        private readonly IUpdateTodoItemFlow updateTodoItemFlow;
+        private readonly IDeleteTodoItemFlow deleteTodoItemFlow;
 
-        public TodoController(ITodoService todoService, ILogger<TodoController> logger)
+        public TodoController(IFetchTodoItemsFlow fetchTodoItemsFlow,
+            IFetchTodoItemByIdFlow fetchTodoItemByIdFlow,
+            IAddTodoItemFlow addTodoItemFlow,
+            IUpdateTodoItemFlow updateTodoItemFlow,
+            IDeleteTodoItemFlow deleteTodoItemFlow)
         {
-            this.todoService = todoService ?? throw new ArgumentNullException(nameof(todoService));
-            this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
+            this.fetchTodoItemsFlow = fetchTodoItemsFlow ?? throw new ArgumentNullException(nameof(fetchTodoItemsFlow));
+            this.fetchTodoItemByIdFlow =
+                fetchTodoItemByIdFlow ?? throw new ArgumentNullException(nameof(fetchTodoItemByIdFlow));
+            this.addTodoItemFlow = addTodoItemFlow ?? throw new ArgumentNullException(nameof(addTodoItemFlow));
+            this.updateTodoItemFlow = updateTodoItemFlow ?? throw new ArgumentNullException(nameof(updateTodoItemFlow));
+            this.deleteTodoItemFlow = deleteTodoItemFlow ?? throw new ArgumentNullException(nameof(deleteTodoItemFlow));
         }
 
         [HttpGet]
         [Authorize(Policy = Policies.TodoItems.GetTodoItems)]
         public async IAsyncEnumerable<TodoItemModel> GetByQueryAsync([FromQuery] TodoItemQueryModel todoItemQueryModel)
         {
-            using (logger.BeginScope(new Dictionary<string, object>
+            var todoItemQuery = new TodoItemQuery
             {
-                [BusinessFlowNames.ScopeKey] = BusinessFlowNames.Crud.GetTodoItems
-            }))
+                Id = todoItemQueryModel.Id,
+                IsComplete = todoItemQueryModel.IsComplete,
+                NamePattern = todoItemQueryModel.NamePattern,
+                Owner = User,
+                PageIndex = todoItemQueryModel.PageIndex,
+                PageSize = todoItemQueryModel.PageSize,
+                IsSortAscending = todoItemQueryModel.IsSortAscending,
+                SortBy = todoItemQueryModel.SortBy
+            };
+
+            IList<TodoItemInfo> todoItemInfos = await fetchTodoItemsFlow.ExecuteAsync(todoItemQuery, User);
+
+            foreach (TodoItemInfo todoItemInfo in todoItemInfos)
             {
-                var todoItemQuery = new TodoItemQuery
-                {
-                    Id = todoItemQueryModel.Id,
-                    IsComplete = todoItemQueryModel.IsComplete,
-                    NamePattern = todoItemQueryModel.NamePattern,
-                    Owner = User,
-                    PageIndex = todoItemQueryModel.PageIndex,
-                    PageSize = todoItemQueryModel.PageSize,
-                    IsSortAscending = todoItemQueryModel.IsSortAscending,
-                    SortBy = todoItemQueryModel.SortBy
-                };
-
-                IList<TodoItemInfo> todoItemInfos =
-                    await todoService.GetByQueryAsync(todoItemQuery).ConfigureAwait(false);
-
-                foreach (TodoItemInfo todoItemInfo in todoItemInfos)
-                {
-                    yield return MapFrom(todoItemInfo);
-                }
+                yield return MapFrom(todoItemInfo);
             }
         }
 
@@ -61,91 +63,59 @@ namespace Todo.WebApi.Controllers
         [Authorize(Policy = Policies.TodoItems.GetTodoItems)]
         public async Task<ActionResult<TodoItemModel>> GetByIdAsync(long id)
         {
-            using (logger.BeginScope(new Dictionary<string, object>
+            TodoItemInfo todoItemInfo = await fetchTodoItemByIdFlow.ExecuteAsync(id, User);
+
+            if (todoItemInfo == null)
             {
-                [BusinessFlowNames.ScopeKey] = BusinessFlowNames.Crud.GetTodoItem
-            }))
-            {
-                var todoItemQuery = new TodoItemQuery
-                {
-                    Id = id,
-                    Owner = User
-                };
-
-                IList<TodoItemInfo> todoItemInfoList =
-                    await todoService.GetByQueryAsync(todoItemQuery).ConfigureAwait(false);
-                TodoItemModel model = todoItemInfoList.Select(MapFrom).FirstOrDefault();
-
-                if (model == null)
-                {
-                    return NotFound();
-                }
-
-                return Ok(model);
+                return NotFound();
             }
+
+            TodoItemModel result = MapFrom(todoItemInfo);
+            return Ok(result);
         }
 
         [HttpPost]
         [Authorize(Policy = Policies.TodoItems.CreateTodoItem)]
         public async Task<IActionResult> CreateAsync(NewTodoItemModel newTodoItemModel)
         {
-            using (logger.BeginScope(new Dictionary<string, object>
+            var newTodoItemInfo = new NewTodoItemInfo
             {
-                [BusinessFlowNames.ScopeKey] = BusinessFlowNames.Crud.CreateTodoItem
-            }))
-            {
-                var newTodoItemInfo = new NewTodoItemInfo
-                {
-                    IsComplete = newTodoItemModel.IsComplete,
-                    Name = newTodoItemModel.Name,
-                    User = User
-                };
+                IsComplete = newTodoItemModel.IsComplete,
+                Name = newTodoItemModel.Name
+            };
 
-                long newlyCreatedEntityId = await todoService.AddAsync(newTodoItemInfo).ConfigureAwait(false);
-                return Created($"api/todo/{newlyCreatedEntityId}", newlyCreatedEntityId);
-            }
+            long newlyCreatedEntityId = await addTodoItemFlow.ExecuteAsync(newTodoItemInfo, User);
+            return Created($"api/todo/{newlyCreatedEntityId}", newlyCreatedEntityId);
         }
 
         [HttpPut("{id:long}")]
         [Authorize(Policy = Policies.TodoItems.UpdateTodoItem)]
         public async Task<IActionResult> UpdateAsync(long id, [FromBody] UpdateTodoItemModel updateTodoItemModel)
         {
-            using (logger.BeginScope(new Dictionary<string, object>
+            var updateTodoItemInfo = new UpdateTodoItemInfo
             {
-                [BusinessFlowNames.ScopeKey] = BusinessFlowNames.Crud.UpdateTodoItem
-            }))
-            {
-                var updateTodoItemInfo = new UpdateTodoItemInfo
-                {
-                    Id = id,
-                    IsComplete = updateTodoItemModel.IsComplete,
-                    Name = updateTodoItemModel.Name,
-                    User = User
-                };
+                Id = id,
+                IsComplete = updateTodoItemModel.IsComplete,
+                Name = updateTodoItemModel.Name,
+                Owner = User
+            };
 
-                await todoService.UpdateAsync(updateTodoItemInfo).ConfigureAwait(false);
-                return NoContent();
-            }
+            await updateTodoItemFlow.ExecuteAsync(updateTodoItemInfo, User);
+            return NoContent();
         }
 
         [HttpDelete("{id:long}")]
         [Authorize(Policy = Policies.TodoItems.DeleteTodoItem)]
         public async Task<IActionResult> DeleteAsync(long id)
         {
-            using (logger.BeginScope(new Dictionary<string, object>
+            var deleteTodoItemInfo = new DeleteTodoItemInfo
             {
-                [BusinessFlowNames.ScopeKey] = BusinessFlowNames.Crud.DeleteTodoItem
-            }))
-            {
-                var deleteTodoItemInfo = new DeleteTodoItemInfo
-                {
-                    Id = id,
-                    User = User
-                };
+                Id = id,
+                Owner = User
+            };
 
-                await todoService.DeleteAsync(deleteTodoItemInfo).ConfigureAwait(false);
-                return NoContent();
-            }
+            await deleteTodoItemFlow.ExecuteAsync(deleteTodoItemInfo, User);
+            return NoContent();
         }
 
         private static TodoItemModel MapFrom(TodoItemInfo todoItemInfo)

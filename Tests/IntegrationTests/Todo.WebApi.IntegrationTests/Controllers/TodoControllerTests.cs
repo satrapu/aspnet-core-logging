@@ -6,10 +6,11 @@ using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using Microsoft.AspNetCore.WebUtilities;
 using NUnit.Framework;
 using Todo.Persistence.Entities;
-using Todo.WebApi.Infrastructure;
+using Todo.TestInfrastructure;
 using Todo.WebApi.Models;
 
 namespace Todo.WebApi.Controllers
@@ -23,74 +24,166 @@ namespace Todo.WebApi.Controllers
     [TestFixture]
     public class TodoControllerTests
     {
-        private TestWebApplicationFactory testWebApplicationFactory;
+        private TestWebApplicationFactory webApplicationFactory;
         private const string BaseUrl = "api/todo";
+        private const string BecauseCurrentRequestHasNoJwt = "the request does not contain a JSON web token";
+        private const string BecauseAnEntityHasBeenCreated = "an entity has been created";
+        private const string BecauseCleanupMustSucceed = "cleanup must succeed";
+        private const string BecauseInputModelIsInvalid = "input model is invalid";
+        private const string BecauseNewEntityHasBeenCreated = "a new entity has been created";
+        private const string BecauseEntityHasBeenPreviouslyCreated = "an entity has been previously created";
 
+        private const string BecauseMustNotFindSomethingWhichDoesNotExist =
+            "must not find something which does not exist";
+
+        /// <summary>
+        /// Ensures the appropriate <see cref="TestWebApplicationFactory"/> instance has been created before running
+        /// any test method found in this class.
+        /// </summary>
         [OneTimeSetUp]
         public void GivenAnHttpRequestIsToBePerformed()
         {
-            testWebApplicationFactory =
-                new TestWebApplicationFactory(MethodBase.GetCurrentMethod()?.DeclaringType?.Name);
-        }
-
-        [OneTimeTearDown]
-        public void Cleanup()
-        {
-            testWebApplicationFactory?.Dispose();
+            webApplicationFactory = new TestWebApplicationFactory(MethodBase.GetCurrentMethod()?.DeclaringType?.Name);
         }
 
         /// <summary>
-        /// Ensures method <see cref="TodoController.CreateAsync" /> works as expected.
+        /// Ensure the <see cref="TestWebApplicationFactory"/> instance is properly disposed after all test methods
+        /// found inside this class have been run.
+        /// </summary>
+        [OneTimeTearDown]
+        public void Cleanup()
+        {
+            webApplicationFactory?.Dispose();
+        }
+
+        /// <summary>
+        /// Ensures method <see cref="TodoController.CreateAsync" /> fails in case the current request is not
+        /// accompanied by a JWT.
         /// </summary>
         /// <returns></returns>
         [Test]
-        public async Task CreateAsync_UsingValidTodoItem_ReturnsTheSameInstance()
+        public async Task CreateAsync_UsingNoJsonWebToken_ReturnsUnauthorizedHttpStatusCode()
         {
             // Arrange
-            using HttpClient httpClient =
-                await testWebApplicationFactory.CreateClientWithJwtAsync().ConfigureAwait(false);
+            using HttpClient httpClient = webApplicationFactory.CreateClient();
+            var newTodoItemModel = new NewTodoItemModel();
+
+            // Act
+            HttpResponseMessage response = await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemModel);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                response.IsSuccessStatusCode.Should().BeFalse(BecauseCurrentRequestHasNoJwt);
+                response.StatusCode.Should().Be(HttpStatusCode.Unauthorized, BecauseCurrentRequestHasNoJwt);
+            }
+        }
+
+        /// <summary>
+        /// Ensures method <see cref="TodoController.CreateAsync" /> creates a new entity and returns its identifier.
+        /// </summary>
+        /// <returns></returns>
+        [Test]
+        public async Task CreateAsync_UsingValidTodoItem_ReturnsExpectedId()
+        {
+            // Arrange
+            using HttpClient httpClient = await webApplicationFactory.CreateClientWithJwtAsync();
             long? id = null;
 
             try
             {
                 var newTodoItemModel = new NewTodoItemModel
                 {
-                    Name = $"it--{nameof(CreateAsync_UsingValidTodoItem_ReturnsTheSameInstance)}--{Guid.NewGuid():N}",
+                    Name = $"it--{nameof(CreateAsync_UsingValidTodoItem_ReturnsExpectedId)}--{Guid.NewGuid():N}",
                     IsComplete = DateTime.UtcNow.Ticks % 2 == 0
                 };
 
                 // Act
-                HttpResponseMessage response =
-                    await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemModel).ConfigureAwait(false);
+                HttpResponseMessage response = await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemModel);
 
                 // Assert
-                response.IsSuccessStatusCode.Should().BeTrue();
-                response.StatusCode.Should().Be(HttpStatusCode.Created);
+                using (new AssertionScope())
+                {
+                    response.IsSuccessStatusCode.Should().BeTrue(BecauseAnEntityHasBeenCreated);
+                    response.StatusCode.Should().Be(HttpStatusCode.Created, BecauseAnEntityHasBeenCreated);
 
-                id = await response.Content.ReadAsAsync<long>().ConfigureAwait(false);
-                id.Should().BeGreaterOrEqualTo(1);
+                    id = await response.Content.ReadAsAsync<long>();
+                    id.Should().BeGreaterOrEqualTo(1, BecauseAnEntityHasBeenCreated);
+                }
             }
             finally
             {
                 if (id.HasValue)
                 {
-                    HttpResponseMessage response =
-                        await httpClient.DeleteAsync($"{BaseUrl}/{id}").ConfigureAwait(false);
-                    response.IsSuccessStatusCode.Should().BeTrue("cleanup must succeed");
+                    HttpResponseMessage response = await httpClient.DeleteAsync($"{BaseUrl}/{id}");
+                    response.IsSuccessStatusCode.Should().BeTrue(BecauseCleanupMustSucceed);
                 }
             }
         }
 
         /// <summary>
-        /// Ensures method <see cref="TodoController.GetByQueryAsync" /> works as expected.
+        /// Ensures method <see cref="TodoController.CreateAsync" /> fails in case the provided input is not valid.
+        /// </summary>
+        /// <returns></returns>
+        [Test]
+        public async Task CreateAsync_UsingInvalidTodoItem_ReturnsBadRequestHttpStatusCode()
+        {
+            // Arrange
+            using HttpClient httpClient = await webApplicationFactory.CreateClientWithJwtAsync();
+            var invalidModel = new NewTodoItemModel();
+
+            // Act
+            HttpResponseMessage response = await httpClient.PostAsJsonAsync(BaseUrl, invalidModel);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                response.IsSuccessStatusCode.Should().BeFalse(BecauseInputModelIsInvalid);
+                response.StatusCode.Should().Be(HttpStatusCode.BadRequest, BecauseInputModelIsInvalid);
+            }
+        }
+
+        /// <summary>
+        /// Ensures method <see cref="TodoController.GetByQueryAsync" /> fails in case the current request is not
+        /// accompanied by a JWT.
+        /// </summary>
+        /// <returns></returns>
+        [Test]
+        public async Task GetByQueryAsync_UsingNoJsonWebToken_ReturnsUnauthorizedHttpStatusCode()
+        {
+            // Arrange
+            using HttpClient httpClient = webApplicationFactory.CreateClient();
+
+            var queryString = new Dictionary<string, string>
+            {
+                {nameof(TodoItemQueryModel.PageIndex), 0.ToString()},
+                {nameof(TodoItemQueryModel.PageSize), 5.ToString()},
+                {nameof(TodoItemQueryModel.SortBy), nameof(TodoItem.CreatedOn)},
+                {nameof(TodoItemQueryModel.IsSortAscending), bool.FalseString}
+            };
+            string requestUri = QueryHelpers.AddQueryString(BaseUrl, queryString);
+
+            // Act
+            HttpResponseMessage response = await httpClient.GetAsync(requestUri);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                response.IsSuccessStatusCode.Should().BeFalse(BecauseCurrentRequestHasNoJwt);
+                response.StatusCode.Should().Be(HttpStatusCode.Unauthorized, BecauseCurrentRequestHasNoJwt);
+            }
+        }
+
+        /// <summary>
+        /// Ensures method <see cref="TodoController.GetByQueryAsync" /> returns the expected outcome
+        /// when using a valid query.
         /// </summary>
         /// <returns></returns>
         [Test]
         public async Task GetByQueryAsync_UsingDefaults_ReturnsExpectedResult()
         {
             // Arrange
-            using HttpClient httpClient =
-                await testWebApplicationFactory.CreateClientWithJwtAsync().ConfigureAwait(false);
+            using HttpClient httpClient = await webApplicationFactory.CreateClientWithJwtAsync();
             long? id = null;
 
             try
@@ -104,11 +197,10 @@ namespace Todo.WebApi.Controllers
                     Name = name
                 };
 
-                HttpResponseMessage response =
-                    await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemModel).ConfigureAwait(false);
+                HttpResponseMessage response = await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemModel);
                 response.IsSuccessStatusCode.Should().BeTrue();
                 response.StatusCode.Should().Be(HttpStatusCode.Created);
-                id = await response.Content.ReadAsAsync<long>().ConfigureAwait(false);
+                id = await response.Content.ReadAsAsync<long>();
 
                 var queryString = new Dictionary<string, string>
                 {
@@ -124,42 +216,65 @@ namespace Todo.WebApi.Controllers
                 string requestUri = QueryHelpers.AddQueryString(BaseUrl, queryString);
 
                 // Act
-                response = await httpClient.GetAsync(requestUri).ConfigureAwait(false);
+                response = await httpClient.GetAsync(requestUri);
 
                 // Assert
-                response.IsSuccessStatusCode.Should().BeTrue();
-                response.StatusCode.Should().Be(HttpStatusCode.OK);
+                using (new AssertionScope())
+                {
+                    response.IsSuccessStatusCode.Should().BeTrue();
+                    response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-                List<TodoItemModel> todoItemModels =
-                    await response.Content.ReadAsAsync<List<TodoItemModel>>().ConfigureAwait(false);
-                todoItemModels.Should().HaveCount(1);
+                    List<TodoItemModel> todoItemModels = await response.Content.ReadAsAsync<List<TodoItemModel>>();
+                    todoItemModels.Should().HaveCount(1);
 
-                TodoItemModel todoItemModel = todoItemModels.Single();
-                todoItemModel.Should().NotBeNull();
-                todoItemModel.Name.Should().Be(newTodoItemModel.Name);
-                todoItemModel.IsComplete.Should().Be(newTodoItemModel.IsComplete.Value);
+                    TodoItemModel todoItemModel = todoItemModels.Single();
+                    todoItemModel.Should().NotBeNull();
+                    todoItemModel.Name.Should().Be(newTodoItemModel.Name);
+                    todoItemModel.IsComplete.Should().Be(newTodoItemModel.IsComplete.Value);
+                }
             }
             finally
             {
                 if (id.HasValue)
                 {
-                    HttpResponseMessage response =
-                        await httpClient.DeleteAsync($"{BaseUrl}/{id}").ConfigureAwait(false);
-                    response.IsSuccessStatusCode.Should().BeTrue("cleanup must succeed");
+                    HttpResponseMessage response = await httpClient.DeleteAsync($"{BaseUrl}/{id}");
+                    response.IsSuccessStatusCode.Should().BeTrue(BecauseCleanupMustSucceed);
                 }
             }
         }
 
         /// <summary>
-        /// Ensures method <see cref="TodoController.GetByIdAsync" /> works as expected.
+        /// Ensures method <see cref="TodoController.GetByIdAsync" /> fails in case the current request is not
+        /// accompanied by a JWT.
+        /// </summary>
+        /// <returns></returns>
+        [Test]
+        public async Task GetByIdAsync_UsingNoJsonWebToken_ReturnsUnauthorizedHttpStatusCode()
+        {
+            // Arrange
+            using HttpClient httpClient = webApplicationFactory.CreateClient();
+            long? id = int.MaxValue;
+
+            // Act
+            HttpResponseMessage response = await httpClient.GetAsync($"{BaseUrl}/{id}");
+
+            // Assert
+            using (new AssertionScope())
+            {
+                response.IsSuccessStatusCode.Should().BeFalse(BecauseCurrentRequestHasNoJwt);
+                response.StatusCode.Should().Be(HttpStatusCode.Unauthorized, BecauseCurrentRequestHasNoJwt);
+            }
+        }
+
+        /// <summary>
+        /// Ensures method <see cref="TodoController.GetByIdAsync" /> is able to find a newly created entity.
         /// </summary>
         /// <returns></returns>
         [Test]
         public async Task GetByIdAsync_UsingNewlyCreatedItem_ReturnsExpectedResult()
         {
             // Arrange
-            using HttpClient httpClient =
-                await testWebApplicationFactory.CreateClientWithJwtAsync().ConfigureAwait(false);
+            using HttpClient httpClient = await webApplicationFactory.CreateClientWithJwtAsync();
             long? id = null;
 
             try
@@ -173,53 +288,54 @@ namespace Todo.WebApi.Controllers
                     Name = name
                 };
 
-                HttpResponseMessage response =
-                    await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemModel).ConfigureAwait(false);
+                HttpResponseMessage response = await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemModel);
                 response.IsSuccessStatusCode.Should().BeTrue();
                 response.StatusCode.Should().Be(HttpStatusCode.Created);
-                id = await response.Content.ReadAsAsync<long>().ConfigureAwait(false);
+                id = await response.Content.ReadAsAsync<long>();
 
                 // Act
-                response = await httpClient.GetAsync($"{BaseUrl}/{id}").ConfigureAwait(false);
+                response = await httpClient.GetAsync($"{BaseUrl}/{id}");
 
                 // Assert
-                response.IsSuccessStatusCode.Should().BeTrue();
-                response.StatusCode.Should().Be(HttpStatusCode.OK);
+                using (new AssertionScope())
+                {
+                    response.IsSuccessStatusCode.Should().BeTrue();
+                    response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-                TodoItemModel todoItemModel =
-                    await response.Content.ReadAsAsync<TodoItemModel>().ConfigureAwait(false);
-                todoItemModel.Should().NotBeNull();
-                todoItemModel.Id.Should().Be(id);
-                todoItemModel.Name.Should().Be(newTodoItemModel.Name);
-                todoItemModel.IsComplete.Should().Be(newTodoItemModel.IsComplete.Value);
+                    TodoItemModel todoItemModel = await response.Content.ReadAsAsync<TodoItemModel>();
+                    todoItemModel.Should().NotBeNull();
+                    todoItemModel.Id.Should().Be(id);
+                    todoItemModel.Name.Should().Be(newTodoItemModel.Name);
+                    todoItemModel.IsComplete.Should().Be(newTodoItemModel.IsComplete.Value);
+                }
             }
             finally
             {
                 if (id.HasValue)
                 {
-                    HttpResponseMessage response =
-                        await httpClient.DeleteAsync($"{BaseUrl}/{id}").ConfigureAwait(false);
-                    response.IsSuccessStatusCode.Should().BeTrue("cleanup must succeed");
+                    HttpResponseMessage response = await httpClient.DeleteAsync($"{BaseUrl}/{id}");
+                    response.IsSuccessStatusCode.Should().BeTrue(BecauseCleanupMustSucceed);
                 }
             }
         }
 
         /// <summary>
-        /// Ensures method <see cref="TodoController.GetByIdAsync" /> works as expected.
+        /// Ensures method <see cref="TodoController.GetByIdAsync" /> fails in case the API does not find any entities
+        /// matching the given input query.
         /// </summary>
         /// <returns></returns>
         [Test]
-        public async Task GetByIdAsync_UsingNonExistingId_ReturnsNotFoundStatusCode()
+        public async Task GetByIdAsync_UsingNonExistingId_ReturnsNotFoundHttpStatusCode()
         {
             // Arrange
-            using HttpClient httpClient =
-                await testWebApplicationFactory.CreateClientWithJwtAsync().ConfigureAwait(false);
+            using HttpClient httpClient = await webApplicationFactory.CreateClientWithJwtAsync();
             long? id = null;
 
             try
             {
                 string nameSuffix = Guid.NewGuid().ToString("N");
-                string name = $"it--{nameof(GetByIdAsync_UsingNonExistingId_ReturnsNotFoundStatusCode)}--{nameSuffix}";
+                string name =
+                    $"it--{nameof(GetByIdAsync_UsingNonExistingId_ReturnsNotFoundHttpStatusCode)}--{nameSuffix}";
 
                 var newTodoItemModel = new NewTodoItemModel
                 {
@@ -227,41 +343,66 @@ namespace Todo.WebApi.Controllers
                     Name = name
                 };
 
-                HttpResponseMessage response =
-                    await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemModel).ConfigureAwait(false);
+                HttpResponseMessage response = await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemModel);
                 response.IsSuccessStatusCode.Should().BeTrue();
                 response.StatusCode.Should().Be(HttpStatusCode.Created);
-                id = await response.Content.ReadAsAsync<long>().ConfigureAwait(false);
+                id = await response.Content.ReadAsAsync<long>();
                 long nonExistentId = long.MinValue;
 
                 // Act
-                response = await httpClient.GetAsync($"{BaseUrl}/{nonExistentId}").ConfigureAwait(false);
+                response = await httpClient.GetAsync($"{BaseUrl}/{nonExistentId}");
 
                 // Assert
-                response.StatusCode.Should().Be(HttpStatusCode.NotFound,
-                    "must not find something which does not exist");
+                using (new AssertionScope())
+                {
+                    response.IsSuccessStatusCode.Should().BeFalse(BecauseMustNotFindSomethingWhichDoesNotExist);
+                    response.StatusCode.Should()
+                        .Be(HttpStatusCode.NotFound, BecauseMustNotFindSomethingWhichDoesNotExist);
+                }
             }
             finally
             {
                 if (id.HasValue)
                 {
-                    HttpResponseMessage response =
-                        await httpClient.DeleteAsync($"{BaseUrl}/{id}").ConfigureAwait(false);
-                    response.IsSuccessStatusCode.Should().BeTrue("cleanup must succeed");
+                    HttpResponseMessage response = await httpClient.DeleteAsync($"{BaseUrl}/{id}");
+                    response.IsSuccessStatusCode.Should().BeTrue(BecauseCleanupMustSucceed);
                 }
             }
         }
 
         /// <summary>
-        /// Ensures method <see cref="TodoController.UpdateAsync" /> works as expected.
+        /// Ensures method <see cref="TodoController.UpdateAsync" /> fails in case the current request is not
+        /// accompanied by a JWT.
+        /// </summary>
+        /// <returns></returns>
+        [Test]
+        public async Task UpdateAsync_UsingNoJsonWebToken_ReturnsUnauthorizedHttpStatusCode()
+        {
+            // Arrange
+            using HttpClient httpClient = webApplicationFactory.CreateClient();
+            long? id = int.MaxValue;
+            var updateTodoItemModel = new UpdateTodoItemModel();
+
+            // Act
+            HttpResponseMessage response = await httpClient.PutAsJsonAsync($"{BaseUrl}/{id}", updateTodoItemModel);
+
+            // Assert
+            using (new AssertionScope())
+            {
+                response.IsSuccessStatusCode.Should().BeFalse(BecauseCurrentRequestHasNoJwt);
+                response.StatusCode.Should().Be(HttpStatusCode.Unauthorized, BecauseCurrentRequestHasNoJwt);
+            }
+        }
+
+        /// <summary>
+        /// Ensures method <see cref="TodoController.UpdateAsync" /> successfully updates a newly created entity.
         /// </summary>
         /// <returns></returns>
         [Test]
         public async Task UpdateAsync_UsingNewlyCreatedTodoItem_MustSucceed()
         {
             // Arrange
-            using HttpClient httpClient =
-                await testWebApplicationFactory.CreateClientWithJwtAsync().ConfigureAwait(false);
+            using HttpClient httpClient = await webApplicationFactory.CreateClientWithJwtAsync();
             long? id = null;
 
             try
@@ -275,10 +416,9 @@ namespace Todo.WebApi.Controllers
                     IsComplete = isComplete
                 };
 
-                HttpResponseMessage response =
-                    await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemInfo).ConfigureAwait(false);
-                response.IsSuccessStatusCode.Should().BeTrue("a new entity has been created");
-                id = await response.Content.ReadAsAsync<long>().ConfigureAwait(false);
+                HttpResponseMessage response = await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemInfo);
+                response.IsSuccessStatusCode.Should().BeTrue(BecauseNewEntityHasBeenCreated);
+                id = await response.Content.ReadAsAsync<long>();
 
                 var updateTodoItemModel = new UpdateTodoItemModel
                 {
@@ -287,46 +427,66 @@ namespace Todo.WebApi.Controllers
                 };
 
                 // Act
-                response = await httpClient.PutAsJsonAsync($"{BaseUrl}/{id}", updateTodoItemModel)
-                    .ConfigureAwait(false);
+                response = await httpClient.PutAsJsonAsync($"{BaseUrl}/{id}", updateTodoItemModel);
 
                 // Assert
-                response.IsSuccessStatusCode.Should().BeTrue("an entity has been previously created");
-                response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+                using (new AssertionScope())
+                {
+                    response.IsSuccessStatusCode.Should().BeTrue(BecauseEntityHasBeenPreviouslyCreated);
+                    response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
-                response = await httpClient.GetAsync($"{BaseUrl}/{id}").ConfigureAwait(false);
-                response.IsSuccessStatusCode.Should().BeTrue("an entity has been previously update");
-                response.StatusCode.Should().Be(HttpStatusCode.OK);
+                    response = await httpClient.GetAsync($"{BaseUrl}/{id}");
+                    response.IsSuccessStatusCode.Should().BeTrue("an entity has been previously updated");
+                    response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-                TodoItemModel todoItemModel =
-                    await response.Content.ReadAsAsync<TodoItemModel>().ConfigureAwait(false);
-                todoItemModel.Should().NotBeNull("an entity has been previously created");
-                todoItemModel.Id.Should().Be(id);
-                todoItemModel.IsComplete.Should().Be(updateTodoItemModel.IsComplete.Value);
-                todoItemModel.Name.Should().Be(updateTodoItemModel.Name);
+                    TodoItemModel todoItemModel = await response.Content.ReadAsAsync<TodoItemModel>();
+                    todoItemModel.Should().NotBeNull(BecauseEntityHasBeenPreviouslyCreated);
+                    todoItemModel.Id.Should().Be(id);
+                    todoItemModel.IsComplete.Should().Be(updateTodoItemModel.IsComplete.Value);
+                    todoItemModel.Name.Should().Be(updateTodoItemModel.Name);
+                }
             }
             finally
             {
                 if (id.HasValue)
                 {
-                    HttpResponseMessage response =
-                        await httpClient.DeleteAsync($"{BaseUrl}/{id}").ConfigureAwait(false);
-                    response.IsSuccessStatusCode.Should().BeTrue("cleanup must succeed");
+                    HttpResponseMessage response = await httpClient.DeleteAsync($"{BaseUrl}/{id}");
+                    response.IsSuccessStatusCode.Should().BeTrue(BecauseCleanupMustSucceed);
                 }
             }
         }
 
         /// <summary>
-        /// Ensures method <see cref="TodoController.DeleteAsync" /> works as expected.
+        /// Ensures method <see cref="TodoController.DeleteAsync" /> fails in case the current request is not
+        /// accompanied by a JWT.
+        /// </summary>
+        /// <returns></returns>
+        [Test]
+        public async Task DeleteAsync_UsingNoJsonWebToken_ReturnsUnauthorizedHttpStatusCode()
+        {
+            // Arrange
+            using HttpClient httpClient = webApplicationFactory.CreateClient();
+            long? id = int.MaxValue;
+
+            // Act
+            HttpResponseMessage response = await httpClient.DeleteAsync($"{BaseUrl}/{id}");
+
+            // Assert
+            using (new AssertionScope())
+            {
+                response.IsSuccessStatusCode.Should().BeFalse(BecauseCurrentRequestHasNoJwt);
+                response.StatusCode.Should().Be(HttpStatusCode.Unauthorized, BecauseCurrentRequestHasNoJwt);
+            }
+        }
+
+        /// <summary>
+        /// Ensures method <see cref="TodoController.DeleteAsync" /> successfully deletes a newly created entity.
         /// </summary>
         /// <returns></returns>
         [Test]
         public async Task DeleteAsync_UsingNewlyCreatedTodoItem_MustSucceed()
         {
             // Arrange
-            using HttpClient httpClient =
-                await testWebApplicationFactory.CreateClientWithJwtAsync().ConfigureAwait(false);
-
             string name = $"it--{nameof(DeleteAsync_UsingNewlyCreatedTodoItem_MustSucceed)}--{Guid.NewGuid():N}";
             bool isComplete = DateTime.UtcNow.Ticks % 2 == 0;
 
@@ -336,13 +496,21 @@ namespace Todo.WebApi.Controllers
                 IsComplete = isComplete
             };
 
-            HttpResponseMessage response =
-                await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemInfo).ConfigureAwait(false);
-            response.IsSuccessStatusCode.Should().BeTrue("a new entity has been created");
-            long? id = await response.Content.ReadAsAsync<long>().ConfigureAwait(false);
+            using HttpClient httpClient = await webApplicationFactory.CreateClientWithJwtAsync();
+            HttpResponseMessage response = await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemInfo);
+            response.IsSuccessStatusCode.Should().BeTrue(BecauseNewEntityHasBeenCreated);
+            long? id = await response.Content.ReadAsAsync<long>();
 
-            response = await httpClient.DeleteAsync($"{BaseUrl}/{id}").ConfigureAwait(false);
-            response.IsSuccessStatusCode.Should().BeTrue("existing entity must be deleted");
+            // Act
+            response = await httpClient.DeleteAsync($"{BaseUrl}/{id}");
+
+            // Assert
+            using (new AssertionScope())
+            {
+                response.IsSuccessStatusCode.Should().BeTrue("existing entity must be deleted");
+                response = await httpClient.GetAsync($"{BaseUrl}/{id}");
+                response.StatusCode.Should().Be(HttpStatusCode.NotFound, "existing entity has already been deleted");
+            }
         }
     }
 }
