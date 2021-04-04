@@ -22,7 +22,9 @@ namespace Todo.WebApi.ExceptionHandling
     /// </summary>
     public static class CustomExceptionHandler
     {
+        private const string ErrorData = "errorData";
         private const string ErrorId = "errorId";
+        private const string ErrorKey = "errorKey";
         private const string ProblemDetailContentType = "application/problem+json";
 
         /// <summary>
@@ -66,24 +68,37 @@ namespace Todo.WebApi.ExceptionHandling
             // this issue and hopefully, he will mention the 'errorId', thus easing the job of the developer
             // assigned to fix it.
             logger.LogError(unhandledException,
-                "An unhandled exception has been caught; its associated id is: {ErrorId}",
-                problemDetails.Extensions[ErrorId]);
+                "An unexpected error has been caught - "
+                + "error id: {ErrorId}; error data: {ErrorData}; error key: {ErrorKey}",
+                problemDetails.Extensions[ErrorId],
+                problemDetails.Extensions[ErrorData],
+                problemDetails.Extensions[ErrorKey]);
 
             // Since the ProblemDetails instance is always serialized as JSON, the web API will not be able to
             // correctly handle 'Accept' HTTP header.
             // @satrapu April 1st 2020: Find a way to use ASP.NET Core content negotiation to serialize
-            // the ProblemDetails instance in the format expected by the client.
+            // the ProblemDetails instance in the format expected by the client, if possible.
             await JsonSerializer.SerializeAsync(httpContext.Response.Body, problemDetails);
         }
 
         private static ProblemDetails ConvertToProblemDetails(Exception exception, bool includeDetails)
         {
+            var jsonSerializationOptions = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+
             var problemDetails = new ProblemDetails
             {
                 Status = (int) ConvertToHttpStatusCode(exception),
-                Title = "An error occured while trying to process the current request",
+                Title = "An unexpected error occured while trying to process the current request",
                 Detail = includeDetails ? exception.ToString() : string.Empty,
-                Extensions = {{ErrorId, Guid.NewGuid().ToString("N")}}
+                Extensions =
+                {
+                    {ErrorData, JsonSerializer.Serialize(exception.Data, jsonSerializationOptions)},
+                    {ErrorId, Guid.NewGuid().ToString("N")},
+                    {ErrorKey, exception.GetType().FullName}
+                }
             };
             return problemDetails;
         }
