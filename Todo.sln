@@ -12,9 +12,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{398FFE78
 		Build\start-docker-on-macOS.sh = Build\start-docker-on-macOS.sh
 		Build\SonarBuildBreaker.ps1 = Build\SonarBuildBreaker.ps1
 		Build\RunComposeServices.ps1 = Build\RunComposeServices.ps1
-		Build\db4it-compose\.gitignore = Build\db4it-compose\.gitignore
-		Build\db4it-compose\.env = Build\db4it-compose\.env
-		Build\db4it-compose\docker-compose.yml = Build\db4it-compose\docker-compose.yml
 		Build\PublishComposeServiceLogs.ps1 = Build\PublishComposeServiceLogs.ps1
 	EndProjectSection
 EndProject
@@ -66,6 +63,13 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ArchitectureTests", "ArchitectureTests", "{AB306CB9-FAA1-4058-9A9C-111EA5BF04C7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.ArchitectureTests", "Tests\ArchitectureTests\Todo.ArchitectureTests\Todo.ArchitectureTests.csproj", "{D9CB10FA-DBFB-4A35-8C20-E0CAB538BAC6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "db4it", "db4it", "{851D8B4A-A6C9-469E-8633-E6679738DA72}"
+ProjectSection(SolutionItems) = preProject
+	Build\db4it-compose\docker-compose.yml = Build\db4it-compose\docker-compose.yml
+	Build\db4it-compose\.env = Build\db4it-compose\.env
+	Build\db4it-compose\.gitignore = Build\db4it-compose\.gitignore
+EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -137,6 +141,7 @@ Global
 		{2D55F79C-3EFA-4DBE-9900-B23400894FAA} = {E773243B-5DCB-46A8-9012-1AD0084F0149}
 		{AB306CB9-FAA1-4058-9A9C-111EA5BF04C7} = {280A9085-F56E-43CA-A419-1E4609E378EA}
 		{D9CB10FA-DBFB-4A35-8C20-E0CAB538BAC6} = {AB306CB9-FAA1-4058-9A9C-111EA5BF04C7}
+		{851D8B4A-A6C9-469E-8633-E6679738DA72} = {398FFE78-1C6A-4CC2-AB9F-220B7F1CDAE3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {74318BEF-DB50-4852-A16D-E2FB8671BE7F}
