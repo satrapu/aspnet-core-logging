@@ -37,7 +37,7 @@ Param(
 
 Write-Output "Preparing to start compose services from project: $ComposeProjectName"
 Write-Output "Current script path is: $PSScriptRoot"
-$ComposeFilePath = Join-Path -Path $PSScriptRoot $RelativePathToComposeFile
+$ComposeFilePath = [System.IO.Path]::GetFullPath((Join-Path -Path $PSScriptRoot $RelativePathToComposeFile))
 
 if (![System.IO.File]::Exists($ComposeFilePath))
 {
@@ -46,7 +46,7 @@ if (![System.IO.File]::Exists($ComposeFilePath))
     exit 1;
 }
 
-$ComposeEnvironmentFilePath = Join-Path -Path $PSScriptRoot $RelativePathToEnvironmentFile
+$ComposeEnvironmentFilePath = [System.IO.Path]::GetFullPath((Join-Path -Path $PSScriptRoot $RelativePathToEnvironmentFile))
 
 if (![System.IO.File]::Exists($ComposeEnvironmentFilePath))
 {
