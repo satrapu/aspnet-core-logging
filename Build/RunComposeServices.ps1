@@ -55,27 +55,6 @@ if (![System.IO.File]::Exists($ComposeEnvironmentFilePath))
     exit 2;
 }
 
-$EnvironmentFileLines = Get-Content -Path $ComposeEnvironmentFilePath
-
-foreach ($EnvironmentFileLine in $EnvironmentFileLines)
-{
-    if(($EnvironmentFileLine.Trim().Length -eq 0) -or ($EnvironmentFileLine.StartsWith('#')))
-    {
-        # Ignore empty lines and those representing comments
-        continue;
-    }
-    
-    # Each line of text will be split using first delimiter only
-    $EnvironmentFileLineParts = $EnvironmentFileLine.Split('=', 2)
-    $EnvironmentVariableName = $EnvironmentFileLineParts[0]
-    $EnvironmentVariableValue = $EnvironmentFileLineParts[1]
-
-    # Each key-value pair from the environment file will be promoted to an environment variable
-    # in the scope of the current process since, AFAIK, there's no other way of passing such variables
-    # to the containers started by Docker Compose
-    [System.Environment]::SetEnvironmentVariable($EnvironmentVariableName, $EnvironmentVariableValue, 'Process')
-}
-
 if ($ExtraEnvironmentVariables -ne $null)
 {
     $ExtraEnvironmentVariables.GetEnumerator() | ForEach-Object {
