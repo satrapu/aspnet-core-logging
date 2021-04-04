@@ -90,20 +90,20 @@ jobs:
       databaseDockerImage: 'postgres:12-alpine'
       composeProjectName: 'integration-test-prerequisites'
       
-#- template: './azure-pipelines.job-template.yml'
-#  parameters:
-#    job:
-#      name: 'macOS'
-#      displayName: 'Run on macOS'
-#    pool:
-#      vmImage: 'macOS-10.15'
-#    integrationTests:
-#      databaseHost: 'localhost'
-#      databaseName: '$(IntegrationTests.Database.Todo.Name)'
-#      databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
-#      databasePassword: '$(IntegrationTests.Database.Todo.Password)'
-#      databaseDockerImage: 'postgres:12-alpine'
-#      composeProjectName: 'integration-test-prerequisites'
+- template: './azure-pipelines.job-template.yml'
+  parameters:
+    job:
+      name: 'macOS'
+      displayName: 'Run on macOS'
+    pool:
+      vmImage: 'macOS-10.15'
+    integrationTests:
+      databaseHost: 'localhost'
+      databaseName: '$(IntegrationTests.Database.Todo.Name)'
+      databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
+      databasePassword: '$(IntegrationTests.Database.Todo.Password)'
+      databaseDockerImage: 'postgres:12-alpine'
+      composeProjectName: 'integration-test-prerequisites'
       
 - template: './azure-pipelines.job-template.yml'
   parameters:
