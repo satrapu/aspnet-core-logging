@@ -32,7 +32,7 @@ Param(
 
     # An optional dictionary storing variables which will be passed to the containers started via Docker Compose.
     [hashtable]
-    $ExtraEnvironmentVariables
+    $EnvironmentVariables
 )
 
 Write-Output "Preparing to start compose services from project: $ComposeProjectName"
@@ -55,9 +55,9 @@ if (![System.IO.File]::Exists($ComposeEnvironmentFilePath))
     exit 2;
 }
 
-if ($ExtraEnvironmentVariables -ne $null)
+if ($EnvironmentVariables -ne $null)
 {
-    $ExtraEnvironmentVariables.GetEnumerator() | ForEach-Object {
+    $EnvironmentVariables.GetEnumerator() | ForEach-Object {
         [System.Environment]::SetEnvironmentVariable($_.Key, $_.Value, 'Process')
     }
 }

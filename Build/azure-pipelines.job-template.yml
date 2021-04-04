@@ -235,7 +235,7 @@ jobs:
         -ComposeProjectName '${{ parameters.integrationTests.composeProjectName }}' `
         -RelativePathToComposeFile './db4it-compose/docker-compose.yml' `
         -RelativePathToEnvironmentFile './db4it-compose/.env' `
-        -ExtraEnvironmentVariables `
+        -EnvironmentVariables `
          @{ `
            'db_docker_image'='${{ parameters.integrationTests.databaseDockerImage }}'; `
            'db_name'='${{ parameters.integrationTests.databaseName }}'; `
