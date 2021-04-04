@@ -5,6 +5,7 @@ parameters:
   pool: ''
   build:
     configuration: 'Release'
+  installDotNetSdk: True
   # Since currently downloading an archive containing a cache of restored 
   # NuGet packages takes considerably more time than just doing a restore 
   # with each build, this feature has been turned off.
@@ -64,6 +65,7 @@ jobs:
   - task: UseDotNet@2
     name: 'install_dotnetcore_sdk_required_by_application'
     displayName: 'Install .NET Core SDK required by application'
+    condition: eq(${{ parameters.installDotNetSdk }}, True)
     inputs:
       packageType: 'sdk'
       version: $(DotNetCore_SDK_Version)
@@ -235,7 +237,7 @@ jobs:
         -ComposeProjectName '${{ parameters.integrationTests.composeProjectName }}' `
         -RelativePathToComposeFile './db4it-compose/docker-compose.yml' `
         -RelativePathToEnvironmentFile './db4it-compose/.env' `
-        -ExtraEnvironmentVariables `
+        -EnvironmentVariables `
          @{ `
            'db_docker_image'='${{ parameters.integrationTests.databaseDockerImage }}'; `
            'db_name'='${{ parameters.integrationTests.databaseName }}'; `
