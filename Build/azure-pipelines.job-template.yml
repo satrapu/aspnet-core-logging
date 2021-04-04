@@ -5,7 +5,7 @@ parameters:
   pool: ''
   build:
     configuration: 'Release'
-  installDotNetSdk: True
+  installDotNetSdk: False
   # Since currently downloading an archive containing a cache of restored 
   # NuGet packages takes considerably more time than just doing a restore 
   # with each build, this feature has been turned off.
