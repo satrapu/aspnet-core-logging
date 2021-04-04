@@ -25,6 +25,8 @@ Param (
     $GitBranchName
 )
 
+$SonarDashboardUrl = "$SonarServerBaseUrl/dashboard?id=$SonarProjectKey"
+
 $TokenAsBytes = [System.Text.Encoding]::UTF8.GetBytes(("$SonarToken" + ":"))
 $Base64Token = [System.Convert]::ToBase64String($TokenAsBytes)
 $AuthorizationHeaderValue = [String]::Format("Basic {0}", $Base64Token)
@@ -33,12 +35,31 @@ $Headers = @{
     AcceptType = "application/json"
 }
 
-$NormalizedGitBranchName = $GitBranchName -Replace "refs/heads/", ""
-
 # See more about the HTTP request below here: https://sonarcloud.io/web_api/api/qualitygates/project_status.
-$SonarWebApiUrl = "{0}/api/qualitygates/project_status?projectKey={1}&branch={2}" -f $SonarServerBaseUrl, $SonarProjectKey, $NormalizedGitBranchName
-$Response = Invoke-WebRequest -Uri $SonarWebApiUrl -Headers $Headers -UseBasicParsing -ErrorAction Stop | ConvertFrom-Json
-$SonarDashboardUrl = "$SonarServerBaseUrl/dashboard?id=$SonarProjectKey"
+$SonarWebApiUrl = "{0}/api/qualitygates/project_status?projectKey={1}" -f $SonarServerBaseUrl, $SonarProjectKey
+
+if ($GitBranchName.StartsWith("refs/pull/"))
+{
+    # The branch *is* a pull request.
+    # $GitBranchName looks something like this: refs/pull/PULL_REQUEST_ID/merge (e.g. refs/pull/12/merge).
+    # The interesting part is, of course, PULL_REQUEST_ID.
+    $PullRequestIdWithSuffix = $GitBranchName -Replace "refs/pull/", ""
+    $PullRequestId = $PullRequestIdWithSuffix -Replace "/merge", ""
+    $SonarWebApiUrl = $SonarWebApiUrl + "&pullRequest=" + $PullRequestId
+}
+else
+{
+    # The branch is *not* a pull request.
+    $SonarWebApiUrl = $SonarWebApiUrl + "&branch=" + $GitBranchName
+}
+
+$Response = Invoke-WebRequest -Uri $SonarWebApiUrl `
+                              -Headers $Headers `
+                              -UseBasicParsing `
+                              -ErrorAction Stop `
+                              | ConvertFrom-Json
+
+Write-Output -InputObject $Response
 
 if ($Response.projectStatus.status -eq 'OK')
 {
