@@ -56,7 +56,7 @@ else
 $Response = Invoke-WebRequest -Uri $SonarWebApiUrl `
                               -Headers $Headers `
                               -UseBasicParsing `
-                              -ErrorAction Error `
+                              -ErrorAction Stop `
                               | ConvertFrom-Json
 
 Write-Output -InputObject $Response
