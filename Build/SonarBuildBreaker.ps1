@@ -59,8 +59,6 @@ $Response = Invoke-WebRequest -Uri $SonarWebApiUrl `
                               -ErrorAction Stop `
                               | ConvertFrom-Json
 
-Write-Output -InputObject $Response
-
 if ($Response.projectStatus.status -eq 'OK')
 {
     Write-Output "Quality gate PASSED. Please check it here: $SonarDashboardUrl"
