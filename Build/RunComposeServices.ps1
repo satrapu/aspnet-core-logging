@@ -92,6 +92,7 @@ Write-Output $InfoMessage
 # standard error stream, thus tricking runtime into thinking it has failed.
 docker-compose --file="$ComposeFilePath" `
                --project-name="$ComposeProjectName" `
+               --env-file="$RelativePathToEnvironmentFile" `
                up `
                --detach
 
