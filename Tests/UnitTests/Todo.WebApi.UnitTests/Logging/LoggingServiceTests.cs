@@ -1,11 +1,15 @@
-﻿using FluentAssertions;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using Moq;
-using NUnit.Framework;
 using System;
 using System.Threading.Tasks;
+
+using FluentAssertions;
 using FluentAssertions.Common;
+
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+
+using Moq;
+
+using NUnit.Framework;
 
 namespace Todo.WebApi.Logging
 {

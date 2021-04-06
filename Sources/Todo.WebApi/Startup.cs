@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -14,7 +15,9 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
+
 using Serilog;
+
 using Todo.ApplicationFlows;
 using Todo.ApplicationFlows.Security;
 using Todo.ApplicationFlows.TodoItems;
@@ -25,6 +28,7 @@ using Todo.WebApi.Authorization;
 using Todo.WebApi.ExceptionHandling;
 using Todo.WebApi.Logging;
 using Todo.WebApi.Models;
+
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace Todo.WebApi

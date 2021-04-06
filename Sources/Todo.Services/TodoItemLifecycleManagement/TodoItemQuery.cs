@@ -1,6 +1,7 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Principal;
 using System.Text;
+
 using Todo.Services.Security;
 
 namespace Todo.Services.TodoItemLifecycleManagement

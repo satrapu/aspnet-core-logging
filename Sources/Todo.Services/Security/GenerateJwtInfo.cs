@@ -1,4 +1,4 @@
-﻿namespace Todo.Services.Security
+namespace Todo.Services.Security
 {
     /// <summary>
     /// Contains the details needed to generate a JSON web token based on a user name and password.

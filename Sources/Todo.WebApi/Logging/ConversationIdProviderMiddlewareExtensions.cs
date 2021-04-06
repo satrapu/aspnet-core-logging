@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+
 using Microsoft.AspNetCore.Builder;
 
 namespace Todo.WebApi.Logging

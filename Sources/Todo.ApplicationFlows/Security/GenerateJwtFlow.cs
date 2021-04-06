@@ -1,7 +1,9 @@
-﻿using System;
+using System;
 using System.Security.Principal;
 using System.Threading.Tasks;
+
 using Microsoft.Extensions.Logging;
+
 using Todo.Services.Security;
 
 namespace Todo.ApplicationFlows.Security

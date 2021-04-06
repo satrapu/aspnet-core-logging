@@ -2,6 +2,7 @@ using System;
 using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
@@ -9,7 +10,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+
 using Npgsql;
+
 using Todo.Services.TodoItemLifecycleManagement;
 
 namespace Todo.WebApi.ExceptionHandling
@@ -59,7 +62,7 @@ namespace Todo.WebApi.ExceptionHandling
 
             // ProblemDetails has it's own content type
             httpContext.Response.ContentType = ProblemDetailContentType;
-            httpContext.Response.StatusCode = problemDetails.Status ?? (int) HttpStatusCode.InternalServerError;
+            httpContext.Response.StatusCode = problemDetails.Status ?? (int)HttpStatusCode.InternalServerError;
 
             // The exception is first logged by the Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware class,
             // then by this method, but it's worth it since the second time the exception is logged, we end up with
@@ -90,7 +93,7 @@ namespace Todo.WebApi.ExceptionHandling
 
             var problemDetails = new ProblemDetails
             {
-                Status = (int) ConvertToHttpStatusCode(exception),
+                Status = (int)ConvertToHttpStatusCode(exception),
                 Title = "An unexpected error occured while trying to process the current request",
                 Detail = includeDetails ? exception.ToString() : string.Empty,
                 Extensions =
@@ -115,7 +118,7 @@ namespace Todo.WebApi.ExceptionHandling
 
                 // Also return HTTP status code 503 in case the inner exception was thrown by a call made against the
                 // underlying database.
-                {InnerException: NpgsqlException _} => HttpStatusCode.ServiceUnavailable,
+                { InnerException: NpgsqlException _ } => HttpStatusCode.ServiceUnavailable,
 
                 // Fallback to HTTP status code 500.
                 _ => HttpStatusCode.InternalServerError

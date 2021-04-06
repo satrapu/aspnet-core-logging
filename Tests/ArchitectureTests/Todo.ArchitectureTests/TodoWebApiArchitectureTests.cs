@@ -1,10 +1,15 @@
-﻿using System;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
+
 using FluentAssertions;
+
 using Microsoft.AspNetCore.Mvc;
+
 using NetArchTest.Rules;
+
 using NUnit.Framework;
+
 using Todo.ApplicationFlows;
 using Todo.Persistence;
 using Todo.Services.TodoItemLifecycleManagement;

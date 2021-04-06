@@ -1,10 +1,14 @@
-﻿using FluentAssertions;
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Security.Principal;
+
+using FluentAssertions;
+
 using Moq;
+
+using NUnit.Framework;
+
 using Todo.Services.Security;
 
 namespace Todo.Services
@@ -19,7 +23,7 @@ namespace Todo.Services
         {
             const string authenticationType = "hard-coded-authentication-type-for-testing-purposes";
 
-            string[] roles = {"Developer"};
+            string[] roles = { "Developer" };
             yield return
                 new TestGenericPrincipal(
                     new GenericIdentity($"{nameof(GenericPrincipal)}-{Guid.NewGuid():N}", authenticationType), roles);

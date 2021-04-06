@@ -1,1 +1,1 @@
-﻿[assembly: NUnit.Framework.Category("ArchitectureTests")]
+[assembly: NUnit.Framework.Category("ArchitectureTests")]

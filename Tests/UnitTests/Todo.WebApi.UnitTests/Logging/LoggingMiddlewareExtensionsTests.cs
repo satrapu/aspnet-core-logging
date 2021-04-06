@@ -1,6 +1,8 @@
-﻿using FluentAssertions;
-using NUnit.Framework;
 using System;
+
+using FluentAssertions;
+
+using NUnit.Framework;
 
 namespace Todo.WebApi.Logging
 {

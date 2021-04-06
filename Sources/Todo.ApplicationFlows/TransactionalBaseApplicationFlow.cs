@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Security.Principal;
 using System.Threading.Tasks;
 using System.Transactions;
+
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 

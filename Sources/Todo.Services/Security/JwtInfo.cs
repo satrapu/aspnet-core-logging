@@ -1,4 +1,4 @@
-﻿namespace Todo.Services.Security
+namespace Todo.Services.Security
 {
     public class JwtInfo
     {

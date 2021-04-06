@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Primitives;
@@ -35,7 +36,7 @@ namespace Todo.WebApi.Logging
             }
 
             httpContext.Response.Headers.Add(ConversationId, conversationId);
-            
+
             using (logger.BeginScope(new Dictionary<string, object>
             {
                 [ConversationId] = conversationId.ToString()

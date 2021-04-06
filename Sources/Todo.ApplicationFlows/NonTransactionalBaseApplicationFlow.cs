@@ -1,9 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Security.Principal;
 using System.Threading.Tasks;
+
 using Microsoft.Extensions.Logging;
+
 using Todo.Services.Security;
 
 namespace Todo.ApplicationFlows
@@ -45,7 +47,7 @@ namespace Todo.ApplicationFlows
         /// <returns></returns>
         public async Task<TOutput> ExecuteAsync(TInput input, IPrincipal flowInitiator)
         {
-            using (logger.BeginScope(new Dictionary<string, object> {[ApplicationFlowName] = flowName}))
+            using (logger.BeginScope(new Dictionary<string, object> { [ApplicationFlowName] = flowName }))
             {
                 bool isSuccess = false;
                 Stopwatch stopwatch = Stopwatch.StartNew();

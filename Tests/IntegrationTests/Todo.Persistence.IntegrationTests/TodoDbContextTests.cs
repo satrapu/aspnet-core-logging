@@ -1,14 +1,19 @@
-﻿using System;
+using System;
 using System.Threading.Tasks;
+
 using FluentAssertions;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+
 using Npgsql;
+
 using NUnit.Framework;
+
 using Todo.Persistence.Entities;
 
 namespace Todo.Persistence
@@ -107,7 +112,7 @@ namespace Todo.Persistence
 
                 await firstTodoDbContext.SaveChangesAsync();
                 await firstTransaction.CommitAsync();
-                                
+
                 // Act
                 Func<Task> saveChangesAsyncCall = async () =>
                 {

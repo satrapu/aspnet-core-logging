@@ -1,4 +1,4 @@
-﻿using Todo.Services.Security;
+using Todo.Services.Security;
 
 namespace Todo.ApplicationFlows.Security
 {

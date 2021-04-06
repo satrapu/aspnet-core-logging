@@ -1,4 +1,4 @@
-﻿using System.Security.Principal;
+using System.Security.Principal;
 using System.Threading.Tasks;
 
 namespace Todo.ApplicationFlows
