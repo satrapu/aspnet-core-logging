@@ -17,6 +17,7 @@ parameters:
     buildBreaker:
       enabled: False
   publishPipelineArtifacts: True
+  runTests: True
   integrationTests:
     databaseHost: ''
     databaseName: ''
@@ -208,11 +209,22 @@ jobs:
       -- NUnit.Where="cat == ArchitectureTests"
     name: 'run_architecture_tests'
     displayName: 'Run architecture tests'
+    condition: |
+      and
+      (
+          succeeded()
+        , eq(${{ parameters.runTests }}, True)
+      )
     
   - task: PublishTestResults@2
     name: 'publish_architecture_test_results'
     displayName: 'Publish architecture test results'
-    condition: succeededOrFailed()
+    condition: |
+      and
+      (
+          succeededOrFailed()
+        , eq(${{ parameters.runTests }}, True)
+      )
     inputs:
       testResultsFormat: 'NUnit'
       testResultsFiles: '**/ArchitectureTests/**/TestResults/*'
@@ -243,13 +255,19 @@ jobs:
       -- NUnit.Where="cat == UnitTests"
     name: 'run_unit_tests'
     displayName: 'Run unit tests'
+    condition: eq(${{ parameters.runTests }}, True)
 
   # Publish unit test results.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=azure-devops&tabs=yaml.
   - task: PublishTestResults@2
     name: 'publish_unit_test_results'
     displayName: 'Publish unit test results'
-    condition: succeededOrFailed()
+    condition: |
+      and
+      (
+          succeededOrFailed()
+        , eq(${{ parameters.runTests }}, True)
+      )
     inputs:
       testResultsFormat: 'NUnit'
       testResultsFiles: '**/UnitTests/**/TestResults/*'
@@ -269,12 +287,14 @@ jobs:
       (
           succeeded()
         , eq(variables['Agent.OS'], 'Darwin')
+        , eq(${{ parameters.runTests }}, True)
       )
 
   # Run a PowerShell script to start compose services needed when running integration tests.
   - task: PowerShell@2
     name: 'start_compose_services_used_by_integration_tests'
     displayName: 'Start compose services used by integration tests'
+    condition: eq(${{ parameters.runTests }}, True)
     inputs:
       targetType: 'filePath'
       filePath: '$(Build.SourcesDirectory)/Build/RunComposeServices.ps1'
@@ -316,6 +336,7 @@ jobs:
       -- NUnit.Where="cat == IntegrationTests"
     name: 'run_integration_tests'
     displayName: 'Run integration tests'
+    condition: eq(${{ parameters.runTests }}, True)
     env:
       CONNECTIONSTRINGS__TODOFORINTEGRATIONTESTS: >-
         Host=${{ parameters.integrationTests.databaseHost }};
@@ -335,6 +356,7 @@ jobs:
       (
           succeededOrFailed()
         , eq(${{ parameters.publishPipelineArtifacts }}, True)
+        , eq(${{ parameters.runTests }}, True)
       )
     inputs:
       targetType: 'filePath'
@@ -356,7 +378,12 @@ jobs:
   - task: PublishTestResults@2
     name: 'publish_integration_test_results'
     displayName: 'Publish integration test results'
-    condition: succeededOrFailed()
+    condition: |
+      and
+      (
+          succeededOrFailed()
+        , eq(${{ parameters.runTests }}, True)
+      )
     inputs:
       testResultsFormat: 'NUnit'
       testResultsFiles: '**/IntegrationTests/**/TestResults/*'
@@ -372,6 +399,7 @@ jobs:
       --version $(ReportGenerator_Version)
     name: 'install_code_coverage_report_generator'
     displayName: 'Install code coverage report generator tool'
+    condition: eq(${{ parameters.runTests }}, True)
 
   # Generate code coverage report:
   #   - combine several OpenCover coverage data files into one single file in Cobertura format
@@ -387,12 +415,14 @@ jobs:
       "-reporttypes:Cobertura"
     name: 'generate_code_coverage_report'
     displayName: 'Generate code coverage report'
+    condition: eq(${{ parameters.runTests }}, True)
 
   # Publish code coverage report.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-code-coverage-results?view=azure-devops.
   - task: PublishCodeCoverageResults@1
     name: 'publish_code_coverage_report'
     displayName: 'Publish code coverage report'
+    condition: eq(${{ parameters.runTests }}, True)
     inputs:
       codeCoverageTool: 'Cobertura'
       pathToSources: '$(Build.SourcesDirectory)/Sources'
@@ -420,28 +450,27 @@ jobs:
   - task: SonarSource.sonarcloud.ce096e50-6155-4de8-8800-4221aaeed4a1.SonarCloudAnalyze@1
     name: 'run_sonar_analysis'
     displayName: 'Run Sonar analysis'
-    inputs:
-      timeoutInMinutes: ${{ parameters.sonar.runAnalysisTimeoutInMinutes }}
     condition: |
       and
       (
           succeeded()
         , eq(${{ parameters.sonar.enabled }}, True)
       )
+    inputs:
+      timeoutInMinutes: ${{ parameters.sonar.runAnalysisTimeoutInMinutes }}
 
   # Publish Sonar quality gate result to the remote server.
   - task: SonarSource.sonarcloud.38b27399-a642-40af-bb7d-9971f69712e8.SonarCloudPublish@1
     name: 'publish_sonar_quality_gate_result'
     displayName: 'Publish Sonar quality gate result'
-    inputs:
-      pollingTimeoutSeconds: ${{ parameters.sonar.publishPollingTimeoutSeconds }}
     condition: |
       and
       (
-          succeeded()
-        , eq(${{ parameters.sonar.enabled }}, True)
+          eq(${{ parameters.sonar.enabled }}, True)
         , eq(${{ parameters.sonar.buildBreaker.enabled }}, True)
       )
+    inputs:
+      pollingTimeoutSeconds: ${{ parameters.sonar.publishPollingTimeoutSeconds }}
       
   # Load the current Git branch name into a build variable to be later used when querying SonarCloud web API for the
   # results of the static analysis performed against this branch.
@@ -452,8 +481,7 @@ jobs:
     condition: |
       and
       (
-          succeeded()
-        , eq(${{ parameters.sonar.enabled }}, True)
+          eq(${{ parameters.sonar.enabled }}, True)
         , eq(${{ parameters.sonar.buildBreaker.enabled }}, True)
         , eq(variables['Build.Reason'], 'PullRequest')
       )
@@ -473,8 +501,7 @@ jobs:
     condition: |
       and
       (
-          succeeded()
-        , eq(${{ parameters.sonar.enabled }}, True)
+          eq(${{ parameters.sonar.enabled }}, True)
         , eq(${{ parameters.sonar.buildBreaker.enabled }}, True)
         , ne(variables['Build.Reason'], 'PullRequest')
       )
@@ -493,8 +520,7 @@ jobs:
     condition: |
       and
       (
-          succeeded()
-        , eq(${{ parameters.sonar.enabled }}, True)
+          eq(${{ parameters.sonar.enabled }}, True)
         , eq(${{ parameters.sonar.buildBreaker.enabled }}, True)
       )
     inputs:
@@ -516,8 +542,7 @@ jobs:
     condition: |
       and
       (
-          succeeded()
-        , eq(${{ parameters.sonar.enabled }}, True)
+          eq(${{ parameters.sonar.enabled }}, True)
         , eq(${{ parameters.sonar.buildBreaker.enabled }}, True)
       )
     inputs:
