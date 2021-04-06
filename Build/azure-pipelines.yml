@@ -111,18 +111,19 @@ jobs:
 #      databasePassword: '$(IntegrationTests.Database.Todo.Password)'
 #      databaseDockerImage: 'postgres:12-alpine'
 #      composeProjectName: 'integration-test-prerequisites'
-#      
-#- template: './azure-pipelines.job-template.yml'
-#  parameters:
-#    job:
-#      name: 'windows'
-#      displayName: 'Run on Windows'
-#    pool:
-#      vmImage: 'windows-2019'
-#    integrationTests:
-#      databaseHost: 'localhost'
-#      databaseName: '$(IntegrationTests.Database.Todo.Name)'
-#      databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
-#      databasePassword: '$(IntegrationTests.Database.Todo.Password)'
-#      databaseDockerImage: 'stellirin/postgres-windows:12'
-#      composeProjectName: 'integration-test-prerequisites'
+    
+- template: './azure-pipelines.job-template.yml'
+  parameters:
+    job:
+      name: 'windows'
+      displayName: 'Run on Windows'
+    pool:
+      vmImage: 'windows-2019'
+    runTests: False
+    integrationTests:
+      databaseHost: 'localhost'
+      databaseName: '$(IntegrationTests.Database.Todo.Name)'
+      databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
+      databasePassword: '$(IntegrationTests.Database.Todo.Password)'
+      databaseDockerImage: 'stellirin/postgres-windows:12'
+      composeProjectName: 'integration-test-prerequisites'
