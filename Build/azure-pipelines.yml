@@ -46,7 +46,6 @@ variables:
   # All releases can be found here: https://dotnet.microsoft.com/download/dotnet-core.
   - name: 'DotNetCore_SDK_Version'
     value: '3.1.407'
-    value: '3.1.302'
     
   # Specifies the version of the dotnet-format tool used for enforcing rules found in .editorconfig files.
   # All releases can be found here: https://github.com/dotnet/format/releases.
