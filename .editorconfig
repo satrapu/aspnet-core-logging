@@ -8,6 +8,10 @@ root = true
 [*.cs]
 charset = utf-8
 
+file_header_template = unset
+
+max_line_length = 80
+
 # Indentation and spacing
 indent_size = 4
 indent_style = space
@@ -39,9 +43,3 @@ dotnet_style_predefined_type_for_member_access = true:error
 
 # Prefer read-only on fields
 dotnet_style_readonly_field = true:warning
-
-
-
-file_header_template = unset
-
-max_line_length = 80
