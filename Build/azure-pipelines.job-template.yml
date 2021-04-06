@@ -162,7 +162,7 @@ jobs:
     condition: |
       and
       (
-          succeededOrFailed()
+          failed()
         , eq(variables['Agent.OS'], 'Windows_NT')
         , eq(${{ parameters.publishPipelineArtifacts }}, True)
       )
