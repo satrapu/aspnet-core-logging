@@ -408,6 +408,7 @@ jobs:
       (
           succeededOrFailed()
         , eq(${{ parameters.publishPipelineArtifacts }}, True)
+        , eq(${{ parameters.runTests }}, True)
       )
     inputs:
       artifact: 'test-artifacts-$(Agent.OS)-$(Agent.OSArchitecture)-$(Build.BuildNumber)-$(Build.BuildID)'
@@ -416,12 +417,7 @@ jobs:
   - task: SonarSource.sonarcloud.ce096e50-6155-4de8-8800-4221aaeed4a1.SonarCloudAnalyze@1
     name: 'run_sonar_analysis'
     displayName: 'Run Sonar analysis'
-    condition: |
-      and
-      (
-          succeeded()
-        , eq(${{ parameters.sonar.enabled }}, True)
-      )
+    condition: eq(${{ parameters.sonar.enabled }}, True)
     inputs:
       timeoutInMinutes: ${{ parameters.sonar.runAnalysisTimeoutInMinutes }}
 
