@@ -88,7 +88,7 @@ jobs:
     sonar:
       enabled: False
       buildBreaker:
-        enabled: True
+        enabled: False
     integrationTests:
       databaseHost: 'localhost'
       databaseName: '$(IntegrationTests.Database.Todo.Name)'
