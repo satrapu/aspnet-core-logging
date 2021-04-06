@@ -163,7 +163,7 @@ jobs:
       and
       (
           succeededOrFailed()
-        , eq(variables['Agent.OS'], 'Linux')
+        , eq(variables['Agent.OS'], 'Windows_NT')
         , eq(${{ parameters.publishPipelineArtifacts }}, True)
       )
     inputs:
