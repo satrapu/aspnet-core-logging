@@ -142,7 +142,7 @@ jobs:
       --version $(DotNetFormat_Version)
     name: 'install_dotnet_format'
     displayName: 'Install dotnet-format tool'
-    condition: eq(variables['Agent.OS'], 'Linux')
+    condition: eq(variables['Agent.OS'], 'Windows_NT')
   
   # Run dotnet-format tool and generate a report with its outcome.  
   - script: >-
