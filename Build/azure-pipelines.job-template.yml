@@ -148,7 +148,7 @@ jobs:
   - script: >-
       $(Build.SourcesDirectory)/.dotnet-format-tool/dotnet-format
       --check
-      --verbosity diagnostic
+      --verbosity minimal
       --report $(Build.SourcesDirectory)/.dotnet-format-report.json
       $(Build.SourcesDirectory)/Todo.sln
     name: 'run_dotnet_format'
