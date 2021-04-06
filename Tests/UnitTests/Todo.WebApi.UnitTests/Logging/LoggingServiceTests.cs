@@ -5,6 +5,7 @@ using Moq;
 using NUnit.Framework;
 using System;
 using System.Threading.Tasks;
+using FluentAssertions.Common;
 
 namespace Todo.WebApi.Logging
 {
@@ -20,18 +21,18 @@ namespace Todo.WebApi.Logging
         [Test]
         public void Constructor_UsingNullLogger_MustThrowException()
         {
-            try
-            {
-                // ReSharper disable once ObjectCreationAsStatement
-                new LoggingService(null);
-                Assert.Fail("Must not create instance using null argument");
-            }
-            catch (Exception expectedException)
-            {
-                expectedException.Should()
-                                 .NotBeNull()
-                                 .And.BeAssignableTo<ArgumentNullException>();
-            }
+            // Arrange
+            ILogger<LoggingService> logger = null;
+
+            // Act
+            // ReSharper disable once ObjectCreationAsStatement
+            // ReSharper disable once ExpressionIsAlwaysNull
+            Action createServiceAction = () => new LoggingService(logger);
+
+            // Assert
+            createServiceAction.Should()
+                .ThrowExactly<ArgumentNullException>("must not create instance using null argument")
+                .And.ParamName.IsSameOrEqualTo(nameof(logger));
         }
 
         /// <summary>
@@ -40,69 +41,58 @@ namespace Todo.WebApi.Logging
         [Test]
         public void ShouldLog_UsingNullHttpContext_MustThrowException()
         {
-            try
-            {
-                var loggerMock = new Mock<ILogger<LoggingService>>();
-                var loggingService = new LoggingService(loggerMock.Object);
-                loggingService.ShouldLog(null);
-                Assert.Fail("Must not log using null HTTP context");
-            }
-            catch (Exception expectedException)
-            {
-                expectedException.Should()
-                                 .NotBeNull()
-                                 .And.BeAssignableTo<ArgumentNullException>();
-            }
+            // Arrange
+            var loggerMock = new Mock<ILogger<LoggingService>>();
+            var loggingService = new LoggingService(loggerMock.Object);
+            HttpContext httpContext = null;
+
+            // Act
+            // ReSharper disable once ExpressionIsAlwaysNull
+            Action shouldLogAction = () => loggingService.ShouldLog(httpContext);
+
+            // Assert
+            shouldLogAction.Should().ThrowExactly<ArgumentNullException>("HTTP context is null")
+                .And.ParamName.IsSameOrEqualTo(nameof(httpContext));
         }
 
         /// <summary>
         /// Tests the <see cref="LoggingService.ToLogMessageAsync(HttpRequest)"/> method.
         /// </summary>
         [Test]
-        public async Task ToLogMessageAsync_UsingNullHttpRequest_MustThrowException()
+        public void ToLogMessageAsync_UsingNullHttpRequest_MustThrowException()
         {
+            // Arrange
+            var loggerMock = new Mock<ILogger<LoggingService>>();
+            var loggingService = new LoggingService(loggerMock.Object);
             HttpRequest httpRequest = null;
 
-            try
-            {
-                var loggerMock = new Mock<ILogger<LoggingService>>();
-                var loggingService = new LoggingService(loggerMock.Object);
-                // ReSharper disable once ExpressionIsAlwaysNull
-                await loggingService.ToLogMessageAsync(httpRequest).ConfigureAwait(false);
-                Assert.Fail("Must not create log message using null HTTP request");
-            }
-            catch (Exception expectedException)
-            {
-                expectedException.Should()
-                                 .NotBeNull()
-                                 .And.BeAssignableTo<ArgumentNullException>()
-                                 .And.Subject.As<ArgumentNullException>().ParamName.Should().Be(nameof(httpRequest));
-            }
+            // Act
+            // ReSharper disable once ExpressionIsAlwaysNull
+            Func<Task> toLogMessageAsyncCall = async () => await loggingService.ToLogMessageAsync(httpRequest);
+
+            // Assert
+            toLogMessageAsyncCall.Should().ThrowExactly<ArgumentNullException>()
+                .And.ParamName.Should().Be(nameof(httpRequest));
         }
 
         /// <summary>
         /// Tests the <see cref="LoggingService.ToLogMessageAsync(HttpRequest)"/> method.
         /// </summary>
         [Test]
-        public async Task ToLogMessageAsync_UsingNullHttpResponse_MustThrowException()
+        public void ToLogMessageAsync_UsingNullHttpResponse_MustThrowException()
         {
+            // Arrange
+            var loggerMock = new Mock<ILogger<LoggingService>>();
+            var loggingService = new LoggingService(loggerMock.Object);
             HttpResponse httpResponse = null;
 
-            try
-            {
-                var loggerMock = new Mock<ILogger<LoggingService>>();
-                var loggingService = new LoggingService(loggerMock.Object);
-                // ReSharper disable once ExpressionIsAlwaysNull
-                await loggingService.ToLogMessageAsync(httpResponse).ConfigureAwait(false);
-                Assert.Fail("Must not create log message using null HTTP response");
-            }
-            catch (Exception expectedException)
-            {
-                expectedException.Should()
-                                 .NotBeNull()
-                                 .And.BeAssignableTo<ArgumentNullException>()
-                                 .And.Subject.As<ArgumentNullException>().ParamName.Should().Be(nameof(httpResponse));
-            }
+            // Act
+            // ReSharper disable once ExpressionIsAlwaysNull
+            Func<Task> toLogMessageAsyncCall = async () => await loggingService.ToLogMessageAsync(httpResponse);
+
+            // Assert
+            toLogMessageAsyncCall.Should().ThrowExactly<ArgumentNullException>()
+                .And.ParamName.Should().Be(nameof(httpResponse));
         }
     }
 }

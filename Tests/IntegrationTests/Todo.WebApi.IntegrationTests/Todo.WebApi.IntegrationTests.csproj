@@ -11,6 +11,11 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <ProjectReference Include="..\..\..\Sources\Todo.WebApi\Todo.WebApi.csproj" />
+        <ProjectReference Include="..\..\Infrastructure\TestInfrastructure\TestInfrastructure.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="coverlet.msbuild">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
@@ -22,10 +27,6 @@
         <PackageReference Include="NUnit" />
         <PackageReference Include="NUnit3TestAdapter" />
         <PackageReference Include="NunitXml.TestLogger" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\..\..\Sources\Todo.WebApi\Todo.WebApi.csproj" />
     </ItemGroup>
 
     <ItemGroup>

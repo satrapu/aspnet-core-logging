@@ -32,12 +32,12 @@ Param(
 
     # An optional dictionary storing variables which will be passed to the containers started via Docker Compose.
     [hashtable]
-    $ExtraEnvironmentVariables
+    $EnvironmentVariables
 )
 
 Write-Output "Preparing to start compose services from project: $ComposeProjectName"
 Write-Output "Current script path is: $PSScriptRoot"
-$ComposeFilePath = Join-Path -Path $PSScriptRoot $RelativePathToComposeFile
+$ComposeFilePath = [System.IO.Path]::GetFullPath((Join-Path -Path $PSScriptRoot $RelativePathToComposeFile))
 
 if (![System.IO.File]::Exists($ComposeFilePath))
 {
@@ -46,7 +46,7 @@ if (![System.IO.File]::Exists($ComposeFilePath))
     exit 1;
 }
 
-$ComposeEnvironmentFilePath = Join-Path -Path $PSScriptRoot $RelativePathToEnvironmentFile
+$ComposeEnvironmentFilePath = [System.IO.Path]::GetFullPath((Join-Path -Path $PSScriptRoot $RelativePathToEnvironmentFile))
 
 if (![System.IO.File]::Exists($ComposeEnvironmentFilePath))
 {
@@ -55,30 +55,9 @@ if (![System.IO.File]::Exists($ComposeEnvironmentFilePath))
     exit 2;
 }
 
-$EnvironmentFileLines = Get-Content -Path $ComposeEnvironmentFilePath
-
-foreach ($EnvironmentFileLine in $EnvironmentFileLines)
+if ($EnvironmentVariables -ne $null)
 {
-    if(($EnvironmentFileLine.Trim().Length -eq 0) -or ($EnvironmentFileLine.StartsWith('#')))
-    {
-        # Ignore empty lines and those representing comments
-        continue;
-    }
-    
-    # Each line of text will be split using first delimiter only
-    $EnvironmentFileLineParts = $EnvironmentFileLine.Split('=', 2)
-    $EnvironmentVariableName = $EnvironmentFileLineParts[0]
-    $EnvironmentVariableValue = $EnvironmentFileLineParts[1]
-
-    # Each key-value pair from the environment file will be promoted to an environment variable
-    # in the scope of the current process since, AFAIK, there's no other way of passing such variables
-    # to the containers started by Docker Compose
-    [System.Environment]::SetEnvironmentVariable($EnvironmentVariableName, $EnvironmentVariableValue, 'Process')
-}
-
-if ($ExtraEnvironmentVariables -ne $null)
-{
-    $ExtraEnvironmentVariables.GetEnumerator() | ForEach-Object {
+    $EnvironmentVariables.GetEnumerator() | ForEach-Object {
         [System.Environment]::SetEnvironmentVariable($_.Key, $_.Value, 'Process')
     }
 }
@@ -92,6 +71,7 @@ Write-Output $InfoMessage
 # standard error stream, thus tricking runtime into thinking it has failed.
 docker-compose --file="$ComposeFilePath" `
                --project-name="$ComposeProjectName" `
+               --env-file="$ComposeEnvironmentFilePath" `
                up `
                --detach
 
