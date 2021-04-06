@@ -146,11 +146,11 @@ jobs:
   
   # Run dotnet-format tool and generate a report with its outcome.  
   - script: >-
-      $(Build.SourcesDirectory)/.dotnet-format-tool/dotnet-format 
-      --no-restore
+      $(Build.SourcesDirectory)/.dotnet-format-tool/dotnet-format
       --check
       --verbosity diagnostic
       --report $(Build.SourcesDirectory)/.dotnet-format-report.json
+      $(Build.SourcesDirectory)/Todo.sln
     name: 'run_dotnet_format'
     displayName: 'Enforce code style & formatting rules'
     condition: eq(variables['Agent.OS'], 'Linux')
