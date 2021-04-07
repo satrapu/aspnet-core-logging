@@ -58,6 +58,12 @@ namespace Todo.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // Configure Application Insights
+            if (WebHostingEnvironment.IsEnvironment("DemoInAzure"))
+            {
+                services.AddApplicationInsightsTelemetry(Configuration.GetValue<string>("ApplicationInsights:InstrumentationKey"));
+            }
+
             // Configure logging
             services.AddLogging(loggingBuilder =>
             {

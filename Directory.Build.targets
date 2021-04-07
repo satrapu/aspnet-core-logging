@@ -7,6 +7,7 @@
         <PackageReference Update="coverlet.msbuild" Version="2.9.0"/>
         <PackageReference Update="EntityFrameworkCoreMock.Moq" Version="1.0.0.30"/>
         <PackageReference Update="FluentAssertions" Version="5.10.3"/>
+		<PackageReference Update="Microsoft.ApplicationInsights.AspNetCore" Version="2.17.0" />
         <PackageReference Update="Microsoft.AspNet.WebApi.Client" Version="5.2.7"/>
         <PackageReference Update="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.8"/>
         <PackageReference Update="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="3.1.8"/>
@@ -30,6 +31,7 @@
         <PackageReference Update="System.IdentityModel.Tokens.Jwt" Version="5.5.0"/>
         <PackageReference Update="Serilog.AspNetCore" Version="3.4.0"/>
         <PackageReference Update="Serilog.Enrichers.Thread" Version="3.1.0"/>
+		<PackageReference Update="Serilog.Sinks.ApplicationInsights" Version="3.1.0" />
         <PackageReference Update="Serilog.Sinks.Seq" Version="5.0.0"/>
     </ItemGroup>
 </Project>
