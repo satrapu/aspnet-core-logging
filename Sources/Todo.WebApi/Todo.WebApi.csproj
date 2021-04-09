@@ -3,7 +3,6 @@
     <PropertyGroup>
         <TargetFramework>netcoreapp3.1</TargetFramework>
         <IsTestProject>false</IsTestProject>
-        <UserSecretsId>7fc2ba43-a807-49e6-bd5d-92a2923fb277</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>
