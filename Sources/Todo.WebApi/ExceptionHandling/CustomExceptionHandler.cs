@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -37,9 +38,13 @@ namespace Todo.WebApi.ExceptionHandling
         public static void UseCustomExceptionHandler(this IApplicationBuilder applicationBuilder,
             IHostEnvironment hostEnvironment)
         {
-            ILogger logger = applicationBuilder.ApplicationServices.GetRequiredService<ILoggerFactory>()
+            IServiceProvider serviceProvider = applicationBuilder.ApplicationServices;
+            IConfiguration configuration = serviceProvider.GetRequiredService<IConfiguration>();
+            bool includeDetails = configuration.GetValue<bool>("ExceptionHandling:IncludeDetails");
+
+            ILogger logger = serviceProvider.GetRequiredService<ILoggerFactory>()
                 .CreateLogger(nameof(CustomExceptionHandler));
-            bool includeDetails = !hostEnvironment.IsStaging() && !hostEnvironment.IsProduction();
+
             applicationBuilder.Use((httpContext, _) => WriteResponse(httpContext, logger, includeDetails));
         }
 
@@ -67,7 +72,7 @@ namespace Todo.WebApi.ExceptionHandling
             // Whenever the web API responds with a ProblemDetails instance, the user has the opportunity to report
             // this issue and hopefully, he will mention the 'errorId', thus easing the job of the developer
             // assigned to fix it.
-            logger.LogError(unhandledException,
+            logger.LogError(unhandledException, 
                 "An unexpected error has been caught - "
                 + "error id: {ErrorId}; error data: {ErrorData}; error key: {ErrorKey}",
                 problemDetails.Extensions[ErrorId],
