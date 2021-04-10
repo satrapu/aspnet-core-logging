@@ -66,8 +66,9 @@ namespace Todo.ApplicationFlows
                     logger.LogInformation(
                         "User [{FlowInitiator}] has finished executing application flow [{ApplicationFlowName}] "
                         + "with the outcome: [{ApplicationFlowOutcome}]; "
-                        + "time taken: [{ApplicationFlowDuration}]",
-                        flowInitiatorName, flowName, isSuccess ? "success" : "failure", stopwatch.Elapsed);
+                        + "time taken: [{ApplicationFlowDurationAsTimeSpan}] ({ApplicationFlowDurationInMillis}ms)",
+                        flowInitiatorName, flowName, isSuccess ? "success" : "failure", stopwatch.Elapsed,
+                        stopwatch.ElapsedMilliseconds);
                 }
             }
         }
