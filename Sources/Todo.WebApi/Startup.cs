@@ -51,7 +51,7 @@ namespace Todo.WebApi
         {
             Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             WebHostingEnvironment = webHostEnvironment ?? throw new ArgumentNullException(nameof(webHostEnvironment));
-            ShouldUseMiniProfiler = bool.TryParse(Configuration["MiniProfiler:Enable"], out bool enableMiniProfiler)
+            ShouldUseMiniProfiler = bool.TryParse(Configuration["MiniProfiler:Enabled"], out bool enableMiniProfiler)
                                     && enableMiniProfiler;
         }
 
