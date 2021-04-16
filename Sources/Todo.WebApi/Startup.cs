@@ -59,9 +59,12 @@ namespace Todo.WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             // Configure Application Insights
-            if (WebHostingEnvironment.IsEnvironment("DemoInAzure"))
+            var applicationInsightsOptions = new ApplicationInsightsOptions();
+            Configuration.Bind(applicationInsightsOptions);
+
+            if (applicationInsightsOptions.Enabled)
             {
-                services.AddApplicationInsightsTelemetry(Configuration.GetValue<string>("ApplicationInsights:InstrumentationKey"));
+                services.AddApplicationInsightsTelemetry(applicationInsightsOptions.InstrumentationKey);
             }
 
             // Configure logging
