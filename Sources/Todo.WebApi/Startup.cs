@@ -229,7 +229,7 @@ namespace Todo.WebApi
             // The exception handling middleware must be added inside the ASP.NET Core request pipeline
             // as soon as possible to ensure any unhandled exception is eventually handled.
             applicationBuilder.UseExceptionHandler(localApplicationBuilder =>
-                localApplicationBuilder.UseCustomExceptionHandler(WebHostingEnvironment));
+                localApplicationBuilder.UseCustomExceptionHandler());
 
             if (ShouldUseMiniProfiler)
             {

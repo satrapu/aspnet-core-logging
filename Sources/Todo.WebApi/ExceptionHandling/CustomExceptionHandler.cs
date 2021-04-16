@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Npgsql;
 using Todo.Services.TodoItemLifecycleManagement;
@@ -33,10 +32,7 @@ namespace Todo.WebApi.ExceptionHandling
         /// </summary>
         /// <param name="applicationBuilder">The <see cref="IApplicationBuilder"/> instance which needs to be
         /// configured to handle exceptions.</param>
-        /// <param name="hostEnvironment">The <see cref="IHostEnvironment"/> instance inside which this
-        /// web API runs.</param>
-        public static void UseCustomExceptionHandler(this IApplicationBuilder applicationBuilder,
-            IHostEnvironment hostEnvironment)
+        public static void UseCustomExceptionHandler(this IApplicationBuilder applicationBuilder)
         {
             IServiceProvider serviceProvider = applicationBuilder.ApplicationServices;
             IConfiguration configuration = serviceProvider.GetRequiredService<IConfiguration>();
@@ -72,7 +68,7 @@ namespace Todo.WebApi.ExceptionHandling
             // Whenever the web API responds with a ProblemDetails instance, the user has the opportunity to report
             // this issue and hopefully, he will mention the 'errorId', thus easing the job of the developer
             // assigned to fix it.
-            logger.LogError(unhandledException, 
+            logger.LogError(unhandledException,
                 "An unexpected error has been caught - "
                 + "error id: {ErrorId}; error data: {ErrorData}; error key: {ErrorKey}",
                 problemDetails.Extensions[ErrorId],
