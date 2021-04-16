@@ -43,6 +43,8 @@ namespace Todo.WebApi
 
         private bool ShouldUseMiniProfiler { get; }
 
+        private bool IsLoggingToFileEnabled { get; }
+
         /// <summary>
         /// Creates a new instance of the <see cref="Startup"/> class.
         /// </summary>
@@ -52,8 +54,9 @@ namespace Todo.WebApi
         {
             Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             WebHostingEnvironment = webHostEnvironment ?? throw new ArgumentNullException(nameof(webHostEnvironment));
-            ShouldUseMiniProfiler = bool.TryParse(Configuration["MiniProfiler:Enabled"], out bool enableMiniProfiler)
-                                    && enableMiniProfiler;
+            ShouldUseMiniProfiler = Configuration.GetValue<bool>("MiniProfiler:Enabled");
+            IsLoggingToFileEnabled = Configuration.GetSection("Serilog:Using").AsEnumerable()
+                .Any(sink => "Serilog.Sinks.File".Equals(sink.Value));
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -74,9 +77,13 @@ namespace Todo.WebApi
             ILogger<Startup> logger)
         {
             logger.LogInformation("Todo ASP.NET Core Web API is starting ...");
-            logger.LogInformation(
-                "The {LogsHomeEnvironmentVariable} environment variable now points to directory: {LogsHomeDirectory}",
-                LogsHomeEnvironmentVariable, Environment.GetEnvironmentVariable(LogsHomeEnvironmentVariable));
+
+            if (IsLoggingToFileEnabled)
+            {
+                logger.LogInformation(
+                    "The {LogsHomeEnvironmentVariable} environment variable now points to directory: {LogsHomeDirectory}",
+                    LogsHomeEnvironmentVariable, Environment.GetEnvironmentVariable(LogsHomeEnvironmentVariable));
+            }
 
             applicationBuilder.UseConversationId();
             applicationBuilder.UseHttpLogging();
@@ -117,13 +124,8 @@ namespace Todo.WebApi
         {
             services.AddLogging(loggingBuilder =>
             {
-                var configuredSerilogSinks =
-                    Configuration.GetSection("Serilog:Using").AsEnumerable();
-
-                if (configuredSerilogSinks.Any(sink => "Serilog.Sinks.File".Equals(sink.Value)))
+                if (IsLoggingToFileEnabled)
                 {
-                    // Ensure all things related to Serilog.Sinks.File will be created only if this sink has been
-                    // configured.
                     string logsHomeDirectoryPath = Environment.GetEnvironmentVariable(LogsHomeEnvironmentVariable);
 
                     if (string.IsNullOrWhiteSpace(logsHomeDirectoryPath) || !Directory.Exists(logsHomeDirectoryPath))
