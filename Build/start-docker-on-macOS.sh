@@ -31,11 +31,6 @@ duration=$(( end - start ))
 echo "Docker Desktop for Mac has been installed in $duration seconds"
 
 printf '\n\n'
-
-echo 'Locating Docker.app folder ...'
-find / -type d -name 'Docker.app'
-printf '\n\n'
-
 echo 'Starting Docker Desktop for Mac, if necessary ...'
 start=$SECONDS
 open -g -a /Applications/Docker.app || exit
