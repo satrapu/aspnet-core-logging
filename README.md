@@ -13,31 +13,6 @@ This project has several posts associated with it:
 - [Build an ASP.NET Core application using Azure Pipelines](https://crossprogramming.com/2019/03/17/build-asp-net-core-app-using-azure-pipelines.html)
 - [Logging HTTP context in ASP.NET Core](https://crossprogramming.com/2018/12/27/logging-http-context-in-asp-net-core.html)
 
-## Table of Contents
-
-- [Description](#description)
-- [Build](#build)
-- [Code quality](#code-quality)
-- [Setup local development environment](#setup-local-development-environment)
-    - [Setup local persistence services](#setup-local-persistence-services)
-      - [Create Docker volumes](#create-docker-volumes)
-      - [Create .env file](#create-env-file)
-      - [Compose commands](#compose-commands)
-        - [Run compose services](#run-compose-services)
-        - [Stop compose services](#stop-compose-services)
-        - [Start compose services](#start-compose-services)
-        - [Display compose service log](#display-compose-service-log)
-        - [Destroy compose services](#destroy-compose-services)
-      - [Setup pgAdmin](#setup-pgAdmin)
-        - [Open pgAdmin UI](#open-pgadmin-ui)
-        - [Register local database server](#register-your-local-database-server)
-    - [Setup environment variables](#setup-environment-variables)      
-    - [Setup local development database](#setup-local-development-database)
-      - [Option 1: Manually run database migrations](#option-1-manually-run-database-migrations)
-      - [Option 2: Run database migrations at application startup](#option-2-run-database-migrations-at-application-startup)
-- [Inspect MiniProfiler results](#inspect-miniprofiler-results)
-- [Inspect log events using Seq](#inspect-log-events-using-seq)
-
 ## Build
 
 | Build Server                                                                    | Operating System | Status                                                                                                                                                                                                                                                          |
