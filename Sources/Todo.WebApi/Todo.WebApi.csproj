@@ -6,17 +6,19 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Todo.ApplicationFlows\Todo.ApplicationFlows.csproj"/>
+        <ProjectReference Include="..\Todo.ApplicationFlows\Todo.ApplicationFlows.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer"/>
-        <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore"/>
-        <PackageReference Include="MiniProfiler.AspNetCore.Mvc"/>
-        <PackageReference Include="MiniProfiler.EntityFrameworkCore"/>
-        <PackageReference Include="Serilog.AspNetCore"/>
-        <PackageReference Include="Serilog.Enrichers.Thread"/>
-        <PackageReference Include="Serilog.Sinks.Seq"/>
+        <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+        <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" />
+        <PackageReference Include="MiniProfiler.AspNetCore.Mvc" />
+        <PackageReference Include="MiniProfiler.EntityFrameworkCore" />
+        <PackageReference Include="Serilog.AspNetCore" />
+        <PackageReference Include="Serilog.Enrichers.Thread" />
+        <PackageReference Include="Serilog.Sinks.ApplicationInsights" />
+        <PackageReference Include="Serilog.Sinks.Seq" />
     </ItemGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

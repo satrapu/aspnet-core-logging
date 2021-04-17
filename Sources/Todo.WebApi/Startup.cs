@@ -1,5 +1,6 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -46,6 +47,8 @@ namespace Todo.WebApi
 
         private bool ShouldUseMiniProfiler { get; }
 
+        private bool IsLoggingToFileEnabled { get; }
+
         /// <summary>
         /// Creates a new instance of the <see cref="Startup"/> class.
         /// </summary>
@@ -55,25 +58,86 @@ namespace Todo.WebApi
         {
             Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             WebHostingEnvironment = webHostEnvironment ?? throw new ArgumentNullException(nameof(webHostEnvironment));
-            ShouldUseMiniProfiler = bool.TryParse(Configuration["MiniProfiler:Enable"], out bool enableMiniProfiler)
-                                    && enableMiniProfiler;
+            ShouldUseMiniProfiler = Configuration.GetValue<bool>("MiniProfiler:Enabled");
+            IsLoggingToFileEnabled = Configuration.GetSection("Serilog:Using").AsEnumerable()
+                .Any(sink => "Serilog.Sinks.File".Equals(sink.Value));
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // Configure logging
+            ConfigureApplicationInsights(services);
+            ConfigureLogging(services);
+            ConfigureEntityFrameworkCore(services);
+            ConfigureSecurity(services);
+            ConfigureMiniProfiler(services);
+            ConfigureWebApi(services);
+            ConfigureApplicationServices(services);
+        }
+
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        // ReSharper disable once UnusedMember.Global
+        public void Configure(IApplicationBuilder applicationBuilder, IHostApplicationLifetime hostApplicationLifetime,
+            ILogger<Startup> logger)
+        {
+            logger.LogInformation("Todo ASP.NET Core Web API is starting ...");
+
+            if (IsLoggingToFileEnabled)
+            {
+                logger.LogInformation(
+                    "The {LogsHomeEnvironmentVariable} environment variable now points to directory: {LogsHomeDirectory}",
+                    LogsHomeEnvironmentVariable, Environment.GetEnvironmentVariable(LogsHomeEnvironmentVariable));
+            }
+
+            applicationBuilder.UseConversationId();
+            applicationBuilder.UseHttpLogging();
+
+            // The exception handling middleware must be added inside the ASP.NET Core request pipeline
+            // as soon as possible to ensure any unhandled exception is eventually handled.
+            applicationBuilder.UseExceptionHandler(localApplicationBuilder =>
+                localApplicationBuilder.UseCustomExceptionHandler());
+
+            if (ShouldUseMiniProfiler)
+            {
+                applicationBuilder.UseMiniProfiler();
+            }
+
+            applicationBuilder.UseHttpsRedirection();
+            applicationBuilder.UseRouting();
+            applicationBuilder.UseAuthentication();
+            applicationBuilder.UseAuthorization();
+            applicationBuilder.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+
+            hostApplicationLifetime.ApplicationStarted.Register(() => OnApplicationStarted(applicationBuilder, logger));
+            hostApplicationLifetime.ApplicationStopping.Register(() => OnApplicationStopping(logger));
+            hostApplicationLifetime.ApplicationStopped.Register(() => OnApplicationStopped(logger));
+        }
+
+        private void ConfigureApplicationInsights(IServiceCollection services)
+        {
+            var applicationInsightsOptions = new ApplicationInsightsOptions();
+            Configuration.Bind(applicationInsightsOptions);
+
+            if (applicationInsightsOptions.Enabled)
+            {
+                services.AddApplicationInsightsTelemetry(applicationInsightsOptions.InstrumentationKey);
+            }
+        }
+
+        private void ConfigureLogging(IServiceCollection services)
+        {
             services.AddLogging(loggingBuilder =>
             {
-                // Ensure the environment variable pointing to a folder where Serilog will write application log files
-                // exists when application services are configured
-                string logsHomeDirectoryPath = Environment.GetEnvironmentVariable(LogsHomeEnvironmentVariable);
-
-                if (string.IsNullOrWhiteSpace(logsHomeDirectoryPath) || !Directory.Exists(logsHomeDirectoryPath))
+                if (IsLoggingToFileEnabled)
                 {
-                    var currentWorkingDirectory = new DirectoryInfo(Directory.GetCurrentDirectory());
-                    DirectoryInfo logsHomeDirectory = currentWorkingDirectory.CreateSubdirectory("Logs");
-                    Environment.SetEnvironmentVariable(LogsHomeEnvironmentVariable, logsHomeDirectory.FullName);
+                    string logsHomeDirectoryPath = Environment.GetEnvironmentVariable(LogsHomeEnvironmentVariable);
+
+                    if (string.IsNullOrWhiteSpace(logsHomeDirectoryPath) || !Directory.Exists(logsHomeDirectoryPath))
+                    {
+                        var currentWorkingDirectory = new DirectoryInfo(Directory.GetCurrentDirectory());
+                        DirectoryInfo logsHomeDirectory = currentWorkingDirectory.CreateSubdirectory("Logs");
+                        Environment.SetEnvironmentVariable(LogsHomeEnvironmentVariable, logsHomeDirectory.FullName);
+                    }
                 }
 
                 loggingBuilder.ClearProviders();
@@ -81,8 +145,10 @@ namespace Todo.WebApi
                     .ReadFrom.Configuration(Configuration)
                     .CreateLogger(), dispose: true);
             });
+        }
 
-            // Configure EF Core
+        private void ConfigureEntityFrameworkCore(IServiceCollection services)
+        {
             services.AddDbContext<TodoDbContext>((serviceProvider, dbContextOptionsBuilder) =>
             {
                 var connectionString = Configuration.GetConnectionString("Todo");
@@ -95,7 +161,10 @@ namespace Todo.WebApi
                     dbContextOptionsBuilder.EnableDetailedErrors();
                 }
             });
+        }
 
+        private void ConfigureSecurity(IServiceCollection services)
+        {
             // Display personally identifiable information only during development
             IdentityModelEventSource.ShowPII = WebHostingEnvironment.IsDevelopment();
 
@@ -159,7 +228,14 @@ namespace Todo.WebApi
             });
             services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
 
-            // Configure MiniProfiler for Web API and EF Core only when inside development environment.
+            // Configure options used for customizing generating JWT tokens.
+            // Options pattern: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-3.1.
+            services.Configure<GenerateJwtOptions>(generateJwtOptions);
+        }
+
+        private void ConfigureMiniProfiler(IServiceCollection services)
+        {
+            // Configure MiniProfiler for Web API and EF Core.
             // Based on: https://dotnetthoughts.net/using-miniprofiler-in-aspnetcore-webapi/.
             if (ShouldUseMiniProfiler)
             {
@@ -176,11 +252,16 @@ namespace Todo.WebApi
                     })
                     .AddEntityFramework();
             }
+        }
 
+        private void ConfigureWebApi(IServiceCollection services)
+        {
             // Configure ASP.NET Web API services.
             services.AddControllers();
+        }
 
-            // Configure Todo Web API services.
+        private void ConfigureApplicationServices(IServiceCollection services)
+        {
             services.AddSingleton<IJwtService, JwtService>();
             services.AddScoped<ITodoItemService, TodoItemService>();
 
@@ -192,10 +273,6 @@ namespace Todo.WebApi
             services.AddSingleton<IHttpContextLoggingHandler>(serviceProvider =>
                 serviceProvider.GetRequiredService<LoggingService>());
 
-            // Configure options used for customizing generating JWT tokens.
-            // Options pattern: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-3.1.
-            services.Configure<GenerateJwtOptions>(generateJwtOptions);
-
             // Configure options used by application flows.
             services.Configure<ApplicationFlowOptions>(Configuration.GetSection("ApplicationFlows"));
 
@@ -206,40 +283,6 @@ namespace Todo.WebApi
             services.AddScoped<IAddTodoItemFlow, AddTodoItemFlow>();
             services.AddScoped<IUpdateTodoItemFlow, UpdateTodoItemFlow>();
             services.AddScoped<IDeleteTodoItemFlow, DeleteTodoItemFlow>();
-        }
-
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        // ReSharper disable once UnusedMember.Global
-        public void Configure(IApplicationBuilder applicationBuilder, IHostApplicationLifetime hostApplicationLifetime,
-            ILogger<Startup> logger)
-        {
-            logger.LogInformation("Todo ASP.NET Core Web API is starting ...");
-            logger.LogInformation(
-                "The {LogsHomeEnvironmentVariable} environment variable now points to directory: {LogsHomeDirectory}",
-                LogsHomeEnvironmentVariable, Environment.GetEnvironmentVariable(LogsHomeEnvironmentVariable));
-
-            applicationBuilder.UseConversationId();
-            applicationBuilder.UseHttpLogging();
-
-            // The exception handling middleware must be added inside the ASP.NET Core request pipeline
-            // as soon as possible to ensure any unhandled exception is eventually handled.
-            applicationBuilder.UseExceptionHandler(localApplicationBuilder =>
-                localApplicationBuilder.UseCustomExceptionHandler(WebHostingEnvironment));
-
-            if (ShouldUseMiniProfiler)
-            {
-                applicationBuilder.UseMiniProfiler();
-            }
-
-            applicationBuilder.UseHttpsRedirection();
-            applicationBuilder.UseRouting();
-            applicationBuilder.UseAuthentication();
-            applicationBuilder.UseAuthorization();
-            applicationBuilder.UseEndpoints(endpoints => { endpoints.MapControllers(); });
-
-            hostApplicationLifetime.ApplicationStarted.Register(() => OnApplicationStarted(applicationBuilder, logger));
-            hostApplicationLifetime.ApplicationStopping.Register(() => OnApplicationStopping(logger));
-            hostApplicationLifetime.ApplicationStopped.Register(() => OnApplicationStopped(logger));
         }
 
         private void OnApplicationStarted(IApplicationBuilder applicationBuilder, ILogger logger)

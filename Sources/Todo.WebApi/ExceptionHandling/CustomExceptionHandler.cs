@@ -7,8 +7,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
 using Npgsql;
@@ -35,14 +35,15 @@ namespace Todo.WebApi.ExceptionHandling
         /// </summary>
         /// <param name="applicationBuilder">The <see cref="IApplicationBuilder"/> instance which needs to be
         /// configured to handle exceptions.</param>
-        /// <param name="hostEnvironment">The <see cref="IHostEnvironment"/> instance inside which this
-        /// web API runs.</param>
-        public static void UseCustomExceptionHandler(this IApplicationBuilder applicationBuilder,
-            IHostEnvironment hostEnvironment)
+        public static void UseCustomExceptionHandler(this IApplicationBuilder applicationBuilder)
         {
-            ILogger logger = applicationBuilder.ApplicationServices.GetRequiredService<ILoggerFactory>()
+            IServiceProvider serviceProvider = applicationBuilder.ApplicationServices;
+            IConfiguration configuration = serviceProvider.GetRequiredService<IConfiguration>();
+            bool includeDetails = configuration.GetValue<bool>("ExceptionHandling:IncludeDetails");
+
+            ILogger logger = serviceProvider.GetRequiredService<ILoggerFactory>()
                 .CreateLogger(nameof(CustomExceptionHandler));
-            bool includeDetails = !hostEnvironment.IsStaging() && !hostEnvironment.IsProduction();
+
             applicationBuilder.Use((httpContext, _) => WriteResponse(httpContext, logger, includeDetails));
         }
 

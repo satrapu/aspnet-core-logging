@@ -14,18 +14,10 @@ namespace Todo.WebApi
     /// </summary>
     public static class Program
     {
-        private static readonly Logger Logger;
-
-        static Program()
-        {
-            // Configure Serilog logger for this class only.
-            // This logger is different than the one defined inside Startup class, which will be used by the rest of
-            // the classes found inside Todo ASP.NET Core Web API.
-            Logger = new LoggerConfiguration()
-                .Enrich.FromLogContext()
-                .WriteTo.Console()
-                .CreateLogger();
-        }
+        private static readonly Logger Logger = new LoggerConfiguration()
+            .Enrich.FromLogContext()
+            .WriteTo.Console()
+            .CreateLogger();
 
         /// <summary>
         /// Runs Todo ASP.NET Core Web API.
