@@ -1,10 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
@@ -16,9 +16,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
-
 using Serilog;
-
 using Todo.ApplicationFlows;
 using Todo.ApplicationFlows.Security;
 using Todo.ApplicationFlows.TodoItems;
@@ -29,7 +27,6 @@ using Todo.WebApi.Authorization;
 using Todo.WebApi.ExceptionHandling;
 using Todo.WebApi.Logging;
 using Todo.WebApi.Models;
-
 using ILogger = Microsoft.Extensions.Logging.ILogger;
 
 namespace Todo.WebApi
@@ -47,7 +44,9 @@ namespace Todo.WebApi
 
         private bool ShouldUseMiniProfiler { get; }
 
-        private bool IsLoggingToFileEnabled { get; }
+        private bool IsSerilogFileSinkConfigured { get; }
+
+        private bool IsSerilogApplicationInsightsSinkConfigured { get; }
 
         /// <summary>
         /// Creates a new instance of the <see cref="Startup"/> class.
@@ -59,14 +58,18 @@ namespace Todo.WebApi
             Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             WebHostingEnvironment = webHostEnvironment ?? throw new ArgumentNullException(nameof(webHostEnvironment));
             ShouldUseMiniProfiler = Configuration.GetValue<bool>("MiniProfiler:Enabled");
-            IsLoggingToFileEnabled = Configuration.GetSection("Serilog:Using").AsEnumerable()
-                .Any(sink => "Serilog.Sinks.File".Equals(sink.Value));
+
+            IEnumerable<KeyValuePair<string, string>> configuredSerilogSinks =
+                Configuration.GetSection("Serilog:Using").AsEnumerable().ToList();
+            IsSerilogFileSinkConfigured =
+                configuredSerilogSinks.Any(sink => "Serilog.Sinks.File".Equals(sink.Value));
+            IsSerilogApplicationInsightsSinkConfigured =
+                configuredSerilogSinks.Any(sink => "Serilog.Sinks.ApplicationInsights".Equals(sink.Value));
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            ConfigureApplicationInsights(services);
             ConfigureLogging(services);
             ConfigureEntityFrameworkCore(services);
             ConfigureSecurity(services);
@@ -82,7 +85,7 @@ namespace Todo.WebApi
         {
             logger.LogInformation("Todo ASP.NET Core Web API is starting ...");
 
-            if (IsLoggingToFileEnabled)
+            if (IsSerilogFileSinkConfigured)
             {
                 logger.LogInformation(
                     "The {LogsHomeEnvironmentVariable} environment variable now points to directory: {LogsHomeDirectory}",
@@ -118,7 +121,7 @@ namespace Todo.WebApi
             var applicationInsightsOptions = new ApplicationInsightsOptions();
             Configuration.Bind(applicationInsightsOptions);
 
-            if (applicationInsightsOptions.Enabled)
+            if (IsSerilogApplicationInsightsSinkConfigured)
             {
                 services.AddApplicationInsightsTelemetry(applicationInsightsOptions.InstrumentationKey);
             }
@@ -126,9 +129,11 @@ namespace Todo.WebApi
 
         private void ConfigureLogging(IServiceCollection services)
         {
+            ConfigureApplicationInsights(services);
+
             services.AddLogging(loggingBuilder =>
             {
-                if (IsLoggingToFileEnabled)
+                if (IsSerilogFileSinkConfigured)
                 {
                     string logsHomeDirectoryPath = Environment.GetEnvironmentVariable(LogsHomeEnvironmentVariable);
 
