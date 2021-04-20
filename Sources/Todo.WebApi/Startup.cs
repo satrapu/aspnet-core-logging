@@ -59,9 +59,12 @@ namespace Todo.WebApi
             WebHostingEnvironment = webHostEnvironment ?? throw new ArgumentNullException(nameof(webHostEnvironment));
             ShouldUseMiniProfiler = Configuration.GetValue<bool>("MiniProfiler:Enabled");
 
-            IEnumerable<KeyValuePair<string, string>> configuredSerilogSinks = Configuration.GetSection("Serilog:Using").AsEnumerable().ToList();
-            IsSerilogFileSinkConfigured = configuredSerilogSinks.Any(sink => "Serilog.Sinks.File".Equals(sink.Value));
-            IsSerilogApplicationInsightsSinkConfigured = configuredSerilogSinks.Any(sink => "Serilog.Sinks.ApplicationInsights".Equals(sink.Value));
+            IEnumerable<KeyValuePair<string, string>> configuredSerilogSinks =
+                Configuration.GetSection("Serilog:Using").AsEnumerable().ToList();
+            IsSerilogFileSinkConfigured =
+                configuredSerilogSinks.Any(sink => "Serilog.Sinks.File".Equals(sink.Value));
+            IsSerilogApplicationInsightsSinkConfigured =
+                configuredSerilogSinks.Any(sink => "Serilog.Sinks.ApplicationInsights".Equals(sink.Value));
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
