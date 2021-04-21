@@ -52,7 +52,7 @@ namespace Todo.ApplicationFlows
             string userName = $"test-user--{Guid.NewGuid():N}";
             IIdentity identity = new GenericIdentity(userName);
 
-            string[] roles = {$"role--{Guid.NewGuid():N}"};
+            string[] roles = { $"role--{Guid.NewGuid():N}" };
             IPrincipal flowInitiator = new GenericPrincipal(identity, roles);
 
             ITodoItemService todoItemService =
@@ -127,7 +127,7 @@ namespace Todo.ApplicationFlows
             string userName = $"test-user--{Guid.NewGuid():N}";
             IIdentity identity = new GenericIdentity(userName);
 
-            string[] roles = {$"role--{Guid.NewGuid():N}"};
+            string[] roles = { $"role--{Guid.NewGuid():N}" };
             IPrincipal flowInitiator = new GenericPrincipal(identity, roles);
 
             ITodoItemService todoItemService =
@@ -200,7 +200,7 @@ namespace Todo.ApplicationFlows
             string userName = $"test-user--{Guid.NewGuid():N}";
             IIdentity identity = new GenericIdentity(userName);
 
-            string[] roles = {$"role--{Guid.NewGuid():N}"};
+            string[] roles = { $"role--{Guid.NewGuid():N}" };
             IPrincipal flowInitiator = new GenericPrincipal(identity, roles);
 
             ITodoItemService todoItemService =
