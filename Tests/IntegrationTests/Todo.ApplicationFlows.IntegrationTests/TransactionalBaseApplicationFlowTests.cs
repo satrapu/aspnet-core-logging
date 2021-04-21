@@ -56,7 +56,7 @@ namespace Todo.ApplicationFlows
             string userName = $"test-user--{Guid.NewGuid():N}";
             IIdentity identity = new GenericIdentity(userName);
 
-            string[] roles = { $"role--{Guid.NewGuid():N}" };
+            string[] roles = {$"role--{Guid.NewGuid():N}"};
             IPrincipal flowInitiator = new GenericPrincipal(identity, roles);
 
             ITodoItemService todoItemService =
@@ -131,7 +131,7 @@ namespace Todo.ApplicationFlows
             string userName = $"test-user--{Guid.NewGuid():N}";
             IIdentity identity = new GenericIdentity(userName);
 
-            string[] roles = { $"role--{Guid.NewGuid():N}" };
+            string[] roles = {$"role--{Guid.NewGuid():N}"};
             IPrincipal flowInitiator = new GenericPrincipal(identity, roles);
 
             ITodoItemService todoItemService =
@@ -199,10 +199,12 @@ namespace Todo.ApplicationFlows
         {
             // Arrange
             TimeSpan transactionTimeOut = TimeSpan.FromMilliseconds(1);
+            TimeSpan biggerTimeout = TimeSpan.FromMilliseconds(1000);
+
             string userName = $"test-user--{Guid.NewGuid():N}";
             IIdentity identity = new GenericIdentity(userName);
 
-            string[] roles = { $"role--{Guid.NewGuid():N}" };
+            string[] roles = {$"role--{Guid.NewGuid():N}"};
             IPrincipal flowInitiator = new GenericPrincipal(identity, roles);
 
             ITodoItemService todoItemService =
@@ -232,10 +234,16 @@ namespace Todo.ApplicationFlows
 
                 // Ensure this flow step will take more time to execute than the configured transaction timeout used
                 // by the application flow.
-                await Task.Delay(transactionTimeOut + TimeSpan.FromSeconds(1));
+                Task.Delay(biggerTimeout).Wait();
 
                 return null;
             }
+
+            var query = new TodoItemQuery
+            {
+                Owner = flowInitiator,
+                NamePattern = $"{namePrefix}%"
+            };
 
             IOptionsMonitor<ApplicationFlowOptions> applicationFlowOptions =
                 testWebApplicationFactory.Services.GetRequiredService<IOptionsMonitor<ApplicationFlowOptions>>();
@@ -249,6 +257,11 @@ namespace Todo.ApplicationFlows
             // Act
             Func<Task> executeAsyncCall = async () => await applicationFlow.ExecuteAsync(input: null, flowInitiator);
 
+            // Get a new instance of ITodoItemService service to ensure data will be fetched from
+            // a new DbContext.
+            todoItemService = testWebApplicationFactory.Services.GetRequiredService<ITodoItemService>();
+            IList<TodoItemInfo> list = await todoItemService.GetByQueryAsync(query);
+
             // Assert
             using (new AssertionScope())
             {
@@ -256,16 +269,6 @@ namespace Todo.ApplicationFlows
                     .ThrowExactly<TransactionAbortedException>(
                         "application flow must fail in case of transaction timeout");
 
-                var query = new TodoItemQuery
-                {
-                    Owner = flowInitiator,
-                    NamePattern = $"{namePrefix}%"
-                };
-
-                // Get a new instance of ITodoItemService service to ensure data will be fetched from
-                // a new DbContext.
-                todoItemService = testWebApplicationFactory.Services.GetRequiredService<ITodoItemService>();
-                IList<TodoItemInfo> list = await todoItemService.GetByQueryAsync(query);
                 list.Count.Should().Be(expected: 0,
                     "no entities must be created in the event of a transaction timeout");
             }
