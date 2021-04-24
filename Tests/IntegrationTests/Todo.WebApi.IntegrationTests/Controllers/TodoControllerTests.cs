@@ -139,7 +139,7 @@ namespace Todo.WebApi.Controllers
             using (new AssertionScope())
             {
                 response.IsSuccessStatusCode.Should().BeFalse(BecauseInputModelIsInvalid);
-                response.StatusCode.Should().Be(HttpStatusCode.BadRequest, BecauseInputModelIsInvalid);
+                response.StatusCode.Should().Be(HttpStatusCode.UnprocessableEntity, BecauseInputModelIsInvalid);
             }
         }
 

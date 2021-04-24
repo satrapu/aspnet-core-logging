@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -262,7 +264,27 @@ namespace Todo.WebApi
         private void ConfigureWebApi(IServiceCollection services)
         {
             // Configure ASP.NET Web API services.
-            services.AddControllers();
+            services
+                .AddControllers()
+                .ConfigureApiBehaviorOptions(options =>
+                {
+                    options.InvalidModelStateResponseFactory = context =>
+                    {
+                        var validationProblemDetails = new ValidationProblemDetails(context.ModelState)
+                        {
+                            Title = "One or more model validation error have occurred",
+                            Status = StatusCodes.Status422UnprocessableEntity,
+                            Detail = "See the errors property for more details",
+                            Instance = context.HttpContext.Request.Path
+                        };
+                        validationProblemDetails.Extensions.Add("TraceId", context.HttpContext.TraceIdentifier);
+
+                        return new UnprocessableEntityObjectResult(validationProblemDetails)
+                        {
+                            ContentTypes = {"application/problem+json"}
+                        };
+                    };
+                });
         }
 
         private void ConfigureApplicationServices(IServiceCollection services)
