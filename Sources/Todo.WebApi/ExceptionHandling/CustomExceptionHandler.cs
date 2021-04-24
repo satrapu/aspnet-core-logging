@@ -91,20 +91,20 @@ namespace Todo.WebApi.ExceptionHandling
 
             var problemDetails = new ProblemDetails
             {
-                Status = (int) ConvertToHttpStatusCode(exception),
+                Status = (int) GetHttpStatusCode(exception),
                 Title = "An unexpected error occured while trying to process the current request",
                 Detail = includeDetails ? exception.ToString() : string.Empty,
                 Extensions =
                 {
                     {ErrorData, JsonSerializer.Serialize(exception.Data, jsonSerializationOptions)},
                     {ErrorId, Guid.NewGuid().ToString("N")},
-                    {ErrorKey, exception.GetType().FullName}
+                    {ErrorKey, GetErrorKey(exception)}
                 }
             };
             return problemDetails;
         }
 
-        private static HttpStatusCode ConvertToHttpStatusCode(Exception exception)
+        private static HttpStatusCode GetHttpStatusCode(Exception exception)
         {
             return exception switch
             {
@@ -120,6 +120,19 @@ namespace Todo.WebApi.ExceptionHandling
 
                 // Fallback to HTTP status code 500.
                 _ => HttpStatusCode.InternalServerError
+            };
+        }
+
+        private static string GetErrorKey(Exception exception)
+        {
+            return exception switch
+            {
+                EntityNotFoundException _ => "entity-not-found",
+                NpgsqlException _ => "database-error",
+                {InnerException: NpgsqlException _} => "database-error",
+
+                // Fallback value
+                _ => "server-error"
             };
         }
     }
