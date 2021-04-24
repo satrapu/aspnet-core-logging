@@ -211,7 +211,17 @@ foreach ($ComposeService in $ComposeServices)
 
     foreach ($RawPortMapping in $RawPortMappings)
     {
-        Write-Output "Processing port mapping: `"$RawPortMapping`" ..."
+		if($RawPortMapping -contains '-> ::')
+		{
+			# Skip processing mappings which do not contain a proper host port.
+			# Found a weird port mapping like this: 5432/tcp -> :::49153.
+			# This port mapping appears in addition to the legit one, 5432/tcp -> 0.0.0.0:49153.
+			# This seems to happen on Linux-based agents only.
+			Write-Output "Skip processing port mapping: `"$RawPortMapping`" since it does not look legit!"
+			continue
+		}
+		
+		 Write-Output "Processing port mapping: `"$RawPortMapping`" ..."
 
         # Port mapping looks like this: 5432/tcp -> 0.0.0.0:32769
         # The part on the left side of the ' -> ' string represents container port info,
