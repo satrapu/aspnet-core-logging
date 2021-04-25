@@ -1,8 +1,8 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
-
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
@@ -10,9 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-
 using Npgsql;
-
 using Todo.Services.TodoItemLifecycleManagement;
 
 namespace Todo.WebApi.ExceptionHandling
@@ -23,6 +21,7 @@ namespace Todo.WebApi.ExceptionHandling
     /// <br/>
     /// Based on https://andrewlock.net/creating-a-custom-error-handler-middleware-function/.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public static class CustomExceptionHandler
     {
         private const string ErrorData = "errorData";
@@ -63,7 +62,7 @@ namespace Todo.WebApi.ExceptionHandling
 
             // ProblemDetails has it's own content type
             httpContext.Response.ContentType = ProblemDetailContentType;
-            httpContext.Response.StatusCode = problemDetails.Status ?? (int)HttpStatusCode.InternalServerError;
+            httpContext.Response.StatusCode = problemDetails.Status ?? (int) HttpStatusCode.InternalServerError;
 
             // The exception is first logged by the Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware class,
             // then by this method, but it's worth it since the second time the exception is logged, we end up with
@@ -94,20 +93,20 @@ namespace Todo.WebApi.ExceptionHandling
 
             var problemDetails = new ProblemDetails
             {
-                Status = (int)ConvertToHttpStatusCode(exception),
+                Status = (int) GetHttpStatusCode(exception),
                 Title = "An unexpected error occured while trying to process the current request",
                 Detail = includeDetails ? exception.ToString() : string.Empty,
                 Extensions =
                 {
                     {ErrorData, JsonSerializer.Serialize(exception.Data, jsonSerializationOptions)},
                     {ErrorId, Guid.NewGuid().ToString("N")},
-                    {ErrorKey, exception.GetType().FullName}
+                    {ErrorKey, GetErrorKey(exception)}
                 }
             };
             return problemDetails;
         }
 
-        private static HttpStatusCode ConvertToHttpStatusCode(Exception exception)
+        private static HttpStatusCode GetHttpStatusCode(Exception exception)
         {
             return exception switch
             {
@@ -123,6 +122,19 @@ namespace Todo.WebApi.ExceptionHandling
 
                 // Fallback to HTTP status code 500.
                 _ => HttpStatusCode.InternalServerError
+            };
+        }
+
+        private static string GetErrorKey(Exception exception)
+        {
+            return exception switch
+            {
+                EntityNotFoundException _ => "entity-not-found",
+                NpgsqlException _ => "database-error",
+                {InnerException: NpgsqlException _} => "database-error",
+
+                // Fallback value
+                _ => "server-error"
             };
         }
     }

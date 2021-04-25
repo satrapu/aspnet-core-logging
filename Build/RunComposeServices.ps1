@@ -63,8 +63,8 @@ if ($EnvironmentVariables -ne $null)
 }
 
 $InfoMessage = "About to start compose services declared in file: `"$ComposeFilePath`" " `
-             + "using project name: `"$ComposeProjectName`" " `
-             + "and environment file: `"$ComposeEnvironmentFilePath`" ..."
+              + "using project name: `"$ComposeProjectName`" " `
+              + "and environment file: `"$ComposeEnvironmentFilePath`" ..."
 Write-Output $InfoMessage
 
 # Do not check whether this command has ended successfully since it's writing to 
@@ -97,7 +97,7 @@ $LsCommandOutput.Split([System.Environment]::NewLine, [System.StringSplitOptions
                                                      | Out-String `
                                                      | ConvertFrom-Json
 
-    if(!$?)
+    if (!$?)
     {
         Write-Output "##vso[task.LogIssue type=error;]Failed to inspect container with ID: $ContainerId"
         Write-Output "##vso[task.complete result=Failed;]"
@@ -111,7 +111,7 @@ $LsCommandOutput.Split([System.Environment]::NewLine, [System.StringSplitOptions
         ContainerId = $ContainerId
         ServiceName = $ComposeServiceName
     }
-    
+
     $ComposeServices.Add($ComposeService)
     
     $InfoMessage = "Found compose service with container id: `"$($ComposeService.ContainerId)`" " `
@@ -167,7 +167,7 @@ do
     {
         break;
     }
-    
+
     $NumberOfTries++
 } until ($NumberOfTries -eq $MaxNumberOfTries)
 
@@ -199,18 +199,28 @@ foreach ($ComposeService in $ComposeServices)
         Write-Output "##vso[task.complete result=Failed;]"
         exit 8;
     }
-    
-    if($PortCommandOutput.Length -eq 0)
+
+    if ($PortCommandOutput.Length -eq 0)
     {
         Write-Output "This compose service has no port mappings"
         break;
     }
 
-    Write-Output "Found port mappings: $PortCommandOutput"
+    Write-Output "Found port mappings: `n$PortCommandOutput"
     $RawPortMappings = $PortCommandOutput.Split([System.Environment]::NewLine, [System.StringSplitOptions]::RemoveEmptyEntries)
 
     foreach ($RawPortMapping in $RawPortMappings)
     {
+        if ($RawPortMapping -like '*-> ::*')
+        {
+            # Skip processing mappings which do not follow the proper format (e.g. <IP_ADDRESS>:<HOST_PORT>).
+            # I've found a weird port mapping, 5432/tcp -> :::49153, when pipeline was running on
+            # Linux-based agent; this port mapping appeared in addition to the legit one, 
+            # 5432/tcp -> 0.0.0.0:49153.
+            Write-Output "Skip processing port mapping: `"$RawPortMapping`" since it does not look legit!"
+            continue;
+        }
+
         Write-Output "Processing port mapping: `"$RawPortMapping`" ..."
 
         # Port mapping looks like this: 5432/tcp -> 0.0.0.0:32769

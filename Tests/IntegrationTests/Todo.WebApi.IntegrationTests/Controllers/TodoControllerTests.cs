@@ -88,7 +88,7 @@ namespace Todo.WebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [Test]
-        public async Task CreateAsync_UsingValidTodoItem_ReturnsExpectedId()
+        public async Task CreateAsync_UsingValidTodoItem_ReturnsExpectedData()
         {
             // Arrange
             using HttpClient httpClient = await webApplicationFactory.CreateClientWithJwtAsync();
@@ -98,7 +98,7 @@ namespace Todo.WebApi.Controllers
             {
                 var newTodoItemModel = new NewTodoItemModel
                 {
-                    Name = $"it--{nameof(CreateAsync_UsingValidTodoItem_ReturnsExpectedId)}--{Guid.NewGuid():N}",
+                    Name = $"it--{nameof(CreateAsync_UsingValidTodoItem_ReturnsExpectedData)}--{Guid.NewGuid():N}",
                     IsComplete = DateTime.UtcNow.Ticks % 2 == 0
                 };
 
@@ -110,6 +110,9 @@ namespace Todo.WebApi.Controllers
                 {
                     response.IsSuccessStatusCode.Should().BeTrue(BecauseAnEntityHasBeenCreated);
                     response.StatusCode.Should().Be(HttpStatusCode.Created, BecauseAnEntityHasBeenCreated);
+                    response.Headers.ToDictionary(x => x.Key, x => x.Value).Should().ContainKey("Location");
+                    response.Headers.Location.OriginalString
+                        .Should().MatchRegex(@"api/todo/\d+", BecauseAnEntityHasBeenCreated);
 
                     id = await response.Content.ReadAsAsync<long>();
                     id.Should().BeGreaterOrEqualTo(1, BecauseAnEntityHasBeenCreated);
@@ -130,7 +133,7 @@ namespace Todo.WebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [Test]
-        public async Task CreateAsync_UsingInvalidTodoItem_ReturnsBadRequestHttpStatusCode()
+        public async Task CreateAsync_UsingInvalidTodoItem_ReturnsExpectedHttpStatusCode()
         {
             // Arrange
             using HttpClient httpClient = await webApplicationFactory.CreateClientWithJwtAsync();
@@ -143,7 +146,7 @@ namespace Todo.WebApi.Controllers
             using (new AssertionScope())
             {
                 response.IsSuccessStatusCode.Should().BeFalse(BecauseInputModelIsInvalid);
-                response.StatusCode.Should().Be(HttpStatusCode.BadRequest, BecauseInputModelIsInvalid);
+                response.StatusCode.Should().Be(HttpStatusCode.UnprocessableEntity, BecauseInputModelIsInvalid);
             }
         }
 

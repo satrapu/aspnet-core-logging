@@ -1,9 +1,8 @@
 using System;
-
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-
 using Serilog;
 using Serilog.Core;
 
@@ -12,6 +11,7 @@ namespace Todo.WebApi
     /// <summary>
     /// Console application used for running Todo ASP.NET Core Web API.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public static class Program
     {
         private static readonly Logger Logger = new LoggerConfiguration()

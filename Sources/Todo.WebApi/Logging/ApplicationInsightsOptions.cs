@@ -1,8 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Todo.WebApi.Logging
 {
     /// <summary>
     /// Stores Azure Application Insights configuration.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class ApplicationInsightsOptions
     {
         /// <summary>

@@ -97,7 +97,7 @@ jobs:
         sonar.sourceEncoding=UTF-8
         sonar.cs.nunit.reportsPaths=**/TestResults/*.*
         sonar.cs.opencover.reportsPaths=**/coverage.opencover.xml
-        sonar.coverage.exclusions=**/Tests/**/*.cs,**/Sources/Todo.Persistence/**/TodoDbContextModelSnapshot.cs,**/Sources/Todo.WebApi/**/Startup.cs 
+        sonar.coverage.exclusions=**/Tests/**,**/Sources/Todo.Persistence/Migrations/**
 
   # Cache NuGet packages to avoid having to restore them during each build.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/release/caching?view=azure-devops#netnuget
@@ -219,7 +219,7 @@ jobs:
       /p:CollectCoverage=True
       /p:CoverletOutputFormat=opencover
       /p:Include="[Todo.*]*"
-      /p:Exclude=\"[Todo.*.*Tests]*,[Todo.Persistence]*.TodoDbContextModelSnapshot,[Todo.WebApi]*.Startup\"
+      /p:Exclude=\"[Todo.*.*Tests]*,[Todo.Persistence]*.Migrations.*\"
       -- NUnit.Where="cat == UnitTests"
     name: 'run_unit_tests'
     displayName: 'Run unit tests'
@@ -299,7 +299,7 @@ jobs:
       /p:CollectCoverage=True
       /p:CoverletOutputFormat=opencover
       /p:Include="[Todo.*]*"
-      /p:Exclude=\"[Todo.*.*Tests]*,[Todo.Persistence]*.TodoDbContextModelSnapshot\"
+      /p:Exclude=\"[Todo.*.*Tests]*,[Todo.Persistence]*.Migrations.*\"
       -- NUnit.Where="cat == IntegrationTests"
     name: 'run_integration_tests'
     displayName: 'Run integration tests'
