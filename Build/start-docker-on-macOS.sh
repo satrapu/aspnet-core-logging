@@ -53,7 +53,7 @@ docker --version
 
 printf '\n\n'
 echo 'Displaying Docker Compose version ...'
-docker-compose --version
+docker compose --version
 
 printf '\n\n'
 echo 'All good :)'
