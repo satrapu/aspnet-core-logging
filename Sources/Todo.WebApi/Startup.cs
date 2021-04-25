@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Security.Claims;
@@ -36,6 +37,7 @@ namespace Todo.WebApi
     /// <summary>
     /// Starts this ASP.NET Core application.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public class Startup
     {
         private const string LogsHomeEnvironmentVariable = "LOGS_HOME";
