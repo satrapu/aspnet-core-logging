@@ -101,26 +101,26 @@ This folder contains a `docker-compose.yml` file describing the aforementioned c
 
 ```bash
 # The -d flag instructs Docker Compose to run services in the background
-docker compose up -d
+docker-compose up -d
 ```
 
 ##### Stop compose services
 
 ```bash
-docker compose stop
+docker-compose stop
 ```
 
 ##### Start compose services
 
 ```bash
-docker compose start
+docker-compose start
 ```
 
 ##### Display compose service log
 
 ```bash
 # The -f flag instructs Docker Compose to display and follow the log entries of the 'pgadmin' service
-docker compose logs -f pgadmin
+docker-compose logs -f pgadmin
 ```
 
 ##### Destroy compose services
@@ -128,12 +128,12 @@ docker compose logs -f pgadmin
 The command below will **not** delete the Docker volumes!
 
 ```bash
-docker compose down
+docker-compose down
 ```
 
 ### Setup pgAdmin
 
-Once the services have been started using `docker compose up` command, pgAdmin UI is ready to be used.
+Once the services have been started using `docker-compose up` command, pgAdmin UI is ready to be used.
 
 #### Open pgAdmin UI
 
