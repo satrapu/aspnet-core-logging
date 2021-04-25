@@ -33,7 +33,7 @@ services:
 
   pgadmin:
     container_name: pgadmin-ui
-    image: dpage/pgadmin4:4.29
+    image: dpage/pgadmin4:5.2
     restart: unless-stopped
     volumes:
       - pgadmin_data:/var/lib/pgadmin
@@ -50,7 +50,7 @@ services:
     
   seq:
     container_name: seq
-    image: datalust/seq:2020.4
+    image: datalust/seq:2021.2
     restart: unless-stopped
     volumes:
       - seq_data:/data
