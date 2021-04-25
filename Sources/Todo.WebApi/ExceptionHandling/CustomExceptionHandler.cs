@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -20,6 +21,7 @@ namespace Todo.WebApi.ExceptionHandling
     /// <br/>
     /// Based on https://andrewlock.net/creating-a-custom-error-handler-middleware-function/.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public static class CustomExceptionHandler
     {
         private const string ErrorData = "errorData";
