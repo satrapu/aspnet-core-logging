@@ -1,7 +1,7 @@
-using System.Diagnostics.CodeAnalysis;
-
 namespace Todo.WebApi.Models
 {
+    using System.Diagnostics.CodeAnalysis;
+
     // ReSharper disable once ClassNeverInstantiated.Global
     [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Global")]
     public class GenerateJwtOptions

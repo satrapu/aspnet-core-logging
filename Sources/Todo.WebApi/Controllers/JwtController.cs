@@ -1,15 +1,20 @@
-using System;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
-using Todo.ApplicationFlows.Security;
-using Todo.Services.Security;
-using Todo.WebApi.Authorization;
-using Todo.WebApi.Models;
-
 namespace Todo.WebApi.Controllers
 {
+    using System;
+    using System.Threading.Tasks;
+
+    using ApplicationFlows.Security;
+
+    using Authorization;
+
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Options;
+
+    using Models;
+
+    using Services.Security;
+
     /// <summary>
     /// Creates JSON web tokens to be used by the users of this web API for authentication and authorization purposes.
     /// </summary>

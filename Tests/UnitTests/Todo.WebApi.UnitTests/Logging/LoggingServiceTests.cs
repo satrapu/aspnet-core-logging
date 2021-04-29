@@ -1,14 +1,18 @@
-﻿using FluentAssertions;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using Moq;
-using NUnit.Framework;
-using System;
-using System.Threading.Tasks;
-using FluentAssertions.Common;
-
 namespace Todo.WebApi.Logging
 {
+    using System;
+    using System.Threading.Tasks;
+
+    using FluentAssertions;
+    using FluentAssertions.Common;
+
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.Extensions.Logging;
+
+    using Moq;
+
+    using NUnit.Framework;
+
     /// <summary>
     /// Contains unit tests targeting <see cref="LoggingService"/> class.
     /// </summary>
@@ -30,8 +34,8 @@ namespace Todo.WebApi.Logging
             Action createServiceAction = () => new LoggingService(logger);
 
             // Assert
-            createServiceAction.Should()
-                .ThrowExactly<ArgumentNullException>("must not create instance using null argument")
+            createServiceAction
+                .Should().ThrowExactly<ArgumentNullException>("must not create instance using null argument")
                 .And.ParamName.IsSameOrEqualTo(nameof(logger));
         }
 
@@ -51,7 +55,8 @@ namespace Todo.WebApi.Logging
             Action shouldLogAction = () => loggingService.ShouldLog(httpContext);
 
             // Assert
-            shouldLogAction.Should().ThrowExactly<ArgumentNullException>("HTTP context is null")
+            shouldLogAction
+                .Should().ThrowExactly<ArgumentNullException>("HTTP context is null")
                 .And.ParamName.IsSameOrEqualTo(nameof(httpContext));
         }
 
@@ -71,7 +76,8 @@ namespace Todo.WebApi.Logging
             Func<Task> toLogMessageAsyncCall = async () => await loggingService.ToLogMessageAsync(httpRequest);
 
             // Assert
-            toLogMessageAsyncCall.Should().ThrowExactly<ArgumentNullException>()
+            toLogMessageAsyncCall
+                .Should().ThrowExactly<ArgumentNullException>()
                 .And.ParamName.Should().Be(nameof(httpRequest));
         }
 
@@ -91,7 +97,8 @@ namespace Todo.WebApi.Logging
             Func<Task> toLogMessageAsyncCall = async () => await loggingService.ToLogMessageAsync(httpResponse);
 
             // Assert
-            toLogMessageAsyncCall.Should().ThrowExactly<ArgumentNullException>()
+            toLogMessageAsyncCall
+                .Should().ThrowExactly<ArgumentNullException>()
                 .And.ParamName.Should().Be(nameof(httpResponse));
         }
     }

@@ -1,17 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using EntityFrameworkCoreMock;
-using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Moq;
-using NUnit.Framework;
-using Todo.Persistence;
-using Todo.Services.TodoItemLifecycleManagement;
-
 namespace Todo.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+
+    using EntityFrameworkCoreMock;
+
+    using FluentAssertions;
+
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Logging;
+
+    using Moq;
+
+    using NUnit.Framework;
+
+    using Persistence;
+
+    using TodoItemLifecycleManagement;
+
     /// <summary>
     /// Contains unit tests targeting <see cref="TodoItemService"/> class.
     /// </summary>
@@ -55,8 +62,8 @@ namespace Todo.Services
             Action createService = () => new TodoItemService(todoDbContext, mockLogger.Object);
 
             // Assert
-            createService.Should()
-                .Throw<ArgumentNullException>(
+            createService
+                .Should().Throw<ArgumentNullException>(
                     $"must not create {nameof(TodoItemService)} with a null {nameof(TodoDbContext)}")
                 .And.ParamName.Should().Be(nameof(todoDbContext), "the EF Core context is null");
         }
@@ -77,8 +84,8 @@ namespace Todo.Services
             Action createService = () => new TodoItemService(mockTodoDbContext.Object, logger);
 
             // Assert
-            createService.Should()
-                .Throw<ArgumentNullException>(
+            createService
+                .Should().Throw<ArgumentNullException>(
                     $"must not create {nameof(TodoItemService)} with a null {nameof(ILogger<TodoItemService>)}")
                 .And.ParamName.Should().Be(nameof(logger), "the logger is null");
         }
@@ -101,7 +108,8 @@ namespace Todo.Services
                 async () => await todoService.GetByQueryAsync(todoItemQuery);
 
             // Assert
-            getByQueryAsync.Should().Throw<ArgumentNullException>("service cannot fetch data using a null query")
+            getByQueryAsync
+                .Should().Throw<ArgumentNullException>("service cannot fetch data using a null query")
                 .And.ParamName.Should().Be(nameof(todoItemQuery), "the query is null");
         }
     }

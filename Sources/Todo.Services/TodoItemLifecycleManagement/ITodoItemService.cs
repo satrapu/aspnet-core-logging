@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-
 namespace Todo.Services.TodoItemLifecycleManagement
 {
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+
     /// <summary>
     /// Manages the lifecycle of todo items.
     /// </summary>

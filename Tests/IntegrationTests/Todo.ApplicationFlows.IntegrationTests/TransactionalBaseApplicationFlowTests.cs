@@ -1,21 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Reflection;
-using System.Security.Principal;
-using System.Threading.Tasks;
-using System.Transactions;
-using FluentAssertions;
-using FluentAssertions.Execution;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-using NUnit.Framework;
-using Todo.Services.TodoItemLifecycleManagement;
-using Todo.TestInfrastructure;
-
 namespace Todo.ApplicationFlows
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+    using System.Reflection;
+    using System.Security.Principal;
+    using System.Threading.Tasks;
+    using System.Transactions;
+
+    using FluentAssertions;
+    using FluentAssertions.Execution;
+
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.Options;
+
+    using NUnit.Framework;
+
+    using Services.TodoItemLifecycleManagement;
+
+    using TestInfrastructure;
+
     /// <summary>
     /// Contains integration tests targeting <see cref="TransactionalBaseApplicationFlow{TInput,TOutput}"/> class.
     /// </summary>
@@ -211,7 +216,7 @@ namespace Todo.ApplicationFlows
             ILogger logger = loggerFactory.CreateLogger<ApplicationFlowServingTestingPurposes>();
             string namePrefix = $"todo-item--{Guid.NewGuid():N}";
 
-            // This flow is expected to fail 
+            // This flow is expected to fail
             ITodoItemService localTodoItemService = todoItemService;
 
             async Task<object> FlowExpectedToFailAsync()

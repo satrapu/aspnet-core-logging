@@ -1,1 +1,1 @@
-﻿[assembly: NUnit.Framework.Category("IntegrationTests")]
+[assembly: NUnit.Framework.Category("IntegrationTests")]

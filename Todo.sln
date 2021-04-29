@@ -5,14 +5,14 @@ VisualStudioVersion = 16.0.28922.388
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{398FFE78-1C6A-4CC2-AB9F-220B7F1CDAE3}"
 	ProjectSection(SolutionItems) = preProject
-		Build\azure-pipelines.job-template.yml = Build\azure-pipelines.job-template.yml
-		Build\azure-pipelines.yml = Build\azure-pipelines.yml
 		Directory.Build.props = Directory.Build.props
 		Directory.Build.targets = Directory.Build.targets
 		Build\start-docker-on-macOS.sh = Build\start-docker-on-macOS.sh
 		Build\SonarBuildBreaker.ps1 = Build\SonarBuildBreaker.ps1
 		Build\RunComposeServices.ps1 = Build\RunComposeServices.ps1
 		Build\PublishComposeServiceLogs.ps1 = Build\PublishComposeServiceLogs.ps1
+		Build\azure-pipelines.job-template.yml = Build\azure-pipelines.job-template.yml
+		Build\azure-pipelines.yml = Build\azure-pipelines.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sources", "Sources", "{ED7A5363-C21A-4D47-A2A5-67DEB1E0DDE3}"
@@ -70,6 +70,18 @@ ProjectSection(SolutionItems) = preProject
 	Build\db4it-compose\.env = Build\db4it-compose\.env
 	Build\db4it-compose\.gitignore = Build\db4it-compose\.gitignore
 EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CodeStyle", "CodeStyle", "{3FCA9560-CE93-4B1F-9DE3-21461427E995}"
+ProjectSection(SolutionItems) = preProject
+	.editorconfig = .editorconfig
+EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dependencies", "Dependencies", "{C96E70BB-91DA-49F8-8107-79B3B5F1973D}"
+ProjectSection(SolutionItems) = preProject
+	nuget.config = nuget.config
+EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CodeQuality", "CodeQuality", "{E0671D43-F81A-4829-802B-CCE84A764929}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -142,6 +154,7 @@ Global
 		{AB306CB9-FAA1-4058-9A9C-111EA5BF04C7} = {280A9085-F56E-43CA-A419-1E4609E378EA}
 		{D9CB10FA-DBFB-4A35-8C20-E0CAB538BAC6} = {AB306CB9-FAA1-4058-9A9C-111EA5BF04C7}
 		{851D8B4A-A6C9-469E-8633-E6679738DA72} = {398FFE78-1C6A-4CC2-AB9F-220B7F1CDAE3}
+		{9F40326A-D20A-40DE-A0D9-6D06EB4C71C5} = {E0671D43-F81A-4829-802B-CCE84A764929}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {74318BEF-DB50-4852-A16D-E2FB8671BE7F}

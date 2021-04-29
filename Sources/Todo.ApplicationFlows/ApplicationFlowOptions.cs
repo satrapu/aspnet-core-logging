@@ -1,4 +1,4 @@
-﻿namespace Todo.ApplicationFlows
+namespace Todo.ApplicationFlows
 {
     public class ApplicationFlowOptions
     {

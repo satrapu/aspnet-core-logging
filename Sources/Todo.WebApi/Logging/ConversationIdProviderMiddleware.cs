@@ -1,12 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Primitives;
-
 namespace Todo.WebApi.Logging
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.Primitives;
+
     /// <summary>
     /// Provides conversation IDs to each request to allow grouping them into conversations.
     /// </summary>
@@ -17,8 +18,8 @@ namespace Todo.WebApi.Logging
         private readonly RequestDelegate nextRequestDelegate;
         private readonly ILogger logger;
 
-        public ConversationIdProviderMiddleware(RequestDelegate nextRequestDelegate
-                                              , ILogger<ConversationIdProviderMiddleware> logger)
+        public ConversationIdProviderMiddleware(RequestDelegate nextRequestDelegate,
+            ILogger<ConversationIdProviderMiddleware> logger)
         {
             this.nextRequestDelegate =
                 nextRequestDelegate ?? throw new ArgumentNullException(nameof(nextRequestDelegate));
@@ -35,7 +36,7 @@ namespace Todo.WebApi.Logging
             }
 
             httpContext.Response.Headers.Add(ConversationId, conversationId);
-            
+
             using (logger.BeginScope(new Dictionary<string, object>
             {
                 [ConversationId] = conversationId.ToString()

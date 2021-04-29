@@ -1,12 +1,13 @@
-﻿using System;
-using System.Security.Principal;
-using System.Threading.Tasks;
-using System.Transactions;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-
 namespace Todo.ApplicationFlows
 {
+    using System;
+    using System.Security.Principal;
+    using System.Threading.Tasks;
+    using System.Transactions;
+
+    using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.Options;
+
     /// <summary>
     /// Base class for all application flows which make use of transactions.
     /// </summary>

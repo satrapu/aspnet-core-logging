@@ -1,7 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
-
 namespace Todo.Persistence.Migrations
 {
+    using Microsoft.EntityFrameworkCore.Migrations;
+
     public partial class AddSupportForOptimisticLockingToTodoTable : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)

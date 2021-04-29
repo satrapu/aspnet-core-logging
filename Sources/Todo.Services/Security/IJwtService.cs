@@ -1,7 +1,7 @@
-﻿using System.Threading.Tasks;
-
 namespace Todo.Services.Security
 {
+    using System.Threading.Tasks;
+
     /// <summary>
     /// 
     /// </summary>

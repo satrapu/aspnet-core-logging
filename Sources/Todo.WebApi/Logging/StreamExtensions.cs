@@ -1,10 +1,10 @@
-﻿using System;
-using System.IO;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace Todo.WebApi.Logging
 {
+    using System;
+    using System.IO;
+    using System.Text;
+    using System.Threading.Tasks;
+
     /// <summary>
     /// Contains extension methods applicable to <see cref="Stream"/> instances.
     /// </summary>

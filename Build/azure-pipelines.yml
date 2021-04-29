@@ -46,6 +46,12 @@ variables:
   # All releases can be found here: https://dotnet.microsoft.com/download/dotnet-core.
   - name: 'DotNetCore_SDK_Version'
     value: '3.1.407'
+    
+  # Specifies the version of the dotnet-format tool used for enforcing rules found in .editorconfig files.
+  # All releases can be found here: https://github.com/dotnet/format/releases.
+  # All NuGet packages can be found here: https://www.nuget.org/packages/dotnet-format/.
+  - name: 'DotNetFormat_Version'
+    value: '5.0.211103'
 
   # Specifies the version of the ReportGenerator tool used for generating code coverage reports.
   # All releases can be found here: https://github.com/danielpalme/ReportGenerator/releases.
@@ -104,7 +110,7 @@ jobs:
       databasePassword: '$(IntegrationTests.Database.Todo.Password)'
       databaseDockerImage: 'postgres:12-alpine'
       composeProjectName: 'integration-test-prerequisites'
-      
+    
 - template: './azure-pipelines.job-template.yml'
   parameters:
     job:
@@ -112,6 +118,7 @@ jobs:
       displayName: 'Run on Windows'
     pool:
       vmImage: 'windows-2019'
+    runDotNetFormatTool: True
     integrationTests:
       databaseHost: 'localhost'
       databaseName: '$(IntegrationTests.Database.Todo.Name)'

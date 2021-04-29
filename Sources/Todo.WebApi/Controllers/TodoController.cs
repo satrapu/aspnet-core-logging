@@ -1,15 +1,20 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Todo.ApplicationFlows.TodoItems;
-using Todo.Services.TodoItemLifecycleManagement;
-using Todo.WebApi.Authorization;
-using Todo.WebApi.Models;
-
 namespace Todo.WebApi.Controllers
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Threading.Tasks;
+
+    using ApplicationFlows.TodoItems;
+
+    using Authorization;
+
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Mvc;
+
+    using Models;
+
+    using Services.TodoItemLifecycleManagement;
+
     [Route("api/[controller]")]
     [Authorize]
     [ApiController]

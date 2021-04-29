@@ -1,7 +1,7 @@
-﻿using Microsoft.AspNetCore.Http;
-
 namespace Todo.WebApi.Logging
 {
+    using Microsoft.AspNetCore.Http;
+
     /// <summary>
     /// Handles the logic of logging <see cref="HttpContext"/> instances.
     /// </summary>

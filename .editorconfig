@@ -1,0 +1,540 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = crlf
+indent_size = 4
+indent_style = space
+insert_final_newline = true
+max_line_length = 120
+tab_width = 4
+trim_trailing_whitespace = true
+
+# Microsoft .NET properties
+csharp_blank_lines_before_control_transfer_statements = 1
+csharp_blank_lines_after_control_transfer_statements = 1
+csharp_blank_lines_before_block_statements = 1
+csharp_blank_lines_after_block_statements = 1
+csharp_blank_lines_before_multiline_statements = 1
+csharp_blank_lines_after_multiline_statements = 1
+
+csharp_indent_braces = false
+csharp_indent_switch_labels = true
+
+csharp_new_line_before_catch = true
+csharp_new_line_before_else = true
+csharp_new_line_before_finally = true
+csharp_new_line_before_members_in_object_initializers = false
+csharp_new_line_before_open_brace = all
+csharp_new_line_between_query_expression_clauses = true
+
+csharp_preserve_single_line_blocks = true
+csharp_preserve_single_line_statements = true
+
+csharp_space_after_cast = true
+csharp_space_after_colon_in_inheritance_clause = true
+csharp_space_after_comma = true
+csharp_space_after_dot = false
+csharp_space_after_keywords_in_control_flow_statements = true
+csharp_space_after_semicolon_in_for_statement = true
+csharp_space_around_binary_operators = before_and_after
+csharp_space_before_colon_in_inheritance_clause = true
+csharp_space_before_comma = false
+csharp_space_before_dot = false
+csharp_space_before_open_square_brackets = false
+csharp_space_before_semicolon_in_for_statement = false
+csharp_space_between_empty_square_brackets = false
+csharp_space_between_method_call_empty_parameter_list_parentheses = false
+csharp_space_between_method_call_name_and_opening_parenthesis = false
+csharp_space_between_method_call_parameter_list_parentheses = false
+csharp_space_between_method_declaration_empty_parameter_list_parentheses = false
+csharp_space_between_method_declaration_name_and_open_parenthesis = false
+csharp_space_between_method_declaration_parameter_list_parentheses = false
+csharp_space_between_parentheses = false
+csharp_space_between_square_brackets = false
+
+csharp_style_var_for_built_in_types = true:suggestion
+
+csharp_using_directive_placement = inside_namespace:error
+
+dotnet_diagnostic.asp0000.severity = error
+dotnet_diagnostic.asp0001.severity = error
+dotnet_diagnostic.bc40000.severity = error
+dotnet_diagnostic.bc400005.severity = error
+dotnet_diagnostic.bc40008.severity = error
+dotnet_diagnostic.bc40056.severity = error
+dotnet_diagnostic.bc42016.severity = error
+dotnet_diagnostic.bc42024.severity = error
+dotnet_diagnostic.bc42025.severity = error
+dotnet_diagnostic.bc42104.severity = error
+dotnet_diagnostic.bc42105.severity = error
+dotnet_diagnostic.bc42106.severity = error
+dotnet_diagnostic.bc42107.severity = error
+dotnet_diagnostic.bc42304.severity = error
+dotnet_diagnostic.bc42309.severity = error
+dotnet_diagnostic.bc42322.severity = error
+dotnet_diagnostic.bc42349.severity = error
+dotnet_diagnostic.bc42353.severity = error
+dotnet_diagnostic.bc42354.severity = error
+dotnet_diagnostic.bc42355.severity = error
+dotnet_diagnostic.bc42356.severity = error
+dotnet_diagnostic.bc42358.severity = error
+dotnet_diagnostic.bl0001.severity = error
+dotnet_diagnostic.bl0002.severity = error
+dotnet_diagnostic.bl0003.severity = error
+dotnet_diagnostic.bl0004.severity = error
+dotnet_diagnostic.bl0005.severity = error
+dotnet_diagnostic.bl0006.severity = error
+dotnet_diagnostic.cs0067.severity = error
+dotnet_diagnostic.cs0078.severity = error
+dotnet_diagnostic.cs0108.severity = error
+dotnet_diagnostic.cs0109.severity = error
+dotnet_diagnostic.cs0114.severity = error
+dotnet_diagnostic.cs0162.severity = error
+dotnet_diagnostic.cs0164.severity = error
+dotnet_diagnostic.cs0168.severity = error
+dotnet_diagnostic.cs0169.severity = error
+dotnet_diagnostic.cs0183.severity = error
+dotnet_diagnostic.cs0184.severity = error
+dotnet_diagnostic.cs0197.severity = error
+dotnet_diagnostic.cs0219.severity = error
+dotnet_diagnostic.cs0252.severity = error
+dotnet_diagnostic.cs0253.severity = error
+dotnet_diagnostic.cs0414.severity = error
+dotnet_diagnostic.cs0420.severity = error
+dotnet_diagnostic.cs0465.severity = error
+dotnet_diagnostic.cs0469.severity = error
+dotnet_diagnostic.cs0612.severity = error
+dotnet_diagnostic.cs0618.severity = error
+dotnet_diagnostic.cs0628.severity = error
+dotnet_diagnostic.cs0642.severity = error
+dotnet_diagnostic.cs0649.severity = error
+dotnet_diagnostic.cs0652.severity = error
+dotnet_diagnostic.cs0657.severity = error
+dotnet_diagnostic.cs0658.severity = error
+dotnet_diagnostic.cs0659.severity = error
+dotnet_diagnostic.cs0660.severity = error
+dotnet_diagnostic.cs0661.severity = error
+dotnet_diagnostic.cs0665.severity = error
+dotnet_diagnostic.cs0672.severity = error
+dotnet_diagnostic.cs0675.severity = error
+dotnet_diagnostic.cs0693.severity = error
+dotnet_diagnostic.cs1030.severity = error
+dotnet_diagnostic.cs1058.severity = error
+dotnet_diagnostic.cs1066.severity = error
+dotnet_diagnostic.cs1522.severity = error
+dotnet_diagnostic.cs1570.severity = error
+dotnet_diagnostic.cs1571.severity = error
+dotnet_diagnostic.cs1572.severity = error
+dotnet_diagnostic.cs1573.severity = error
+dotnet_diagnostic.cs1574.severity = error
+dotnet_diagnostic.cs1580.severity = error
+dotnet_diagnostic.cs1581.severity = error
+dotnet_diagnostic.cs1584.severity = error
+dotnet_diagnostic.cs1587.severity = error
+dotnet_diagnostic.cs1589.severity = error
+dotnet_diagnostic.cs1590.severity = error
+dotnet_diagnostic.cs1591.severity = error
+dotnet_diagnostic.cs1592.severity = error
+dotnet_diagnostic.cs1710.severity = error
+dotnet_diagnostic.cs1711.severity = error
+dotnet_diagnostic.cs1712.severity = error
+dotnet_diagnostic.cs1717.severity = error
+dotnet_diagnostic.cs1723.severity = error
+dotnet_diagnostic.cs1911.severity = error
+dotnet_diagnostic.cs1957.severity = error
+dotnet_diagnostic.cs1981.severity = error
+dotnet_diagnostic.cs1998.severity = error
+dotnet_diagnostic.cs4014.severity = error
+dotnet_diagnostic.cs7022.severity = error
+dotnet_diagnostic.cs7023.severity = error
+dotnet_diagnostic.cs7095.severity = error
+dotnet_diagnostic.cs8094.severity = error
+dotnet_diagnostic.cs8123.severity = error
+dotnet_diagnostic.cs8321.severity = error
+dotnet_diagnostic.cs8383.severity = error
+dotnet_diagnostic.cs8416.severity = error
+dotnet_diagnostic.cs8417.severity = error
+dotnet_diagnostic.cs8424.severity = error
+dotnet_diagnostic.cs8425.severity = error
+dotnet_diagnostic.cs8509.severity = error
+dotnet_diagnostic.cs8597.severity = error
+dotnet_diagnostic.cs8600.severity = error
+dotnet_diagnostic.cs8601.severity = error
+dotnet_diagnostic.cs8602.severity = error
+dotnet_diagnostic.cs8603.severity = error
+dotnet_diagnostic.cs8604.severity = error
+dotnet_diagnostic.cs8605.severity = error
+dotnet_diagnostic.cs8607.severity = error
+dotnet_diagnostic.cs8608.severity = error
+dotnet_diagnostic.cs8609.severity = error
+dotnet_diagnostic.cs8610.severity = error
+dotnet_diagnostic.cs8611.severity = error
+dotnet_diagnostic.cs8612.severity = error
+dotnet_diagnostic.cs8613.severity = error
+dotnet_diagnostic.cs8614.severity = error
+dotnet_diagnostic.cs8615.severity = error
+dotnet_diagnostic.cs8616.severity = error
+dotnet_diagnostic.cs8617.severity = error
+dotnet_diagnostic.cs8618.severity = error
+dotnet_diagnostic.cs8619.severity = error
+dotnet_diagnostic.cs8620.severity = error
+dotnet_diagnostic.cs8621.severity = error
+dotnet_diagnostic.cs8622.severity = error
+dotnet_diagnostic.cs8624.severity = error
+dotnet_diagnostic.cs8625.severity = error
+dotnet_diagnostic.cs8629.severity = error
+dotnet_diagnostic.cs8631.severity = error
+dotnet_diagnostic.cs8632.severity = error
+dotnet_diagnostic.cs8633.severity = error
+dotnet_diagnostic.cs8634.severity = error
+dotnet_diagnostic.cs8643.severity = error
+dotnet_diagnostic.cs8644.severity = error
+dotnet_diagnostic.cs8645.severity = error
+dotnet_diagnostic.cs8655.severity = error
+dotnet_diagnostic.cs8656.severity = error
+dotnet_diagnostic.cs8667.severity = error
+dotnet_diagnostic.cs8669.severity = error
+dotnet_diagnostic.cs8670.severity = error
+dotnet_diagnostic.cs8714.severity = error
+dotnet_diagnostic.cs8762.severity = error
+dotnet_diagnostic.cs8763.severity = error
+dotnet_diagnostic.cs8764.severity = error
+dotnet_diagnostic.cs8765.severity = error
+dotnet_diagnostic.cs8766.severity = error
+dotnet_diagnostic.cs8767.severity = error
+dotnet_diagnostic.cs8768.severity = error
+dotnet_diagnostic.cs8769.severity = error
+dotnet_diagnostic.cs8770.severity = error
+dotnet_diagnostic.cs8774.severity = error
+dotnet_diagnostic.cs8775.severity = error
+dotnet_diagnostic.cs8776.severity = error
+dotnet_diagnostic.cs8777.severity = error
+dotnet_diagnostic.cs8794.severity = error
+dotnet_diagnostic.cs8819.severity = error
+dotnet_diagnostic.cs8824.severity = error
+dotnet_diagnostic.cs8825.severity = error
+dotnet_diagnostic.cs8851.severity = error
+dotnet_diagnostic.cs8860.severity = error
+dotnet_diagnostic.cs8892.severity = error
+dotnet_diagnostic.cs8907.severity = error
+dotnet_diagnostic.ef1001.severity = error
+dotnet_diagnostic.enc0001.severity = error
+dotnet_diagnostic.enc0002.severity = error
+dotnet_diagnostic.enc0003.severity = error
+dotnet_diagnostic.enc0004.severity = error
+dotnet_diagnostic.enc0005.severity = error
+dotnet_diagnostic.enc0006.severity = error
+dotnet_diagnostic.enc0007.severity = error
+dotnet_diagnostic.enc0008.severity = error
+dotnet_diagnostic.enc0009.severity = error
+dotnet_diagnostic.enc0010.severity = error
+dotnet_diagnostic.enc0011.severity = error
+dotnet_diagnostic.enc0012.severity = error
+dotnet_diagnostic.enc0013.severity = error
+dotnet_diagnostic.enc0014.severity = error
+dotnet_diagnostic.enc0015.severity = error
+dotnet_diagnostic.enc0016.severity = error
+dotnet_diagnostic.enc0017.severity = error
+dotnet_diagnostic.enc0018.severity = error
+dotnet_diagnostic.enc0019.severity = error
+dotnet_diagnostic.enc0020.severity = error
+dotnet_diagnostic.enc0021.severity = error
+dotnet_diagnostic.enc0023.severity = error
+dotnet_diagnostic.enc0024.severity = error
+dotnet_diagnostic.enc0025.severity = error
+dotnet_diagnostic.enc0026.severity = error
+dotnet_diagnostic.enc0028.severity = error
+dotnet_diagnostic.enc0029.severity = error
+dotnet_diagnostic.enc0030.severity = error
+dotnet_diagnostic.enc0031.severity = error
+dotnet_diagnostic.enc0032.severity = error
+dotnet_diagnostic.enc0033.severity = error
+dotnet_diagnostic.enc0034.severity = error
+dotnet_diagnostic.enc0035.severity = error
+dotnet_diagnostic.enc0036.severity = error
+dotnet_diagnostic.enc0037.severity = error
+dotnet_diagnostic.enc0038.severity = error
+dotnet_diagnostic.enc0039.severity = error
+dotnet_diagnostic.enc0040.severity = error
+dotnet_diagnostic.enc0041.severity = error
+dotnet_diagnostic.enc0044.severity = error
+dotnet_diagnostic.enc0045.severity = error
+dotnet_diagnostic.enc0046.severity = error
+dotnet_diagnostic.enc0047.severity = error
+dotnet_diagnostic.enc0048.severity = error
+dotnet_diagnostic.enc0049.severity = error
+dotnet_diagnostic.enc0050.severity = error
+dotnet_diagnostic.enc0051.severity = error
+dotnet_diagnostic.enc0052.severity = error
+dotnet_diagnostic.enc0053.severity = error
+dotnet_diagnostic.enc0054.severity = error
+dotnet_diagnostic.enc0055.severity = error
+dotnet_diagnostic.enc0056.severity = error
+dotnet_diagnostic.enc0057.severity = error
+dotnet_diagnostic.enc0058.severity = error
+dotnet_diagnostic.enc0059.severity = error
+dotnet_diagnostic.enc0060.severity = error
+dotnet_diagnostic.enc0061.severity = error
+dotnet_diagnostic.enc0062.severity = error
+dotnet_diagnostic.enc0063.severity = error
+dotnet_diagnostic.enc0064.severity = error
+dotnet_diagnostic.enc0065.severity = error
+dotnet_diagnostic.enc0066.severity = error
+dotnet_diagnostic.enc0067.severity = error
+dotnet_diagnostic.enc0068.severity = error
+dotnet_diagnostic.enc0069.severity = error
+dotnet_diagnostic.enc0070.severity = error
+dotnet_diagnostic.enc0071.severity = error
+dotnet_diagnostic.enc0072.severity = error
+dotnet_diagnostic.enc0073.severity = error
+dotnet_diagnostic.enc0074.severity = error
+dotnet_diagnostic.enc0075.severity = error
+dotnet_diagnostic.enc0076.severity = error
+dotnet_diagnostic.enc0080.severity = error
+dotnet_diagnostic.enc0081.severity = error
+dotnet_diagnostic.enc0082.severity = error
+dotnet_diagnostic.enc0083.severity = error
+dotnet_diagnostic.enc0084.severity = error
+dotnet_diagnostic.enc0085.severity = error
+dotnet_diagnostic.enc0086.severity = error
+dotnet_diagnostic.enc0087.severity = error
+dotnet_diagnostic.enc0088.severity = error
+dotnet_diagnostic.enc0089.severity = error
+dotnet_diagnostic.enc0090.severity = error
+dotnet_diagnostic.enc1001.severity = error
+dotnet_diagnostic.enc1002.severity = error
+dotnet_diagnostic.enc1003.severity = error
+dotnet_diagnostic.enc1004.severity = error
+dotnet_diagnostic.enc1005.severity = error
+dotnet_diagnostic.enc1006.severity = error
+dotnet_diagnostic.mvc1000.severity = error
+dotnet_diagnostic.mvc1001.severity = error
+dotnet_diagnostic.mvc1002.severity = error
+dotnet_diagnostic.mvc1003.severity = error
+dotnet_diagnostic.mvc1004.severity = error
+dotnet_diagnostic.mvc1005.severity = error
+dotnet_diagnostic.mvc1006.severity = error
+dotnet_diagnostic.wme006.severity = error
+
+dotnet_naming_rule.constants_rule.import_to_resharper = as_predefined
+dotnet_naming_rule.constants_rule.severity = error
+dotnet_naming_rule.constants_rule.style = upper_camel_case_style
+dotnet_naming_rule.constants_rule.symbols = constants_symbols
+
+dotnet_naming_rule.event_rule.import_to_resharper = as_predefined
+dotnet_naming_rule.event_rule.severity = error
+dotnet_naming_rule.event_rule.style = upper_camel_case_style
+dotnet_naming_rule.event_rule.symbols = event_symbols
+
+dotnet_naming_rule.interfaces_rule.import_to_resharper = as_predefined
+dotnet_naming_rule.interfaces_rule.severity = error
+dotnet_naming_rule.interfaces_rule.style = i_upper_camel_case_style
+dotnet_naming_rule.interfaces_rule.symbols = interfaces_symbols
+
+dotnet_naming_rule.locals_rule.import_to_resharper = as_predefined
+dotnet_naming_rule.locals_rule.severity = error
+dotnet_naming_rule.locals_rule.style = lower_camel_case_style
+dotnet_naming_rule.locals_rule.symbols = locals_symbols
+
+dotnet_naming_rule.local_constants_rule.import_to_resharper = as_predefined
+dotnet_naming_rule.local_constants_rule.severity = error
+dotnet_naming_rule.local_constants_rule.style = lower_camel_case_style
+dotnet_naming_rule.local_constants_rule.symbols = local_constants_symbols
+
+dotnet_naming_rule.local_functions_rule.import_to_resharper = as_predefined
+dotnet_naming_rule.local_functions_rule.severity = error
+dotnet_naming_rule.local_functions_rule.style = upper_camel_case_style
+dotnet_naming_rule.local_functions_rule.symbols = local_functions_symbols
+
+dotnet_naming_rule.method_rule.import_to_resharper = as_predefined
+dotnet_naming_rule.method_rule.severity = error
+dotnet_naming_rule.method_rule.style = upper_camel_case_style
+dotnet_naming_rule.method_rule.symbols = method_symbols
+
+dotnet_naming_rule.parameters_rule.import_to_resharper = as_predefined
+dotnet_naming_rule.parameters_rule.severity = error
+dotnet_naming_rule.parameters_rule.style = lower_camel_case_style
+dotnet_naming_rule.parameters_rule.symbols = parameters_symbols
+
+dotnet_naming_rule.private_constants_rule.import_to_resharper = as_predefined
+dotnet_naming_rule.private_constants_rule.severity = error
+dotnet_naming_rule.private_constants_rule.style = upper_camel_case_style
+dotnet_naming_rule.private_constants_rule.symbols = private_constants_symbols
+
+dotnet_naming_rule.private_instance_fields_rule.import_to_resharper = as_predefined
+dotnet_naming_rule.private_instance_fields_rule.severity = error
+dotnet_naming_rule.private_instance_fields_rule.style = lower_camel_case_style
+dotnet_naming_rule.private_instance_fields_rule.symbols = private_instance_fields_symbols
+
+dotnet_naming_rule.private_static_fields_rule.import_to_resharper = as_predefined
+dotnet_naming_rule.private_static_fields_rule.severity = error
+dotnet_naming_rule.private_static_fields_rule.style = lower_camel_case_style
+dotnet_naming_rule.private_static_fields_rule.symbols = private_static_fields_symbols
+
+dotnet_naming_rule.private_static_readonly_rule.import_to_resharper = as_predefined
+dotnet_naming_rule.private_static_readonly_rule.severity = error
+dotnet_naming_rule.private_static_readonly_rule.style = upper_camel_case_style
+dotnet_naming_rule.private_static_readonly_rule.symbols = private_static_readonly_symbols
+
+dotnet_naming_rule.property_rule.import_to_resharper = as_predefined
+dotnet_naming_rule.property_rule.severity = error
+dotnet_naming_rule.property_rule.style = upper_camel_case_style
+dotnet_naming_rule.property_rule.symbols = property_symbols
+
+dotnet_naming_rule.public_fields_rule.import_to_resharper = as_predefined
+dotnet_naming_rule.public_fields_rule.severity = error
+dotnet_naming_rule.public_fields_rule.style = upper_camel_case_style
+dotnet_naming_rule.public_fields_rule.symbols = public_fields_symbols
+
+dotnet_naming_rule.static_readonly_rule.import_to_resharper = as_predefined
+dotnet_naming_rule.static_readonly_rule.severity = error
+dotnet_naming_rule.static_readonly_rule.style = upper_camel_case_style
+dotnet_naming_rule.static_readonly_rule.symbols = static_readonly_symbols
+
+dotnet_naming_rule.types_and_namespaces_rule.import_to_resharper = as_predefined
+dotnet_naming_rule.types_and_namespaces_rule.severity = error
+dotnet_naming_rule.types_and_namespaces_rule.style = upper_camel_case_style
+dotnet_naming_rule.types_and_namespaces_rule.symbols = types_and_namespaces_symbols
+
+dotnet_naming_rule.type_parameters_rule.import_to_resharper = as_predefined
+dotnet_naming_rule.type_parameters_rule.severity = error
+dotnet_naming_rule.type_parameters_rule.style = t_upper_camel_case_style
+dotnet_naming_rule.type_parameters_rule.symbols = type_parameters_symbols
+
+dotnet_naming_style.i_upper_camel_case_style.capitalization = pascal_case
+dotnet_naming_style.i_upper_camel_case_style.required_prefix = I
+dotnet_naming_style.lower_camel_case_style.capitalization = camel_case
+dotnet_naming_style.t_upper_camel_case_style.capitalization = pascal_case
+dotnet_naming_style.t_upper_camel_case_style.required_prefix = T
+dotnet_naming_style.upper_camel_case_style.capitalization = pascal_case
+
+dotnet_naming_symbols.constants_symbols.applicable_accessibilities = public, internal, protected, protected_internal, private_protected
+dotnet_naming_symbols.constants_symbols.applicable_kinds = field
+dotnet_naming_symbols.constants_symbols.required_modifiers = const
+
+dotnet_naming_symbols.event_symbols.applicable_accessibilities = *
+dotnet_naming_symbols.event_symbols.applicable_kinds = event
+
+dotnet_naming_symbols.interfaces_symbols.applicable_accessibilities = *
+dotnet_naming_symbols.interfaces_symbols.applicable_kinds = interface
+
+dotnet_naming_symbols.locals_symbols.applicable_accessibilities = *
+dotnet_naming_symbols.locals_symbols.applicable_kinds = local
+
+dotnet_naming_symbols.local_constants_symbols.applicable_accessibilities = *
+dotnet_naming_symbols.local_constants_symbols.applicable_kinds = local
+dotnet_naming_symbols.local_constants_symbols.required_modifiers = const
+
+dotnet_naming_symbols.local_functions_symbols.applicable_accessibilities = *
+dotnet_naming_symbols.local_functions_symbols.applicable_kinds = local_function
+
+dotnet_naming_symbols.method_symbols.applicable_accessibilities = *
+dotnet_naming_symbols.method_symbols.applicable_kinds = method
+
+dotnet_naming_symbols.parameters_symbols.applicable_accessibilities = *
+dotnet_naming_symbols.parameters_symbols.applicable_kinds = parameter
+
+dotnet_naming_symbols.private_constants_symbols.applicable_accessibilities = private
+dotnet_naming_symbols.private_constants_symbols.applicable_kinds = field
+dotnet_naming_symbols.private_constants_symbols.required_modifiers = const
+
+dotnet_naming_symbols.private_instance_fields_symbols.applicable_accessibilities = private
+dotnet_naming_symbols.private_instance_fields_symbols.applicable_kinds = field
+
+dotnet_naming_symbols.private_static_fields_symbols.applicable_accessibilities = private
+dotnet_naming_symbols.private_static_fields_symbols.applicable_kinds = field
+dotnet_naming_symbols.private_static_fields_symbols.required_modifiers = static
+
+dotnet_naming_symbols.private_static_readonly_symbols.applicable_accessibilities = private
+dotnet_naming_symbols.private_static_readonly_symbols.applicable_kinds = field
+dotnet_naming_symbols.private_static_readonly_symbols.required_modifiers = static, readonly
+
+dotnet_naming_symbols.property_symbols.applicable_accessibilities = *
+dotnet_naming_symbols.property_symbols.applicable_kinds = property
+
+dotnet_naming_symbols.public_fields_symbols.applicable_accessibilities = public, internal, protected, protected_internal, private_protected
+dotnet_naming_symbols.public_fields_symbols.applicable_kinds = field
+
+dotnet_naming_symbols.static_readonly_symbols.applicable_accessibilities = public, internal, protected, protected_internal, private_protected
+dotnet_naming_symbols.static_readonly_symbols.applicable_kinds = field
+dotnet_naming_symbols.static_readonly_symbols.required_modifiers = static, readonly
+
+dotnet_naming_symbols.types_and_namespaces_symbols.applicable_accessibilities = *
+dotnet_naming_symbols.types_and_namespaces_symbols.applicable_kinds = namespace, class, struct, enum, delegate
+
+dotnet_naming_symbols.type_parameters_symbols.applicable_accessibilities = *
+dotnet_naming_symbols.type_parameters_symbols.applicable_kinds = type_parameter
+
+dotnet_style_parentheses_in_arithmetic_binary_operators = never_if_unnecessary:none
+dotnet_style_parentheses_in_other_binary_operators = never_if_unnecessary:none
+dotnet_style_parentheses_in_relational_binary_operators = never_if_unnecessary:none
+
+dotnet_style_predefined_type_for_locals_parameters_members = true:error
+dotnet_style_predefined_type_for_member_access = true:error
+
+file_header_template =
+
+[{*.har, *.json}]
+indent_size = 2
+
+[{*.bash, *.sh, *.zsh}]
+indent_size = 2
+
+[{*.yaml, *.yml}]
+indent_size = 2
+
+[*.cs]
+csharp_max_line_length = 120
+
+# Organize usings
+dotnet_sort_system_directives_first = true
+dotnet_separate_import_directive_groups = true
+
+# Modifier settings
+dotnet_style_require_accessibility_modifiers = always:error
+csharp_prefer_static_local_function = true:error
+csharp_preferred_modifier_order = public, private, protected, internal, new, abstract, virtual, sealed, override, static, readonly, extern, unsafe, volatile, async:error
+
+# Avoid "this." and "Me." if not necessary
+dotnet_style_qualification_for_field = false:error
+dotnet_style_qualification_for_property = false:error
+dotnet_style_qualification_for_method = false:error
+dotnet_style_qualification_for_event = false:error
+
+# Prefer read-only on fields
+dotnet_style_readonly_field = true:error
+
+dotnet_naming_rule.private_constants_rule.severity = error
+dotnet_naming_rule.private_constants_rule.style = upper_camel_case_style
+dotnet_naming_rule.private_constants_rule.symbols = private_constants_symbols
+
+dotnet_naming_rule.private_instance_fields_rule.severity = error
+dotnet_naming_rule.private_instance_fields_rule.style = lower_camel_case_style
+
+dotnet_naming_rule.private_instance_fields_rule.symbols = private_instance_fields_symbols
+
+dotnet_naming_rule.private_static_fields_rule.severity = error
+dotnet_naming_rule.private_static_fields_rule.style = lower_camel_case_style
+dotnet_naming_rule.private_static_fields_rule.symbols = private_static_fields_symbols
+
+dotnet_naming_rule.private_static_readonly_rule.severity = error
+dotnet_naming_rule.private_static_readonly_rule.style = upper_camel_case_style
+dotnet_naming_rule.private_static_readonly_rule.symbols = private_static_readonly_symbols
+
+dotnet_naming_style.lower_camel_case_style.capitalization = camel_case
+dotnet_naming_style.upper_camel_case_style.capitalization = pascal_case
+
+dotnet_naming_symbols.private_constants_symbols.applicable_accessibilities = private
+dotnet_naming_symbols.private_constants_symbols.applicable_kinds = field
+dotnet_naming_symbols.private_constants_symbols.required_modifiers = const
+
+dotnet_naming_symbols.private_instance_fields_symbols.applicable_accessibilities = private
+dotnet_naming_symbols.private_instance_fields_symbols.applicable_kinds = field
+
+dotnet_naming_symbols.private_static_fields_symbols.applicable_accessibilities = private
+dotnet_naming_symbols.private_static_fields_symbols.applicable_kinds = field
+dotnet_naming_symbols.private_static_fields_symbols.required_modifiers = static
+
+dotnet_naming_symbols.private_static_readonly_symbols.applicable_accessibilities = private
+dotnet_naming_symbols.private_static_readonly_symbols.applicable_kinds = field
