@@ -72,15 +72,21 @@ Create a new file named `.env` inside the folder where you have checked-out this
 
 ```properties
 # Environment variables used by 'aspnet-core-logging-dev' service
+# suppress inspection "UnusedProperty"
 DB_DEV_POSTGRES_USER=<DB_DEV_USER>
+# suppress inspection "UnusedProperty"
 DB_DEV_POSTGRES_PASSWORD=<DB_DEV_PASSWORD>
 
 # Environment variables used by 'aspnet-core-logging-it' service
+# suppress inspection "UnusedProperty"
 DB_IT_POSTGRES_USER=<DB_IT_USER>
+# suppress inspection "UnusedProperty"
 DB_IT_POSTGRES_PASSWORD=<DB_IT_PASSWORD>
 
 # Environment variables used by 'pgadmin' service
+# suppress inspection "UnusedProperty"
 PGADMIN_DEFAULT_EMAIL=<PGADMIN_EMAIL_ADDRESS>
+# suppress inspection "UnusedProperty"
 PGADMIN_DEFAULT_PASSWORD=<PGADMIN_PASSWORD>
 ```
 
@@ -140,7 +146,7 @@ When asked about a PostgreSQL server to register, populate the fields found insi
 
 - Host name/address = `aspnet-core-logging-dev` - the compose service name and *not* the container name 
 (the Docker Compose [networking page](https://docs.docker.com/compose/networking/) is a little bit misleading, 
-as it mentions *container name*, that's why the services found inside the `docker-compose.yml` file are named differenty than their containers)
+as it mentions *container name*, that's why the services found inside the `docker-compose.yml` file are named differently than their containers)
 - Port = `5432` - the Docker internal port
 - Username = the value of the `${DB_DEV_POSTGRES_USER}` property from the local `.env` file
 - Password = the value of the `${DB_DEV_POSTGRES_PASSWORD}` property from the local `.env` file
