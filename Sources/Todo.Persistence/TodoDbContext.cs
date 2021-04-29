@@ -1,9 +1,9 @@
 namespace Todo.Persistence
 {
-    using Microsoft.EntityFrameworkCore;
-
     using Entities;
     using Entities.Configurations;
+
+    using Microsoft.EntityFrameworkCore;
 
     // ReSharper disable once ClassNeverInstantiated.Global
     public class TodoDbContext : DbContext

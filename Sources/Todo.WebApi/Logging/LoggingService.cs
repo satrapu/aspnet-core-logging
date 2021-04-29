@@ -113,7 +113,7 @@ namespace Todo.WebApi.Logging
 
             var stringBuilder = new StringBuilder(BufferSize);
             stringBuilder.AppendLine($"--- RESPONSE {httpResponse.HttpContext.TraceIdentifier}: BEGIN ---");
-            stringBuilder.AppendLine($"{httpResponse.HttpContext.Request.Protocol} {httpResponse.StatusCode} {((HttpStatusCode)httpResponse.StatusCode).ToString()}");
+            stringBuilder.AppendLine($"{httpResponse.HttpContext.Request.Protocol} {httpResponse.StatusCode} {((HttpStatusCode) httpResponse.StatusCode).ToString()}");
 
             if (httpResponse.Headers.Any())
             {

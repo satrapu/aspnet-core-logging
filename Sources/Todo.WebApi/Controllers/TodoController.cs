@@ -4,16 +4,16 @@ namespace Todo.WebApi.Controllers
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    using Microsoft.AspNetCore.Authorization;
-    using Microsoft.AspNetCore.Mvc;
-
     using ApplicationFlows.TodoItems;
-
-    using Services.TodoItemLifecycleManagement;
 
     using Authorization;
 
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Mvc;
+
     using Models;
+
+    using Services.TodoItemLifecycleManagement;
 
     [Route("api/[controller]")]
     [Authorize]

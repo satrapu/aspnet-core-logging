@@ -3,6 +3,8 @@ namespace Todo.Persistence
     using System;
     using System.Threading.Tasks;
 
+    using Entities;
+
     using FluentAssertions;
 
     using Microsoft.EntityFrameworkCore;
@@ -15,8 +17,6 @@ namespace Todo.Persistence
     using Npgsql;
 
     using NUnit.Framework;
-
-    using Entities;
 
     /// <summary>
     /// Contains integration tests targeting <see cref="TodoDbContext"/> class.

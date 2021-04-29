@@ -23,7 +23,7 @@ namespace Todo.Services
         {
             const string authenticationType = "hard-coded-authentication-type-for-testing-purposes";
 
-            string[] roles = {"Developer"};
+            string[] roles = { "Developer" };
             yield return
                 new TestGenericPrincipal(
                     new GenericIdentity($"{nameof(GenericPrincipal)}-{Guid.NewGuid():N}", authenticationType), roles);

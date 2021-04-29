@@ -4,6 +4,8 @@ namespace Todo
     using System.Linq;
     using System.Threading.Tasks;
 
+    using ApplicationFlows;
+
     using FluentAssertions;
 
     using Microsoft.AspNetCore.Mvc;
@@ -11,8 +13,6 @@ namespace Todo
     using NetArchTest.Rules;
 
     using NUnit.Framework;
-
-    using ApplicationFlows;
 
     using Persistence;
 

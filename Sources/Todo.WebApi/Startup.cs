@@ -9,6 +9,16 @@ namespace Todo.WebApi
     using System.Text;
     using System.Threading.Tasks;
 
+    using ApplicationFlows;
+    using ApplicationFlows.Security;
+    using ApplicationFlows.TodoItems;
+
+    using Authorization;
+
+    using ExceptionHandling;
+
+    using Logging;
+
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Builder;
@@ -23,24 +33,14 @@ namespace Todo.WebApi
     using Microsoft.IdentityModel.Logging;
     using Microsoft.IdentityModel.Tokens;
 
-    using Serilog;
-
-    using ApplicationFlows;
-    using ApplicationFlows.Security;
-    using ApplicationFlows.TodoItems;
+    using Models;
 
     using Persistence;
 
+    using Serilog;
+
     using Services.Security;
     using Services.TodoItemLifecycleManagement;
-
-    using Authorization;
-
-    using ExceptionHandling;
-
-    using Logging;
-
-    using Models;
 
     using ILogger = Microsoft.Extensions.Logging.ILogger;
 
@@ -293,7 +293,7 @@ namespace Todo.WebApi
 
                         return new UnprocessableEntityObjectResult(validationProblemDetails)
                         {
-                            ContentTypes = {"application/problem+json"}
+                            ContentTypes = { "application/problem+json" }
                         };
                     };
                 });

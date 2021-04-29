@@ -47,7 +47,7 @@ namespace Todo.ApplicationFlows
         /// <returns></returns>
         public async Task<TOutput> ExecuteAsync(TInput input, IPrincipal flowInitiator)
         {
-            using (logger.BeginScope(new Dictionary<string, object> {[ApplicationFlowName] = flowName}))
+            using (logger.BeginScope(new Dictionary<string, object> { [ApplicationFlowName] = flowName }))
             {
                 bool isSuccess = false;
                 Stopwatch stopwatch = Stopwatch.StartNew();

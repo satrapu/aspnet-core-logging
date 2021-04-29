@@ -13,13 +13,13 @@ namespace Todo.WebApi.Controllers
 
     using Microsoft.AspNetCore.WebUtilities;
 
+    using Models;
+
     using NUnit.Framework;
 
     using Persistence.Entities;
 
     using TestInfrastructure;
-
-    using Models;
 
     /// <summary>
     ///  Contains integration tests targeting <see cref="TodoController" /> class.

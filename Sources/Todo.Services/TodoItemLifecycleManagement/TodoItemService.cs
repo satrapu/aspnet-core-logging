@@ -13,6 +13,7 @@ namespace Todo.Services.TodoItemLifecycleManagement
 
     using Persistence;
     using Persistence.Entities;
+
     using Security;
 
     /// <summary>

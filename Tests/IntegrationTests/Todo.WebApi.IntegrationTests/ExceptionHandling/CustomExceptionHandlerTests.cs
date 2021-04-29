@@ -19,6 +19,7 @@ namespace Todo.WebApi.ExceptionHandling
     using NUnit.Framework;
 
     using Services.TodoItemLifecycleManagement;
+
     using TestInfrastructure;
 
     /// <summary>

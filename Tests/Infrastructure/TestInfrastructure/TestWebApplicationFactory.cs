@@ -23,6 +23,7 @@ namespace Todo.TestInfrastructure
     using Npgsql;
 
     using Persistence;
+
     using WebApi;
     using WebApi.Models;
 
