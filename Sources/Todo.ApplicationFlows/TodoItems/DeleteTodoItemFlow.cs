@@ -1,14 +1,14 @@
-using System;
-using System.Security.Principal;
-using System.Threading.Tasks;
-
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
-
-using Todo.Services.TodoItemLifecycleManagement;
-
 namespace Todo.ApplicationFlows.TodoItems
 {
+    using System;
+    using System.Security.Principal;
+    using System.Threading.Tasks;
+
+    using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.Options;
+
+    using Services.TodoItemLifecycleManagement;
+
     /// <summary>
     /// An <see cref="IDeleteTodoItemFlow"/> implementation.
     /// </summary>

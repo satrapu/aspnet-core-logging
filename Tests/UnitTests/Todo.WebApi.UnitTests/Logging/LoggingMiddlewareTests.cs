@@ -1,17 +1,17 @@
-using System;
-using System.Threading.Tasks;
-
-using FluentAssertions;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-
-using Moq;
-
-using NUnit.Framework;
-
 namespace Todo.WebApi.Logging
 {
+    using System;
+    using System.Threading.Tasks;
+
+    using FluentAssertions;
+
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.Extensions.Logging;
+
+    using Moq;
+
+    using NUnit.Framework;
+
     /// <summary>
     /// Contains unit tests targeting <see cref="LoggingMiddleware"/> class.
     /// </summary>

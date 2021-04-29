@@ -1,20 +1,20 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Security.Principal;
-using System.Threading.Tasks;
-
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-
-using Todo.Persistence;
-using Todo.Persistence.Entities;
-using Todo.Services.Security;
-
 namespace Todo.Services.TodoItemLifecycleManagement
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel.DataAnnotations;
+    using System.Linq;
+    using System.Linq.Expressions;
+    using System.Security.Principal;
+    using System.Threading.Tasks;
+
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Logging;
+
+    using Persistence;
+    using Persistence.Entities;
+    using Security;
+
     /// <summary>
     /// An <see cref="ITodoItemService"/> implementation which persists data using Entity Framework Core.
     /// </summary>
@@ -26,7 +26,7 @@ namespace Todo.Services.TodoItemLifecycleManagement
         private const string SortById = nameof(TodoItem.Id);
         private const string SortByLastUpdatedOn = nameof(TodoItem.LastUpdatedOn);
         private const string SortByName = nameof(TodoItem.Name);
-        private static readonly Expression<Func<TodoItem, object>> DefaultKeySelector = todoItem => todoItem.Id;
+        private static readonly Expression<Func<TodoItem, object>> defaultKeySelector = todoItem => todoItem.Id;
 
         /// <summary>
         /// Creates a new instance of the <see cref="TodoItemService"/> class.
@@ -54,7 +54,7 @@ namespace Todo.Services.TodoItemLifecycleManagement
         private async Task<IList<TodoItemInfo>> InternalGetByQueryAsync(TodoItemQuery todoItemQuery)
         {
             IQueryable<TodoItem> todoItems = FilterItems(todoItemQuery)
-                // Read more about query tags here: 
+                // Read more about query tags here:
                 // https://docs.microsoft.com/en-us/ef/core/querying/tags
                 .TagWith($"{nameof(TodoItemService)}#{nameof(GetByQueryAsync)}")
                 // Read more about no tracking queries here:
@@ -215,7 +215,7 @@ namespace Todo.Services.TodoItemLifecycleManagement
         {
             if (string.IsNullOrWhiteSpace(sortByProperty))
             {
-                return DefaultKeySelector;
+                return defaultKeySelector;
             }
 
             if (SortByCreatedOn.Equals(sortByProperty, StringComparison.InvariantCultureIgnoreCase))
@@ -238,7 +238,7 @@ namespace Todo.Services.TodoItemLifecycleManagement
                 return todoItem => todoItem.Name;
             }
 
-            return DefaultKeySelector;
+            return defaultKeySelector;
         }
 
         private static IQueryable<TodoItemInfo> ProjectItems(IQueryable<TodoItem> todoItems)

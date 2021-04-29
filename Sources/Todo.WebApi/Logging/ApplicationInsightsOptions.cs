@@ -1,7 +1,7 @@
-using System.Diagnostics.CodeAnalysis;
-
 namespace Todo.WebApi.Logging
 {
+    using System.Diagnostics.CodeAnalysis;
+
     /// <summary>
     /// Stores Azure Application Insights configuration.
     /// </summary>

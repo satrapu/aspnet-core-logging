@@ -1,7 +1,7 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace Todo.WebApi.Models
 {
+    using System.ComponentModel.DataAnnotations;
+
     public class NewTodoItemModel
     {
         /// <summary>

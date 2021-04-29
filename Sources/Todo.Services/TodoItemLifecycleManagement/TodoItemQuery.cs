@@ -1,11 +1,11 @@
-using System.ComponentModel.DataAnnotations;
-using System.Security.Principal;
-using System.Text;
-
-using Todo.Services.Security;
-
 namespace Todo.Services.TodoItemLifecycleManagement
 {
+    using System.ComponentModel.DataAnnotations;
+    using System.Security.Principal;
+    using System.Text;
+
+    using Security;
+
     public class TodoItemQuery
     {
         public const int DefaultPageIndex = 0;
@@ -43,14 +43,14 @@ namespace Todo.Services.TodoItemLifecycleManagement
         public int? PageSize { get; set; } = DefaultPageSize;
 
         /// <summary>
-        /// Gets or sets the 0-based index of the current batch of todo items to be fetched using this query. 
+        /// Gets or sets the 0-based index of the current batch of todo items to be fetched using this query.
         /// </summary>
         [Required]
         [Range(0, int.MaxValue)]
         public int? PageIndex { get; set; } = DefaultPageIndex;
 
         /// <summary>
-        /// Gets or sets the property name used for sorting the todo items to be fetched using this query. 
+        /// Gets or sets the property name used for sorting the todo items to be fetched using this query.
         /// </summary>
         public string SortBy { get; set; }
 

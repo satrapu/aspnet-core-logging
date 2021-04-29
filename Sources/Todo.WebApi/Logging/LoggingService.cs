@@ -1,14 +1,14 @@
-using System;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
-
 namespace Todo.WebApi.Logging
 {
+    using System;
+    using System.Linq;
+    using System.Net;
+    using System.Text;
+    using System.Threading.Tasks;
+
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.Extensions.Logging;
+
     /// <summary>
     /// Logs text-based only HTTP requests and responses (e.g. plain text, JSON or XML).
     /// </summary>
@@ -16,8 +16,8 @@ namespace Todo.WebApi.Logging
     {
         private const int BufferSize = 1000;
 
-        private static readonly string[] TextBasedHeaderNames = { "Accept", "Content-Type" };
-        private static readonly string[] TextBasedHeaderValues = { "application/json", "application/xml", "text/" };
+        private static readonly string[] textBasedHeaderNames = { "Accept", "Content-Type" };
+        private static readonly string[] textBasedHeaderValues = { "application/json", "application/xml", "text/" };
         private const string AcceptableRequestUrlPrefix = "/api/";
         private readonly ILogger logger;
 
@@ -133,14 +133,14 @@ namespace Todo.WebApi.Logging
 
         private static bool IsTextBased(HttpRequest httpRequest)
         {
-            return TextBasedHeaderNames.Any(headerName => IsTextBased(httpRequest, headerName))
+            return textBasedHeaderNames.Any(headerName => IsTextBased(httpRequest, headerName))
                 || httpRequest.Path.ToUriComponent().StartsWith(AcceptableRequestUrlPrefix);
         }
 
         private static bool IsTextBased(HttpRequest httpRequest, string headerName)
         {
             return httpRequest.Headers.TryGetValue(headerName, out var headerValues)
-                && TextBasedHeaderValues.Any(acceptedHeaderValue => headerValues.Any(headerValue => headerValue.StartsWith(acceptedHeaderValue)));
+                && textBasedHeaderValues.Any(acceptedHeaderValue => headerValues.Any(headerValue => headerValue.StartsWith(acceptedHeaderValue)));
         }
     }
 }

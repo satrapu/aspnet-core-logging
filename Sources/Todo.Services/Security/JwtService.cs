@@ -1,13 +1,13 @@
-using System;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-
-using Microsoft.IdentityModel.Tokens;
-
 namespace Todo.Services.Security
 {
+    using System;
+    using System.IdentityModel.Tokens.Jwt;
+    using System.Security.Claims;
+    using System.Text;
+    using System.Threading.Tasks;
+
+    using Microsoft.IdentityModel.Tokens;
+
     /// <summary>
     /// An <see cref="IJwtService"/> implementation.
     /// <br/>

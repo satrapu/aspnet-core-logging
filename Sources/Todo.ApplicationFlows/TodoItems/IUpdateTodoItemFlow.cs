@@ -1,7 +1,7 @@
-using Todo.Services.TodoItemLifecycleManagement;
-
 namespace Todo.ApplicationFlows.TodoItems
 {
+    using Services.TodoItemLifecycleManagement;
+
     /// <summary>
     /// Application flow used for updating an existing todo item.
     /// </summary>

@@ -1,11 +1,11 @@
-using System;
-
-using FluentAssertions;
-
-using NUnit.Framework;
-
 namespace Todo.WebApi.Logging
 {
+    using System;
+
+    using FluentAssertions;
+
+    using NUnit.Framework;
+
     /// <summary>
     /// Contains unit tests targeting <see cref="LoggingMiddlewareExtensions"/> class.
     /// </summary>

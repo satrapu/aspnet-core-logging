@@ -1,43 +1,49 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using System.Threading.Tasks;
-
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Logging;
-using Microsoft.IdentityModel.Tokens;
-
-using Serilog;
-
-using Todo.ApplicationFlows;
-using Todo.ApplicationFlows.Security;
-using Todo.ApplicationFlows.TodoItems;
-using Todo.Persistence;
-using Todo.Services.Security;
-using Todo.Services.TodoItemLifecycleManagement;
-using Todo.WebApi.Authorization;
-using Todo.WebApi.ExceptionHandling;
-using Todo.WebApi.Logging;
-using Todo.WebApi.Models;
-
-using ILogger = Microsoft.Extensions.Logging.ILogger;
-
 namespace Todo.WebApi
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
+    using System.IO;
+    using System.Linq;
+    using System.Security.Claims;
+    using System.Text;
+    using System.Threading.Tasks;
+
+    using Microsoft.AspNetCore.Authentication.JwtBearer;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Hosting;
+    using Microsoft.Extensions.Logging;
+    using Microsoft.IdentityModel.Logging;
+    using Microsoft.IdentityModel.Tokens;
+
+    using Serilog;
+
+    using ApplicationFlows;
+    using ApplicationFlows.Security;
+    using ApplicationFlows.TodoItems;
+
+    using Persistence;
+
+    using Services.Security;
+    using Services.TodoItemLifecycleManagement;
+
+    using Authorization;
+
+    using ExceptionHandling;
+
+    using Logging;
+
+    using Models;
+
+    using ILogger = Microsoft.Extensions.Logging.ILogger;
+
     /// <summary>
     /// Starts this ASP.NET Core application.
     /// </summary>
@@ -218,8 +224,8 @@ namespace Todo.WebApi
                         {
                             if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
                             {
-                                // Add a custom HTTP header to the response in case the application detected that the current
-                                // request is accompanied by an expired security token.
+                                // Add a custom HTTP header to the response in case the application detected that the
+                                // current request is accompanied by an expired security token.
                                 context.Response.Headers.Add("Token-Expired", "true");
                             }
 
@@ -287,7 +293,7 @@ namespace Todo.WebApi
 
                         return new UnprocessableEntityObjectResult(validationProblemDetails)
                         {
-                            ContentTypes = { "application/problem+json" }
+                            ContentTypes = {"application/problem+json"}
                         };
                     };
                 });
@@ -345,8 +351,8 @@ namespace Todo.WebApi
             }
 
             logger.LogInformation("Migrating database has been turned on");
-            using var serviceScope = applicationBuilder.ApplicationServices.GetRequiredService<IServiceScopeFactory>()
-                .CreateScope();
+            using var serviceScope =
+                applicationBuilder.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope();
             using var todoDbContext = serviceScope.ServiceProvider.GetService<TodoDbContext>();
             string database = todoDbContext.Database.GetDbConnection().Database;
 

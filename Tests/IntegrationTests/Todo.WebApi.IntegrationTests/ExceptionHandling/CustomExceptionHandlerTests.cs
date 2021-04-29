@@ -1,26 +1,26 @@
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Text.Json;
-using System.Threading.Tasks;
-
-using FluentAssertions;
-using FluentAssertions.Execution;
-
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.TestHost;
-using Microsoft.Extensions.DependencyInjection;
-
-using NUnit.Framework;
-
-using Todo.Services.TodoItemLifecycleManagement;
-using Todo.TestInfrastructure;
-
 namespace Todo.WebApi.ExceptionHandling
 {
+    using System.Collections.Generic;
+    using System.IO;
+    using System.Linq;
+    using System.Net;
+    using System.Net.Http;
+    using System.Text.Json;
+    using System.Threading.Tasks;
+
+    using FluentAssertions;
+    using FluentAssertions.Execution;
+
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.TestHost;
+    using Microsoft.Extensions.DependencyInjection;
+
+    using NUnit.Framework;
+
+    using Services.TodoItemLifecycleManagement;
+    using TestInfrastructure;
+
     /// <summary>
     /// Contains integration tests targeting <see cref="CustomExceptionHandler"/> class.
     /// </summary>

@@ -1,7 +1,7 @@
-using System;
-
 namespace Todo.Persistence.Entities
 {
+    using System;
+
     /// <summary>
     /// Represents an action to be performed at some point in the future.
     /// </summary>

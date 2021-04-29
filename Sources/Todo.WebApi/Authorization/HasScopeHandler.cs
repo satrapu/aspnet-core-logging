@@ -1,11 +1,11 @@
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
-
-using Microsoft.AspNetCore.Authorization;
-
 namespace Todo.WebApi.Authorization
 {
+    using System.Linq;
+    using System.Security.Claims;
+    using System.Threading.Tasks;
+
+    using Microsoft.AspNetCore.Authorization;
+
     /// <summary>
     /// Based on: https://auth0.com/docs/quickstart/backend/aspnet-core-webapi#validate-scopes.
     /// </summary>

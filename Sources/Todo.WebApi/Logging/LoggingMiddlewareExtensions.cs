@@ -1,10 +1,10 @@
-using System;
-
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Http;
-
 namespace Todo.WebApi.Logging
 {
+    using System;
+
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Http;
+
     /// <summary>
     /// Contains extension methods applicable to <see cref="IApplicationBuilder"/> instances.
     /// </summary>

@@ -1,8 +1,8 @@
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
-
 namespace Todo.Persistence.Entities.Configurations
 {
+    using Microsoft.EntityFrameworkCore;
+    using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
     internal class TodoItemConfiguration : IEntityTypeConfiguration<TodoItem>
     {
         public void Configure(EntityTypeBuilder<TodoItem> builder)

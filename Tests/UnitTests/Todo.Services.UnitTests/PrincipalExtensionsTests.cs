@@ -1,18 +1,18 @@
-using System;
-using System.Collections.Generic;
-using System.Security.Claims;
-using System.Security.Principal;
-
-using FluentAssertions;
-
-using Moq;
-
-using NUnit.Framework;
-
-using Todo.Services.Security;
-
 namespace Todo.Services
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Security.Claims;
+    using System.Security.Principal;
+
+    using FluentAssertions;
+
+    using Moq;
+
+    using NUnit.Framework;
+
+    using Security;
+
     /// <summary>
     /// Contains unit tests targeting <see cref="PrincipalExtensions"/> class.
     /// </summary>
@@ -23,7 +23,7 @@ namespace Todo.Services
         {
             const string authenticationType = "hard-coded-authentication-type-for-testing-purposes";
 
-            string[] roles = { "Developer" };
+            string[] roles = {"Developer"};
             yield return
                 new TestGenericPrincipal(
                     new GenericIdentity($"{nameof(GenericPrincipal)}-{Guid.NewGuid():N}", authenticationType), roles);
@@ -113,7 +113,8 @@ namespace Todo.Services
             Action actionExpectedToFail = () => PrincipalExtensions.GetName(principal);
 
             // Assert
-            actionExpectedToFail.Should().ThrowExactly<ArgumentNullException>()
+            actionExpectedToFail
+                .Should().ThrowExactly<ArgumentNullException>()
                 .And.ParamName.Should().Be(nameof(principal), "because a null principal does not have a name");
         }
 
@@ -132,7 +133,8 @@ namespace Todo.Services
             Action actionExpectedToFail = () => mockedPrincipal.GetName();
 
             // Assert
-            actionExpectedToFail.Should().ThrowExactly<ArgumentNullException>()
+            actionExpectedToFail
+                .Should().ThrowExactly<ArgumentNullException>()
                 .And.ParamName.Should().Be("principal.Identity",
                     "because a principal with a null identity does not have a name");
         }

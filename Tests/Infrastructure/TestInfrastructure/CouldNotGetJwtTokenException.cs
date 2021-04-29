@@ -1,9 +1,9 @@
-using System;
-using System.Net.Http;
-using System.Runtime.Serialization;
-
 namespace Todo.TestInfrastructure
 {
+    using System;
+    using System.Net.Http;
+    using System.Runtime.Serialization;
+
     [Serializable]
     public class CouldNotGetJwtException : Exception
     {

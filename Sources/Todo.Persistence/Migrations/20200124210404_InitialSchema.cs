@@ -1,11 +1,11 @@
-using System;
-
-using Microsoft.EntityFrameworkCore.Migrations;
-
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-
 namespace Todo.Persistence.Migrations
 {
+    using System;
+
+    using Microsoft.EntityFrameworkCore.Migrations;
+
+    using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+
     public partial class InitialSchema : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)

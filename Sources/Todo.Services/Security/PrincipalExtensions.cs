@@ -1,8 +1,8 @@
-using System;
-using System.Security.Principal;
-
 namespace Todo.Services.Security
 {
+    using System;
+    using System.Security.Principal;
+
     /// <summary>
     /// Contains extension methods applicable to <see cref="IPrincipal"/> instances.
     /// </summary>

@@ -1,22 +1,25 @@
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-
-using FluentAssertions;
-
-using Microsoft.AspNetCore.Mvc;
-
-using NetArchTest.Rules;
-
-using NUnit.Framework;
-
-using Todo.ApplicationFlows;
-using Todo.Persistence;
-using Todo.Services.TodoItemLifecycleManagement;
-using Todo.WebApi;
-
 namespace Todo
 {
+    using System;
+    using System.Linq;
+    using System.Threading.Tasks;
+
+    using FluentAssertions;
+
+    using Microsoft.AspNetCore.Mvc;
+
+    using NetArchTest.Rules;
+
+    using NUnit.Framework;
+
+    using ApplicationFlows;
+
+    using Persistence;
+
+    using Services.TodoItemLifecycleManagement;
+
+    using WebApi;
+
     /// <summary>
     /// Contains tests ensuring the architecture of the Todo Web API has not deviate from the intended one.
     /// </summary>
