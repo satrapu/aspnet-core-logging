@@ -45,8 +45,8 @@ variables:
   # Specifies the version of the .NET Core SDK to install and use when running this pipeline.
   # All releases can be found here: https://dotnet.microsoft.com/download/dotnet-core.
   - name: 'DotNetCore_SDK_Version'
-    value: '3.1.407'
-    
+    value: '5.0.202'
+
   # Specifies the version of the dotnet-format tool used for enforcing rules found in .editorconfig files.
   # All releases can be found here: https://github.com/dotnet/format/releases.
   # All NuGet packages can be found here: https://www.nuget.org/packages/dotnet-format/.
