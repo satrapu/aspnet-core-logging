@@ -35,6 +35,7 @@ namespace Todo.Persistence
             // Arrange
             string databaseName =
                 $"it--{nameof(GivenTheCurrentMigrations_WhenRunningThemInBothDirections_DatabaseIsCorrectlyMigrated)}";
+
             DbContextOptions<TodoDbContext> dbContextOptions = GetDbContextOptions(databaseName);
             await using TodoDbContext todoDbContext = new TodoDbContext(dbContextOptions);
             bool isMigrationSuccessful;
@@ -66,7 +67,7 @@ namespace Todo.Persistence
         }
 
         /// <summary>
-        /// Ensures that trying to modify same entity from withing 2 concurrent transactions fails.
+        /// Ensures that trying to modify same entity from within 2 concurrent transactions fails.
         /// </summary>
         /// <returns></returns>
         [Test]
@@ -75,6 +76,7 @@ namespace Todo.Persistence
             // Arrange
             string databaseName =
                 $"it--{nameof(SaveChanges_WhenModifyingSameEntityUsingTwoConcurrentTransactions_ThrowsException)}";
+
             DbContextOptions<TodoDbContext> dbContextOptions = GetDbContextOptions(databaseName);
 
             await using TodoDbContext firstTodoDbContext = new TodoDbContext(dbContextOptions);
@@ -95,17 +97,22 @@ namespace Todo.Persistence
 
                 await using IDbContextTransaction firstTransaction =
                     await firstTodoDbContext.Database.BeginTransactionAsync();
+
                 TodoItem todoItemFromFirstTransaction =
                     await firstTodoDbContext.TodoItems.FirstAsync(x => x.Name == name);
+
                 todoItemFromFirstTransaction.IsComplete = true;
                 todoItemFromFirstTransaction.LastUpdatedBy = Guid.NewGuid().ToString("N");
                 todoItemFromFirstTransaction.LastUpdatedOn = DateTime.UtcNow;
 
                 await using TodoDbContext secondTodoDbContext = new TodoDbContext(dbContextOptions);
+
                 await using IDbContextTransaction secondTransaction =
                     await secondTodoDbContext.Database.BeginTransactionAsync();
+
                 TodoItem todoItemFromSecondTransaction =
                     await secondTodoDbContext.TodoItems.FirstAsync(x => x.Name == name);
+
                 todoItemFromSecondTransaction.IsComplete = false;
                 todoItemFromSecondTransaction.LastUpdatedBy = Guid.NewGuid().ToString("N");
                 todoItemFromSecondTransaction.LastUpdatedOn = DateTime.UtcNow;
@@ -136,12 +143,15 @@ namespace Todo.Persistence
         private static DbContextOptions<TodoDbContext> GetDbContextOptions(string databaseName)
         {
             var configurationBuilder = new ConfigurationBuilder();
+
             IConfigurationRoot testConfiguration = configurationBuilder.AddJsonFile("appsettings.json", false)
                 .AddJsonFile("appsettings.IntegrationTests.json", false)
                 .AddEnvironmentVariables()
                 .Build();
+
             // ReSharper disable once SettingNotFoundInConfiguration
             var testConnectionString = testConfiguration.GetConnectionString("TodoForIntegrationTests");
+
             var connectionStringBuilder = new NpgsqlConnectionStringBuilder(testConnectionString)
             {
                 Database = $"it--{databaseName}"
