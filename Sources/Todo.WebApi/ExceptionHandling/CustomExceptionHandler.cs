@@ -100,7 +100,7 @@ namespace Todo.WebApi.ExceptionHandling
 
                 // Also return HTTP status code 503 in case the inner exception was thrown by a call made against the
                 // underlying database.
-                {InnerException: NpgsqlException _} => HttpStatusCode.ServiceUnavailable,
+                { InnerException: NpgsqlException _ } => HttpStatusCode.ServiceUnavailable,
 
                 // Fallback to HTTP status code 500.
                 _ => HttpStatusCode.InternalServerError
@@ -113,7 +113,7 @@ namespace Todo.WebApi.ExceptionHandling
             {
                 EntityNotFoundException _ => "entity-not-found",
                 NpgsqlException _ => "database-error",
-                {InnerException: NpgsqlException _} => "database-error",
+                { InnerException: NpgsqlException _ } => "database-error",
 
                 // Fallback value
                 _ => "internal-server-error"
