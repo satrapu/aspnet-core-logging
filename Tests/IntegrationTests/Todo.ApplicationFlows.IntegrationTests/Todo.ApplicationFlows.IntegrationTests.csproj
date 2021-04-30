@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFramework>net5.0</TargetFramework>
         <OutputType>Library</OutputType>
         <IsPackable>false</IsPackable>
         <IsTestProject>true</IsTestProject>
@@ -11,7 +11,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\..\..\Sources\Todo.ApplicationFlows\Todo.ApplicationFlows.csproj"/>
-        <!--        
+        <!--
         The referene to Todo.WebApi.csproj is needed in order to have access to appsettings.json and
         appsettings.IntegrationTests.json configuration files.
         -->
@@ -19,7 +19,7 @@
         <ProjectReference Include="..\..\Infrastructure\TestInfrastructure\TestInfrastructure.csproj"/>
         <ProjectReference Include="..\Todo.WebApi.IntegrationTests\Todo.WebApi.IntegrationTests.csproj"/>
     </ItemGroup>
-    
+
     <ItemGroup>
         <PackageReference Include="coverlet.msbuild">
             <PrivateAssets>all</PrivateAssets>

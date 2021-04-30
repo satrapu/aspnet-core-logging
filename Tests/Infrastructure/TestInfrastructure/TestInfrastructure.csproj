@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFramework>net5.0</TargetFramework>
         <OutputType>Library</OutputType>
         <IsPackable>false</IsPackable>
         <IsTestProject>false</IsTestProject>
@@ -12,7 +12,7 @@
     <ItemGroup>
         <ProjectReference Include="..\..\..\Sources\Todo.WebApi\Todo.WebApi.csproj"/>
     </ItemGroup>
-    
+
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore"/>

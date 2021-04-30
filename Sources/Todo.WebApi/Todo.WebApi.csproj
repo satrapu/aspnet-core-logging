@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFramework>net5.0</TargetFramework>
         <IsTestProject>false</IsTestProject>
     </PropertyGroup>
 
@@ -28,5 +28,5 @@
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
         <CodeAnalysisRuleSet>Todo.WebApi.ruleset</CodeAnalysisRuleSet>
     </PropertyGroup>
-    
+
 </Project>

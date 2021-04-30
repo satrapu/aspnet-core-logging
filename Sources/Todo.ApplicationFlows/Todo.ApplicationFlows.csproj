@@ -1,14 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFramework>net5.0</TargetFramework>
         <IsTestProject>false</IsTestProject>
     </PropertyGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\Todo.Services\Todo.Services.csproj" />
     </ItemGroup>
-    
+
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
         <CodeAnalysisRuleSet>Todo.ApplicationFlows.ruleset</CodeAnalysisRuleSet>
     </PropertyGroup>

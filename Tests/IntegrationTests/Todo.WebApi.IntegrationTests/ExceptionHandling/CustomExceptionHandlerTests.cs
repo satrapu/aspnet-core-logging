@@ -1,5 +1,6 @@
 namespace Todo.WebApi.ExceptionHandling
 {
+    using System;
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
@@ -43,11 +44,11 @@ namespace Todo.WebApi.ExceptionHandling
         }
 
         /// <summary>
-        /// Ensures <see cref="CustomExceptionHandler.WriteResponse"/> method successfully converts an API exception
+        /// Ensures <see cref="CustomExceptionHandler.HandleException"/> method successfully converts an API exception
         /// to an instance of the <see cref="ProblemDetails"/> class.
         /// </summary>
         [Test]
-        public async Task WriteResponse_WhenApiThrowsException_MustConvertExceptionToInstanceOfProblemDetailsClass()
+        public async Task HandleException_WhenApiThrowsException_MustConvertExceptionToInstanceOfProblemDetailsClass()
         {
             // Arrange
             using HttpClient httpClient = await webApplicationFactoryWhichThrowsException.CreateClientWithJwtAsync();
@@ -59,22 +60,27 @@ namespace Todo.WebApi.ExceptionHandling
             // Assert
             using (new AssertionScope())
             {
-                httpResponseMessage.IsSuccessStatusCode.Should()
-                    .BeFalse("the endpoint was supposed to throw a hard-coded exception");
-                httpResponseMessage.StatusCode.Should()
-                    .Be(HttpStatusCode.NotFound, "the hard-coded exception was mapped to HTTP status 404");
+                httpResponseMessage.IsSuccessStatusCode
+                    .Should().BeFalse("the endpoint was supposed to throw a hard-coded exception");
+
+                httpResponseMessage.StatusCode
+                    .Should().Be(HttpStatusCode.NotFound, "the hard-coded exception was mapped to HTTP status 404");
+
                 byte[] problemDetailsAsBytes = await httpResponseMessage.Content.ReadAsByteArrayAsync();
                 await using var memoryStream = new MemoryStream(problemDetailsAsBytes);
 
                 // Must use System.Text.Json.JsonSerializer instead of Newtonsoft.Json.JsonSerializer to ensure
                 // ProblemDetails.Extensions property is correctly deserialized and does not end up as an empty
-                // dictionary
+                // dictionary.
                 ProblemDetails problemDetails = await JsonSerializer.DeserializeAsync<ProblemDetails>(memoryStream);
-                problemDetails.Extensions.TryGetValue("errorId", out object errorId).Should()
-                    .BeTrue("an id must accompany the unhandled exception");
-                errorId?.ToString().Should()
-                    .NotBeNullOrWhiteSpace(
-                        "the id accompanying the unhandled exception must not be null or whitespace");
+                problemDetails.Should().NotBeNull("application must handle any exception");
+                // ReSharper disable once PossibleNullReferenceException
+                problemDetails.Extensions.Should().NotBeNull("problem details must contain extra info");
+                problemDetails.Extensions.Should().NotContainKey("errorData", "error data must not be present");
+                problemDetails.Extensions.Should().ContainKey("errorKey", "error key must be present");
+                problemDetails.Extensions.Should().ContainKey("errorId", "error id must be present");
+                Guid.TryParse(problemDetails.Extensions["errorId"].ToString(), out Guid _)
+                    .Should().BeTrue("error id is a GUID");
             }
         }
 
@@ -115,22 +121,26 @@ namespace Todo.WebApi.ExceptionHandling
         {
             public Task<IList<TodoItemInfo>> GetByQueryAsync(TodoItemQuery todoItemQuery)
             {
-                throw new EntityNotFoundException(todoItemQuery.GetType(), null);
+                var hardCodedException = new EntityNotFoundException(todoItemQuery.GetType(), null);
+                hardCodedException.Data.Add("Key1", "Value1");
+                hardCodedException.Data.Add("Key2", "Value2");
+
+                throw hardCodedException;
             }
 
             public Task<long> AddAsync(NewTodoItemInfo newTodoItemInfo)
             {
-                throw new System.NotImplementedException();
+                throw new NotImplementedException();
             }
 
             public Task UpdateAsync(UpdateTodoItemInfo updateTodoItemInfo)
             {
-                throw new System.NotImplementedException();
+                throw new NotImplementedException();
             }
 
             public Task DeleteAsync(DeleteTodoItemInfo deleteTodoItemInfo)
             {
-                throw new System.NotImplementedException();
+                throw new NotImplementedException();
             }
         }
     }
