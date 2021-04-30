@@ -7,7 +7,7 @@ namespace Todo.ApplicationFlows.TodoItems
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
 
-    using Todo.Services.TodoItemLifecycleManagement;
+    using Services.TodoItemLifecycleManagement;
 
     /// <summary>
     /// An <see cref="IAddTodoItemFlow"/> implementation.
