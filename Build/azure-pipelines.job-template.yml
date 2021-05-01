@@ -496,7 +496,12 @@ jobs:
   - task: SonarSource.sonarcloud.ce096e50-6155-4de8-8800-4221aaeed4a1.SonarCloudAnalyze@1
     name: 'run_sonar_analysis'
     displayName: 'Run Sonar analysis'
-    condition: eq(${{ parameters.sonar.enabled }}, True)
+    condition: |
+      and
+      (
+          eq(${{ parameters.sonar.enabled }}, True)
+        , eq(variables.allTestsOutcome, 'success')
+      )
     inputs:
       timeoutInMinutes: ${{ parameters.sonar.runAnalysisTimeoutInMinutes }}
 
@@ -509,6 +514,7 @@ jobs:
       (
           eq(${{ parameters.sonar.enabled }}, True)
         , eq(${{ parameters.sonar.buildBreaker.enabled }}, True)
+        , eq(variables.allTestsOutcome, 'success')
       )
     inputs:
       pollingTimeoutSeconds: ${{ parameters.sonar.publishPollingTimeoutSeconds }}
@@ -524,6 +530,7 @@ jobs:
       (
           eq(${{ parameters.sonar.enabled }}, True)
         , eq(${{ parameters.sonar.buildBreaker.enabled }}, True)
+        , eq(variables.allTestsOutcome, 'success')
         , eq(variables['Build.Reason'], 'PullRequest')
       )
     inputs:
@@ -544,6 +551,7 @@ jobs:
       (
           eq(${{ parameters.sonar.enabled }}, True)
         , eq(${{ parameters.sonar.buildBreaker.enabled }}, True)
+        , eq(variables.allTestsOutcome, 'success')
         , ne(variables['Build.Reason'], 'PullRequest')
       )
     inputs:
@@ -563,6 +571,7 @@ jobs:
       (
           eq(${{ parameters.sonar.enabled }}, True)
         , eq(${{ parameters.sonar.buildBreaker.enabled }}, True)
+        , eq(variables.allTestsOutcome, 'success')
       )
     inputs:
       targetType: 'inline'
@@ -585,6 +594,7 @@ jobs:
       (
           eq(${{ parameters.sonar.enabled }}, True)
         , eq(${{ parameters.sonar.buildBreaker.enabled }}, True)
+        , eq(variables.allTestsOutcome, 'success')
       )
     inputs:
       targetType: 'filePath'
