@@ -41,6 +41,12 @@ namespace Todo
                 .And().Inherit(typeof(ControllerBase));
         }
 
+        [Test]
+        public void ForceArchitectureTestsToFail()
+        {
+           Assert.Fail("Force architecture tests to fail in order to test Azure pipeline behavior");
+        }
+
         /// <summary>
         /// Ensures Todo Web API controllers depend on application flows.
         /// </summary>

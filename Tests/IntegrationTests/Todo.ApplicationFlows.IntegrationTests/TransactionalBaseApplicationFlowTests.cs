@@ -42,6 +42,12 @@ namespace Todo.ApplicationFlows
             testWebApplicationFactory?.Dispose();
         }
 
+        [Test]
+        public void ForceIntegrationTestsToFail()
+        {
+            Assert.Fail("Force integration tests to fail in order to test Azure pipeline behavior");
+        }
+
         /// <summary>
         /// Ensures method <see cref="TransactionalBaseApplicationFlow{TInput,TOutput}.ExecuteAsync" />
         /// works as expected.

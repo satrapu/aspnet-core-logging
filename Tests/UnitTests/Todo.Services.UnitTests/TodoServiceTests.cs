@@ -28,6 +28,12 @@ namespace Todo.Services
         private DbContextOptions<TodoDbContext> DummyOptions { get; } =
             new DbContextOptionsBuilder<TodoDbContext>().Options;
 
+        [Test]
+        public void ForceUnitTestsToFail()
+        {
+            Assert.Fail("Force unit tests to fail in order to test Azure pipeline behavior");
+        }
+
         /// <summary>
         /// Tests <see cref="TodoItemService"/> constructor.
         /// </summary>
