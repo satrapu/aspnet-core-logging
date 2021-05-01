@@ -192,7 +192,12 @@ jobs:
   - powershell: echo "##vso[task.setvariable variable=architectureTestsOutcome]success"
     name: 'set_architecture_tests_outcome_variable'
     displayName: 'Set architectureTestsOutcome variable'
-    condition: succeeded()
+    condition: |
+      and
+      (
+          succeeded()
+        , eq(${{ parameters.runTests }}, True)
+      )
 
   - task: PublishTestResults@2
     name: 'publish_architecture_test_results'
@@ -239,7 +244,13 @@ jobs:
   - powershell: echo "##vso[task.setvariable variable=unitTestsOutcome]success"
     name: 'set_unit_tests_outcome_variable'
     displayName: 'Set unitTestsOutcome variable'
-    condition: succeeded()
+    condition: |
+      and
+      (
+          succeeded()
+        , eq(${{ parameters.runTests }}, True)
+        , eq(variables.architectureTestsOutcome, 'success')
+      )
 
   # Publish unit test results.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=azure-devops&tabs=yaml.
@@ -250,6 +261,7 @@ jobs:
       and
       (
           eq(${{ parameters.runTests }}, True)
+        , eq(variables.architectureTestsOutcome, 'success')
         , or(eq(variables.unitTestsOutcome, 'success'), eq(variables.unitTestsOutcome, 'failure'))
       )
     inputs:
@@ -345,7 +357,13 @@ jobs:
   - powershell: echo "##vso[task.setvariable variable=integrationTestsOutcome]success"
     name: 'set_integration_tests_outcome_variable'
     displayName: 'Set integrationTestsOutcome variable'
-    condition: succeeded()
+    condition: |
+      and
+      (
+          succeeded()
+        , eq(${{ parameters.runTests }}, True)
+        , eq(variables.unitTestsOutcome, 'success')
+      )
 
   # Run a PowerShell script to export the logs of the Docker Compose service
   # used by integration tests to a specific folder.
@@ -357,6 +375,7 @@ jobs:
       (
           eq(${{ parameters.publishPipelineArtifacts }}, True)
         , eq(${{ parameters.runTests }}, True)
+        , eq(${{ parameters.unitTestsOutcome }}, 'success')
         , or(eq(variables.integrationTestsOutcome, 'success'), eq(variables.integrationTestsOutcome, 'failure'))
       )
     inputs:
@@ -384,6 +403,7 @@ jobs:
       (
           eq(${{ parameters.publishPipelineArtifacts }}, True)
         , eq(${{ parameters.runTests }}, True)
+        , eq(${{ parameters.unitTestsOutcome }}, 'success')
         , or(eq(variables.integrationTestsOutcome, 'success'), eq(variables.integrationTestsOutcome, 'failure'))
       )
     inputs:
