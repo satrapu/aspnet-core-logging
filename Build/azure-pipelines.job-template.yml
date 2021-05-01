@@ -51,6 +51,11 @@ jobs:
     # Disable Core CLR tracing.
     # See more here: https://docs.microsoft.com/en-us/dotnet/core/dependency-loading/default-probing#how-do-i-debug-the-probing-properties-construction.
     COREHOST_TRACE: '0'
+
+    architectureTestsOutcome: 'failure'
+    unitTestsOutcome: 'failure'
+    integrationTestsOutcome: 'failure'
+    allTestsOutcome: 'failure'
   steps:
   # Customize the way this job checkouts the current Git branch.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=azure-devops&tabs=schema%2Cparameter-schema#checkout.
@@ -184,14 +189,19 @@ jobs:
     displayName: 'Run architecture tests'
     condition: eq(${{ parameters.runTests }}, True)
 
+  - powershell: echo "##vso[task.setvariable variable=architectureTestsOutcome]success"
+    name: 'set_architecture_tests_outcome_variable'
+    displayName: 'Set architectureTestsOutcome variable'
+    condition: succeeded()
+
   - task: PublishTestResults@2
     name: 'publish_architecture_test_results'
     displayName: 'Publish architecture test results'
     condition: |
       and
       (
-          succeededOrFailed()
-        , eq(${{ parameters.runTests }}, True)
+          eq(${{ parameters.runTests }}, True)
+        , or(eq(variables.architectureTestsOutcome, 'success'), eq(variables.architectureTestsOutcome, 'failure'))
       )
     inputs:
       testResultsFormat: 'NUnit'
@@ -205,10 +215,6 @@ jobs:
   # See more about running selective tests here: https://docs.microsoft.com/en-us/dotnet/core/testing/selective-unit-tests#nunit.
   # Decorate the AssemblyInfo.cs found inside each unit test related project with:
   #     [assembly: NUnit.Framework.Category("UnitTests")]
-  #
-  # After migrating application from .NET Core 2.2 to 3.1, the --filter "Category=IntegrationTests" argument
-  # no longer works, but this ones does work: -- NUnit.Where="cat == UnitTests".
-  # See more here: http://blog.prokrams.com/2019/12/16/nunit3-filter-dotnet/#tldr.
   - script: >-
       dotnet test $(Build.SourcesDirectory)/Todo.sln
       --no-build
@@ -223,7 +229,17 @@ jobs:
       --filter TestCategory=UnitTests
     name: 'run_unit_tests'
     displayName: 'Run unit tests'
-    condition: eq(${{ parameters.runTests }}, True)
+    condition: |
+      and
+      (
+          eq(${{ parameters.runTests }}, True)
+        , eq(variables.architectureTestsOutcome, 'success')
+      )
+
+  - powershell: echo "##vso[task.setvariable variable=unitTestsOutcome]success"
+    name: 'set_unit_tests_outcome_variable'
+    displayName: 'Set unitTestsOutcome variable'
+    condition: succeeded()
 
   # Publish unit test results.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=azure-devops&tabs=yaml.
@@ -233,8 +249,8 @@ jobs:
     condition: |
       and
       (
-          succeededOrFailed()
-        , eq(${{ parameters.runTests }}, True)
+          eq(${{ parameters.runTests }}, True)
+        , or(eq(variables.unitTestsOutcome, 'success'), eq(variables.unitTestsOutcome, 'failure'))
       )
     inputs:
       testResultsFormat: 'NUnit'
@@ -255,13 +271,20 @@ jobs:
       (
           eq(variables['Agent.OS'], 'Darwin')
         , eq(${{ parameters.runTests }}, True)
+        , eq(variables.unitTestsOutcome, 'success')
       )
 
   # Run a PowerShell script to start compose services needed when running integration tests.
   - task: PowerShell@2
     name: 'start_compose_services_used_by_integration_tests'
     displayName: 'Start compose services used by integration tests'
-    condition: eq(${{ parameters.runTests }}, True)
+    condition: |
+      and
+      (
+          succeeded()
+        , eq(${{ parameters.runTests }}, True)
+        , eq(variables.unitTestsOutcome, 'success')
+      )
     inputs:
       targetType: 'filePath'
       filePath: '$(Build.SourcesDirectory)/Build/RunComposeServices.ps1'
@@ -303,7 +326,13 @@ jobs:
       --filter TestCategory=IntegrationTests
     name: 'run_integration_tests'
     displayName: 'Run integration tests'
-    condition: eq(${{ parameters.runTests }}, True)
+    condition: |
+      and
+      (
+          succeeded()
+        , eq(${{ parameters.runTests }}, True)
+        , eq(variables.unitTestsOutcome, 'success')
+      )
     env:
       CONNECTIONSTRINGS__TODOFORINTEGRATIONTESTS: >-
         Host=${{ parameters.integrationTests.databaseHost }};
@@ -313,6 +342,11 @@ jobs:
         Password=${{ parameters.integrationTests.databasePassword }};
       GENERATEJWT__SECRET: $(IntegrationTests.GenerateJwt.Secret)
 
+  - powershell: echo "##vso[task.setvariable variable=integrationTestsOutcome]success"
+    name: 'set_integration_tests_outcome_variable'
+    displayName: 'Set integrationTestsOutcome variable'
+    condition: succeeded()
+
   # Run a PowerShell script to export the logs of the Docker Compose service
   # used by integration tests to a specific folder.
   - task: PowerShell@2
@@ -321,9 +355,9 @@ jobs:
     condition: |
       and
       (
-          succeededOrFailed()
-        , eq(${{ parameters.publishPipelineArtifacts }}, True)
+          eq(${{ parameters.publishPipelineArtifacts }}, True)
         , eq(${{ parameters.runTests }}, True)
+        , or(eq(variables.integrationTestsOutcome, 'success'), eq(variables.integrationTestsOutcome, 'failure'))
       )
     inputs:
       targetType: 'filePath'
@@ -348,8 +382,9 @@ jobs:
     condition: |
       and
       (
-          succeededOrFailed()
+          eq(${{ parameters.publishPipelineArtifacts }}, True)
         , eq(${{ parameters.runTests }}, True)
+        , or(eq(variables.integrationTestsOutcome, 'success'), eq(variables.integrationTestsOutcome, 'failure'))
       )
     inputs:
       testResultsFormat: 'NUnit'
@@ -357,6 +392,18 @@ jobs:
       mergeTestResults: True
       buildConfiguration: ${{ parameters.build.configuration }}
       publishRunAttachments: True
+
+  - powershell: echo "##vso[task.setvariable variable=allTestsOutcome]success"
+    name: 'set_all_tests_outcome_variable'
+    displayName: 'Set allTestsOutcome variable'
+    condition: |
+      and
+      (
+          eq(${{ parameters.runTests }}, True)
+        , eq(variables.architectureTestsOutcome, 'success')
+        , eq(variables.unitTestsOutcome, 'success')
+        , eq(variables.integrationTestsOutcome, 'success')
+      )
 
   # Install reportgenerator tool to be able to generate code coverage related reports using 'dotnet tool install' command.
   # See more about this command here: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-tool-install.
@@ -366,7 +413,12 @@ jobs:
       --version $(ReportGenerator_Version)
     name: 'install_code_coverage_report_generator'
     displayName: 'Install code coverage report generator tool'
-    condition: eq(${{ parameters.runTests }}, True)
+    condition: |
+      and
+      (
+          eq(${{ parameters.runTests }}, True)
+        , eq(variables.allTestsOutcome, 'success')
+      )
 
   # Generate code coverage report:
   #   - combine several OpenCover coverage data files into one single file in Cobertura format
@@ -382,14 +434,24 @@ jobs:
       "-reporttypes:Cobertura"
     name: 'generate_code_coverage_report'
     displayName: 'Generate code coverage report'
-    condition: eq(${{ parameters.runTests }}, True)
+    condition: |
+      and
+      (
+          eq(${{ parameters.runTests }}, True)
+        , eq(variables.allTestsOutcome, 'success')
+      )
 
   # Publish code coverage report.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-code-coverage-results?view=azure-devops.
   - task: PublishCodeCoverageResults@1
     name: 'publish_code_coverage_report'
     displayName: 'Publish code coverage report'
-    condition: eq(${{ parameters.runTests }}, True)
+    condition: |
+      and
+      (
+          eq(${{ parameters.runTests }}, True)
+        , eq(variables.allTestsOutcome, 'success')
+      )
     inputs:
       codeCoverageTool: 'Cobertura'
       pathToSources: '$(Build.SourcesDirectory)/Sources'
@@ -407,8 +469,7 @@ jobs:
     condition: |
       and
       (
-          succeededOrFailed()
-        , eq(${{ parameters.publishPipelineArtifacts }}, True)
+          eq(${{ parameters.publishPipelineArtifacts }}, True)
         , eq(${{ parameters.runTests }}, True)
       )
     inputs:
