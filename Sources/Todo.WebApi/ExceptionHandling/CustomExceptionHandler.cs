@@ -1,12 +1,10 @@
 namespace Todo.WebApi.ExceptionHandling
 {
     using System;
-    using System.Diagnostics.CodeAnalysis;
     using System.Net;
     using System.Text.Json;
     using System.Threading.Tasks;
 
-    using Microsoft.AspNetCore.Builder;
     using Microsoft.AspNetCore.Diagnostics;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
@@ -19,12 +17,10 @@ namespace Todo.WebApi.ExceptionHandling
     using Services.TodoItemLifecycleManagement;
 
     /// <summary>
-    /// Contains extension methods applicable to <see cref="IApplicationBuilder"/> instances
-    /// for handling exceptions thrown by this web API.
+    /// Handles any exceptions occurring inside this application.
     /// <br/>
     /// Based on https://andrewlock.net/creating-a-custom-error-handler-middleware-function/.
     /// </summary>
-    [ExcludeFromCodeCoverage]
     public static class CustomExceptionHandler
     {
         private const string ErrorData = "errorData";
@@ -33,52 +29,39 @@ namespace Todo.WebApi.ExceptionHandling
         private const string ProblemDetailContentType = "application/problem+json";
 
         /// <summary>
-        /// Configures handling the exceptions thrown by any part of this web API.
+        /// Handles the exception occurring while processing the current HTTP request.
         /// </summary>
-        /// <param name="applicationBuilder">The <see cref="IApplicationBuilder"/> instance which needs to be
-        /// configured to handle exceptions.</param>
-        public static void UseCustomExceptionHandler(this IApplicationBuilder applicationBuilder)
+        /// <param name="httpContext">The HTTP context containing the unhandled exception.</param>
+        public static async Task HandleException(HttpContext httpContext)
         {
-            IServiceProvider serviceProvider = applicationBuilder.ApplicationServices;
+            IServiceProvider serviceProvider = httpContext.RequestServices;
             IConfiguration configuration = serviceProvider.GetRequiredService<IConfiguration>();
             bool includeDetails = configuration.GetValue<bool>("ExceptionHandling:IncludeDetails");
 
-            ILogger logger = serviceProvider.GetRequiredService<ILoggerFactory>()
-                .CreateLogger(nameof(CustomExceptionHandler));
+            ILogger logger =
+                serviceProvider.GetRequiredService<ILoggerFactory>().CreateLogger(nameof(CustomExceptionHandler));
 
-            applicationBuilder.Use((httpContext, _) => WriteResponse(httpContext, logger, includeDetails));
-        }
-
-        private static async Task WriteResponse(HttpContext httpContext, ILogger logger, bool includeDetails)
-        {
             // Try and retrieve the error from the ExceptionHandler middleware
             IExceptionHandlerFeature exceptionHandlerFeature = httpContext.Features.Get<IExceptionHandlerFeature>();
             Exception unhandledException = exceptionHandlerFeature?.Error;
-
-            // Should always exist, but best to be safe!
-            if (unhandledException == null)
-            {
-                return;
-            }
-
             ProblemDetails problemDetails = ConvertToProblemDetails(unhandledException, includeDetails);
-
-            // ProblemDetails has it's own content type
-            httpContext.Response.ContentType = ProblemDetailContentType;
-            httpContext.Response.StatusCode = problemDetails.Status ?? (int) HttpStatusCode.InternalServerError;
 
             // The exception is first logged by the Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware class,
             // then by this method, but it's worth it since the second time the exception is logged, we end up with
-            // the errorId accompanying the logged stack trace.
+            // the error ID accompanying the logged exception stack trace.
             // Whenever the web API responds with a ProblemDetails instance, the user has the opportunity to report
-            // this issue and hopefully, he will mention the 'errorId', thus easing the job of the developer
+            // this issue and hopefully, he will mention this error ID, thus easing the job of the developer
             // assigned to fix it.
             logger.LogError(unhandledException,
-                "An unexpected error has been caught - "
-                + "error id: {ErrorId}; error data: {ErrorData}; error key: {ErrorKey}",
-                problemDetails.Extensions[ErrorId],
-                problemDetails.Extensions[ErrorData],
-                problemDetails.Extensions[ErrorKey]);
+                "An unexpected error with id: {ErrorId} has been caught; see more details here: {@ProblemDetails}",
+                problemDetails.Extensions[ErrorId], problemDetails);
+
+            // satrapu April 30th, 2021: Do not send exception Data dictionary over the wire since it may contain
+            // sensitive data!
+            problemDetails.Extensions.Remove(ErrorData);
+
+            httpContext.Response.ContentType = ProblemDetailContentType;
+            httpContext.Response.StatusCode = problemDetails.Status ?? (int) HttpStatusCode.InternalServerError;
 
             // Since the ProblemDetails instance is always serialized as JSON, the web API will not be able to
             // correctly handle 'Accept' HTTP header.
@@ -89,23 +72,19 @@ namespace Todo.WebApi.ExceptionHandling
 
         private static ProblemDetails ConvertToProblemDetails(Exception exception, bool includeDetails)
         {
-            var jsonSerializationOptions = new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            };
-
             var problemDetails = new ProblemDetails
             {
                 Status = (int) GetHttpStatusCode(exception),
                 Title = "An unexpected error occured while trying to process the current request",
-                Detail = includeDetails ? exception.ToString() : string.Empty,
+                Detail = includeDetails ? exception?.ToString() : string.Empty,
                 Extensions =
                 {
-                    {ErrorData, JsonSerializer.Serialize(exception.Data, jsonSerializationOptions)},
+                    {ErrorData, exception?.Data},
                     {ErrorId, Guid.NewGuid().ToString("N")},
                     {ErrorKey, GetErrorKey(exception)}
                 }
             };
+
             return problemDetails;
         }
 
@@ -137,7 +116,7 @@ namespace Todo.WebApi.ExceptionHandling
                 { InnerException: NpgsqlException _ } => "database-error",
 
                 // Fallback value
-                _ => "server-error"
+                _ => "internal-server-error"
             };
         }
     }

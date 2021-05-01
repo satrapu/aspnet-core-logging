@@ -75,8 +75,7 @@ namespace Todo.WebApi
 
             IEnumerable<KeyValuePair<string, string>> configuredSerilogSinks =
                 Configuration.GetSection("Serilog:Using").AsEnumerable().ToList();
-            IsSerilogFileSinkConfigured =
-                configuredSerilogSinks.Any(sink => "Serilog.Sinks.File".Equals(sink.Value));
+            IsSerilogFileSinkConfigured = configuredSerilogSinks.Any(sink => "Serilog.Sinks.File".Equals(sink.Value));
             IsSerilogApplicationInsightsSinkConfigured =
                 configuredSerilogSinks.Any(sink => "Serilog.Sinks.ApplicationInsights".Equals(sink.Value));
         }
@@ -111,8 +110,11 @@ namespace Todo.WebApi
 
             // The exception handling middleware must be added inside the ASP.NET Core request pipeline
             // as soon as possible to ensure any unhandled exception is eventually handled.
-            applicationBuilder.UseExceptionHandler(localApplicationBuilder =>
-                localApplicationBuilder.UseCustomExceptionHandler());
+            applicationBuilder.UseExceptionHandler(new ExceptionHandlerOptions
+            {
+                ExceptionHandler = CustomExceptionHandler.HandleException,
+                AllowStatusCode404Response = true
+            });
 
             if (ShouldUseMiniProfiler)
             {
@@ -189,8 +191,10 @@ namespace Todo.WebApi
 
             // Configure authentication & authorization using JSON web tokens
             IConfigurationSection generateJwtOptions = Configuration.GetSection("GenerateJwt");
+
             // ReSharper disable once SettingNotFoundInConfiguration
             string tokenIssuer = generateJwtOptions.GetValue<string>("Issuer");
+
             // ReSharper disable once SettingNotFoundInConfiguration
             string tokenAudience = generateJwtOptions.GetValue<string>("Audience");
 
@@ -218,6 +222,7 @@ namespace Todo.WebApi
                         // Ensure the User.Identity.Name is set to the user identifier and not to the user name.
                         NameClaimType = ClaimTypes.NameIdentifier
                     };
+
                     options.Events = new JwtBearerEvents
                     {
                         OnAuthenticationFailed = context =>
@@ -245,6 +250,7 @@ namespace Todo.WebApi
                 options.AddPolicy(Policies.TodoItems.DeleteTodoItem,
                     policy => policy.Requirements.Add(new HasScopeRequirement("delete:todo", tokenIssuer)));
             });
+
             services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
 
             // Configure options used for customizing generating JWT tokens.
@@ -287,9 +293,9 @@ namespace Todo.WebApi
                             Title = "One or more model validation error have occurred",
                             Status = StatusCodes.Status422UnprocessableEntity,
                             Detail = "See the errors property for more details",
-                            Instance = context.HttpContext.Request.Path
+                            Instance = context.HttpContext.Request.Path,
+                            Extensions = { { "TraceId", context.HttpContext.TraceIdentifier } }
                         };
-                        validationProblemDetails.Extensions.Add("TraceId", context.HttpContext.TraceIdentifier);
 
                         return new UnprocessableEntityObjectResult(validationProblemDetails)
                         {
@@ -307,10 +313,10 @@ namespace Todo.WebApi
             // Register service with 2 interfaces.
             // See more here: https://andrewlock.net/how-to-register-a-service-with-multiple-interfaces-for-in-asp-net-core-di/.
             services.AddSingleton<LoggingService>();
-            services.AddSingleton<IHttpObjectConverter>(serviceProvider =>
-                serviceProvider.GetRequiredService<LoggingService>());
-            services.AddSingleton<IHttpContextLoggingHandler>(serviceProvider =>
-                serviceProvider.GetRequiredService<LoggingService>());
+            services.AddSingleton<IHttpObjectConverter>(
+                serviceProvider => serviceProvider.GetRequiredService<LoggingService>());
+            services.AddSingleton<IHttpContextLoggingHandler>(
+                serviceProvider => serviceProvider.GetRequiredService<LoggingService>());
 
             // Configure options used by application flows.
             services.Configure<ApplicationFlowOptions>(Configuration.GetSection("ApplicationFlows"));
@@ -353,7 +359,7 @@ namespace Todo.WebApi
             logger.LogInformation("Migrating database has been turned on");
             using var serviceScope =
                 applicationBuilder.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope();
-            using var todoDbContext = serviceScope.ServiceProvider.GetService<TodoDbContext>();
+            using var todoDbContext = serviceScope.ServiceProvider.GetRequiredService<TodoDbContext>();
             string database = todoDbContext.Database.GetDbConnection().Database;
 
             logger.LogInformation("About to migrate database {Database} ...", database);
