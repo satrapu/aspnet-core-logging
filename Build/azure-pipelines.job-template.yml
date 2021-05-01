@@ -374,7 +374,7 @@ jobs:
       (
           eq(${{ parameters.publishPipelineArtifacts }}, True)
         , eq(${{ parameters.runTests }}, True)
-        , eq(${{ parameters.unitTestsOutcome }}, 'success')
+        , eq(variables['unitTestsOutcome'], 'success')
       )
     inputs:
       targetType: 'filePath'
@@ -401,7 +401,7 @@ jobs:
       (
           eq(${{ parameters.publishPipelineArtifacts }}, True)
         , eq(${{ parameters.runTests }}, True)
-        , eq(${{ parameters.unitTestsOutcome }}, 'success')
+        , eq(variables['unitTestsOutcome'], 'success')
       )
     inputs:
       testResultsFormat: 'NUnit'
