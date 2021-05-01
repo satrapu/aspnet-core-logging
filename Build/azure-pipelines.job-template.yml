@@ -238,7 +238,7 @@ jobs:
       and
       (
           eq(${{ parameters.runTests }}, True)
-        , eq(variables.architectureTestsOutcome, 'success')
+        , eq(variables['architectureTestsOutcome'], 'success')
       )
 
   - powershell: echo "##vso[task.setvariable variable=unitTestsOutcome]success"
@@ -249,7 +249,7 @@ jobs:
       (
           succeeded()
         , eq(${{ parameters.runTests }}, True)
-        , eq(variables.architectureTestsOutcome, 'success')
+        , eq(variables['architectureTestsOutcome'], 'success')
       )
 
   # Publish unit test results.
@@ -261,7 +261,7 @@ jobs:
       and
       (
           eq(${{ parameters.runTests }}, True)
-        , eq(variables.architectureTestsOutcome, 'success')
+        , eq(variables['architectureTestsOutcome'], 'success')
       )
     inputs:
       testResultsFormat: 'NUnit'
@@ -282,7 +282,7 @@ jobs:
       (
           eq(variables['Agent.OS'], 'Darwin')
         , eq(${{ parameters.runTests }}, True)
-        , eq(variables.unitTestsOutcome, 'success')
+        , eq(variables['unitTestsOutcome'], 'success')
       )
 
   # Run a PowerShell script to start compose services needed when running integration tests.
@@ -294,7 +294,7 @@ jobs:
       (
           succeeded()
         , eq(${{ parameters.runTests }}, True)
-        , eq(variables.unitTestsOutcome, 'success')
+        , eq(variables['unitTestsOutcome'], 'success')
       )
     inputs:
       targetType: 'filePath'
@@ -342,7 +342,7 @@ jobs:
       (
           succeeded()
         , eq(${{ parameters.runTests }}, True)
-        , eq(variables.unitTestsOutcome, 'success')
+        , eq(variables['unitTestsOutcome'], 'success')
       )
     env:
       CONNECTIONSTRINGS__TODOFORINTEGRATIONTESTS: >-
@@ -361,7 +361,7 @@ jobs:
       (
           succeeded()
         , eq(${{ parameters.runTests }}, True)
-        , eq(variables.unitTestsOutcome, 'success')
+        , eq(variables['unitTestsOutcome'], 'success')
       )
 
   # Run a PowerShell script to export the logs of the Docker Compose service
@@ -417,9 +417,9 @@ jobs:
       and
       (
           eq(${{ parameters.runTests }}, True)
-        , eq(variables.architectureTestsOutcome, 'success')
-        , eq(variables.unitTestsOutcome, 'success')
-        , eq(variables.integrationTestsOutcome, 'success')
+        , eq(variables['architectureTestsOutcome'], 'success')
+        , eq(variables['unitTestsOutcome'], 'success')
+        , eq(variables['integrationTestsOutcome'], 'success')
       )
 
   # Install reportgenerator tool to be able to generate code coverage related reports using 'dotnet tool install' command.
