@@ -27,7 +27,7 @@ namespace Todo.Services
     {
         private DbContextOptions<TodoDbContext> DummyOptions { get; } =
             new DbContextOptionsBuilder<TodoDbContext>().Options;
-        
+
         /// <summary>
         /// Tests <see cref="TodoItemService"/> constructor.
         /// </summary>
