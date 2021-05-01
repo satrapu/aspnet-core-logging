@@ -205,8 +205,8 @@ jobs:
     condition: |
       and
       (
-          eq(${{ parameters.runTests }}, True)
-        , or(eq(variables.architectureTestsOutcome, 'success'), eq(variables.architectureTestsOutcome, 'failure'))
+          succeededOrFailed()
+        , eq(${{ parameters.runTests }}, True)
       )
     inputs:
       testResultsFormat: 'NUnit'
@@ -262,7 +262,6 @@ jobs:
       (
           eq(${{ parameters.runTests }}, True)
         , eq(variables.architectureTestsOutcome, 'success')
-        , or(eq(variables.unitTestsOutcome, 'success'), eq(variables.unitTestsOutcome, 'failure'))
       )
     inputs:
       testResultsFormat: 'NUnit'
@@ -376,7 +375,6 @@ jobs:
           eq(${{ parameters.publishPipelineArtifacts }}, True)
         , eq(${{ parameters.runTests }}, True)
         , eq(${{ parameters.unitTestsOutcome }}, 'success')
-        , or(eq(variables.integrationTestsOutcome, 'success'), eq(variables.integrationTestsOutcome, 'failure'))
       )
     inputs:
       targetType: 'filePath'
@@ -404,7 +402,6 @@ jobs:
           eq(${{ parameters.publishPipelineArtifacts }}, True)
         , eq(${{ parameters.runTests }}, True)
         , eq(${{ parameters.unitTestsOutcome }}, 'success')
-        , or(eq(variables.integrationTestsOutcome, 'success'), eq(variables.integrationTestsOutcome, 'failure'))
       )
     inputs:
       testResultsFormat: 'NUnit'
