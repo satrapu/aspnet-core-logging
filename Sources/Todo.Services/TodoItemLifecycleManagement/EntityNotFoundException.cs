@@ -12,6 +12,8 @@ namespace Todo.Services.TodoItemLifecycleManagement
         public EntityNotFoundException(Type entityType, object entityKey) : base(
             $"Could not find entity of type \"{entityType?.FullName}\" using key \"{entityKey}\"")
         {
+            base.Data.Add("EntityType", entityType?.FullName);
+            base.Data.Add("EntityKey", entityKey);
         }
 
         /// <summary>
