@@ -1,4 +1,4 @@
-﻿namespace Todo.ApplicationFlows
+namespace Todo.ApplicationFlows
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
