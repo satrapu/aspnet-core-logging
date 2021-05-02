@@ -91,6 +91,12 @@
         "resolved": "3.0.97",
         "contentHash": "ecWZPmdfLZtyjeK6SJPeMZMh81gTbdivWzl/x4phbgqdeOKnWVdIOxS0NMyEUgzcpDeEK4SZqkg61I7egZzCpg=="
       },
+      "SonarAnalyzer.CSharp": {
+        "type": "Direct",
+        "requested": "[8.22.0.31243, )",
+        "resolved": "8.22.0.31243",
+        "contentHash": "WhBWn657RKj8ta8EbFd9huKcH8VZqR7cHiJfMG/UZnx99DolpsEpXfF7bScYx8cM0wZcW5mvsKalR29el0ao0A=="
+      },
       "Humanizer.Core": {
         "type": "Transitive",
         "resolved": "2.8.26",
