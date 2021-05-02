@@ -83,6 +83,8 @@ EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CodeQuality", "CodeQuality", "{E0671D43-F81A-4829-802B-CCE84A764929}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.ApplicationFlows.UnitTests", "Tests\UnitTests\Todo.ApplicationFlows.UnitTests\Todo.ApplicationFlows.UnitTests.csproj", "{74414D41-EEF5-4217-9B47-52B19342A987}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -133,6 +135,10 @@ Global
 		{D9CB10FA-DBFB-4A35-8C20-E0CAB538BAC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D9CB10FA-DBFB-4A35-8C20-E0CAB538BAC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D9CB10FA-DBFB-4A35-8C20-E0CAB538BAC6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74414D41-EEF5-4217-9B47-52B19342A987}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74414D41-EEF5-4217-9B47-52B19342A987}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74414D41-EEF5-4217-9B47-52B19342A987}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74414D41-EEF5-4217-9B47-52B19342A987}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -155,6 +161,7 @@ Global
 		{D9CB10FA-DBFB-4A35-8C20-E0CAB538BAC6} = {AB306CB9-FAA1-4058-9A9C-111EA5BF04C7}
 		{851D8B4A-A6C9-469E-8633-E6679738DA72} = {398FFE78-1C6A-4CC2-AB9F-220B7F1CDAE3}
 		{9F40326A-D20A-40DE-A0D9-6D06EB4C71C5} = {E0671D43-F81A-4829-802B-CCE84A764929}
+		{74414D41-EEF5-4217-9B47-52B19342A987} = {D084DD17-3480-4A70-8296-92FB55BAD433}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {74318BEF-DB50-4852-A16D-E2FB8671BE7F}
