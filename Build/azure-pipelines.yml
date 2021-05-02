@@ -20,11 +20,9 @@ resources:
 # Build multiple branches.
 # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/build/ci-build-git?view=azure-devops&tabs=yaml.
 trigger:
- - master
- - feature/*
- - bugfix/*
- - hotfix/*
- - release/*
+  batch: True
+  branches:
+    include: *
 
 # See more about Azure Pipelines variables here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&tabs=yaml%2Cbatch.
 variables:
