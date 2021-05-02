@@ -184,7 +184,7 @@ jobs:
       --configuration ${{ parameters.build.configuration }}
       --test-adapter-path "."
       --logger "nunit"
-      --filter TestCategory=ArchitectureTests
+      -- NUnit.Where="cat == ArchitectureTests"
     name: 'run_architecture_tests'
     displayName: 'Run architecture tests'
     condition: eq(${{ parameters.runTests }}, True)
@@ -231,7 +231,7 @@ jobs:
       /p:CoverletOutputFormat=opencover
       /p:Include="[Todo.*]*"
       /p:Exclude=\"[Todo.*.*Tests]*,[Todo.Persistence]*.Migrations.*\"
-      --filter TestCategory=UnitTests
+      -- NUnit.Where="cat == UnitTests"
     name: 'run_unit_tests'
     displayName: 'Run unit tests'
     condition: |
@@ -334,7 +334,7 @@ jobs:
       /p:CoverletOutputFormat=opencover
       /p:Include="[Todo.*]*"
       /p:Exclude=\"[Todo.*.*Tests]*,[Todo.Persistence]*.Migrations.*\"
-      --filter TestCategory=IntegrationTests
+      -- NUnit.Where="cat == IntegrationTests"
     name: 'run_integration_tests'
     displayName: 'Run integration tests'
     condition: |
