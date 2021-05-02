@@ -43,7 +43,7 @@ namespace Todo.WebApi.ExceptionHandling
 
             // Try and retrieve the error from the ExceptionHandler middleware
             IExceptionHandlerFeature exceptionHandlerFeature = httpContext.Features.Get<IExceptionHandlerFeature>();
-            Exception unhandledException = exceptionHandlerFeature?.Error;
+            Exception unhandledException = exceptionHandlerFeature.Error;
             ProblemDetails problemDetails = ConvertToProblemDetails(unhandledException,
                 exceptionHandlingOptions.Value.IncludeDetails);
 
