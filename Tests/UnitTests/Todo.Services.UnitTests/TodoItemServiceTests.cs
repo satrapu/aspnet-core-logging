@@ -115,6 +115,39 @@ namespace Todo.Services
         }
 
         /// <summary>
+        /// Tests <see cref="TodoItemService.GetByQueryAsync"/> method.
+        /// </summary>
+        [Test]
+        public void GetByQueryAsync_UsingValidQuery_MustSucceed()
+        {
+            // Arrange
+            var inMemoryDatabase =
+                new DbContextOptionsBuilder<TodoDbContext>()
+                    .UseInMemoryDatabase($"db--{Guid.NewGuid():N}")
+                    .EnableDetailedErrors()
+                    .EnableSensitiveDataLogging();
+
+            var mockLogger = new Mock<ILogger<TodoItemService>>();
+
+            var owner = new Mock<IPrincipal>();
+            owner.SetupGet(x => x.Identity).Returns(new GenericIdentity("test"));
+
+            var todoItemQuery = new TodoItemQuery
+            {
+                Owner = owner.Object
+            };
+
+            var todoItemService = new TodoItemService(new TodoDbContext(inMemoryDatabase.Options), mockLogger.Object);
+
+            // Act
+            Func<Task<IList<TodoItemInfo>>> getByQueryAsyncCall =
+                async () => await todoItemService.GetByQueryAsync(todoItemQuery);
+
+            // Assert
+            getByQueryAsyncCall.Should().NotThrow("query is valid");
+        }
+
+        /// <summary>
         /// Tests <see cref="TodoItemService.AddAsync"/> method.
         /// </summary>
         [Test]
@@ -165,7 +198,7 @@ namespace Todo.Services
         public void UpdateAsync_UsingNonexistentEntityKey_MustThrowException()
         {
             // Arrange
-            var inMemoryDatabase=
+            var inMemoryDatabase =
                 new DbContextOptionsBuilder<TodoDbContext>()
                     .UseInMemoryDatabase($"db--{Guid.NewGuid():N}")
                     .EnableDetailedErrors()
@@ -223,7 +256,7 @@ namespace Todo.Services
         public void DeleteAsync_UsingNonexistentEntityKey_MustThrowException()
         {
             // Arrange
-            var inMemoryDatabase=
+            var inMemoryDatabase =
                 new DbContextOptionsBuilder<TodoDbContext>()
                     .UseInMemoryDatabase($"db--{Guid.NewGuid():N}")
                     .EnableDetailedErrors()
