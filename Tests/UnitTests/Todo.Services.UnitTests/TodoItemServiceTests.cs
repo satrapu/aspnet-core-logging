@@ -18,6 +18,7 @@ namespace Todo.Services
     using NUnit.Framework;
 
     using Persistence;
+    using Persistence.Entities;
 
     using TodoItemLifecycleManagement;
 
@@ -125,7 +126,8 @@ namespace Todo.Services
         /// Tests <see cref="TodoItemService.GetByQueryAsync"/> method.
         /// </summary>
         [Test]
-        public void GetByQueryAsync_UsingValidQuery_MustSucceed()
+        [TestCaseSource(nameof(GetTodoItemQuery))]
+        public void GetByQueryAsync_UsingValidQuery_MustSucceed(TodoItemQuery todoItemQuery)
         {
             // Arrange
             var inMemoryDatabase =
@@ -139,10 +141,7 @@ namespace Todo.Services
             var owner = new Mock<IPrincipal>();
             owner.SetupGet(x => x.Identity).Returns(new GenericIdentity("test"));
 
-            var todoItemQuery = new TodoItemQuery
-            {
-                Owner = owner.Object
-            };
+            todoItemQuery.Owner = owner.Object;
 
             var todoItemService = new TodoItemService(new TodoDbContext(inMemoryDatabase.Options), mockLogger.Object);
 
@@ -288,6 +287,65 @@ namespace Todo.Services
             // Assert
             deleteAsyncCall.Should().Throw<EntityNotFoundException>(
                 "service cannot delete data using nonexistent entity key");
+        }
+
+        private static IEnumerable<object[]> GetTodoItemQuery()
+        {
+            return new List<object[]>
+            {
+                new object[]
+                {
+                    new TodoItemQuery
+                    {
+                        Id = long.MaxValue,
+                        IsComplete = true,
+                        NamePattern = "%",
+                        PageIndex = 1,
+                        PageSize = 100,
+                        SortBy = nameof(TodoItem.Id),
+                        IsSortAscending = true
+                    }
+                },
+                new object[]
+                {
+                    new TodoItemQuery
+                    {
+                        Id = long.MaxValue,
+                        IsComplete = true,
+                        NamePattern = "%",
+                        PageIndex = 1,
+                        PageSize = 100,
+                        SortBy = nameof(TodoItem.CreatedOn),
+                        IsSortAscending = false
+                    }
+                },
+                new object[]
+                {
+                    new TodoItemQuery
+                    {
+                        Id = long.MaxValue,
+                        IsComplete = true,
+                        NamePattern = "%",
+                        PageIndex = 1,
+                        PageSize = 100,
+                        SortBy = nameof(TodoItem.LastUpdatedOn),
+                        IsSortAscending = true
+                    }
+                },
+                new object[]
+                {
+                    new TodoItemQuery
+                    {
+                        Id = long.MaxValue,
+                        IsComplete = true,
+                        NamePattern = "%",
+                        PageIndex = 1,
+                        PageSize = 100,
+                        SortBy = nameof(TodoItem.Name),
+                        IsSortAscending = false
+                    }
+                }
+            };
         }
     }
 }
