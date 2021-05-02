@@ -42,6 +42,26 @@ namespace Todo.ApplicationFlows.Security
         }
 
         [Test]
+        [SuppressMessage("Microsoft.Performance", "CA1806:Do not ignore method results",
+            Justification = "Newly created instance is discarded for testing purposes")]
+        public void Constructor_WhenLoggerIsNull_ThrowsException()
+        {
+            // Arrange
+            var jwtService = new Mock<IJwtService>();
+            ILogger<GenerateJwtFlow> logger = null;
+
+            // Act
+            // ReSharper disable once ObjectCreationAsStatement
+            // ReSharper disable once ExpressionIsAlwaysNull
+            Action constructorCall = () => new GenerateJwtFlow(jwtService.Object, logger);
+
+            // Assert
+            constructorCall
+                .Should().ThrowExactly<ArgumentNullException>("because logger is null")
+                .And.ParamName.Should().Be(nameof(logger));
+        }
+
+        [Test]
         public async Task ExecuteAsync_WhenGenerateJwtInfoIsValid_ReturnsExpectedData()
         {
             // Arrange
