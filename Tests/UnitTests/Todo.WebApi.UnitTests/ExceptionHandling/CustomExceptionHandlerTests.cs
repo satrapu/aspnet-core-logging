@@ -33,13 +33,14 @@
     {
         [Test]
         [TestCaseSource(nameof(GetExceptions))]
-        public void HandleException_WhenThereIsAnExceptionToHandle_MustSucceed(Exception exception)
+        public void HandleException_WhenThereIsAnExceptionToHandle_MustSucceed(Exception exception,
+            bool includeDetails)
         {
             // Arrange
             var dictionary = new Dictionary<string, string>
             {
                 {
-                    "ExceptionHandling:IncludeDetails", true.ToString()
+                    "ExceptionHandling:IncludeDetails", includeDetails.ToString()
                 }
             };
 
@@ -83,11 +84,11 @@
         {
             return new List<object[]>
             {
-                new object[]{ null },
-                new object[]{ new EntityNotFoundException(typeof(TodoItem), "test") },
-                new object[]{ new NpgsqlException() },
-                new object[]{ new Exception("Hard-coded exception with a cause", new NpgsqlException()) },
-                new object[]{ new Exception("Hard-coded exception") }
+                new object[]{ null, false },
+                new object[]{ new EntityNotFoundException(typeof(TodoItem), "test"), true },
+                new object[]{ new NpgsqlException(), false },
+                new object[]{ new Exception("Hard-coded exception with a cause", new NpgsqlException()), true },
+                new object[]{ new Exception("Hard-coded exception"), false }
             };
         }
     }
