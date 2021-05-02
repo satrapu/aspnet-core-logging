@@ -117,9 +117,7 @@ namespace Todo.Services
                 async () => await todoItemService.GetByQueryAsync(todoItemQuery);
 
             // Assert
-            getByQueryAsyncCall
-                .Should().Throw<ArgumentNullException>("service cannot fetch data using a null query")
-                .And.ParamName.Should().Be(nameof(todoItemQuery), "the query is null");
+            getByQueryAsyncCall.Should().Throw<ArgumentNullException>("service cannot fetch data using a null query");
         }
 
         /// <summary>
@@ -170,9 +168,7 @@ namespace Todo.Services
             Func<Task<long>> addAsyncCall = async () => await todoItemService.AddAsync(newTodoItemInfo);
 
             // Assert
-            addAsyncCall
-                .Should().Throw<ArgumentNullException>("service cannot add data using a null item")
-                .And.ParamName.Should().Be(nameof(newTodoItemInfo), "the item is null");
+            addAsyncCall.Should().Throw<ArgumentNullException>("service cannot add data using a null item");
         }
 
         /// <summary>
@@ -192,9 +188,7 @@ namespace Todo.Services
             Func<Task> updateAsyncCall = async () => await todoItemService.UpdateAsync(updateTodoItemInfo);
 
             // Assert
-            updateAsyncCall
-                .Should().Throw<ArgumentNullException>("service cannot update data using a null item")
-                .And.ParamName.Should().Be(nameof(updateTodoItemInfo), "the item is null");
+            updateAsyncCall.Should().Throw<ArgumentNullException>("service cannot update data using a null item");
         }
 
         /// <summary>
