@@ -96,14 +96,11 @@ jobs:
       SonarCloud: 'sonar-cloud'
       organization: 'satrapu-github'
       projectKey: 'aspnet-core-logging'
-      # The 'Sonar.ProjectVersion.MajorMinorFragment' variable has been declared inside the 'GlobalVariables' variable
-      # group. Since this version follows SemVer semantics (https://semver.org/), it's made out of a MAJOR.MINOR
-      # fragment, followed by a PATCH fragment which will be provided by the pipeline.
-      # This version is needed to identify what new code means from SonarCloud point of view.
+      # The 'projectVersion' property is needed to identify what new code means from SonarCloud point of view.
       # Additionally, select "Previous version" inside the New Code page found on SonarCloud site, which is available
       # here: https://sonarcloud.io/project/new_code?id=aspnet-core-logging.
       # See more here: https://docs.sonarqube.org/latest/project-administration/new-code-period/.
-      projectVersion: '$(Sonar.ProjectVersion.MajorMinorFragment).$(Build.BuildId)'
+      projectVersion: 'build.id.$(Build.BuildId)'
       extraProperties: |
         sonar.sourceEncoding=UTF-8
         sonar.cs.nunit.reportsPaths=**/TestResults/*.*
