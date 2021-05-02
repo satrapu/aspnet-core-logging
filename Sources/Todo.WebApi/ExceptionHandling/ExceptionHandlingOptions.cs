@@ -1,4 +1,4 @@
-﻿namespace Todo.WebApi.ExceptionHandling
+namespace Todo.WebApi.ExceptionHandling
 {
     /// <summary>
     /// Contains exception handling related configuration options.

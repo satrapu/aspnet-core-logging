@@ -1,4 +1,4 @@
-﻿namespace Todo.WebApi.ExceptionHandling
+namespace Todo.WebApi.ExceptionHandling
 {
     using System;
     using System.Collections.Generic;
