@@ -279,7 +279,7 @@ namespace Todo.WebApi
             }
         }
 
-        private void ConfigureWebApi(IServiceCollection services)
+        private static void ConfigureWebApi(IServiceCollection services)
         {
             // Configure ASP.NET Web API services.
             services
