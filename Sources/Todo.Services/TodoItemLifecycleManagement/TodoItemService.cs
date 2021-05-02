@@ -52,6 +52,45 @@ namespace Todo.Services.TodoItemLifecycleManagement
             return InternalGetByQueryAsync(todoItemQuery);
         }
 
+        public Task<long> AddAsync(NewTodoItemInfo newTodoItemInfo)
+        {
+            if (newTodoItemInfo == null)
+            {
+                throw new ArgumentNullException(nameof(newTodoItemInfo));
+            }
+
+            Validator.ValidateObject(newTodoItemInfo, new ValidationContext(newTodoItemInfo),
+                validateAllProperties: true);
+
+            return InternalAddAsync(newTodoItemInfo);
+        }
+
+        public Task UpdateAsync(UpdateTodoItemInfo updateTodoItemInfo)
+        {
+            if (updateTodoItemInfo == null)
+            {
+                throw new ArgumentNullException(nameof(updateTodoItemInfo));
+            }
+
+            Validator.ValidateObject(updateTodoItemInfo, new ValidationContext(updateTodoItemInfo),
+                validateAllProperties: true);
+
+            return InternalUpdateAsync(updateTodoItemInfo);
+        }
+
+        public Task DeleteAsync(DeleteTodoItemInfo deleteTodoItemInfo)
+        {
+            if (deleteTodoItemInfo == null)
+            {
+                throw new ArgumentNullException(nameof(deleteTodoItemInfo));
+            }
+
+            Validator.ValidateObject(deleteTodoItemInfo, new ValidationContext(deleteTodoItemInfo),
+                validateAllProperties: true);
+
+            return InternalDeleteAsync(deleteTodoItemInfo);
+        }
+
         private async Task<IList<TodoItemInfo>> InternalGetByQueryAsync(TodoItemQuery todoItemQuery)
         {
             IQueryable<TodoItem> todoItems = FilterItems(todoItemQuery)
@@ -72,19 +111,6 @@ namespace Todo.Services.TodoItemLifecycleManagement
             return result;
         }
 
-        public Task<long> AddAsync(NewTodoItemInfo newTodoItemInfo)
-        {
-            if (newTodoItemInfo == null)
-            {
-                throw new ArgumentNullException(nameof(newTodoItemInfo));
-            }
-
-            Validator.ValidateObject(newTodoItemInfo, new ValidationContext(newTodoItemInfo),
-                validateAllProperties: true);
-
-            return InternalAddAsync(newTodoItemInfo);
-        }
-
         private async Task<long> InternalAddAsync(NewTodoItemInfo newTodoItemInfo)
         {
             var newTodoItem = new TodoItem(newTodoItemInfo.Name, newTodoItemInfo.Owner.GetName());
@@ -101,19 +127,6 @@ namespace Todo.Services.TodoItemLifecycleManagement
                 , newTodoItem.Id, newTodoItem.CreatedBy);
 
             return newTodoItem.Id;
-        }
-
-        public Task UpdateAsync(UpdateTodoItemInfo updateTodoItemInfo)
-        {
-            if (updateTodoItemInfo == null)
-            {
-                throw new ArgumentNullException(nameof(updateTodoItemInfo));
-            }
-
-            Validator.ValidateObject(updateTodoItemInfo, new ValidationContext(updateTodoItemInfo),
-                validateAllProperties: true);
-
-            return InternalUpdateAsync(updateTodoItemInfo);
         }
 
         private async Task InternalUpdateAsync(UpdateTodoItemInfo updateTodoItemInfo)
@@ -134,19 +147,6 @@ namespace Todo.Services.TodoItemLifecycleManagement
 
             logger.LogInformation("Item with id {TodoItemId} has been updated by user [{User}]"
                 , existingTodoItem.Id, existingTodoItem.LastUpdatedBy);
-        }
-
-        public Task DeleteAsync(DeleteTodoItemInfo deleteTodoItemInfo)
-        {
-            if (deleteTodoItemInfo == null)
-            {
-                throw new ArgumentNullException(nameof(deleteTodoItemInfo));
-            }
-
-            Validator.ValidateObject(deleteTodoItemInfo, new ValidationContext(deleteTodoItemInfo),
-                validateAllProperties: true);
-
-            return InternalDeleteAsync(deleteTodoItemInfo);
         }
 
         private async Task InternalDeleteAsync(DeleteTodoItemInfo deleteTodoItemInfo)
