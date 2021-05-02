@@ -24,7 +24,7 @@ namespace Todo.Services.Security
 
             if (principal.Identity == null)
             {
-                throw new ArgumentNullException(nameof(principal), "Principal identity cannot be null");
+                throw new ArgumentException("Principal identity cannot be null", nameof(principal));
             }
 
             return principal.Identity.Name;

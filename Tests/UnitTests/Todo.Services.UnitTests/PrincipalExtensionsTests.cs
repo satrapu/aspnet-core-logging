@@ -134,9 +134,8 @@ namespace Todo.Services
 
             // Assert
             actionExpectedToFail
-                .Should().ThrowExactly<ArgumentNullException>()
-                .And.ParamName.Should().Be("principal.Identity",
-                    "because a principal with a null identity does not have a name");
+                .Should().ThrowExactly<ArgumentException>()
+                .And.ParamName.Should().Be("principal", "because a principal with a null identity does not have a name");
         }
     }
 }
