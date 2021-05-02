@@ -23,6 +23,11 @@ trigger:
   batch: True
   branches:
     include:
+      - '*'
+  paths:
+    exclude:
+      - LICENSE
+      - README.md
 
 # See more about Azure Pipelines variables here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&tabs=yaml%2Cbatch.
 variables:
