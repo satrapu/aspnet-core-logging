@@ -434,7 +434,7 @@ jobs:
       and
       (
           eq(${{ parameters.runTests }}, True)
-        , eq(variables.allTestsOutcome, 'success')
+        , eq(variables['allTestsOutcome'], 'success')
       )
 
   # Generate code coverage report:
@@ -455,7 +455,7 @@ jobs:
       and
       (
           eq(${{ parameters.runTests }}, True)
-        , eq(variables.allTestsOutcome, 'success')
+        , eq(variables['allTestsOutcome'], 'success')
       )
 
   # Publish code coverage report.
@@ -467,7 +467,7 @@ jobs:
       and
       (
           eq(${{ parameters.runTests }}, True)
-        , eq(variables.allTestsOutcome, 'success')
+        , eq(variables['allTestsOutcome'], 'success')
       )
     inputs:
       codeCoverageTool: 'Cobertura'
@@ -500,7 +500,7 @@ jobs:
       and
       (
           eq(${{ parameters.sonar.enabled }}, True)
-        , eq(variables.allTestsOutcome, 'success')
+        , eq(variables['allTestsOutcome'], 'success')
       )
     inputs:
       timeoutInMinutes: ${{ parameters.sonar.runAnalysisTimeoutInMinutes }}
@@ -514,7 +514,7 @@ jobs:
       (
           eq(${{ parameters.sonar.enabled }}, True)
         , eq(${{ parameters.sonar.buildBreaker.enabled }}, True)
-        , eq(variables.allTestsOutcome, 'success')
+        , eq(variables['allTestsOutcome'], 'success')
       )
     inputs:
       pollingTimeoutSeconds: ${{ parameters.sonar.publishPollingTimeoutSeconds }}
@@ -530,7 +530,7 @@ jobs:
       (
           eq(${{ parameters.sonar.enabled }}, True)
         , eq(${{ parameters.sonar.buildBreaker.enabled }}, True)
-        , eq(variables.allTestsOutcome, 'success')
+        , eq(variables['allTestsOutcome'], 'success')
         , eq(variables['Build.Reason'], 'PullRequest')
       )
     inputs:
@@ -551,7 +551,7 @@ jobs:
       (
           eq(${{ parameters.sonar.enabled }}, True)
         , eq(${{ parameters.sonar.buildBreaker.enabled }}, True)
-        , eq(variables.allTestsOutcome, 'success')
+        , eq(variables['allTestsOutcome'], 'success')
         , ne(variables['Build.Reason'], 'PullRequest')
       )
     inputs:
@@ -571,7 +571,7 @@ jobs:
       (
           eq(${{ parameters.sonar.enabled }}, True)
         , eq(${{ parameters.sonar.buildBreaker.enabled }}, True)
-        , eq(variables.allTestsOutcome, 'success')
+        , eq(variables['allTestsOutcome'], 'success')
       )
     inputs:
       targetType: 'inline'
@@ -594,7 +594,7 @@ jobs:
       (
           eq(${{ parameters.sonar.enabled }}, True)
         , eq(${{ parameters.sonar.buildBreaker.enabled }}, True)
-        , eq(variables.allTestsOutcome, 'success')
+        , eq(variables['allTestsOutcome'], 'success')
       )
     inputs:
       targetType: 'filePath'
