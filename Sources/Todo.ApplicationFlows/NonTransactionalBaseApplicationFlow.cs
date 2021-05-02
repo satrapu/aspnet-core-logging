@@ -32,7 +32,7 @@ namespace Todo.ApplicationFlows
         {
             if (string.IsNullOrWhiteSpace(flowName))
             {
-                throw new ArgumentException(nameof(flowName));
+                throw new ArgumentException("Flow name cannot be null or whitespace", nameof(flowName));
             }
 
             this.flowName = flowName;

@@ -339,12 +339,12 @@ namespace Todo.WebApi
             logger.LogInformation("Todo ASP.NET Core Web API has started");
         }
 
-        private void OnApplicationStopping(ILogger logger)
+        private static void OnApplicationStopping(ILogger logger)
         {
             logger.LogInformation("Todo ASP.NET Core Web API is stopping ...");
         }
 
-        private void OnApplicationStopped(ILogger logger)
+        private static void OnApplicationStopped(ILogger logger)
         {
             logger.LogInformation("Todo ASP.NET Core Web API has stopped");
         }

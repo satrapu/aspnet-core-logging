@@ -203,7 +203,7 @@ namespace Todo.TestInfrastructure
 
             if (request.Content != null)
             {
-                stringBuilder.AppendLine(await request.Content.ReadAsStringAsync());
+                stringBuilder.AppendLine(await request.Content.ReadAsStringAsync(cancellationToken));
             }
             else
             {
@@ -219,7 +219,7 @@ namespace Todo.TestInfrastructure
 
             if (request.Content != null)
             {
-                stringBuilder.AppendLine(await response.Content.ReadAsStringAsync());
+                stringBuilder.AppendLine(await response.Content.ReadAsStringAsync(cancellationToken));
             }
             else
             {

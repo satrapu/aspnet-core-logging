@@ -168,7 +168,7 @@ namespace Todo
         /// </summary>
         /// <param name="testResult">The <see cref="TestResult"/> instance which might contain failing types.</param>
         /// <returns>Nothing</returns>
-        private async Task DisplayFailingTypesIfAnyAsync(TestResult testResult)
+        private static async Task DisplayFailingTypesIfAnyAsync(TestResult testResult)
         {
             if (testResult.FailingTypes == null)
             {
