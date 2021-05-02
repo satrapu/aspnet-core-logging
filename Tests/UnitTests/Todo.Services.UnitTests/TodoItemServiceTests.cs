@@ -2,6 +2,7 @@ namespace Todo.Services
 {
     using System;
     using System.Collections.Generic;
+    using System.Security.Principal;
     using System.Threading.Tasks;
 
     using EntityFrameworkCoreMock;
@@ -158,6 +159,42 @@ namespace Todo.Services
         }
 
         /// <summary>
+        /// Tests <see cref="TodoItemService.UpdateAsync"/> method.
+        /// </summary>
+        [Test]
+        public void UpdateAsync_UsingNonexistentEntityKey_MustThrowException()
+        {
+            // Arrange
+            var inMemoryDatabase=
+                new DbContextOptionsBuilder<TodoDbContext>()
+                    .UseInMemoryDatabase($"db--{Guid.NewGuid():N}")
+                    .EnableDetailedErrors()
+                    .EnableSensitiveDataLogging();
+
+            var mockLogger = new Mock<ILogger<TodoItemService>>();
+
+            var owner = new Mock<IPrincipal>();
+            owner.SetupGet(x => x.Identity).Returns(new GenericIdentity("test"));
+
+            var updateTodoItemInfo = new UpdateTodoItemInfo
+            {
+                Id = long.MaxValue,
+                Name = "test",
+                IsComplete = true,
+                Owner = owner.Object
+            };
+
+            var todoItemService = new TodoItemService(new TodoDbContext(inMemoryDatabase.Options), mockLogger.Object);
+
+            // Act
+            Func<Task> updateAsyncCall = async () => await todoItemService.UpdateAsync(updateTodoItemInfo);
+
+            // Assert
+            updateAsyncCall.Should().Throw<EntityNotFoundException>(
+                "service cannot update data using nonexistent entity key");
+        }
+
+        /// <summary>
         /// Tests <see cref="TodoItemService.DeleteAsync"/> method.
         /// </summary>
         [Test]
@@ -171,12 +208,46 @@ namespace Todo.Services
 
             // Act
             // ReSharper disable once ExpressionIsAlwaysNull
-            Func<Task> updateAsyncCall = async () => await todoItemService.DeleteAsync(deleteTodoItemInfo);
+            Func<Task> deleteAsyncCall = async () => await todoItemService.DeleteAsync(deleteTodoItemInfo);
 
             // Assert
-            updateAsyncCall
+            deleteAsyncCall
                 .Should().Throw<ArgumentNullException>("service cannot delete data using a null item")
                 .And.ParamName.Should().Be(nameof(deleteTodoItemInfo), "the item is null");
+        }
+
+        /// <summary>
+        /// Tests <see cref="TodoItemService.DeleteAsync"/> method.
+        /// </summary>
+        [Test]
+        public void DeleteAsync_UsingNonexistentEntityKey_MustThrowException()
+        {
+            // Arrange
+            var inMemoryDatabase=
+                new DbContextOptionsBuilder<TodoDbContext>()
+                    .UseInMemoryDatabase($"db--{Guid.NewGuid():N}")
+                    .EnableDetailedErrors()
+                    .EnableSensitiveDataLogging();
+
+            var mockLogger = new Mock<ILogger<TodoItemService>>();
+
+            var owner = new Mock<IPrincipal>();
+            owner.SetupGet(x => x.Identity).Returns(new GenericIdentity("test"));
+
+            var deleteTodoItemInfo = new DeleteTodoItemInfo
+            {
+                Id = long.MaxValue,
+                Owner = owner.Object
+            };
+
+            var todoItemService = new TodoItemService(new TodoDbContext(inMemoryDatabase.Options), mockLogger.Object);
+
+            // Act
+            Func<Task> deleteAsyncCall = async () => await todoItemService.DeleteAsync(deleteTodoItemInfo);
+
+            // Assert
+            deleteAsyncCall.Should().Throw<EntityNotFoundException>(
+                "service cannot delete data using nonexistent entity key");
         }
     }
 }
