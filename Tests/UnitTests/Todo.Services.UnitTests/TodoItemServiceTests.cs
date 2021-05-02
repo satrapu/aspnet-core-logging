@@ -2,6 +2,7 @@ namespace Todo.Services
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Security.Principal;
     using System.Threading.Tasks;
 
@@ -33,6 +34,8 @@ namespace Todo.Services
         /// Tests <see cref="TodoItemService"/> constructor.
         /// </summary>
         [Test]
+        [SuppressMessage("Microsoft.Performance", "CA1806:Do not ignore method results", Justification =
+            "Not using instance created by invoking TodoItemService constructor is needed to testing purposes")]
         public void Constructor_WithValidArguments_MustSucceed()
         {
             // Arrange
@@ -51,6 +54,8 @@ namespace Todo.Services
         /// Tests <see cref="TodoItemService"/> constructor.
         /// </summary>
         [Test]
+        [SuppressMessage("Microsoft.Performance", "CA1806:Do not ignore method results", Justification =
+            "Not using instance created by invoking TodoItemService constructor is needed to testing purposes")]
         public void Constructor_WithNullDbContext_ThrowsException()
         {
             // Arrange
@@ -73,6 +78,8 @@ namespace Todo.Services
         /// Tests <see cref="TodoItemService"/> constructor.
         /// </summary>
         [Test]
+        [SuppressMessage("Microsoft.Performance", "CA1806:Do not ignore method results", Justification =
+            "Not using instance created by invoking TodoItemService constructor is needed to testing purposes")]
         public void Constructor_WithNullLogger_ThrowsException()
         {
             // Arrange
