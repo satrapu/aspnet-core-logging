@@ -3,6 +3,7 @@ namespace Todo.ApplicationFlows
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using System.Diagnostics.CodeAnalysis;
     using System.Reflection;
     using System.Security.Principal;
     using System.Threading.Tasks;
@@ -24,6 +25,7 @@ namespace Todo.ApplicationFlows
     /// <summary>
     /// Contains integration tests targeting <see cref="TransactionalBaseApplicationFlow{TInput,TOutput}"/> class.
     /// </summary>
+    [SuppressMessage("ReSharper", "S1135", Justification = "The todo word represents an entity")]
     [TestFixture]
     public class TransactionalBaseApplicationFlowTests
     {

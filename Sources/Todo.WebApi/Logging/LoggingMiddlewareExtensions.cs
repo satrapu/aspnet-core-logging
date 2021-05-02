@@ -3,7 +3,6 @@ namespace Todo.WebApi.Logging
     using System;
 
     using Microsoft.AspNetCore.Builder;
-    using Microsoft.AspNetCore.Http;
 
     /// <summary>
     /// Contains extension methods applicable to <see cref="IApplicationBuilder"/> instances.
@@ -11,7 +10,7 @@ namespace Todo.WebApi.Logging
     public static class LoggingMiddlewareExtensions
     {
         /// <summary>
-        /// Adds middleware for logging the current <see cref="HttpContext"/> object.
+        /// Adds middleware for logging the current <see cref="Microsoft.AspNetCore.Http.HttpContext"/> object.
         /// </summary>
         /// <param name="applicationBuilder"></param>
         /// <returns></returns>

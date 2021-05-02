@@ -3,10 +3,10 @@ namespace Todo.WebApi.Logging
     using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Http;
-    using Microsoft.Extensions.Logging;
 
     /// <summary>
-    /// Converts HTTP objects to strings intended to be logged using <see cref="ILogger.Log{TState}"/> method.
+    /// Converts HTTP objects to strings intended to be logged using
+    /// <see cref="Microsoft.Extensions.Logging.ILogger.Log{TState}"/> method.
     /// </summary>
     public interface IHttpObjectConverter
     {

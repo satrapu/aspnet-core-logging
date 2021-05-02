@@ -1,6 +1,7 @@
 namespace Todo
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Threading.Tasks;
 
@@ -23,6 +24,7 @@ namespace Todo
     /// <summary>
     /// Contains tests ensuring the architecture of the Todo Web API has not deviate from the intended one.
     /// </summary>
+    [SuppressMessage("ReSharper", "S1135", Justification = "The todo word represents an entity")]
     [TestFixture]
     public class TodoWebApiArchitectureTests
     {

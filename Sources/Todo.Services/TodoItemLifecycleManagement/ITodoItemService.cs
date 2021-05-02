@@ -1,11 +1,13 @@
 namespace Todo.Services.TodoItemLifecycleManagement
 {
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Threading.Tasks;
 
     /// <summary>
     /// Manages the lifecycle of todo items.
     /// </summary>
+    [SuppressMessage("ReSharper", "S1135", Justification = "The todo word represents an entity")]
     public interface ITodoItemService
     {
         /// <summary>

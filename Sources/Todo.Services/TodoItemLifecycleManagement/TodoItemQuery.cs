@@ -1,11 +1,13 @@
 namespace Todo.Services.TodoItemLifecycleManagement
 {
     using System.ComponentModel.DataAnnotations;
+    using System.Diagnostics.CodeAnalysis;
     using System.Security.Principal;
     using System.Text;
 
     using Security;
 
+    [SuppressMessage("ReSharper", "S1135", Justification = "The todo word represents an entity")]
     public class TodoItemQuery
     {
         public const int DefaultPageIndex = 0;

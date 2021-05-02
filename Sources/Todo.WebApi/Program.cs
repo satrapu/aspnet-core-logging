@@ -13,6 +13,7 @@ namespace Todo.WebApi
     /// <summary>
     /// Console application used for running Todo ASP.NET Core Web API.
     /// </summary>
+    [SuppressMessage("ReSharper", "S1135", Justification = "The todo word represents an entity")]
     [ExcludeFromCodeCoverage]
     public static class Program
     {
