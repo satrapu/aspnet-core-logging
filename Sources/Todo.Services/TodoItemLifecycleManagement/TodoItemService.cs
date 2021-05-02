@@ -43,22 +43,13 @@ namespace Todo.Services.TodoItemLifecycleManagement
 
         public Task<IList<TodoItemInfo>> GetByQueryAsync(TodoItemQuery todoItemQuery)
         {
-            if (todoItemQuery == null)
-            {
-                throw new ArgumentNullException(nameof(todoItemQuery));
-            }
-
             Validator.ValidateObject(todoItemQuery, new ValidationContext(todoItemQuery), validateAllProperties: true);
+
             return InternalGetByQueryAsync(todoItemQuery);
         }
 
         public Task<long> AddAsync(NewTodoItemInfo newTodoItemInfo)
         {
-            if (newTodoItemInfo == null)
-            {
-                throw new ArgumentNullException(nameof(newTodoItemInfo));
-            }
-
             Validator.ValidateObject(newTodoItemInfo, new ValidationContext(newTodoItemInfo),
                 validateAllProperties: true);
 
@@ -67,11 +58,6 @@ namespace Todo.Services.TodoItemLifecycleManagement
 
         public Task UpdateAsync(UpdateTodoItemInfo updateTodoItemInfo)
         {
-            if (updateTodoItemInfo == null)
-            {
-                throw new ArgumentNullException(nameof(updateTodoItemInfo));
-            }
-
             Validator.ValidateObject(updateTodoItemInfo, new ValidationContext(updateTodoItemInfo),
                 validateAllProperties: true);
 
