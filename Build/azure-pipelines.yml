@@ -18,9 +18,10 @@ resources:
     endpoint: 'satrapu'
 
 # Build multiple branches.
-# See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/build/ci-build-git?view=azure-devops&tabs=yaml.
+# See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/repos/azure-repos-git?view=azure-devops&tabs=yaml.
+# Since satrapu is the only committer, batching should be turned off.
 trigger:
-  batch: True
+  batch: False
   branches:
     include:
       - '*'
