@@ -1,6 +1,7 @@
-﻿namespace Todo.ApplicationFlows.Security
+namespace Todo.ApplicationFlows.Security
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.Security.Principal;
     using System.Threading.Tasks;
 
@@ -21,6 +22,8 @@
     public class GenerateJwtFlowTests
     {
         [Test]
+        [SuppressMessage("Microsoft.Performance", "CA1806:Do not ignore method results",
+            Justification = "Newly created instance is discarded for testing purposes")]
         public void Constructor_WhenJwtServiceIsNull_ThrowsException()
         {
             // Arrange
@@ -28,9 +31,9 @@
             var logger = new Mock<ILogger<GenerateJwtFlow>>();
 
             // Act
-            // ReSharper disable once CA1806
+            // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once ExpressionIsAlwaysNull
-            Action constructorCall = () =>  new GenerateJwtFlow(jwtService, logger.Object);
+            Action constructorCall = () => new GenerateJwtFlow(jwtService, logger.Object);
 
             // Assert
             constructorCall

@@ -24,8 +24,8 @@ namespace Todo.WebApi.Logging
         /// Tests the constructor of <see cref="LoggingService"/> class.
         /// </summary>
         [Test]
-        [SuppressMessage("Microsoft.Performance", "CA1806:Do not ignore method results", Justification =
-            "Not using instance created by invoking LoggingService constructor is needed for testing purposes")]
+        [SuppressMessage("Microsoft.Performance", "CA1806:Do not ignore method results",
+            Justification = "Newly created instance is discarded for testing purposes")]
         public void Constructor_UsingNullLogger_MustThrowException()
         {
             // Arrange
