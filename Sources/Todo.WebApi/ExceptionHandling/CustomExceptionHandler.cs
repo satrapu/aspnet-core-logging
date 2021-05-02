@@ -8,9 +8,9 @@ namespace Todo.WebApi.ExceptionHandling
     using Microsoft.AspNetCore.Diagnostics;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.Options;
 
     using Npgsql;
 
@@ -35,8 +35,8 @@ namespace Todo.WebApi.ExceptionHandling
         public static async Task HandleException(HttpContext httpContext)
         {
             IServiceProvider serviceProvider = httpContext.RequestServices;
-            IConfiguration configuration = serviceProvider.GetRequiredService<IConfiguration>();
-            bool includeDetails = configuration.GetValue<bool>("ExceptionHandling:IncludeDetails");
+            IOptions<ExceptionHandlingOptions> exceptionHandlingOptions =
+                serviceProvider.GetRequiredService<IOptions<ExceptionHandlingOptions>>();
 
             ILogger logger =
                 serviceProvider.GetRequiredService<ILoggerFactory>().CreateLogger(nameof(CustomExceptionHandler));
@@ -44,7 +44,8 @@ namespace Todo.WebApi.ExceptionHandling
             // Try and retrieve the error from the ExceptionHandler middleware
             IExceptionHandlerFeature exceptionHandlerFeature = httpContext.Features.Get<IExceptionHandlerFeature>();
             Exception unhandledException = exceptionHandlerFeature?.Error;
-            ProblemDetails problemDetails = ConvertToProblemDetails(unhandledException, includeDetails);
+            ProblemDetails problemDetails = ConvertToProblemDetails(unhandledException,
+                exceptionHandlingOptions.Value.IncludeDetails);
 
             // The exception is first logged by the Microsoft.AspNetCore.Diagnostics.ExceptionHandlerMiddleware class,
             // then by this method, but it's worth it since the second time the exception is logged, we end up with

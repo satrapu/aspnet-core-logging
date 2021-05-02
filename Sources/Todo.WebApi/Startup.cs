@@ -307,6 +307,9 @@ namespace Todo.WebApi
 
         private void ConfigureApplicationServices(IServiceCollection services)
         {
+            // Configure options used when handling exceptions.
+            services.Configure<ExceptionHandlingOptions>(Configuration.GetSection("ExceptionHandling"));
+
             services.AddSingleton<IJwtService, JwtService>();
             services.AddScoped<ITodoItemService, TodoItemService>();
 
