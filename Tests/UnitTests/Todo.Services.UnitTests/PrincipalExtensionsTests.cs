@@ -19,11 +19,67 @@ namespace Todo.Services
     [TestFixture]
     public class PrincipalExtensionsTests
     {
+        /// <summary>
+        /// Tests <see cref="PrincipalExtensions.GetName"/> method.
+        /// </summary>
+        [Test]
+        [TestCaseSource(nameof(GetValidPrincipals))]
+        public void GetName_UsingValidPrincipal_MustReturnExpectedName(IPrincipal validPrincipal)
+        {
+            // Arrange & Act
+            string userName = validPrincipal.GetName();
+
+            // Assert
+            userName.Should().NotBeNullOrWhiteSpace("because principal name must mean something");
+        }
+
+        /// <summary>
+        /// Tests <see cref="PrincipalExtensions.GetName"/> method.
+        /// </summary>
+        [Test]
+        public void GetName_UsingNullAsPrincipal_MustThrowException()
+        {
+            // Arrange
+            IPrincipal principal = null;
+
+            // Act
+            // ReSharper disable once InvokeAsExtensionMethod
+            // ReSharper disable once ExpressionIsAlwaysNull
+            Action getNameAction = () => PrincipalExtensions.GetName(principal);
+
+            // Assert
+            getNameAction
+                .Should().ThrowExactly<ArgumentNullException>()
+                .And.ParamName.Should().Be(nameof(principal), "because a null principal does not have a name");
+        }
+
+        /// <summary>
+        /// Tests <see cref="PrincipalExtensions.GetName"/> method.
+        /// </summary>
+        [Test]
+        public void GetName_UsingNullAsPrincipalIdentity_MustThrowException()
+        {
+            // Arrange
+            var principalMock = new Mock<IPrincipal>();
+            principalMock.SetupGet(principal => principal.Identity).Returns((IIdentity) null);
+            IPrincipal mockedPrincipal = principalMock.Object;
+
+            // Act
+            Action getNameAction = () => mockedPrincipal.GetName();
+
+            // Assert
+            getNameAction
+                .Should().ThrowExactly<ArgumentException>()
+                .And.ParamName.Should().Be("principal",
+                    "because a principal with a null identity does not have a name");
+        }
+
         private static IEnumerable<IPrincipal> GetValidPrincipals()
         {
             const string authenticationType = "hard-coded-authentication-type-for-testing-purposes";
 
-            string[] roles = { "Developer" };
+            string[] roles = {"Developer"};
+
             yield return
                 new TestGenericPrincipal(
                     new GenericIdentity($"{nameof(GenericPrincipal)}-{Guid.NewGuid():N}", authenticationType), roles);
@@ -82,60 +138,6 @@ namespace Todo.Services
         {
             return $"[{nameof(IIdentity.Name)}={identity?.Name}; "
                    + $"{nameof(IIdentity.AuthenticationType)}={identity?.AuthenticationType}]";
-        }
-
-        /// <summary>
-        /// Tests <see cref="PrincipalExtensions.GetName"/> method.
-        /// </summary>
-        [Test]
-        [TestCaseSource(nameof(GetValidPrincipals))]
-        public void GetName_UsingValidPrincipal_MustReturnExpectedName(IPrincipal validPrincipal)
-        {
-            // Arrange & Act
-            string userName = validPrincipal.GetName();
-
-            // Assert
-            userName.Should().NotBeNullOrWhiteSpace("because principal name must means something");
-        }
-
-        /// <summary>
-        /// Tests <see cref="PrincipalExtensions.GetName"/> method.
-        /// </summary>
-        [Test]
-        public void GetName_UsingNullAsPrincipal_MustThrowException()
-        {
-            // Arrange
-            IPrincipal principal = null;
-
-            // Act
-            // ReSharper disable once InvokeAsExtensionMethod
-            // ReSharper disable once ExpressionIsAlwaysNull
-            Action actionExpectedToFail = () => PrincipalExtensions.GetName(principal);
-
-            // Assert
-            actionExpectedToFail
-                .Should().ThrowExactly<ArgumentNullException>()
-                .And.ParamName.Should().Be(nameof(principal), "because a null principal does not have a name");
-        }
-
-        /// <summary>
-        /// Tests <see cref="PrincipalExtensions.GetName"/> method.
-        /// </summary>
-        [Test]
-        public void GetName_UsingNullAsPrincipalIdentity_MustThrowException()
-        {
-            // Arrange
-            var principalMock = new Mock<IPrincipal>();
-            principalMock.SetupGet(principal => principal.Identity).Returns(() => null);
-            IPrincipal mockedPrincipal = principalMock.Object;
-
-            // Act
-            Action actionExpectedToFail = () => mockedPrincipal.GetName();
-
-            // Assert
-            actionExpectedToFail
-                .Should().ThrowExactly<ArgumentException>()
-                .And.ParamName.Should().Be("principal", "because a principal with a null identity does not have a name");
         }
     }
 }
