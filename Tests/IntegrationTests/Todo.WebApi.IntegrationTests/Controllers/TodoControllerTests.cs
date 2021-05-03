@@ -22,7 +22,7 @@ namespace Todo.WebApi.Controllers
     using TestInfrastructure;
 
     /// <summary>
-    ///  Contains integration tests targeting <see cref="TodoController" /> class.
+    ///  Contains integration tests targeting <seealso cref="TodoController" /> class.
     ///  <br/>
     ///  Based on: https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-2.1#aspnet-core-integration-tests.
     ///  and: https://medium.com/@daniel.edwards_82928/using-webapplicationfactory-with-nunit-817a616e26f9.
