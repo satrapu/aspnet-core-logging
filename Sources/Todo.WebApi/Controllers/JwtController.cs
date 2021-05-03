@@ -23,7 +23,7 @@ namespace Todo.WebApi.Controllers
     /// so the logic of generating a JSON web token for a given user name and password has been greatly simplified.
     /// In the future, a better mechanism will be implemented.
     /// </remarks>
-    [Route("api/[controller]")]
+    [Route("api/jwt")]
     [Authorize]
     [ApiController]
     public class JwtController : ControllerBase
