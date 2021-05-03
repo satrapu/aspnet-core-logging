@@ -27,7 +27,7 @@ This project has several posts associated with it:
 | ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [Codacy](https://www.codacy.com/)         | [![Codacy Badge](https://api.codacy.com/project/badge/Grade/001d9d7bbf43459aae186c7d8cd49858)](https://www.codacy.com/app/satrapu/aspnet-core-logging)                                                                 |
 | [FOSSA](https://fossa.com/)               | [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fsatrapu%2Faspnet-core-logging.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fsatrapu%2Faspnet-core-logging?ref=badge_shield) |
-| [SonarCloud](https://sonarcloud.io/about) | [![SonarCloud Status](https://sonarcloud.io/api/project_badges/measure?project=aspnet-core-logging&metric=alert_status)](https://sonarcloud.io/dashboard?id=aspnet-core-logging&branch=master)                         |
+| [SonarCloud](https://sonarcloud.io/about) | [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=aspnet-core-logging&metric=ncloc)](https://sonarcloud.io/dashboard?id=aspnet-core-logging) <br/> [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=aspnet-core-logging&metric=coverage)](https://sonarcloud.io/dashboard?id=aspnet-core-logging) <br/> [![SonarCloud Status](https://sonarcloud.io/api/project_badges/measure?project=aspnet-core-logging&metric=alert_status)](https://sonarcloud.io/dashboard?id=aspnet-core-logging) |
 
 ## Setup local development environment
 
