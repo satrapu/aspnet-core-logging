@@ -1,4 +1,4 @@
-﻿namespace Todo.WebApi.Controllers
+namespace Todo.WebApi.Controllers
 {
     using System.Net;
     using System.Net.Http;
