@@ -56,7 +56,9 @@ namespace Todo.WebApi
 
         private IWebHostEnvironment WebHostingEnvironment { get; }
 
-        private bool ShouldUseMiniProfiler { get; }
+        private bool IsHttpLoggingEnabled { get; }
+
+        private bool IsMiniProfilerEnabled { get; }
 
         private bool IsSerilogFileSinkConfigured { get; }
 
@@ -71,7 +73,8 @@ namespace Todo.WebApi
         {
             Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             WebHostingEnvironment = webHostEnvironment ?? throw new ArgumentNullException(nameof(webHostEnvironment));
-            ShouldUseMiniProfiler = Configuration.GetValue<bool>("MiniProfiler:Enabled");
+            IsMiniProfilerEnabled = Configuration.GetValue<bool>("MiniProfiler:Enabled");
+            IsHttpLoggingEnabled = Configuration.GetValue<bool>("HttpLogging:Enabled");
 
             IEnumerable<KeyValuePair<string, string>> configuredSerilogSinks =
                 Configuration.GetSection("Serilog:Using").AsEnumerable().ToList();
@@ -106,7 +109,11 @@ namespace Todo.WebApi
             }
 
             applicationBuilder.UseConversationId();
-            applicationBuilder.UseHttpLogging();
+
+            if (IsHttpLoggingEnabled)
+            {
+                applicationBuilder.UseHttpLogging();
+            }
 
             // The exception handling middleware must be added inside the ASP.NET Core request pipeline
             // as soon as possible to ensure any unhandled exception is eventually handled.
@@ -116,7 +123,7 @@ namespace Todo.WebApi
                 AllowStatusCode404Response = true
             });
 
-            if (ShouldUseMiniProfiler)
+            if (IsMiniProfilerEnabled)
             {
                 applicationBuilder.UseMiniProfiler();
             }
@@ -143,9 +150,25 @@ namespace Todo.WebApi
             }
         }
 
+        private void ConfigureHttpLogging(IServiceCollection services)
+        {
+            if (IsHttpLoggingEnabled)
+            {
+                // Register service with 2 interfaces.
+                // See more here: https://andrewlock.net/how-to-register-a-service-with-multiple-interfaces-for-in-asp-net-core-di/.
+                services
+                    .AddSingleton<LoggingService>()
+                    .AddSingleton<IHttpObjectConverter>(serviceProvider =>
+                        serviceProvider.GetRequiredService<LoggingService>())
+                    .AddSingleton<IHttpContextLoggingHandler>(serviceProvider =>
+                        serviceProvider.GetRequiredService<LoggingService>());
+            }
+        }
+
         private void ConfigureLogging(IServiceCollection services)
         {
             ConfigureApplicationInsights(services);
+            ConfigureHttpLogging(services);
 
             services.AddLogging(loggingBuilder =>
             {
@@ -161,7 +184,11 @@ namespace Todo.WebApi
                     }
                 }
 
-                loggingBuilder.ClearProviders();
+                if (!WebHostingEnvironment.IsDevelopment())
+                {
+                    loggingBuilder.ClearProviders();
+                }
+
                 loggingBuilder.AddSerilog(new LoggerConfiguration()
                     .ReadFrom.Configuration(Configuration)
                     .CreateLogger(), dispose: true);
@@ -262,7 +289,7 @@ namespace Todo.WebApi
         {
             // Configure MiniProfiler for Web API and EF Core.
             // Based on: https://dotnetthoughts.net/using-miniprofiler-in-aspnetcore-webapi/.
-            if (ShouldUseMiniProfiler)
+            if (IsMiniProfilerEnabled)
             {
                 services
                     .AddMemoryCache()
@@ -312,14 +339,6 @@ namespace Todo.WebApi
 
             services.AddSingleton<IJwtService, JwtService>();
             services.AddScoped<ITodoItemService, TodoItemService>();
-
-            // Register service with 2 interfaces.
-            // See more here: https://andrewlock.net/how-to-register-a-service-with-multiple-interfaces-for-in-asp-net-core-di/.
-            services.AddSingleton<LoggingService>();
-            services.AddSingleton<IHttpObjectConverter>(
-                serviceProvider => serviceProvider.GetRequiredService<LoggingService>());
-            services.AddSingleton<IHttpContextLoggingHandler>(
-                serviceProvider => serviceProvider.GetRequiredService<LoggingService>());
 
             // Configure options used by application flows.
             services.Configure<ApplicationFlowOptions>(Configuration.GetSection("ApplicationFlows"));
