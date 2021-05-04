@@ -1,14 +1,15 @@
 namespace Todo.WebApi.Controllers
 {
+    using System.Collections.Generic;
     using System.Net;
     using System.Net.Http;
     using System.Threading.Tasks;
 
     using FluentAssertions;
-    using FluentAssertions.Execution;
 
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc.Testing;
+    using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Hosting;
 
     using NUnit.Framework;
@@ -20,76 +21,46 @@ namespace Todo.WebApi.Controllers
     public class ConfigurationControllerTests
     {
         [Test]
-        public async Task GetConfigurationDebugView_WhenCalledInsideDevelopmentEnvironment_MustSucceeds()
+        [TestCaseSource(nameof(configurationEndpointContext))]
+        public async Task GetConfigurationDebugView_WhenCalled_MustBehaveAsExpected(string environment,
+            bool isDebugViewEnabled, HttpStatusCode expectedStatusCode)
         {
             // Arrange
-            var webApplicationFactory = new WebApplicationFactory<Startup>().WithWebHostBuilder(webHostBuilder =>
-            {
-                webHostBuilder.UseEnvironment(Environments.Development);
-            });
+            using var webApplicationFactory = new WebApplicationFactory<Startup>()
+                .WithWebHostBuilder(webHostBuilder =>
+                {
+                    webHostBuilder.UseEnvironment(environment);
 
-            try
-            {
-                using HttpClient httpClient = webApplicationFactory.CreateClient();
+                    webHostBuilder.ConfigureAppConfiguration((webHostBuilderContext, configurationBuilder) =>
+                    {
+                        configurationBuilder.AddInMemoryCollection(new[]
+                        {
+                            new KeyValuePair<string, string>("ConfigurationDebugViewEndpointEnabled",
+                                isDebugViewEnabled.ToString())
+                        });
+                    });
+                });
 
-                // Act
-                HttpResponseMessage response = await httpClient.GetAsync("api/configuration");
+            using HttpClient httpClient = webApplicationFactory.CreateClient();
 
-                // Assert
-                string because =
-                    $"because configuration endpoint must be available in {Environments.Development} environment";
+            // Act
+            using HttpResponseMessage response = await httpClient.GetAsync("api/configuration");
 
-                using var assertionScope = new AssertionScope();
-                response.StatusCode.Should().Be(HttpStatusCode.OK, because);
-
-                string content = await response.Content.ReadAsStringAsync();
-                content.Should().NotBeNullOrWhiteSpace(because);
-            }
-            finally
-            {
-                webApplicationFactory.Dispose();
-            }
+            // Assert
+            response.StatusCode.Should().Be(expectedStatusCode,
+                "because configuration endpoint is available only in certain conditions");
         }
 
-        [Test]
-        [TestCaseSource(nameof(environmentNamesWhereConfigurationDebugViewIsDisabled))]
-        public async Task GetConfigurationDebugView_WhenCalledOutsideDevelopmentEnvironment_MustFail(
-            string environmentName)
+        private static object[] configurationEndpointContext =
         {
-            var webApplicationFactory = new WebApplicationFactory<Startup>().WithWebHostBuilder(webHostBuilder =>
-            {
-                webHostBuilder.UseEnvironment(environmentName);
-            });
-
-            try
-            {
-                // Arrange
-                using HttpClient httpClient = webApplicationFactory.CreateClient();
-
-                // Act
-                HttpResponseMessage response = await httpClient.GetAsync("api/configuration");
-
-                // Assert
-                string because =
-                    $"because configuration endpoint must *not* be available outside {Environments.Development} environment";
-
-                using var assertionScope = new AssertionScope();
-                response.StatusCode.Should().Be(HttpStatusCode.Forbidden, because);
-
-                string content = await response.Content.ReadAsStringAsync();
-                content.Should().BeEmpty(because);
-            }
-            finally
-            {
-                webApplicationFactory.Dispose();
-            }
-        }
-
-        private static object[] environmentNamesWhereConfigurationDebugViewIsDisabled =
-        {
-            new object[] {"IntegrationTests"},
-            new object[] {"DemoInAzure"},
-            new object[] {"Production"},
+            new object[] {Environments.Development, false, HttpStatusCode.Forbidden},
+            new object[] {Environments.Development, true, HttpStatusCode.OK},
+            new object[] {"IntegrationTests", true, HttpStatusCode.Forbidden},
+            new object[] {"IntegrationTests", false, HttpStatusCode.Forbidden},
+            new object[] {"DemoInAzure", true, HttpStatusCode.Forbidden},
+            new object[] {"DemoInAzure", false, HttpStatusCode.Forbidden},
+            new object[] {Environments.Production, true, HttpStatusCode.Forbidden},
+            new object[] {Environments.Production, false, HttpStatusCode.Forbidden}
         };
     }
 }
