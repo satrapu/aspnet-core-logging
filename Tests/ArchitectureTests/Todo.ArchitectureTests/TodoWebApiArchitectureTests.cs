@@ -5,8 +5,6 @@ namespace Todo
     using System.Linq;
     using System.Threading.Tasks;
 
-    using ApplicationFlows;
-
     using FluentAssertions;
 
     using Microsoft.AspNetCore.Mvc;
@@ -44,39 +42,6 @@ namespace Todo
         }
 
         /// <summary>
-        /// Ensures Todo Web API controllers depend on application flows.
-        /// </summary>
-        /// <returns></returns>
-        [Test]
-        public async Task GivenTodoWebApiControllers_WhenBeingAnalyzed_ThenEnsureTheyDependOnApplicationFlows()
-        {
-            // Arrange
-            Type applicationFlowInterface = typeof(IApplicationFlow<,>);
-
-            string[] applicationFlowTypes = Types.InAssembly(typeof(IApplicationFlow<,>).Assembly)
-                .That()
-                .ArePublic()
-                .And().AreInterfaces()
-                .And().ImplementInterface(applicationFlowInterface)
-                .GetTypes()
-                .Where(localType => !string.IsNullOrWhiteSpace(localType.FullName))
-                .Select(localType => localType.FullName)
-                .ToArray();
-
-            // Act
-            TestResult testResult =
-                webApiControllers
-                    .Should()
-                    .HaveDependencyOnAny(applicationFlowTypes)
-                    .GetResult();
-
-            await DisplayFailingTypesIfAnyAsync(testResult);
-
-            // Assert
-            testResult.IsSuccessful.Should().Be(true, "Web API controllers *must* depend on all application flows");
-        }
-
-        /// <summary>
         /// Ensures Todo Web API controllers do not depend on any service interface.
         /// </summary>
         /// <returns></returns>
@@ -94,11 +59,7 @@ namespace Todo
                 .ToArray();
 
             // Act
-            TestResult testResult =
-                webApiControllers
-                    .Should()
-                    .NotHaveDependencyOnAny(serviceInterfaces)
-                    .GetResult();
+            TestResult testResult = webApiControllers.Should().NotHaveDependencyOnAny(serviceInterfaces).GetResult();
 
             await DisplayFailingTypesIfAnyAsync(testResult);
 
@@ -126,11 +87,7 @@ namespace Todo
                 .ToArray();
 
             // Act
-            TestResult testResult =
-                webApiControllers
-                    .Should()
-                    .NotHaveDependencyOnAny(services)
-                    .GetResult();
+            TestResult testResult = webApiControllers.Should().NotHaveDependencyOnAny(services).GetResult();
 
             await DisplayFailingTypesIfAnyAsync(testResult);
 
@@ -151,10 +108,7 @@ namespace Todo
 
             // Act
             TestResult testResult =
-                webApiControllers
-                    .Should()
-                    .NotHaveDependencyOnAny(persistenceNamespaces)
-                    .GetResult();
+                webApiControllers.Should().NotHaveDependencyOnAny(persistenceNamespaces).GetResult();
 
             await DisplayFailingTypesIfAnyAsync(testResult);
 

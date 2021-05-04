@@ -15,7 +15,7 @@ namespace Todo.WebApi.Controllers
 
     using Services.TodoItemLifecycleManagement;
 
-    [Route("api/[controller]")]
+    [Route("api/todo")]
     [Authorize]
     [ApiController]
     public class TodoController : ControllerBase

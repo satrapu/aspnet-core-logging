@@ -22,7 +22,7 @@ namespace Todo.WebApi.Controllers
     using TestInfrastructure;
 
     /// <summary>
-    ///  Contains integration tests targeting <see cref="TodoController" /> class.
+    ///  Contains integration tests targeting <seealso cref="TodoController" /> class.
     ///  <br/>
     ///  Based on: https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-2.1#aspnet-core-integration-tests.
     ///  and: https://medium.com/@daniel.edwards_82928/using-webapplicationfactory-with-nunit-817a616e26f9.
@@ -38,9 +38,7 @@ namespace Todo.WebApi.Controllers
         private const string BecauseInputModelIsInvalid = "input model is invalid";
         private const string BecauseNewEntityHasBeenCreated = "a new entity has been created";
         private const string BecauseEntityHasBeenPreviouslyCreated = "an entity has been previously created";
-
-        private const string BecauseMustNotFindSomethingWhichDoesNotExist =
-            "must not find something which does not exist";
+        private const string BecauseMustNotFindSomethingWhichDoesNotExist = "must not find something which does not exist";
 
         /// <summary>
         /// Ensures the appropriate <see cref="TestWebApplicationFactory"/> instance has been created before running
@@ -95,6 +93,7 @@ namespace Todo.WebApi.Controllers
             // Arrange
             using HttpClient httpClient = await webApplicationFactory.CreateClientWithJwtAsync();
             long? id = null;
+            const long idThreshold = 1;
 
             try
             {
@@ -113,11 +112,11 @@ namespace Todo.WebApi.Controllers
                     response.IsSuccessStatusCode.Should().BeTrue(BecauseAnEntityHasBeenCreated);
                     response.StatusCode.Should().Be(HttpStatusCode.Created, BecauseAnEntityHasBeenCreated);
                     response.Headers.ToDictionary(x => x.Key, x => x.Value).Should().ContainKey("Location");
-                    response.Headers.Location.OriginalString
+                    response.Headers.Location?.OriginalString
                         .Should().MatchRegex(@"api/todo/\d+", BecauseAnEntityHasBeenCreated);
 
                     id = await response.Content.ReadAsAsync<long>();
-                    id.Should().BeGreaterOrEqualTo(1, BecauseAnEntityHasBeenCreated);
+                    id.Should().BeGreaterOrEqualTo(idThreshold, BecauseAnEntityHasBeenCreated);
                 }
             }
             finally
