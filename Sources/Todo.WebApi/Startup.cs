@@ -15,6 +15,8 @@ namespace Todo.WebApi
 
     using Authorization;
 
+    using Autofac;
+
     using ExceptionHandling;
 
     using Logging;
@@ -87,11 +89,25 @@ namespace Todo.WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             ConfigureLogging(services);
-            ConfigureEntityFrameworkCore(services);
             ConfigureSecurity(services);
             ConfigureMiniProfiler(services);
             ConfigureWebApi(services);
             ConfigureApplicationServices(services);
+        }
+
+        /// <summary>
+        /// Configures Autofac container.
+        /// <br />
+        /// See more here: https://autofaccn.readthedocs.io/en/latest/integration/aspnetcore.html.
+        /// </summary>
+        /// <param name="builder">The <seealso cref="ContainerBuilder"/> instance to be used
+        /// when adding services to Autofac container.</param>
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            builder.RegisterModule(
+                new PersistenceModule(isDevelopmentEnvironment: WebHostingEnvironment.IsDevelopment(),
+                    connectionName: "Todo")
+            );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -192,22 +208,6 @@ namespace Todo.WebApi
                 loggingBuilder.AddSerilog(new LoggerConfiguration()
                     .ReadFrom.Configuration(Configuration)
                     .CreateLogger(), dispose: true);
-            });
-        }
-
-        private void ConfigureEntityFrameworkCore(IServiceCollection services)
-        {
-            services.AddDbContext<TodoDbContext>((serviceProvider, dbContextOptionsBuilder) =>
-            {
-                var connectionString = Configuration.GetConnectionString("Todo");
-                dbContextOptionsBuilder.UseNpgsql(connectionString)
-                    .UseLoggerFactory(serviceProvider.GetRequiredService<ILoggerFactory>());
-
-                if (WebHostingEnvironment.IsDevelopment())
-                {
-                    dbContextOptionsBuilder.EnableSensitiveDataLogging();
-                    dbContextOptionsBuilder.EnableDetailedErrors();
-                }
             });
         }
 

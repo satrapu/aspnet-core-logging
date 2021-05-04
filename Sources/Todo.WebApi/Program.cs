@@ -3,6 +3,8 @@ namespace Todo.WebApi
     using System;
     using System.Diagnostics.CodeAnalysis;
 
+    using Autofac.Extensions.DependencyInjection;
+
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Hosting;
@@ -48,6 +50,7 @@ namespace Todo.WebApi
             logger.Information("Configuring host builder needed to run Todo ASP.NET Core Web API ...");
             IHostBuilder hostBuilder =
                 Host.CreateDefaultBuilder(args)
+                    .UseServiceProviderFactory(new AutofacServiceProviderFactory())
                     .ConfigureAppConfiguration((hostBuilderContext, configurationBuilder) =>
                     {
                         configurationBuilder.Sources.Clear();

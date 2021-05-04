@@ -31,7 +31,7 @@ namespace Todo.WebApi.Controllers
                 {
                     webHostBuilder.UseEnvironment(environment);
 
-                    webHostBuilder.ConfigureAppConfiguration((webHostBuilderContext, configurationBuilder) =>
+                    webHostBuilder.ConfigureAppConfiguration((_, configurationBuilder) =>
                     {
                         configurationBuilder.AddInMemoryCollection(new[]
                         {
