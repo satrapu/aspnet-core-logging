@@ -16,7 +16,7 @@ start=$SECONDS
 
 # Install Docker via brew package manager.
 # See brew docker formula here: https://formulae.brew.sh/formula/docker.
-brew install --no-qarantine docker
+brew install --no-quarantine docker
 
 end=$SECONDS
 duration=$(( end - start ))
