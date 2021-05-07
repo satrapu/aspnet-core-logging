@@ -10,14 +10,13 @@ set -o nounset
 # http://web.archive.org/web/20110314180918/http://www.davidpashley.com/articles/writing-robust-shell-scripts.html#id2577574.
 set -o errexit
 
-# Install specific version of Docker Desktop for Mac to avoid issues with future ones
-echo "Installing specific version of Docker Desktop for Mac ..."
+# Install Docker Desktop for Mac.
+echo "Installing Docker Desktop for Mac ..."
 start=$SECONDS
 
-# Install specific Docker version via brew package manager.
+# Install Docker via brew package manager.
 # See brew docker formula here: https://formulae.brew.sh/formula/docker.
-brew extract --version=3.3.3 docker
-brew install --cask docker
+brew install docker
 
 # Allow Docker.app to run without confirmation
 xattr -d -r com.apple.quarantine /Applications/Docker.app
