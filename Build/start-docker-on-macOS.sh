@@ -18,16 +18,6 @@ start=$SECONDS
 # See brew docker formula here: https://formulae.brew.sh/formula/docker.
 brew install docker
 
-# Allow Docker.app to run without confirmation
-xattr -d -r com.apple.quarantine /Applications/Docker.app
-
-# Preemptively do Docker.app's setup to avoid any GUI prompts
-sudo /bin/cp /Applications/Docker.app/Contents/Library/LaunchServices/com.docker.vmnetd /Library/PrivilegedHelperTools
-sudo /bin/cp /Applications/Docker.app/Contents/Resources/com.docker.vmnetd.plist /Library/LaunchDaemons/
-sudo /bin/chmod 544 /Library/PrivilegedHelperTools/com.docker.vmnetd
-sudo /bin/chmod 644 /Library/LaunchDaemons/com.docker.vmnetd.plist
-sudo /bin/launchctl load /Library/LaunchDaemons/com.docker.vmnetd.plist
-
 end=$SECONDS
 duration=$(( end - start ))
 echo "Docker Desktop for Mac has been installed in $duration seconds"
