@@ -14,8 +14,10 @@ set -o errexit
 echo "Installing specific version of Docker Desktop for Mac ..."
 start=$SECONDS
 
-# Install specific Docker version via brew (v20.10.6)
-brew install --cask docker@3.3.3
+# Install specific Docker version via brew package manager.
+# See brew docker formula here: https://formulae.brew.sh/formula/docker.
+brew extract --version=3.3.3 docker
+brew install --cask docker
 
 # Allow Docker.app to run without confirmation
 xattr -d -r com.apple.quarantine /Applications/Docker.app
