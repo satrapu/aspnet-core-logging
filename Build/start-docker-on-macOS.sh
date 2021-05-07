@@ -2,32 +2,20 @@
 
 # Based on: https://github.com/docker/for-mac/issues/2359#issuecomment-607154849.
 
-# Fail script in case of unset variables - see more here: 
+# Fail script in case of unset variables - see more here:
 # http://web.archive.org/web/20110314180918/http://www.davidpashley.com/articles/writing-robust-shell-scripts.html#id2577541.
 set -o nounset
- 
+
 # Fail scripts in case a command fails - see more here:
 # http://web.archive.org/web/20110314180918/http://www.davidpashley.com/articles/writing-robust-shell-scripts.html#id2577574.
 set -o errexit
 
-DOCKER_VERSION=20.10.5
-
-# Ensure brew package manager is up to date
-echo 'Updating & upgrading brew package manager ...'
-start=$SECONDS
-
-brew update && brew upgrade
-
-end=$SECONDS
-duration=$(( end - start ))
-echo "brew package manager has been installed in $duration seconds"
-
 # Install specific version of Docker Desktop for Mac to avoid issues with future ones
-echo "Installing Docker Desktop v$DOCKER_VERSION for Mac ..."
+echo "Installing specific version of Docker Desktop for Mac ..."
 start=$SECONDS
 
-# Install Docker via brew
-brew install --cask docker@$DOCKER_VERSION &>/dev/null
+# Install specific Docker version via brew
+brew cask install https://raw.githubusercontent.com/Homebrew/homebrew-cask/0b186b2142ac6b23677ba08c0edaca1d1a1ea011/Casks/docker.rb
 
 # Allow Docker.app to run without confirmation
 xattr -d -r com.apple.quarantine /Applications/Docker.app
