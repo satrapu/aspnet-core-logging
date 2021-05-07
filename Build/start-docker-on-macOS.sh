@@ -15,7 +15,7 @@ echo "Installing specific version of Docker Desktop for Mac ..."
 start=$SECONDS
 
 # Install specific Docker version via brew
-brew cask install https://raw.githubusercontent.com/Homebrew/homebrew-cask/0b186b2142ac6b23677ba08c0edaca1d1a1ea011/Casks/docker.rb
+brew install --cask https://raw.githubusercontent.com/Homebrew/homebrew-cask/0b186b2142ac6b23677ba08c0edaca1d1a1ea011/Casks/docker.rb
 
 # Allow Docker.app to run without confirmation
 xattr -d -r com.apple.quarantine /Applications/Docker.app
