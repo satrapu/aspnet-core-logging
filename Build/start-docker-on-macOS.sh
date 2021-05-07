@@ -14,6 +14,10 @@ set -o errexit
 echo 'Installing Docker Desktop for Mac ...'
 start=$SECONDS
 
+# Ensure brew package manager is up to date
+brew update
+
+# Install Docker via brew
 brew install --cask docker &>/dev/null
 
 # Allow Docker.app to run without confirmation
