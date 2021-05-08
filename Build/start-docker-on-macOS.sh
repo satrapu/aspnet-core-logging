@@ -10,24 +10,11 @@ set -o nounset
 # http://web.archive.org/web/20110314180918/http://www.davidpashley.com/articles/writing-robust-shell-scripts.html#id2577574.
 set -o errexit
 
-DOCKER_VERSION=20.10.5
-
-# Ensure brew package manager is up to date
-echo 'Updating & upgrading brew package manager ...'
+# Install latest version of Docker Desktop for Mac
+echo 'Installing Docker Desktop for Mac ...'
 start=$SECONDS
 
-brew update && brew upgrade
-
-end=$SECONDS
-duration=$(( end - start ))
-echo "brew package manager has been installed in $duration seconds"
-
-# Install specific version of Docker Desktop for Mac to avoid issues with future ones
-echo "Installing Docker Desktop v$DOCKER_VERSION for Mac ..."
-start=$SECONDS
-
-# Install Docker via brew
-brew install --cask docker@$DOCKER_VERSION &>/dev/null
+brew install --cask docker &>/dev/null
 
 # Allow Docker.app to run without confirmation
 xattr -d -r com.apple.quarantine /Applications/Docker.app
