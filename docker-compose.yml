@@ -11,10 +11,23 @@ services:
       - "5432:5432/tcp"
     networks: 
       - local_postgresql
+      - local_gelf
     environment:
-      - POSTGRES_USER=${DB_DEV_POSTGRES_USER}
-      - POSTGRES_PASSWORD=${DB_DEV_POSTGRES_PASSWORD}
-      - POSTGRES_DB=aspnet-core-logging-dev
+      "POSTGRES_USER": "${DB_DEV_POSTGRES_USER}"
+      "POSTGRES_PASSWORD": "${DB_DEV_POSTGRES_PASSWORD}"
+      "POSTGRES_DB": "aspnet-core-logging-dev"
+    logging:
+      driver: "gelf"
+      # See gelf driver options here: https://docs.docker.com/config/containers/logging/gelf/.
+      # The 'host.docker.internal' thing is explained here: https://github.com/moby/moby/issues/20370#issuecomment-502356347.
+      # Check the official documentation for 'host.docker.internal' here: https://docs.docker.com/docker-for-windows/networking/#use-cases-and-workarounds.
+      options:
+        gelf-address: udp://host.docker.internal:12201
+        gelf-compression-type: none
+        gelf-compression-level: 0
+        tag: "db-dev"
+    depends_on:
+      - gelf-server
 
   aspnet-core-logging-it:
     container_name: aspnet-core-logging-it-db
@@ -26,27 +39,42 @@ services:
       - "5433:5432/tcp"
     networks: 
       - local_postgresql
+      - local_gelf
     environment:
-      - POSTGRES_USER=${DB_IT_POSTGRES_USER}
-      - POSTGRES_PASSWORD=${DB_IT_POSTGRES_PASSWORD}
-      - POSTGRES_DB=aspnet-core-logging-it
+      "POSTGRES_USER": "${DB_DEV_POSTGRES_USER}"
+      "POSTGRES_PASSWORD": "${DB_DEV_POSTGRES_PASSWORD}"
+      "POSTGRES_DB": "aspnet-core-logging-it"
+    logging:
+      driver: "gelf"
+      options:
+        gelf-address: "udp://host.docker.internal:12201"
+        tag: "db-it"
+    depends_on:
+      - gelf-server
 
   pgadmin:
-    container_name: pgadmin-ui
+    container_name: pgadmin-dev
     image: dpage/pgadmin4:5.2
     restart: unless-stopped
     volumes:
       - pgadmin_data:/var/lib/pgadmin
     ports:
       - "8080:80/tcp"
-    networks:
+    networks: 
       - local_postgresql
+      #- local_gelf
     environment:
-      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
-      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
+      "PGADMIN_DEFAULT_EMAIL": "${PGADMIN_DEFAULT_EMAIL}"
+      "PGADMIN_DEFAULT_PASSWORD": "${PGADMIN_DEFAULT_PASSWORD}"
+    #logging:
+    #  driver: "gelf"
+    #  options:
+    #    gelf-address: "udp://host.docker.internal:12201"
+    #    tag: "pgadmin"
     depends_on:
       - aspnet-core-logging-dev
       - aspnet-core-logging-it
+      #- gelf-server
     
   seq:
     container_name: seq
@@ -55,14 +83,29 @@ services:
     volumes:
       - seq_data:/data
     ports:
-      # Ingestion port
+      # Port used for ingesting data (e.g. data sent by Docker containers to GELF server which will forward it to Seq).
       - "5341:5341/tcp"
-      # UI port
+      # UI port.
       - "8888:80/tcp"
-    networks:
+    networks: 
       - local_seq
+      - local_gelf
     environment:
-      - ACCEPT_EULA=Y
+      "ACCEPT_EULA": "Y"
+      
+  gelf-server:
+    container_name: gelf-server
+    image: datalust/seq-input-gelf:2.0.298
+    restart: unless-stopped
+    ports:
+      - "12201:12201/udp"
+    networks: 
+      - local_seq
+      - local_gelf
+    environment:
+      "SEQ_ADDRESS": "http://host.docker.internal:5341"
+    depends_on:
+      - seq
 
 volumes:
   aspnet-core-logging-dev_data:
@@ -73,7 +116,8 @@ volumes:
     external: true
   seq_data:
     external: true
-
+    
 networks:
   local_postgresql:
   local_seq:
+  local_gelf:
