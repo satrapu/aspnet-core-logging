@@ -76,7 +76,7 @@ namespace Todo.WebApi.ExceptionHandling
             var problemDetails = new ProblemDetails
             {
                 Status = (int) GetHttpStatusCode(exception),
-                Title = "An unexpected error occured while trying to process the current request",
+                Title = "An unexpected error occurred while trying to process the current request",
                 Detail = includeDetails ? exception?.ToString() : string.Empty,
                 Extensions =
                 {
