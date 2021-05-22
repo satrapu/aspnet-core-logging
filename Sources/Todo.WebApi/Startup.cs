@@ -141,11 +141,11 @@ namespace Todo.WebApi
 
         private void ConfigureApplicationInsights(IServiceCollection services)
         {
-            var applicationInsightsOptions = new ApplicationInsightsOptions();
-            Configuration.Bind(applicationInsightsOptions);
-
             if (IsSerilogApplicationInsightsSinkConfigured)
             {
+                var applicationInsightsOptions = new ApplicationInsightsOptions();
+                Configuration.Bind(applicationInsightsOptions);
+
                 services.AddApplicationInsightsTelemetry(applicationInsightsOptions.InstrumentationKey);
             }
         }
