@@ -30,6 +30,7 @@
         <PackageReference Update="NUnit3TestAdapter" Version="3.17.0"/>
         <PackageReference Update="NunitXml.TestLogger" Version="3.0.97"/>
         <PackageReference Update="System.IdentityModel.Tokens.Jwt" Version="6.11.0"/>
+        <PackageReference Update="Serilog" Version="2.10.0"/>
         <PackageReference Update="Serilog.AspNetCore" Version="4.1.0"/>
         <PackageReference Update="Serilog.Enrichers.Thread" Version="3.1.0"/>
         <PackageReference Update="Serilog.Sinks.ApplicationInsights" Version="3.1.0"/>
