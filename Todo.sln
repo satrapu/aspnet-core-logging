@@ -5,14 +5,14 @@ VisualStudioVersion = 16.0.28922.388
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{398FFE78-1C6A-4CC2-AB9F-220B7F1CDAE3}"
 	ProjectSection(SolutionItems) = preProject
-		Directory.Build.props = Directory.Build.props
-		Directory.Build.targets = Directory.Build.targets
-		Build\start-docker-on-macOS.sh = Build\start-docker-on-macOS.sh
-		Build\SonarBuildBreaker.ps1 = Build\SonarBuildBreaker.ps1
-		Build\RunComposeServices.ps1 = Build\RunComposeServices.ps1
-		Build\PublishComposeServiceLogs.ps1 = Build\PublishComposeServiceLogs.ps1
 		Build\azure-pipelines.job-template.yml = Build\azure-pipelines.job-template.yml
 		Build\azure-pipelines.yml = Build\azure-pipelines.yml
+		Directory.Build.props = Directory.Build.props
+		Directory.Build.targets = Directory.Build.targets
+		Build\PublishComposeServiceLogs.ps1 = Build\PublishComposeServiceLogs.ps1
+		Build\RunComposeServices.ps1 = Build\RunComposeServices.ps1
+		Build\SonarBuildBreaker.ps1 = Build\SonarBuildBreaker.ps1
+		Build\start-docker-on-macOS.sh = Build\start-docker-on-macOS.sh
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sources", "Sources", "{ED7A5363-C21A-4D47-A2A5-67DEB1E0DDE3}"
@@ -50,40 +50,45 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".sonarlint", ".sonarlint", 
 		.sonarlint\Todo.slconfig = .sonarlint\Todo.slconfig
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.Persistence.IntegrationTests", "Tests\IntegrationTests\Todo.Persistence.IntegrationTests\Todo.Persistence.IntegrationTests.csproj", "{606F50E6-9C93-4764-81E5-85D05768A546}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Todo.Persistence.IntegrationTests", "Tests\IntegrationTests\Todo.Persistence.IntegrationTests\Todo.Persistence.IntegrationTests.csproj", "{606F50E6-9C93-4764-81E5-85D05768A546}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.ApplicationFlows", "Sources\Todo.ApplicationFlows\Todo.ApplicationFlows.csproj", "{91A7E48D-F6D4-4CBC-8D39-12EAADC3D156}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Todo.ApplicationFlows", "Sources\Todo.ApplicationFlows\Todo.ApplicationFlows.csproj", "{91A7E48D-F6D4-4CBC-8D39-12EAADC3D156}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.ApplicationFlows.IntegrationTests", "Tests\IntegrationTests\Todo.ApplicationFlows.IntegrationTests\Todo.ApplicationFlows.IntegrationTests.csproj", "{8E33CD19-558D-4342-B639-B4FB9160B462}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Todo.ApplicationFlows.IntegrationTests", "Tests\IntegrationTests\Todo.ApplicationFlows.IntegrationTests\Todo.ApplicationFlows.IntegrationTests.csproj", "{8E33CD19-558D-4342-B639-B4FB9160B462}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestInfrastructure", "Tests\Infrastructure\TestInfrastructure\TestInfrastructure.csproj", "{2D55F79C-3EFA-4DBE-9900-B23400894FAA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestInfrastructure", "Tests\Infrastructure\TestInfrastructure\TestInfrastructure.csproj", "{2D55F79C-3EFA-4DBE-9900-B23400894FAA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{E773243B-5DCB-46A8-9012-1AD0084F0149}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ArchitectureTests", "ArchitectureTests", "{AB306CB9-FAA1-4058-9A9C-111EA5BF04C7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.ArchitectureTests", "Tests\ArchitectureTests\Todo.ArchitectureTests\Todo.ArchitectureTests.csproj", "{D9CB10FA-DBFB-4A35-8C20-E0CAB538BAC6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Todo.ArchitectureTests", "Tests\ArchitectureTests\Todo.ArchitectureTests\Todo.ArchitectureTests.csproj", "{D9CB10FA-DBFB-4A35-8C20-E0CAB538BAC6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "db4it", "db4it", "{851D8B4A-A6C9-469E-8633-E6679738DA72}"
-ProjectSection(SolutionItems) = preProject
-	Build\db4it-compose\docker-compose.yml = Build\db4it-compose\docker-compose.yml
-	Build\db4it-compose\.env = Build\db4it-compose\.env
-	Build\db4it-compose\.gitignore = Build\db4it-compose\.gitignore
-EndProjectSection
+	ProjectSection(SolutionItems) = preProject
+		Build\db4it-compose\.env = Build\db4it-compose\.env
+		Build\db4it-compose\.gitignore = Build\db4it-compose\.gitignore
+		Build\db4it-compose\docker-compose.yml = Build\db4it-compose\docker-compose.yml
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CodeStyle", "CodeStyle", "{3FCA9560-CE93-4B1F-9DE3-21461427E995}"
-ProjectSection(SolutionItems) = preProject
-	.editorconfig = .editorconfig
-EndProjectSection
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dependencies", "Dependencies", "{C96E70BB-91DA-49F8-8107-79B3B5F1973D}"
-ProjectSection(SolutionItems) = preProject
-	nuget.config = nuget.config
-EndProjectSection
+	ProjectSection(SolutionItems) = preProject
+		nuget.config = nuget.config
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CodeQuality", "CodeQuality", "{E0671D43-F81A-4829-802B-CCE84A764929}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.ApplicationFlows.UnitTests", "Tests\UnitTests\Todo.ApplicationFlows.UnitTests\Todo.ApplicationFlows.UnitTests.csproj", "{74414D41-EEF5-4217-9B47-52B19342A987}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Todo.ApplicationFlows.UnitTests", "Tests\UnitTests\Todo.ApplicationFlows.UnitTests\Todo.ApplicationFlows.UnitTests.csproj", "{74414D41-EEF5-4217-9B47-52B19342A987}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Run", "Run", "{2760AF02-37DB-441B-B0BA-75AE3ACC882A}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -152,15 +157,15 @@ Global
 		{0CB85FDE-074B-45ED-9FB3-C76A20C9B346} = {280A9085-F56E-43CA-A419-1E4609E378EA}
 		{EA09F015-51B5-4BB0-9F88-16CCDEA03E9D} = {0CB85FDE-074B-45ED-9FB3-C76A20C9B346}
 		{4F848C0D-74D8-46A0-831A-85D39375B89C} = {D084DD17-3480-4A70-8296-92FB55BAD433}
+		{9F40326A-D20A-40DE-A0D9-6D06EB4C71C5} = {E0671D43-F81A-4829-802B-CCE84A764929}
 		{606F50E6-9C93-4764-81E5-85D05768A546} = {0CB85FDE-074B-45ED-9FB3-C76A20C9B346}
 		{91A7E48D-F6D4-4CBC-8D39-12EAADC3D156} = {ED7A5363-C21A-4D47-A2A5-67DEB1E0DDE3}
 		{8E33CD19-558D-4342-B639-B4FB9160B462} = {0CB85FDE-074B-45ED-9FB3-C76A20C9B346}
-		{E773243B-5DCB-46A8-9012-1AD0084F0149} = {280A9085-F56E-43CA-A419-1E4609E378EA}
 		{2D55F79C-3EFA-4DBE-9900-B23400894FAA} = {E773243B-5DCB-46A8-9012-1AD0084F0149}
+		{E773243B-5DCB-46A8-9012-1AD0084F0149} = {280A9085-F56E-43CA-A419-1E4609E378EA}
 		{AB306CB9-FAA1-4058-9A9C-111EA5BF04C7} = {280A9085-F56E-43CA-A419-1E4609E378EA}
 		{D9CB10FA-DBFB-4A35-8C20-E0CAB538BAC6} = {AB306CB9-FAA1-4058-9A9C-111EA5BF04C7}
 		{851D8B4A-A6C9-469E-8633-E6679738DA72} = {398FFE78-1C6A-4CC2-AB9F-220B7F1CDAE3}
-		{9F40326A-D20A-40DE-A0D9-6D06EB4C71C5} = {E0671D43-F81A-4829-802B-CCE84A764929}
 		{74414D41-EEF5-4217-9B47-52B19342A987} = {D084DD17-3480-4A70-8296-92FB55BAD433}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
