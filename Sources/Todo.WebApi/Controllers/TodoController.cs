@@ -13,7 +13,7 @@ namespace Todo.WebApi.Controllers
 
     using Models;
 
-    using Services.TodoItemLifecycleManagement;
+    using Todo.Services.TodoItemLifecycleManagement;
 
     [Route("api/todo")]
     [Authorize]

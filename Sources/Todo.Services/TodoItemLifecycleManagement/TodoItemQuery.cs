@@ -3,9 +3,6 @@ namespace Todo.Services.TodoItemLifecycleManagement
     using System.ComponentModel.DataAnnotations;
     using System.Diagnostics.CodeAnalysis;
     using System.Security.Principal;
-    using System.Text;
-
-    using Security;
 
     [SuppressMessage("ReSharper", "S1135", Justification = "The todo word represents an entity")]
     public class TodoItemQuery
@@ -21,8 +18,8 @@ namespace Todo.Services.TodoItemLifecycleManagement
         /// <summary>
         /// Gets or sets the pattern the name of the todo items must match to be fetched using this query.
         /// <br/>
-        /// This pattern may contain wildcards - see more here:
-        /// https://docs.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbfunctionsextensions.like?view=efcore-3.1.
+        /// This pattern may contain wild-cards - see more here:
+        /// https://docs.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbfunctionsextensions.like?view=efcore-5.0.
         /// </summary>
         public string NamePattern { get; set; }
 
@@ -61,20 +58,5 @@ namespace Todo.Services.TodoItemLifecycleManagement
         /// the <see cref="SortBy"/> property in an ascending order.
         /// </summary>
         public bool? IsSortAscending { get; set; }
-
-        public override string ToString()
-        {
-            var stringBuilder = new StringBuilder();
-            stringBuilder.AppendJoin(";",
-                $"[{nameof(Id)}={Id}",
-                $"{nameof(NamePattern)}={NamePattern}",
-                $"{nameof(IsComplete)}={IsComplete}",
-                $"{nameof(Owner)}={Owner.GetNameOrDefault()}",
-                $"{nameof(PageIndex)}={PageIndex}",
-                $"{nameof(PageSize)}={PageSize}",
-                $"{nameof(SortBy)}={SortBy}",
-                $"{nameof(IsSortAscending)}={IsSortAscending}]");
-            return stringBuilder.ToString();
-        }
     }
 }
