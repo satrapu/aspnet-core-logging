@@ -79,6 +79,8 @@ namespace Todo.Services.TodoItemLifecycleManagement
 
         private async Task<IList<TodoItemInfo>> InternalGetByQueryAsync(TodoItemQuery todoItemQuery)
         {
+            logger.LogInformation("About to fetch items using query {@TodoItemQuery} ...", todoItemQuery);
+
             IQueryable<TodoItem> todoItems = FilterItems(todoItemQuery)
                 // Read more about query tags here:
                 // https://docs.microsoft.com/en-us/ef/core/querying/tags
@@ -91,14 +93,20 @@ namespace Todo.Services.TodoItemLifecycleManagement
             IQueryable<TodoItemInfo> todoItemInfos = ProjectItems(todoItems);
             IList<TodoItemInfo> result = await todoItemInfos.ToListAsync();
 
-            logger.LogInformation("Fetched {TodoItemsCount} todo item(s) for user [{User}] using query {TodoItemQuery}",
-                result.Count, todoItemQuery.Owner.GetName(), todoItemQuery);
+            logger.LogInformation("Fetched {TodoItemInfoListCount} todo item(s)", result.Count);
+
+            if (logger.IsEnabled(LogLevel.Debug))
+            {
+                logger.LogDebug("{@TodoItemInfoList}", result);
+            }
 
             return result;
         }
 
         private async Task<long> InternalAddAsync(NewTodoItemInfo newTodoItemInfo)
         {
+            logger.LogInformation("About to add item using context {@NewTodoItemInfo} ...", newTodoItemInfo);
+
             var newTodoItem = new TodoItem(newTodoItemInfo.Name, newTodoItemInfo.Owner.GetName());
 
             if (newTodoItemInfo.IsComplete.HasValue)
@@ -117,6 +125,8 @@ namespace Todo.Services.TodoItemLifecycleManagement
 
         private async Task InternalUpdateAsync(UpdateTodoItemInfo updateTodoItemInfo)
         {
+            logger.LogInformation("About to update item using context {@UpdateTodoItemInfo} ...", updateTodoItemInfo);
+
             TodoItem existingTodoItem = await GetExistingTodoItem(updateTodoItemInfo.Id, updateTodoItemInfo.Owner);
 
             if (updateTodoItemInfo.IsComplete.HasValue)
@@ -137,13 +147,15 @@ namespace Todo.Services.TodoItemLifecycleManagement
 
         private async Task InternalDeleteAsync(DeleteTodoItemInfo deleteTodoItemInfo)
         {
+            logger.LogInformation("About to delete item using context {@DeleteTodoItemInfo} ...", deleteTodoItemInfo);
+
             TodoItem existingTodoItem = await GetExistingTodoItem(deleteTodoItemInfo.Id, deleteTodoItemInfo.Owner);
 
             todoDbContext.TodoItems.Remove(existingTodoItem);
             await todoDbContext.SaveChangesAsync();
 
-            logger.LogInformation("Item with id {TodoItemId} has been deleted by user [{User}]"
-                , deleteTodoItemInfo.Id, deleteTodoItemInfo.Owner.GetName());
+            logger.LogInformation("Item with id {TodoItemId} has been deleted by user [{User}]",
+                deleteTodoItemInfo.Id, deleteTodoItemInfo.Owner.GetName());
         }
 
         private async Task<TodoItem> GetExistingTodoItem(long? id, IPrincipal owner)
