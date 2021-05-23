@@ -113,6 +113,14 @@
           "System.Xml.XmlDocument": "4.3.0"
         }
       },
+      "Destructurama.Attributed": {
+        "type": "Transitive",
+        "resolved": "2.0.0",
+        "contentHash": "WKW8UJQMf0fB2CsalGW4wyW+ObNtnnxQtuOd8SoZPIy+sCeL3r3G8bMmGipLitWkr3As5E9i2Bnlokw3EFYRaQ==",
+        "dependencies": {
+          "Serilog": "2.6.0"
+        }
+      },
       "EntityFrameworkCoreMock.Shared": {
         "type": "Transitive",
         "resolved": "2.1.0",
@@ -410,6 +418,25 @@
         "dependencies": {
           "Microsoft.NETCore.Platforms": "1.1.0",
           "Microsoft.NETCore.Targets": "1.1.0"
+        }
+      },
+      "Serilog": {
+        "type": "Transitive",
+        "resolved": "2.6.0",
+        "contentHash": "hxHgHkza8ZowrvQ+jTEF2ypDWGP8NbNtxPQIx7ogTAM9fisDFo2+6kOaxCkleZLO8hiyq0kW5tDLkgm/dbj9uA==",
+        "dependencies": {
+          "Microsoft.CSharp": "4.0.1",
+          "System.Collections": "4.0.11",
+          "System.Collections.NonGeneric": "4.0.1",
+          "System.Dynamic.Runtime": "4.0.11",
+          "System.Globalization": "4.0.11",
+          "System.Linq": "4.1.0",
+          "System.Reflection": "4.1.0",
+          "System.Reflection.Extensions": "4.0.1",
+          "System.Runtime": "4.1.0",
+          "System.Runtime.Extensions": "4.1.0",
+          "System.Text.RegularExpressions": "4.1.0",
+          "System.Threading": "4.0.11"
         }
       },
       "System.AppContext": {
@@ -1075,6 +1102,7 @@
       "todo.services": {
         "type": "Project",
         "dependencies": {
+          "Destructurama.Attributed": "2.0.0",
           "Microsoft.IdentityModel.Tokens": "6.11.0",
           "System.IdentityModel.Tokens.Jwt": "6.11.0",
           "Todo.Persistence": "1.0.0"
