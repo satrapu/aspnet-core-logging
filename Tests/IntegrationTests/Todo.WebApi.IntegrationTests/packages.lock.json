@@ -86,14 +86,6 @@
         "resolved": "8.22.0.31243",
         "contentHash": "WhBWn657RKj8ta8EbFd9huKcH8VZqR7cHiJfMG/UZnx99DolpsEpXfF7bScYx8cM0wZcW5mvsKalR29el0ao0A=="
       },
-      "Destructurama.Attributed": {
-        "type": "Transitive",
-        "resolved": "2.0.0",
-        "contentHash": "WKW8UJQMf0fB2CsalGW4wyW+ObNtnnxQtuOd8SoZPIy+sCeL3r3G8bMmGipLitWkr3As5E9i2Bnlokw3EFYRaQ==",
-        "dependencies": {
-          "Serilog": "2.6.0"
-        }
-      },
       "Humanizer.Core": {
         "type": "Transitive",
         "resolved": "2.8.26",
@@ -1956,7 +1948,6 @@
       "todo.services": {
         "type": "Project",
         "dependencies": {
-          "Destructurama.Attributed": "2.0.0",
           "Microsoft.IdentityModel.Tokens": "6.11.0",
           "System.IdentityModel.Tokens.Jwt": "6.11.0",
           "Todo.Persistence": "1.0.0"

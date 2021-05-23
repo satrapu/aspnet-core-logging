@@ -4,8 +4,6 @@ namespace Todo.Services.TodoItemLifecycleManagement
     using System.Diagnostics.CodeAnalysis;
     using System.Security.Principal;
 
-    using Destructurama.Attributed;
-
     [SuppressMessage("ReSharper", "S1135", Justification = "The todo word represents an entity")]
     public class TodoItemQuery
     {
@@ -34,7 +32,6 @@ namespace Todo.Services.TodoItemLifecycleManagement
         /// Gets or sets the user who has created the todo items to be fetched using this query.
         /// </summary>
         [Required]
-        [LogAsScalar]
         public IPrincipal Owner { get; set; }
 
         /// <summary>

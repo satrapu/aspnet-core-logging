@@ -15,8 +15,6 @@ namespace Todo.WebApi
 
     using Authorization;
 
-    using Destructurama;
-
     using ExceptionHandling;
 
     using Logging;
@@ -193,8 +191,6 @@ namespace Todo.WebApi
 
                 loggingBuilder.AddSerilog(new LoggerConfiguration()
                     .ReadFrom.Configuration(Configuration)
-                    // Allow customizing how Serilog will log objects via attributes.
-                    .Destructure.UsingAttributes()
                     .CreateLogger(), dispose: true);
             });
         }
