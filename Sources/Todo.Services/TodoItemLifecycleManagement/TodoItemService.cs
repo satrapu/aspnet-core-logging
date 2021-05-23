@@ -94,6 +94,11 @@ namespace Todo.Services.TodoItemLifecycleManagement
             logger.LogInformation("Fetched {TodoItemsCount} todo item(s) for user [{User}] using query {@TodoItemQuery}",
                 result.Count, todoItemQuery.Owner.GetName(), todoItemQuery);
 
+            if (logger.IsEnabled(LogLevel.Debug))
+            {
+                logger.LogDebug("{@TodoItemInfoList}", result);
+            }
+
             return result;
         }
 
