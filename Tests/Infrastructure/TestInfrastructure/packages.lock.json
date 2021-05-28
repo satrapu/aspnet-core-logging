@@ -2088,6 +2088,13 @@
           "Todo.Services": "1.0.0"
         }
       },
+      "todo.integrations.serilog": {
+        "type": "Project",
+        "dependencies": {
+          "Serilog": "2.10.0",
+          "Todo.Services": "1.0.0"
+        }
+      },
       "todo.persistence": {
         "type": "Project",
         "dependencies": {
@@ -2116,7 +2123,8 @@
           "Serilog.Enrichers.Thread": "3.1.0",
           "Serilog.Sinks.ApplicationInsights": "3.1.0",
           "Serilog.Sinks.Seq": "5.0.1",
-          "Todo.ApplicationFlows": "1.0.0"
+          "Todo.ApplicationFlows": "1.0.0",
+          "Todo.Integrations.Serilog": "1.0.0"
         }
       }
     }

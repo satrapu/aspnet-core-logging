@@ -13,7 +13,7 @@ namespace Todo.WebApi.Controllers
 
     using Models;
 
-    using Services.Security;
+    using Todo.Services.Security;
 
     /// <summary>
     /// Creates JSON web tokens to be used by the users of this web API for authentication and authorization purposes.
@@ -36,7 +36,7 @@ namespace Todo.WebApi.Controllers
         {
             this.generateJwtFlow = generateJwtFlow ?? throw new ArgumentNullException(nameof(generateJwtFlow));
 
-            // Options pattern: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-3.1.
+            // Options pattern: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-5.0.
             generateJwtOptions = generateJwtOptionsMonitor.CurrentValue;
         }
 

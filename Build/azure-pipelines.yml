@@ -100,20 +100,25 @@ jobs:
       databaseDockerImage: 'postgres:12-alpine'
       composeProjectName: 'integration-test-prerequisites'
 
-- template: './azure-pipelines.job-template.yml'
-  parameters:
-    job:
-      name: 'macOS'
-      displayName: 'Run on macOS'
-    pool:
-      vmImage: 'macOS-10.15'
-    integrationTests:
-      databaseHost: 'localhost'
-      databaseName: '$(IntegrationTests.Database.Todo.Name)'
-      databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
-      databasePassword: '$(IntegrationTests.Database.Todo.Password)'
-      databaseDockerImage: 'postgres:12-alpine'
-      composeProjectName: 'integration-test-prerequisites'
+# satrapu 2021-05-08: Temporarily stop running pipeline on macOS-based agents until I find a way of installing Docker
+# on such agents via start-docker-on-macOS.sh script.
+# This script used to work on Monday, May 3rd 2021, but failed to work since Friday, May 7th 2021 due to
+# error: "cp: /Applications/Docker.app/Contents/Resources/com.docker.vmnetd.plist: No such file or directory".
+#
+#- template: './azure-pipelines.job-template.yml'
+#  parameters:
+#    job:
+#      name: 'macOS'
+#      displayName: 'Run on macOS'
+#    pool:
+#      vmImage: 'macOS-10.15'
+#    integrationTests:
+#      databaseHost: 'localhost'
+#      databaseName: '$(IntegrationTests.Database.Todo.Name)'
+#      databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
+#      databasePassword: '$(IntegrationTests.Database.Todo.Password)'
+#      databaseDockerImage: 'postgres:12-alpine'
+#      composeProjectName: 'integration-test-prerequisites'
 
 - template: './azure-pipelines.job-template.yml'
   parameters:

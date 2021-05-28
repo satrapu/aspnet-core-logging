@@ -2,21 +2,29 @@
 
 # Based on: https://github.com/docker/for-mac/issues/2359#issuecomment-607154849.
 
-# Fail script in case of unset variables - see more here:
+# Fail script in case of unset variables - see more here: 
 # http://web.archive.org/web/20110314180918/http://www.davidpashley.com/articles/writing-robust-shell-scripts.html#id2577541.
 set -o nounset
-
+ 
 # Fail scripts in case a command fails - see more here:
 # http://web.archive.org/web/20110314180918/http://www.davidpashley.com/articles/writing-robust-shell-scripts.html#id2577574.
 set -o errexit
 
-# Install Docker Desktop for Mac.
-echo "Installing Docker Desktop for Mac ..."
+# Install latest version of Docker Desktop for Mac
+echo 'Installing Docker Desktop for Mac ...'
 start=$SECONDS
 
-# Install Docker via brew package manager.
-# See brew docker formula here: https://formulae.brew.sh/formula/docker.
-brew install --no-quarantine docker
+brew install --cask docker &>/dev/null
+
+# Allow Docker.app to run without confirmation
+xattr -d -r com.apple.quarantine /Applications/Docker.app
+
+# Preemptively do Docker.app's setup to avoid any GUI prompts
+sudo /bin/cp /Applications/Docker.app/Contents/Library/LaunchServices/com.docker.vmnetd /Library/PrivilegedHelperTools
+sudo /bin/cp /Applications/Docker.app/Contents/Resources/com.docker.vmnetd.plist /Library/LaunchDaemons/
+sudo /bin/chmod 544 /Library/PrivilegedHelperTools/com.docker.vmnetd
+sudo /bin/chmod 644 /Library/LaunchDaemons/com.docker.vmnetd.plist
+sudo /bin/launchctl load /Library/LaunchDaemons/com.docker.vmnetd.plist
 
 end=$SECONDS
 duration=$(( end - start ))
