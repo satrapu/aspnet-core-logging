@@ -61,3 +61,6 @@ done
 end=$SECONDS
 duration=$(( end - start ))
 echo "Docker service has started after $duration seconds"
+
+docker --version
+docker-compose --version
