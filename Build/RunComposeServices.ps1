@@ -13,13 +13,7 @@ Param(
     [String]
     $ComposeProjectName = 'aspnet-core-logging-it',
 
-    # Relative path pointing to a file containing variables following `key=value` convention.
-    # This path is resolved using this script location as base path.
-    # These variables will be passed to the containers started via Docker Compose.
-    [String]
-    $RelativePathToEnvironmentFile = '.env',
-
-    # The amount of time in milliseconds between two consecutive checks made to ensure  compose services have 
+    # The amount of time in milliseconds between two consecutive checks made to ensure  compose services have
     # reached healthy state.
     [Int32]
     [ValidateRange(250, [Int32]::MaxValue)]
@@ -46,15 +40,6 @@ if (![System.IO.File]::Exists($ComposeFilePath))
     exit 1;
 }
 
-$ComposeEnvironmentFilePath = [System.IO.Path]::GetFullPath((Join-Path -Path $PSScriptRoot $RelativePathToEnvironmentFile))
-
-if (![System.IO.File]::Exists($ComposeEnvironmentFilePath))
-{
-    Write-Output "##vso[task.LogIssue type=error;]There is no environment file at path: `"$ComposeEnvironmentFilePath`""
-    Write-Output "##vso[task.complete result=Failed;]"
-    exit 2;
-}
-
 if ($EnvironmentVariables -ne $null)
 {
     $EnvironmentVariables.GetEnumerator() | ForEach-Object {
@@ -63,15 +48,13 @@ if ($EnvironmentVariables -ne $null)
 }
 
 $InfoMessage = "About to start compose services declared in file: `"$ComposeFilePath`" " `
-              + "using project name: `"$ComposeProjectName`" " `
-              + "and environment file: `"$ComposeEnvironmentFilePath`" ..."
+              + "using project name: `"$ComposeProjectName`" ..."
 Write-Output $InfoMessage
 
-# Do not check whether this command has ended successfully since it's writing to 
+# Do not check whether this command has ended successfully since it's writing to
 # standard error stream, thus tricking runtime into thinking it has failed.
 docker-compose --file="$ComposeFilePath" `
                --project-name="$ComposeProjectName" `
-               --env-file="$ComposeEnvironmentFilePath" `
                up `
                --detach
 
@@ -113,7 +96,7 @@ $LsCommandOutput.Split([System.Environment]::NewLine, [System.StringSplitOptions
     }
 
     $ComposeServices.Add($ComposeService)
-    
+
     $InfoMessage = "Found compose service with container id: `"$($ComposeService.ContainerId)`" " `
                  + "and service name: `"$($ComposeService.ServiceName)`""
     Write-Output $InfoMessage
@@ -215,7 +198,7 @@ foreach ($ComposeService in $ComposeServices)
         {
             # Skip processing mappings which do not follow the proper format (e.g. <IP_ADDRESS>:<HOST_PORT>).
             # I've found a weird port mapping, 5432/tcp -> :::49153, when pipeline was running on
-            # Linux-based agent; this port mapping appeared in addition to the legit one, 
+            # Linux-based agent; this port mapping appeared in addition to the legit one,
             # 5432/tcp -> 0.0.0.0:49153.
             Write-Output "Skip processing port mapping: `"$RawPortMapping`" since it does not look legit!"
             continue;
@@ -227,9 +210,9 @@ foreach ($ComposeService in $ComposeServices)
         # The part on the left side of the ' -> ' string represents container port info,
         # while the part of the right represents host port info.
         #
-        # To find the container port, one need to extract it from string '5432/tcp' - in this case, 
+        # To find the container port, one need to extract it from string '5432/tcp' - in this case,
         # the container port is: 5432.
-        # To find the host port, one need to extract it from string '0.0.0.0:32769' - in this case, 
+        # To find the host port, one need to extract it from string '0.0.0.0:32769' - in this case,
         # the host port is: 32769.
         $RawPortMappingParts = $RawPortMapping.Split(' -> ', [System.StringSplitOptions]::RemoveEmptyEntries)
         $RawContainerPort = $RawPortMappingParts[0]
@@ -238,10 +221,10 @@ foreach ($ComposeService in $ComposeServices)
         $HostPort = $RawHostPort.Split(':', [System.StringSplitOptions]::RemoveEmptyEntries)[1]
         Write-Output "Container port: $ContainerPort is mapped to host port: $HostPort"
 
-        # For each port mapping an Azure DevOps pipeline variable will be created with a name following 
+        # For each port mapping an Azure DevOps pipeline variable will be created with a name following
         # the convention: compose.project.<COMPOSE_PROJECT_NAME>.service.<COMPOSE_SERVICE_NAME>.port.<CONTAINER_PORT>.
         # The variable value will be set to the host port.
-        # Using the port mapping from above and assuming the project name is 'aspnet-core-logging-it' and 
+        # Using the port mapping from above and assuming the project name is 'aspnet-core-logging-it' and
         # the service is named 'db-v12', the following variable will be created:
         #   'compose.project.aspnet-core-logging-it.services.db-v12.port.5432' with value: '32769'
         $VariableName = "compose.project.$ComposeProjectName.service.$($ComposeService.ServiceName).port.$ContainerPort"

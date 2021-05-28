@@ -309,7 +309,6 @@ jobs:
       arguments: >-
         -ComposeProjectName '${{ parameters.integrationTests.composeProjectName }}' `
         -RelativePathToComposeFile './db4it/docker-compose.yml' `
-        -RelativePathToEnvironmentFile './db4it/.env' `
         -EnvironmentVariables `
          @{ `
            'db_docker_image'='${{ parameters.integrationTests.databaseDockerImage }}'; `
