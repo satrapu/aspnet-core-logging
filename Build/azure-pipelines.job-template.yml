@@ -308,8 +308,8 @@ jobs:
       filePath: '$(Build.SourcesDirectory)/Build/RunComposeServices.ps1'
       arguments: >-
         -ComposeProjectName '${{ parameters.integrationTests.composeProjectName }}' `
-        -RelativePathToComposeFile './db4it-compose/docker-compose.yml' `
-        -RelativePathToEnvironmentFile './db4it-compose/.env' `
+        -RelativePathToComposeFile './db4it/docker-compose.yml' `
+        -RelativePathToEnvironmentFile './db4it/.env' `
         -EnvironmentVariables `
          @{ `
            'db_docker_image'='${{ parameters.integrationTests.databaseDockerImage }}'; `
