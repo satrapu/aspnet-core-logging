@@ -15,9 +15,9 @@ set -o errexit
 echo 'Downloading and then running docker brew formula ...'
 start=$SECONDS
 
-# The brew formula below will install Docker Desktop for Mac, v3.2.0,61504.
+# The brew formula below will install Docker Desktop for Mac, v3.1.0,51484.
 dockerInstallationScriptName='docker.rb'
-dockerInstallationScriptUrl="https://raw.githubusercontent.com/Homebrew/homebrew-cask/48df6caf2230123f6713805c9038a8c0137e348e/Casks/$dockerInstallationScriptName"
+dockerInstallationScriptUrl="https://raw.githubusercontent.com/Homebrew/homebrew-cask/e4e8f000cfa3f38fc9a58ace83569ad3793cdf5f/Casks/$dockerInstallationScriptName"
 curl -L  $dockerInstallationScriptUrl > $dockerInstallationScriptName && brew install $dockerInstallationScriptName
 
 end=$SECONDS
