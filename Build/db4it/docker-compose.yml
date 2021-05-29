@@ -1,5 +1,5 @@
-# Use compose file version 3.7 and not a newer one 
-# since macOS-based Azure DevOps agents cannot run 
+# Use compose file version 3.7 and not a newer one
+# since macOS-based Azure DevOps agents cannot run
 # Docker versions compatible with v3.8+.
 version: "3.7"
 
@@ -13,10 +13,10 @@ services:
           --port=5432 \
           --dbname=${db_name} \
           --username=${db_username}
-      interval: "${db_healthcheck_interval}"
-      timeout: "${db_healthcheck_timeout}"
-      retries: ${db_healthcheck_retries}
-      start_period: "${db_healthcheck_start_period}"
+      interval: "2s"
+      timeout: "5s"
+      retries: 5
+      start_period: "1s"
     stdin_open: false
     tty: false
     environment:

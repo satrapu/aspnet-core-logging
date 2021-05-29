@@ -65,11 +65,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Todo.ArchitectureTests", "Tests\ArchitectureTests\Todo.ArchitectureTests\Todo.ArchitectureTests.csproj", "{D9CB10FA-DBFB-4A35-8C20-E0CAB538BAC6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "db4it", "db4it", "{851D8B4A-A6C9-469E-8633-E6679738DA72}"
-	ProjectSection(SolutionItems) = preProject
-		Build\db4it-compose\.env = Build\db4it-compose\.env
-		Build\db4it-compose\.gitignore = Build\db4it-compose\.gitignore
-		Build\db4it-compose\docker-compose.yml = Build\db4it-compose\docker-compose.yml
-	EndProjectSection
+ProjectSection(SolutionItems) = preProject
+	Build\db4it\docker-compose.yml = Build\db4it\docker-compose.yml
+EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CodeStyle", "CodeStyle", "{3FCA9560-CE93-4B1F-9DE3-21461427E995}"
 	ProjectSection(SolutionItems) = preProject
