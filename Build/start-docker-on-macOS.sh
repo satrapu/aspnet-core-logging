@@ -15,9 +15,9 @@ set -o errexit
 echo 'Downloading and then running docker brew formula ...'
 start=$SECONDS
 
-# The brew formula below will install latest available Docker and Docker Compose versions.
+# The brew formula below will install Docker Desktop for Mac, v3.3.0,62916.
 dockerInstallationScriptName='docker.rb'
-dockerInstallationScriptUrl="https://raw.githubusercontent.com/Homebrew/homebrew-cask/master/Casks/$dockerInstallationScriptName"
+dockerInstallationScriptUrl="https://raw.githubusercontent.com/Homebrew/homebrew-cask/e2a30dc218d5ffb290be3bc3e05b66936139194d/Casks/$dockerInstallationScriptName"
 curl -L  $dockerInstallationScriptUrl > $dockerInstallationScriptName && brew install $dockerInstallationScriptName
 
 end=$SECONDS
