@@ -41,7 +41,7 @@ jobs:
     NUGET_PACKAGES: '$(Pipeline.Workspace)/.nuget/packages'
 
     # Avoid caching NuGet packages each time a build runs on an Azure DevOps agent.
-    # See more here: http://donovanbrown.com/post/Stop-wasting-time-during-NET-Core-builds.
+    # See more here: https://www.donovanbrown.com/post/Stop-wasting-time-during-NET-Core-builds.
     DOTNET_SKIP_FIRST_TIME_EXPERIENCE: '1'
 
     # Disable .NET Core telemetry.
