@@ -46,10 +46,10 @@ variables:
   # See more about secret variables here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&tabs=yaml%2Cbatch#secret-variables.
   - group: 'IntegrationTests'
 
-  # Specifies the version of the .NET Core SDK to install and use when running this pipeline.
-  # All releases can be found here: https://dotnet.microsoft.com/download/dotnet-core.
+  # Specifies the version of the .NET SDK to install and use when running this pipeline.
+  # All releases can be found here: https://dotnet.microsoft.com/download/dotnet.
   - name: 'DotNetCore_SDK_Version'
-    value: '5.0.202'
+    value: '5.0.300'
 
   # Specifies the version of the dotnet-format tool used for enforcing rules found in .editorconfig files.
   # All releases can be found here: https://github.com/dotnet/format/releases.
