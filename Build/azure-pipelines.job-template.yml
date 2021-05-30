@@ -52,6 +52,10 @@ jobs:
     # See more here: https://docs.microsoft.com/en-us/dotnet/core/dependency-loading/default-probing#how-do-i-debug-the-probing-properties-construction.
     COREHOST_TRACE: '0'
 
+    # Disable downloading XML documentation when restoring NuGet package.
+    # See more here: https://docs.microsoft.com/en-us/nuget/reference/cli-reference/cli-ref-environment-variables.
+    NUGET_XMLDOC_MODE: 'skip'
+
     architectureTestsOutcome: 'failure'
     unitTestsOutcome: 'failure'
     integrationTestsOutcome: 'failure'
