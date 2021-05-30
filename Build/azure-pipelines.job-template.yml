@@ -548,7 +548,6 @@ jobs:
       errorActionPreference: 'stop'
       script: |
         Write-Output "##vso[task.setvariable variable=CurrentGitBranchName]$(System.PullRequest.SourceBranch)"
-        Write-Output "The current Git branch name is: variables['CurrentGitBranchName']"
 
   # Load the current Git branch name into a build variable to be later used when querying SonarCloud web API for the
   # results of the static analysis performed against this branch.
@@ -570,7 +569,6 @@ jobs:
       errorActionPreference: 'stop'
       script: |
         Write-Output "##vso[task.setvariable variable=CurrentGitBranchName]$(Build.SourceBranch)"
-        Write-Output "The current Git branch name is: $(CurrentGitBranchName)"
 
   # Normalize Git branch name since Azure DevOps does not provide the expected one (e.g. 'master' or 'feature/my-feature-branch').
   # See more here: https://stackoverflow.com/questions/59956206/how-to-get-a-branch-name-with-a-slash-in-azure-devops
@@ -592,7 +590,8 @@ jobs:
         $currentGitBranchName = "$(CurrentGitBranchName)"
         $normalizedGitBranchName = $currentGitBranchName -Replace 'refs/heads/', ''
         Write-Output "##vso[task.setvariable variable=NormalizedGitBranchName]$normalizedGitBranchName"
-        Write-Output "The normalized Git branch name is: $(NormalizedGitBranchName)"
+        Write-Output "The current Git branch name is: $currentGitBranchName"
+        Write-Output "The normalized Git branch name is: $normalizedGitBranchName"
 
   # Run a PowerShell script to break the build in case Sonar quality gate has failed.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/powershell?view=azure-devops.
