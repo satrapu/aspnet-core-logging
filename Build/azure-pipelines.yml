@@ -55,7 +55,7 @@ variables:
   # All releases can be found here: https://github.com/dotnet/format/releases.
   # All NuGet packages can be found here: https://www.nuget.org/packages/dotnet-format/.
   - name: 'DotNetFormat_Version'
-    value: '5.0.211103'
+    value: '5.1.225507'
 
   # Specifies the version of the ReportGenerator tool used for generating code coverage reports.
   # All releases can be found here: https://github.com/danielpalme/ReportGenerator/releases.
