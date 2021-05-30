@@ -13,7 +13,7 @@ namespace Todo.WebApi.Controllers
 
     using Models;
 
-    using Todo.Services.Security;
+    using Services.Security;
 
     /// <summary>
     /// Creates JSON web tokens to be used by the users of this web API for authentication and authorization purposes.
