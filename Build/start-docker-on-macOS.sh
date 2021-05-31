@@ -37,7 +37,7 @@ echo 'Starting Docker service ...'
 start=$SECONDS
 
 retries=0
-maxRetries=30
+maxRetries=60
 
 while ! docker info 2>/dev/null ; do
     sleep 5s
