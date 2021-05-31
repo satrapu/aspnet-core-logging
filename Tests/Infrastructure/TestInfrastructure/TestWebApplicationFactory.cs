@@ -73,7 +73,8 @@ namespace Todo.TestInfrastructure
         {
             ILoggerFactory loggerFactory = Server.Services.GetService<ILoggerFactory>();
             ILogger logger = loggerFactory.CreateLogger<TestWebApplicationFactory>();
-            HttpClient httpClient = CreateDefaultClient(new LoggingHandler(new HttpClientHandler(), logger));
+            HttpClient httpClient = CreateDefaultClient(new HttpLoggingHandler(new HttpClientHandler(), logger));
+
             return httpClient;
         }
 
@@ -183,56 +184,6 @@ namespace Todo.TestInfrastructure
             databaseMigrator.Migrate();
             logger.LogInformation("Migrations have been successfully run against test database {TestDatabaseName}",
                 databaseName);
-        }
-    }
-
-    public class LoggingHandler : DelegatingHandler
-    {
-        private readonly ILogger logger;
-
-        public LoggingHandler(HttpMessageHandler innerHandler, ILogger logger) : base(innerHandler)
-        {
-            this.logger = logger;
-        }
-
-        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
-            CancellationToken cancellationToken)
-        {
-            var stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine("-- REQUEST: BEGIN --");
-            stringBuilder.AppendLine($"{request}\nContent:\n\t");
-
-            if (request.Content != null)
-            {
-                stringBuilder.AppendLine(await request.Content.ReadAsStringAsync(cancellationToken));
-            }
-            else
-            {
-                stringBuilder.AppendLine("N/A");
-            }
-
-            stringBuilder.AppendLine("-- REQUEST: END --");
-
-            HttpResponseMessage response = await base.SendAsync(request, cancellationToken);
-
-            stringBuilder.AppendLine("-- RESPONSE: BEGIN --");
-            stringBuilder.AppendLine($"{response}\nContent:\n\t");
-
-            if (request.Content != null)
-            {
-                stringBuilder.AppendLine(await response.Content.ReadAsStringAsync(cancellationToken));
-            }
-            else
-            {
-                stringBuilder.AppendLine("N/A");
-            }
-
-            stringBuilder.AppendLine("-- RESPONSE: END --");
-
-            // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
-            logger.LogInformation(stringBuilder.ToString());
-
-            return response;
         }
     }
 }
