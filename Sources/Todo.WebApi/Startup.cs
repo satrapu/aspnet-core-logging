@@ -106,19 +106,21 @@ namespace Todo.WebApi
         /// <summary>
         /// Configures Autofac container.
         /// <br />
-        /// See more here: https://autofaccn.readthedocs.io/en/latest/integration/aspnetcore.html.
+        /// See more here: https://autofac.readthedocs.io/en/latest/integration/aspnetcore.html#startup-class and here:
+        /// https://autofac.readthedocs.io/en/latest/integration/aspnetcore.html#configuration-method-naming-conventions.
         /// </summary>
-        /// <param name="builder">The <seealso cref="ContainerBuilder"/> instance to be used
-        /// when adding services to Autofac container.</param>
+        /// <param name="builder">The <see cref="ContainerBuilder"/> instance to be used when adding services to
+        /// Autofac container.</param>
         public void ConfigureContainer(ContainerBuilder builder)
         {
-            bool isRunningLocally = WebHostEnvironment.IsDevelopment() || WebHostEnvironment.IsIntegrationTests();
             string connectionStringName = "Todo";
 
             if (WebHostEnvironment.IsIntegrationTests())
             {
                 connectionStringName = "TodoForIntegrationTests";
             }
+
+            bool isRunningLocally = WebHostEnvironment.IsDevelopment() || WebHostEnvironment.IsIntegrationTests();
 
             builder.RegisterModule(new PersistenceModule(connectionStringName, isRunningLocally));
         }
@@ -214,6 +216,7 @@ namespace Todo.WebApi
                 }
 
                 loggingBuilder.ClearProviders();
+
                 loggingBuilder.AddSerilog(new LoggerConfiguration()
                     .ReadFrom.Configuration(Configuration)
                     .CreateLogger(), dispose: true);
@@ -399,7 +402,7 @@ namespace Todo.WebApi
             using var todoDbContext = serviceScope.ServiceProvider.GetRequiredService<TodoDbContext>();
             string database = todoDbContext.Database.GetDbConnection().Database;
 
-            logger.LogInformation("About to migrate database {Database} ...", database);
+            logger.LogInformation("About to migrate database {DatabaseName} ...", database);
 
             try
             {
@@ -407,12 +410,12 @@ namespace Todo.WebApi
             }
             catch (Exception exception)
             {
-                logger.LogCritical(exception, "Failed to migrate database {Database}", database);
+                logger.LogCritical(exception, "Failed to migrate database {DatabaseName}", database);
 
                 throw;
             }
 
-            logger.LogInformation("Database {Database} has been migrated", database);
+            logger.LogInformation("Database {DatabaseName} has been migrated", database);
         }
     }
 }
