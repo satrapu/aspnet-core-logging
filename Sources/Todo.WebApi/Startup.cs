@@ -157,11 +157,11 @@ namespace Todo.WebApi
 
         private void ConfigureApplicationInsights(IServiceCollection services)
         {
-            var applicationInsightsOptions = new ApplicationInsightsOptions();
-            Configuration.Bind(applicationInsightsOptions);
-
             if (IsSerilogApplicationInsightsSinkConfigured)
             {
+                var applicationInsightsOptions = new ApplicationInsightsOptions();
+                Configuration.Bind(applicationInsightsOptions);
+
                 services.AddApplicationInsightsTelemetry(applicationInsightsOptions.InstrumentationKey);
             }
         }
@@ -281,7 +281,7 @@ namespace Todo.WebApi
             services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
 
             // Configure options used for customizing generating JWT tokens.
-            // Options pattern: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-3.1.
+            // Options pattern: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-5.0.
             services.Configure<GenerateJwtOptions>(generateJwtOptions);
         }
 

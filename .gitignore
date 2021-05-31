@@ -1,10 +1,12 @@
-﻿# Visual Studio artifacts
+# Visual Studio artifacts
 .vs/
 bin/
 obj/
 
 # Visual Studio Code artifacts
 .vscode/
+/Tests/Infrastructure/TestInfrastructure/Properties/launchSettings.json
+/Tests/Infrastructure/TestInfrastructure/TestInfrastructure.csproj.user
 
 # Rider IDE artifacts
 .idea/

@@ -46,22 +46,22 @@ variables:
   # See more about secret variables here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&tabs=yaml%2Cbatch#secret-variables.
   - group: 'IntegrationTests'
 
-  # Specifies the version of the .NET Core SDK to install and use when running this pipeline.
-  # All releases can be found here: https://dotnet.microsoft.com/download/dotnet-core.
+  # Specifies the version of the .NET SDK to install and use when running this pipeline.
+  # All releases can be found here: https://dotnet.microsoft.com/download/dotnet.
   - name: 'DotNetCore_SDK_Version'
-    value: '5.0.202'
+    value: '5.0.300'
 
   # Specifies the version of the dotnet-format tool used for enforcing rules found in .editorconfig files.
   # All releases can be found here: https://github.com/dotnet/format/releases.
   # All NuGet packages can be found here: https://www.nuget.org/packages/dotnet-format/.
   - name: 'DotNetFormat_Version'
-    value: '5.0.211103'
+    value: '5.1.225507'
 
   # Specifies the version of the ReportGenerator tool used for generating code coverage reports.
   # All releases can be found here: https://github.com/danielpalme/ReportGenerator/releases.
   # All NuGet packages can be found here: https://www.nuget.org/packages/ReportGenerator/.
   - name: 'ReportGenerator_Version'
-    value: '4.8.8'
+    value: '4.8.9'
 
   # Represents the name of the database to be targeted by integration tests
   - name: 'IntegrationTests.Database.Todo.Name'
