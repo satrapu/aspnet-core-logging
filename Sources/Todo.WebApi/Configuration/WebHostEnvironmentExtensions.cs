@@ -9,7 +9,10 @@
     /// </summary>
     public static class WebHostEnvironmentExtensions
     {
-        private const string IntegrationTestsEnvironmentName = "IntegrationTests";
+        /// <summary>
+        /// Represents the name of the environment used for running integration tests.
+        /// </summary>
+        public const string IntegrationTestsEnvironmentName = "IntegrationTests";
 
         /// <summary>
         /// Checks if the current host environment name is <see cref="IntegrationTestsEnvironmentName"/>.
