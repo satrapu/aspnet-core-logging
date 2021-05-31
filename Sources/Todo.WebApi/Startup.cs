@@ -213,11 +213,7 @@ namespace Todo.WebApi
                     }
                 }
 
-                if (!WebHostingEnvironment.IsDevelopment())
-                {
-                    loggingBuilder.ClearProviders();
-                }
-
+                loggingBuilder.ClearProviders();
                 loggingBuilder.AddSerilog(new LoggerConfiguration()
                     .ReadFrom.Configuration(Configuration)
                     .CreateLogger(), dispose: true);
