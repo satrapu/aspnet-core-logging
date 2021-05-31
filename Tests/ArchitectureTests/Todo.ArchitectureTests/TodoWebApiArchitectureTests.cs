@@ -111,7 +111,7 @@ namespace Todo
         /// <summary>
         /// Fetches all controllers found in this application.
         /// </summary>
-        private static  PredicateList GetWebApiControllers()
+        private static PredicateList GetWebApiControllers()
         {
             PredicateList webApiControllers = Types.InAssembly(typeof(Startup).Assembly)
                 .That()
