@@ -1,18 +1,16 @@
 namespace Todo.TestInfrastructure
 {
     using System;
-    using System.Linq;
+    using System.Collections.Generic;
     using System.Net.Http;
     using System.Text;
-    using System.Threading;
     using System.Threading.Tasks;
 
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc.Testing;
-    using Microsoft.EntityFrameworkCore;
-    using Microsoft.EntityFrameworkCore.Infrastructure;
-    using Microsoft.EntityFrameworkCore.Migrations;
+    using Microsoft.AspNetCore.TestHost;
     using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.Configuration.Memory;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection.Extensions;
     using Microsoft.Extensions.Hosting;
@@ -22,42 +20,40 @@ namespace Todo.TestInfrastructure
 
     using Npgsql;
 
-    using Persistence;
-
     using WebApi;
     using WebApi.Configuration;
     using WebApi.Models;
 
+    /// <summary>
+    /// A <see cref="WebApplicationFactory{TEntryPoint}"/> implementation to be used for running integration tests.
+    /// <br/>
+    /// Each instance of this class will use its own database to ensure isolation at test class level.
+    /// </summary>
     public class TestWebApplicationFactory : WebApplicationFactory<Startup>
     {
-        private readonly string testDatabaseName;
+        private const string ConnectionStringKey = "ConnectionStrings:TodoForIntegrationTests";
+        private readonly string applicationName;
 
         public TestWebApplicationFactory(string applicationName)
         {
-            testDatabaseName = $"it--{applicationName}";
+            this.applicationName = applicationName;
         }
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
-            string integrationTestsEnvironmentName = WebHostEnvironmentExtensions.IntegrationTestsEnvironmentName;
-            IConfigurationRoot integrationTestsConfiguration = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json", optional: false)
-                .AddJsonFile($"appsettings.{integrationTestsEnvironmentName}.json", optional: false)
-                .AddEnvironmentVariables()
-                .Build();
+            string environmentName = WebHostEnvironmentExtensions.IntegrationTestsEnvironmentName;
+            builder.UseEnvironment(environmentName);
 
-            builder.UseEnvironment(integrationTestsEnvironmentName);
-            builder.UseConfiguration(integrationTestsConfiguration);
-            builder.ConfigureServices(services =>
+            builder.ConfigureAppConfiguration((webHostBuilderContext, configurationBuilder) =>
             {
-                // Don't run IHostedServices when running tests
+                IConfiguration configuration = CreateConfigurationForEnvironment(environmentName);
+                configurationBuilder.AddConfiguration(configuration);
+            });
+
+            builder.ConfigureTestServices(services =>
+            {
+                // Do not allow any hosted services, if any, to execute while running tests.
                 services.RemoveAll(typeof(IHostedService));
-
-                // Ensure an implementation of IHttpClientFactory interface can be injected at a later time
-                services.AddHttpClient();
-
-                SetupDbContext(services);
-                SetupDatabase(services);
             });
         }
 
@@ -66,7 +62,38 @@ namespace Todo.TestInfrastructure
             string accessToken = await GetAccessTokenAsync();
             HttpClient httpClient = CreateClientWithLoggingCapabilities();
             httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
+
             return httpClient;
+        }
+
+        private IConfiguration CreateConfigurationForEnvironment(string environmentName)
+        {
+            IConfigurationRoot configurationRoot = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
+                .AddJsonFile($"appsettings.{environmentName}.json", optional: false, reloadOnChange: false)
+                .AddEnvironmentVariables()
+                .Build();
+
+            var connectionStringBuilder =
+                new NpgsqlConnectionStringBuilder(configurationRoot.GetValue<string>(ConnectionStringKey))
+                {
+                    Database = $"db4it--{applicationName}"
+                };
+
+            var memoryConfigurationSource = new MemoryConfigurationSource
+            {
+                InitialData = new List<KeyValuePair<string, string>>
+                {
+                    new KeyValuePair<string, string>(ConnectionStringKey, connectionStringBuilder.ConnectionString)
+                }
+            };
+
+            IConfigurationRoot enhancedConfigurationRoot = new ConfigurationBuilder()
+                .AddConfiguration(configurationRoot)
+                .Add(memoryConfigurationSource)
+                .Build();
+
+            return enhancedConfigurationRoot;
         }
 
         private HttpClient CreateClientWithLoggingCapabilities()
@@ -87,6 +114,7 @@ namespace Todo.TestInfrastructure
             };
 
             using HttpClient httpClient = CreateClientWithLoggingCapabilities();
+
             HttpResponseMessage httpResponseMessage = await httpClient.PostAsync("api/jwt",
                 new StringContent(JsonConvert.SerializeObject(generateJwtModel), Encoding.UTF8, "application/json"));
 
@@ -97,93 +125,8 @@ namespace Todo.TestInfrastructure
 
             JwtModel jwtModel =
                 JsonConvert.DeserializeObject<JwtModel>(await httpResponseMessage.Content.ReadAsStringAsync());
+
             return jwtModel.AccessToken;
-        }
-
-        private void SetupDbContext(IServiceCollection services)
-        {
-            ServiceDescriptor dbContextServiceDescriptor = services.SingleOrDefault(serviceDescriptor =>
-                serviceDescriptor.ServiceType == typeof(DbContextOptions<TodoDbContext>));
-
-            if (dbContextServiceDescriptor != null)
-            {
-                services.Remove(dbContextServiceDescriptor);
-            }
-
-            services.AddDbContext<TodoDbContext>((serviceProvider, dbContextOptionsBuilder) =>
-            {
-                IConfiguration configuration = serviceProvider.GetRequiredService<IConfiguration>();
-                // ReSharper disable once SettingNotFoundInConfiguration
-                var testConnectionString = configuration.GetConnectionString("TodoForIntegrationTests");
-                var connectionStringBuilder = new NpgsqlConnectionStringBuilder(testConnectionString)
-                {
-                    Database = testDatabaseName
-                };
-
-                LogConnectionString(connectionStringBuilder.ConnectionString, serviceProvider);
-
-                dbContextOptionsBuilder.UseNpgsql(connectionStringBuilder.ConnectionString)
-                    .EnableSensitiveDataLogging()
-                    .EnableDetailedErrors()
-                    .UseLoggerFactory(serviceProvider.GetRequiredService<ILoggerFactory>());
-            });
-        }
-
-        private static void LogConnectionString(string originalConnectionString, IServiceProvider serviceProvider)
-        {
-            var connectionStringBuilder = new NpgsqlConnectionStringBuilder(originalConnectionString)
-            {
-                Password = new string('*', 5)
-            };
-
-            ILogger logger = serviceProvider.GetRequiredService<ILogger<TestWebApplicationFactory>>();
-            logger.LogInformation("Will use connection string: {ConnectionStringWithObfuscatedPassword}",
-                connectionStringBuilder.ConnectionString);
-        }
-
-        private static void SetupDatabase(IServiceCollection services)
-        {
-            ServiceProvider serviceProvider = services.BuildServiceProvider();
-            using IServiceScope serviceScope = serviceProvider.CreateScope();
-            TodoDbContext todoDbContext = serviceScope.ServiceProvider.GetRequiredService<TodoDbContext>();
-            ILogger logger = serviceProvider.GetRequiredService<ILogger<TestWebApplicationFactory>>();
-            string databaseName = todoDbContext.Database.GetDbConnection().Database;
-            logger.LogInformation("About to setup test database {TestDatabaseName} ...", databaseName);
-
-            try
-            {
-                RunMigrations(databaseName, todoDbContext, logger);
-            }
-            catch (Exception exception)
-            {
-                logger.LogError(exception, "Failed to run migrations against test database {TestDatabaseName}",
-                    databaseName);
-                throw;
-            }
-
-            logger.LogInformation("Test database {TestDatabaseName} has been successfully setup", databaseName);
-        }
-
-        private static void RunMigrations(string databaseName, TodoDbContext todoDbContext, ILogger logger)
-        {
-            logger.LogInformation("About to delete test database {TestDatabaseName} ...", databaseName);
-            bool hasDeleteDatabase = todoDbContext.Database.EnsureDeleted();
-
-            // ReSharper disable once ConvertIfStatementToConditionalTernaryExpression
-            if (hasDeleteDatabase)
-            {
-                logger.LogInformation("Test database {TestDatabaseName} has been successfully deleted", databaseName);
-            }
-            else
-            {
-                logger.LogInformation("Could not find any test database {TestDatabaseName} to delete", databaseName);
-            }
-
-            logger.LogInformation("About to run migrations against test database {TestDatabaseName} ...", databaseName);
-            IMigrator databaseMigrator = todoDbContext.GetInfrastructure().GetRequiredService<IMigrator>();
-            databaseMigrator.Migrate();
-            logger.LogInformation("Migrations have been successfully run against test database {TestDatabaseName}",
-                databaseName);
         }
     }
 }
