@@ -41,16 +41,20 @@ jobs:
     NUGET_PACKAGES: '$(Pipeline.Workspace)/.nuget/packages'
 
     # Avoid caching NuGet packages each time a build runs on an Azure DevOps agent.
-    # See more here: http://donovanbrown.com/post/Stop-wasting-time-during-NET-Core-builds.
+    # See more here: https://www.donovanbrown.com/post/Stop-wasting-time-during-NET-Core-builds.
     DOTNET_SKIP_FIRST_TIME_EXPERIENCE: '1'
 
-    # Disable .NET Core telemetry.
+    # Disable .NET SDK telemetry.
     # See more here: https://docs.microsoft.com/en-us/dotnet/core/tools/telemetry#how-to-opt-out.
     DOTNET_CLI_TELEMETRY_OPTOUT: '1'
 
     # Disable Core CLR tracing.
     # See more here: https://docs.microsoft.com/en-us/dotnet/core/dependency-loading/default-probing#how-do-i-debug-the-probing-properties-construction.
     COREHOST_TRACE: '0'
+
+    # Disable downloading XML documentation when restoring NuGet package.
+    # See more here: https://docs.microsoft.com/en-us/nuget/reference/cli-reference/cli-ref-environment-variables.
+    NUGET_XMLDOC_MODE: 'skip'
 
     architectureTestsOutcome: 'failure'
     unitTestsOutcome: 'failure'
@@ -64,14 +68,14 @@ jobs:
     fetchDepth: 1
     lfs: False
 
-  # Install specific .NET Core SDK version used for building the application.
+  # Install specific .NET SDK version used for building the application.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/tool/dotnet-core-tool-installer?view=azure-devops.
-  # Installing a specific .NET Core SDK version is needed to avoid installing a .NET Core global tool in a following task and
+  # Installing a specific .NET SDK version is needed to avoid installing a .NET global tool in a following task and
   # then have Azure DevOps complain that it cannot find it.
   # This issue is documented here: https://github.com/Microsoft/azure-pipelines-tasks/issues/8291.
   - task: UseDotNet@2
-    name: 'install_dotnetcore_sdk_required_by_application'
-    displayName: 'Install .NET Core SDK required by application'
+    name: 'install_dotnet_sdk_required_by_application'
+    displayName: 'Install .NET SDK required by application'
     condition: eq(${{ parameters.installDotNetSdk }}, True)
     inputs:
       packageType: 'sdk'
