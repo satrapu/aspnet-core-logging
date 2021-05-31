@@ -1,4 +1,4 @@
-﻿namespace Todo.WebApi.Configuration
+namespace Todo.WebApi.Configuration
 {
     using System;
 

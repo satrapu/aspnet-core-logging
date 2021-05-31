@@ -1,4 +1,4 @@
-﻿namespace Todo.TestInfrastructure
+namespace Todo.TestInfrastructure
 {
     using System.Net.Http;
     using System.Text;
