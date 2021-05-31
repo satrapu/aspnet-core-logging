@@ -41,7 +41,7 @@ namespace Todo.TestInfrastructure
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
-            string environmentName = WebHostEnvironmentExtensions.IntegrationTestsEnvironmentName;
+            const string environmentName = WebHostEnvironmentExtensions.IntegrationTestsEnvironmentName;
             builder.UseEnvironment(environmentName);
 
             builder.ConfigureAppConfiguration((webHostBuilderContext, configurationBuilder) =>
