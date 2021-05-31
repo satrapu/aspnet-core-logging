@@ -13,7 +13,7 @@ namespace Todo.WebApi
     using Serilog.Core;
 
     /// <summary>
-    /// Console application used for running Todo ASP.NET Core Web API.
+    /// Runs an application used for managing user todo items (aka user tasks).
     /// </summary>
     [SuppressMessage("ReSharper", "S1135", Justification = "The todo word represents an entity")]
     [ExcludeFromCodeCoverage]
@@ -25,9 +25,9 @@ namespace Todo.WebApi
             .CreateLogger();
 
         /// <summary>
-        /// Runs Todo ASP.NET Core Web API.
+        /// The entry point for running the application.
         /// </summary>
-        /// <param name="args"></param>
+        /// <param name="args">The command line arguments used when invoking the application executable.</param>
         public static void Main(string[] args)
         {
             try
@@ -36,7 +36,7 @@ namespace Todo.WebApi
             }
             catch (Exception exception)
             {
-                logger.Fatal(exception, "Todo ASP.NET Core Web API failed to start");
+                logger.Fatal(exception, "Application failed to start");
                 throw;
             }
             finally
@@ -47,7 +47,7 @@ namespace Todo.WebApi
 
         private static IHostBuilder CreateHostBuilder(string[] args)
         {
-            logger.Information("Configuring host builder needed to run Todo ASP.NET Core Web API ...");
+            logger.Information("Configuring host builder needed to run the application ...");
             IHostBuilder hostBuilder =
                 Host.CreateDefaultBuilder(args)
                     .UseServiceProviderFactory(new AutofacServiceProviderFactory())
@@ -77,7 +77,7 @@ namespace Todo.WebApi
                         // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/startup?view=aspnetcore-5.0.
                         localHostBuilder.UseStartup<Startup>();
                     });
-            logger.Information("Host builder needed to run Todo ASP.NET Core Web API has been configured");
+            logger.Information("Host builder needed to run the application has been configured");
             return hostBuilder;
         }
     }
