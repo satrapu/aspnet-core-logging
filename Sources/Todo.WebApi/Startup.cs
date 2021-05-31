@@ -58,7 +58,9 @@ namespace Todo.WebApi
 
         private IConfiguration Configuration { get; }
 
-        private IWebHostEnvironment WebHostingEnvironment { get; }
+        private IWebHostEnvironment WebHostEnvironment { get; }
+
+        private string ApplicationName { get; }
 
         private bool IsHttpLoggingEnabled { get; }
 
@@ -72,11 +74,13 @@ namespace Todo.WebApi
         /// Creates a new instance of the <see cref="Startup"/> class.
         /// </summary>
         /// <param name="configuration">The configuration to be used for setting up this application.</param>
-        /// <param name="webHostEnvironment">The environment where this application is hosted.</param>
+        /// <param name="webHostEnvironment">The web hosting environment running this application.</param>
         public Startup(IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
         {
             Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-            WebHostingEnvironment = webHostEnvironment ?? throw new ArgumentNullException(nameof(webHostEnvironment));
+            WebHostEnvironment = webHostEnvironment ?? throw new ArgumentNullException(nameof(webHostEnvironment));
+            ApplicationName = $"Todo ASP.NET Core Web API [environment={WebHostEnvironment.EnvironmentName}]";
+
             IsMiniProfilerEnabled = Configuration.GetValue<bool>("MiniProfiler:Enabled");
             IsHttpLoggingEnabled = Configuration.GetValue<bool>("HttpLogging:Enabled");
 
@@ -108,10 +112,10 @@ namespace Todo.WebApi
         /// when adding services to Autofac container.</param>
         public void ConfigureContainer(ContainerBuilder builder)
         {
-            bool isRunningLocally = WebHostingEnvironment.IsDevelopment() || WebHostingEnvironment.IsIntegrationTests();
+            bool isRunningLocally = WebHostEnvironment.IsDevelopment() || WebHostEnvironment.IsIntegrationTests();
             string connectionStringName = "Todo";
 
-            if (WebHostingEnvironment.IsIntegrationTests())
+            if (WebHostEnvironment.IsIntegrationTests())
             {
                 connectionStringName = "TodoForIntegrationTests";
             }
@@ -124,7 +128,7 @@ namespace Todo.WebApi
         public void Configure(IApplicationBuilder applicationBuilder, IHostApplicationLifetime hostApplicationLifetime,
             ILogger<Startup> logger)
         {
-            logger.LogInformation("Todo ASP.NET Core Web API is starting ...");
+            logger.LogInformation("{ApplicationName} is starting ...", ApplicationName);
 
             if (IsSerilogFileSinkConfigured)
             {
@@ -223,7 +227,7 @@ namespace Todo.WebApi
         private void ConfigureSecurity(IServiceCollection services)
         {
             // Display personally identifiable information only during development
-            IdentityModelEventSource.ShowPII = WebHostingEnvironment.IsDevelopment();
+            IdentityModelEventSource.ShowPII = WebHostEnvironment.IsDevelopment();
 
             // Configure authentication & authorization using JSON web tokens
             IConfigurationSection generateJwtOptions = Configuration.GetSection("GenerateJwt");
@@ -367,17 +371,17 @@ namespace Todo.WebApi
         private void OnApplicationStarted(IApplicationBuilder applicationBuilder, ILogger logger)
         {
             MigrateDatabase(applicationBuilder, logger);
-            logger.LogInformation("Todo ASP.NET Core Web API has started");
+            logger.LogInformation("{ApplicationName} has started", ApplicationName);
         }
 
-        private static void OnApplicationStopping(ILogger logger)
+        private void OnApplicationStopping(ILogger logger)
         {
-            logger.LogInformation("Todo ASP.NET Core Web API is stopping ...");
+            logger.LogInformation("{ApplicationName} is stopping ...", ApplicationName);
         }
 
-        private static void OnApplicationStopped(ILogger logger)
+        private void OnApplicationStopped(ILogger logger)
         {
-            logger.LogInformation("Todo ASP.NET Core Web API has stopped");
+            logger.LogInformation("{ApplicationName} has stopped", ApplicationName);
         }
 
         private void MigrateDatabase(IApplicationBuilder applicationBuilder, ILogger logger)
