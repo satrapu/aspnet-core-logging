@@ -25,11 +25,11 @@ namespace Todo.TestInfrastructure
     using Persistence;
 
     using WebApi;
+    using WebApi.Configuration;
     using WebApi.Models;
 
     public class TestWebApplicationFactory : WebApplicationFactory<Startup>
     {
-        private const string EnvironmentName = "IntegrationTests";
         private readonly string testDatabaseName;
 
         public TestWebApplicationFactory(string applicationName)
@@ -39,14 +39,15 @@ namespace Todo.TestInfrastructure
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
-            IConfigurationRoot testConfiguration = new ConfigurationBuilder()
+            string integrationTestsEnvironmentName = WebHostEnvironmentExtensions.IntegrationTestsEnvironmentName;
+            IConfigurationRoot integrationTestsConfiguration = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json", optional: false)
-                .AddJsonFile($"appsettings.{EnvironmentName}.json", optional: false)
+                .AddJsonFile($"appsettings.{integrationTestsEnvironmentName}.json", optional: false)
                 .AddEnvironmentVariables()
                 .Build();
 
-            builder.UseConfiguration(testConfiguration);
-            builder.UseEnvironment(EnvironmentName);
+            builder.UseEnvironment(integrationTestsEnvironmentName);
+            builder.UseConfiguration(integrationTestsConfiguration);
             builder.ConfigureServices(services =>
             {
                 // Don't run IHostedServices when running tests
