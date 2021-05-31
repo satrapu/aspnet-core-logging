@@ -13,14 +13,21 @@
     /// </summary>
     public class PersistenceModule : Module
     {
-        private bool IsDevelopmentEnvironment { get; }
+        private bool IsRunningLocally { get; }
 
-        private string ConnectionName { get; }
+        private string ConnectionStringName { get; }
 
-        public PersistenceModule(string connectionName, bool isDevelopmentEnvironment)
+        /// <summary>
+        /// Creates a new instance of the <see cref="PersistenceModule"/> class.
+        /// </summary>
+        /// <param name="connectionStringName">The name of the connection string to use when communicating with
+        /// the underlying RDBMS.</param>
+        /// <param name="isRunningLocally">Value representing whether the services configured via this module will run
+        /// inside a development environment (e.g. locally or inside a CI pipeline).</param>
+        public PersistenceModule(string connectionStringName, bool isRunningLocally)
         {
-            ConnectionName = connectionName;
-            IsDevelopmentEnvironment = isDevelopmentEnvironment;
+            ConnectionStringName = connectionStringName;
+            IsRunningLocally = isRunningLocally;
         }
 
         protected override void Load(ContainerBuilder builder)
@@ -32,7 +39,7 @@
                     ILoggerFactory loggerFactory = componentContext.Resolve<ILoggerFactory>();
 
                     IConfiguration configuration = componentContext.Resolve<IConfiguration>();
-                    string connectionString = configuration.GetConnectionString(ConnectionName);
+                    string connectionString = configuration.GetConnectionString(ConnectionStringName);
 
                     var dbContextOptions = new DbContextOptions<TodoDbContext>();
 
@@ -41,7 +48,7 @@
                         .UseNpgsql(connectionString)
                         .UseLoggerFactory(loggerFactory);
 
-                    if (IsDevelopmentEnvironment)
+                    if (IsRunningLocally)
                     {
                         dbContextOptionsBuilder.EnableSensitiveDataLogging();
                         dbContextOptionsBuilder.EnableDetailedErrors();

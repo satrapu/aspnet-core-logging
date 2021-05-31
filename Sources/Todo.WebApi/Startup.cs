@@ -17,6 +17,8 @@ namespace Todo.WebApi
 
     using Autofac;
 
+    using Configuration;
+
     using ExceptionHandling;
 
     using Logging;
@@ -80,7 +82,9 @@ namespace Todo.WebApi
 
             IEnumerable<KeyValuePair<string, string>> configuredSerilogSinks =
                 Configuration.GetSection("Serilog:Using").AsEnumerable().ToList();
+
             IsSerilogFileSinkConfigured = configuredSerilogSinks.Any(sink => "Serilog.Sinks.File".Equals(sink.Value));
+
             IsSerilogApplicationInsightsSinkConfigured =
                 configuredSerilogSinks.Any(sink => "Serilog.Sinks.ApplicationInsights".Equals(sink.Value));
         }
@@ -104,10 +108,15 @@ namespace Todo.WebApi
         /// when adding services to Autofac container.</param>
         public void ConfigureContainer(ContainerBuilder builder)
         {
-            builder.RegisterModule(
-                new PersistenceModule(isDevelopmentEnvironment: WebHostingEnvironment.IsDevelopment(),
-                    connectionName: "Todo")
-            );
+            bool isRunningLocally = WebHostingEnvironment.IsDevelopment() || WebHostingEnvironment.IsIntegrationTests();
+            string connectionStringName = "Todo";
+
+            if (WebHostingEnvironment.IsIntegrationTests())
+            {
+                connectionStringName = "TodoForIntegrationTests";
+            }
+
+            builder.RegisterModule(new PersistenceModule(connectionStringName, isRunningLocally));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -270,10 +279,13 @@ namespace Todo.WebApi
             {
                 options.AddPolicy(Policies.TodoItems.GetTodoItems,
                     policy => policy.Requirements.Add(new HasScopeRequirement("get:todo", tokenIssuer)));
+
                 options.AddPolicy(Policies.TodoItems.CreateTodoItem,
                     policy => policy.Requirements.Add(new HasScopeRequirement("create:todo", tokenIssuer)));
+
                 options.AddPolicy(Policies.TodoItems.UpdateTodoItem,
                     policy => policy.Requirements.Add(new HasScopeRequirement("update:todo", tokenIssuer)));
+
                 options.AddPolicy(Policies.TodoItems.DeleteTodoItem,
                     policy => policy.Requirements.Add(new HasScopeRequirement("delete:todo", tokenIssuer)));
             });
@@ -321,12 +333,12 @@ namespace Todo.WebApi
                             Status = StatusCodes.Status422UnprocessableEntity,
                             Detail = "See the errors property for more details",
                             Instance = context.HttpContext.Request.Path,
-                            Extensions = { { "TraceId", context.HttpContext.TraceIdentifier } }
+                            Extensions = {{"TraceId", context.HttpContext.TraceIdentifier}}
                         };
 
                         return new UnprocessableEntityObjectResult(validationProblemDetails)
                         {
-                            ContentTypes = { "application/problem+json" }
+                            ContentTypes = {"application/problem+json"}
                         };
                     };
                 });
@@ -375,12 +387,15 @@ namespace Todo.WebApi
             if (!shouldMigrateDatabase)
             {
                 logger.LogInformation("Migrating database has been turned off");
+
                 return;
             }
 
             logger.LogInformation("Migrating database has been turned on");
+
             using var serviceScope =
                 applicationBuilder.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope();
+
             using var todoDbContext = serviceScope.ServiceProvider.GetRequiredService<TodoDbContext>();
             string database = todoDbContext.Database.GetDbConnection().Database;
 
@@ -393,6 +408,7 @@ namespace Todo.WebApi
             catch (Exception exception)
             {
                 logger.LogCritical(exception, "Failed to migrate database {Database}", database);
+
                 throw;
             }
 
