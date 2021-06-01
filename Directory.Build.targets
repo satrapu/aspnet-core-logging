@@ -4,8 +4,9 @@
 -->
 <Project>
     <ItemGroup>
-        <PackageReference Update="Autofac" Version="6.2.0" />
-        <PackageReference Update="Autofac.Extensions.DependencyInjection" Version="7.1.0" />
+        <PackageReference Update="Autofac" Version="6.2.0"/>
+        <PackageReference Update="Autofac.Configuration" Version="6.0.0"/>
+        <PackageReference Update="Autofac.Extensions.DependencyInjection" Version="7.1.0"/>
         <PackageReference Update="coverlet.msbuild" Version="3.0.3"/>
         <PackageReference Update="EntityFrameworkCoreMock.Moq" Version="2.2.0"/>
         <PackageReference Update="FluentAssertions" Version="5.10.3"/>
@@ -20,6 +21,8 @@
         <PackageReference Update="Microsoft.Extensions.Configuration" Version="5.0.0"/>
         <PackageReference Update="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="5.0.0"/>
         <PackageReference Update="Microsoft.Extensions.Configuration.Json" Version="5.0.0"/>
+        <PackageReference Update="Microsoft.Extensions.Options" Version="5.0.0"/>
+        <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="5.0.0"/>
         <PackageReference Update="Microsoft.IdentityModel.Tokens" Version="6.11.1"/>
         <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.10.0"/>
         <PackageReference Update="MiniProfiler.AspNetCore.Mvc" Version="4.2.22"/>
