@@ -235,6 +235,7 @@
       "todo.services": {
         "type": "Project",
         "dependencies": {
+          "Autofac": "6.2.0",
           "Microsoft.IdentityModel.Tokens": "6.11.1",
           "System.IdentityModel.Tokens.Jwt": "6.11.1",
           "Todo.Persistence": "1.0.0"

@@ -9,15 +9,7 @@ namespace Todo.WebApi
     using System.Text;
     using System.Threading.Tasks;
 
-    using ApplicationFlows;
-    using ApplicationFlows.Security;
-    using ApplicationFlows.TodoItems;
-
     using Authorization;
-
-    using Autofac;
-
-    using Configuration;
 
     using ExceptionHandling;
 
@@ -42,9 +34,6 @@ namespace Todo.WebApi
     using Persistence;
 
     using Serilog;
-
-    using Services.Security;
-    using Services.TodoItemLifecycleManagement;
 
     using ILogger = Microsoft.Extensions.Logging.ILogger;
 
@@ -96,33 +85,13 @@ namespace Todo.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddOptions();
+
             ConfigureLogging(services);
             ConfigureSecurity(services);
             ConfigureMiniProfiler(services);
             ConfigureWebApi(services);
             ConfigureApplicationServices(services);
-        }
-
-        /// <summary>
-        /// Configures Autofac container.
-        /// <br />
-        /// See more here: https://autofac.readthedocs.io/en/latest/integration/aspnetcore.html#startup-class and here:
-        /// https://autofac.readthedocs.io/en/latest/integration/aspnetcore.html#configuration-method-naming-conventions.
-        /// </summary>
-        /// <param name="builder">The <see cref="ContainerBuilder"/> instance to be used when adding services to
-        /// Autofac container.</param>
-        public void ConfigureContainer(ContainerBuilder builder)
-        {
-            string connectionStringName = "Todo";
-
-            if (WebHostEnvironment.IsIntegrationTests())
-            {
-                connectionStringName = "TodoForIntegrationTests";
-            }
-
-            bool isRunningLocally = WebHostEnvironment.IsDevelopment() || WebHostEnvironment.IsIntegrationTests();
-
-            builder.RegisterModule(new PersistenceModule(connectionStringName, isRunningLocally));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -336,12 +305,12 @@ namespace Todo.WebApi
                             Status = StatusCodes.Status422UnprocessableEntity,
                             Detail = "See the errors property for more details",
                             Instance = context.HttpContext.Request.Path,
-                            Extensions = { { "TraceId", context.HttpContext.TraceIdentifier } }
+                            Extensions = {{"TraceId", context.HttpContext.TraceIdentifier}}
                         };
 
                         return new UnprocessableEntityObjectResult(validationProblemDetails)
                         {
-                            ContentTypes = { "application/problem+json" }
+                            ContentTypes = {"application/problem+json"}
                         };
                     };
                 });
@@ -351,20 +320,6 @@ namespace Todo.WebApi
         {
             // Configure options used when handling exceptions.
             services.Configure<ExceptionHandlingOptions>(Configuration.GetSection("ExceptionHandling"));
-
-            services.AddSingleton<IJwtService, JwtService>();
-            services.AddScoped<ITodoItemService, TodoItemService>();
-
-            // Configure options used by application flows.
-            services.Configure<ApplicationFlowOptions>(Configuration.GetSection("ApplicationFlows"));
-
-            // Register application flows.
-            services.AddScoped<IGenerateJwtFlow, GenerateJwtFlow>();
-            services.AddScoped<IFetchTodoItemsFlow, FetchTodoItemsFlow>();
-            services.AddScoped<IFetchTodoItemByIdFlow, FetchTodoItemByIdFlow>();
-            services.AddScoped<IAddTodoItemFlow, AddTodoItemFlow>();
-            services.AddScoped<IUpdateTodoItemFlow, UpdateTodoItemFlow>();
-            services.AddScoped<IDeleteTodoItemFlow, DeleteTodoItemFlow>();
         }
 
         private void OnApplicationStarted(IApplicationBuilder applicationBuilder, ILogger logger)

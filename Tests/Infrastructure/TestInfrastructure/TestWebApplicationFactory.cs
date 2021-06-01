@@ -3,8 +3,13 @@ namespace Todo.TestInfrastructure
     using System;
     using System.Collections.Generic;
     using System.Net.Http;
+    using System.Security.Principal;
     using System.Text;
     using System.Threading.Tasks;
+
+    using ApplicationFlows.Security;
+
+    using Autofac;
 
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc.Testing;
@@ -19,6 +24,8 @@ namespace Todo.TestInfrastructure
     using Newtonsoft.Json;
 
     using Npgsql;
+
+    using Services.Security;
 
     using WebApi;
     using WebApi.Configuration;
