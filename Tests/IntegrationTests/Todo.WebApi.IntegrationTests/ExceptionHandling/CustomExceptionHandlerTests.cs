@@ -20,7 +20,6 @@ namespace Todo.WebApi.ExceptionHandling
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.Hosting;
 
     using Models;
 
@@ -51,7 +50,28 @@ namespace Todo.WebApi.ExceptionHandling
             };
 
             using var testWebApplicationFactory =
-                new CustomWebApplicationFactory(MethodBase.GetCurrentMethod()?.DeclaringType?.Name);
+                new TestWebApplicationFactory(MethodBase.GetCurrentMethod()?.DeclaringType?.Name)
+                    .WithMockServices(containerBuilder =>
+                    {
+                        // Ensure a mock implementation will be injected whenever a service requires an instance of the
+                        // IGenerateJwtFlow interface.
+                        containerBuilder
+                            .RegisterType<GenerateJwtFlowWhichThrowsException>()
+                            .As<IGenerateJwtFlow>()
+                            .InstancePerLifetimeScope();
+                    })
+                    .WithWebHostBuilder(webHostBuilder =>
+                    {
+                        webHostBuilder.ConfigureAppConfiguration(configurationBuilder =>
+                        {
+                            configurationBuilder.AddInMemoryCollection(new[]
+                            {
+                                // Ensure database is not migrated, since having an up-to-date RDBMS will just complicate
+                                // this test method.
+                                new KeyValuePair<string, string>("MigrateDatabase", bool.FalseString)
+                            });
+                        });
+                    });
 
             using HttpClient httpClient = testWebApplicationFactory.CreateClient();
 
@@ -96,49 +116,6 @@ namespace Todo.WebApi.ExceptionHandling
             public Task<JwtInfo> ExecuteAsync(GenerateJwtInfo input, IPrincipal flowInitiator)
             {
                 throw new InvalidOperationException("This method must fail for testing purposes");
-            }
-        }
-
-        private class CustomWebApplicationFactory : TestWebApplicationFactory
-        {
-            public CustomWebApplicationFactory(string applicationName) : base(applicationName)
-            {
-            }
-
-            /// <summary>
-            /// This method is part of a bigger workaround for a known issue, documented here:
-            /// https://github.com/dotnet/aspnetcore/issues/14907#issuecomment-850407104.
-            /// </summary>
-            /// <param name="builder"></param>
-            /// <returns></returns>
-            protected override IHost CreateHost(IHostBuilder builder)
-            {
-                builder.ConfigureContainer<ContainerBuilder>(containerBuilder =>
-                {
-                    // Ensure a mock implementation will be injected whenever a service requires an instance of the
-                    // IGenerateJwtFlow interface.
-                    containerBuilder
-                        .RegisterType<GenerateJwtFlowWhichThrowsException>()
-                        .As<IGenerateJwtFlow>()
-                        .InstancePerLifetimeScope();
-                });
-
-                return base.CreateHost(builder);
-            }
-
-            protected override void ConfigureWebHost(IWebHostBuilder builder)
-            {
-                base.ConfigureWebHost(builder);
-
-                builder.ConfigureAppConfiguration((_, configurationBuilder) =>
-                {
-                    configurationBuilder.AddInMemoryCollection(new[]
-                    {
-                        // Ensure database is not migrated, since having an up-to-date RDBMS will just complicate
-                        // this test method.
-                        new KeyValuePair<string, string>("MigrateDatabase", bool.FalseString)
-                    });
-                });
             }
         }
     }

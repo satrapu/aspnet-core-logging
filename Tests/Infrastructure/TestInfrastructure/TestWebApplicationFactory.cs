@@ -3,11 +3,8 @@ namespace Todo.TestInfrastructure
     using System;
     using System.Collections.Generic;
     using System.Net.Http;
-    using System.Security.Principal;
     using System.Text;
     using System.Threading.Tasks;
-
-    using ApplicationFlows.Security;
 
     using Autofac;
 
@@ -25,8 +22,6 @@ namespace Todo.TestInfrastructure
 
     using Npgsql;
 
-    using Services.Security;
-
     using WebApi;
     using WebApi.Configuration;
     using WebApi.Models;
@@ -39,11 +34,49 @@ namespace Todo.TestInfrastructure
     public class TestWebApplicationFactory : WebApplicationFactory<Startup>
     {
         private const string ConnectionStringKey = "ConnectionStrings:TodoForIntegrationTests";
+        private Action<ContainerBuilder> setupMockServicesAction;
         private readonly string applicationName;
 
         public TestWebApplicationFactory(string applicationName)
         {
             this.applicationName = applicationName;
+        }
+
+        public async Task<HttpClient> CreateClientWithJwtAsync()
+        {
+            string accessToken = await GetAccessTokenAsync();
+            HttpClient httpClient = CreateClientWithLoggingCapabilities();
+            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
+
+            return httpClient;
+        }
+
+        /// <summary>
+        /// This method allows replacing registered services with mock implementations, as needed for testing purposes.
+        /// </summary>
+        /// <param name="setupMockServices">The action inside which registered services are replaced with mocks.</param>
+        /// <returns>The current <see cref="TestWebApplicationFactory"/> instance.</returns>
+        public TestWebApplicationFactory WithMockServices(Action<ContainerBuilder> setupMockServices)
+        {
+            setupMockServicesAction = setupMockServices;
+
+            return this;
+        }
+
+        /// <summary>
+        /// This method is part of a bigger workaround for a known issue, documented here:
+        /// https://github.com/dotnet/aspnetcore/issues/14907#issuecomment-850407104.
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <returns></returns>
+        protected override IHost CreateHost(IHostBuilder builder)
+        {
+            builder.ConfigureContainer<ContainerBuilder>(containerBuilder =>
+            {
+                setupMockServicesAction?.Invoke(containerBuilder);
+            });
+
+            return base.CreateHost(builder);
         }
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -62,15 +95,6 @@ namespace Todo.TestInfrastructure
                 // Do not allow any hosted services, if any, to execute while running tests.
                 services.RemoveAll(typeof(IHostedService));
             });
-        }
-
-        public async Task<HttpClient> CreateClientWithJwtAsync()
-        {
-            string accessToken = await GetAccessTokenAsync();
-            HttpClient httpClient = CreateClientWithLoggingCapabilities();
-            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
-
-            return httpClient;
         }
 
         private IConfiguration CreateConfigurationForEnvironment(string environmentName)
