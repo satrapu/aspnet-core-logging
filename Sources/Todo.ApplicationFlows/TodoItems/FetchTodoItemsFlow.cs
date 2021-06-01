@@ -6,7 +6,6 @@ namespace Todo.ApplicationFlows.TodoItems
     using System.Threading.Tasks;
 
     using Microsoft.Extensions.Logging;
-    using Microsoft.Extensions.Options;
 
     using Services.TodoItemLifecycleManagement;
 
@@ -19,7 +18,7 @@ namespace Todo.ApplicationFlows.TodoItems
         private readonly ITodoItemService todoItemService;
 
         public FetchTodoItemsFlow(ITodoItemService todoItemService,
-            IOptionsMonitor<ApplicationFlowOptions> applicationFlowOptions,
+            ApplicationFlowOptions applicationFlowOptions,
             ILogger<FetchTodoItemsFlow> logger) :
             base("TodoItems/FetchByQuery", applicationFlowOptions, logger)
         {

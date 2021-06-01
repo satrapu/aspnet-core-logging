@@ -14,7 +14,6 @@ namespace Todo.ApplicationFlows
 
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
-    using Microsoft.Extensions.Options;
 
     using NUnit.Framework;
 
@@ -59,11 +58,12 @@ namespace Todo.ApplicationFlows
             string userName = $"test-user--{Guid.NewGuid():N}";
             IIdentity identity = new GenericIdentity(userName);
 
-            string[] roles = { $"role--{Guid.NewGuid():N}" };
+            string[] roles = {$"role--{Guid.NewGuid():N}"};
             IPrincipal flowInitiator = new GenericPrincipal(identity, roles);
 
             ITodoItemService todoItemService =
                 testWebApplicationFactory.Services.GetRequiredService<ITodoItemService>();
+
             ILoggerFactory loggerFactory = testWebApplicationFactory.Services.GetRequiredService<ILoggerFactory>();
             ILogger logger = loggerFactory.CreateLogger<ApplicationFlowServingTestingPurposes>();
             string namePrefix = $"todo-item--{Guid.NewGuid():N}";
@@ -78,21 +78,24 @@ namespace Todo.ApplicationFlows
                     Name = $"{namePrefix}--#1",
                     Owner = flowInitiator
                 });
+
                 await localTodoItemService.AddAsync(new NewTodoItemInfo
                 {
                     Name = $"{namePrefix}--#2",
                     Owner = flowInitiator
                 });
+
                 await localTodoItemService.AddAsync(new NewTodoItemInfo
                 {
                     Name = $"{namePrefix}--#3",
                     Owner = flowInitiator
                 });
+
                 return null;
             }
 
-            IOptionsMonitor<ApplicationFlowOptions> applicationFlowOptions =
-                testWebApplicationFactory.Services.GetRequiredService<IOptionsMonitor<ApplicationFlowOptions>>();
+            ApplicationFlowOptions applicationFlowOptions =
+                testWebApplicationFactory.Services.GetRequiredService<ApplicationFlowOptions>();
 
             var applicationFlow = new ApplicationFlowServingTestingPurposes(FlowExpectedToThrowExceptionAsync,
                 applicationFlowOptions, logger);
@@ -134,11 +137,12 @@ namespace Todo.ApplicationFlows
             string userName = $"test-user--{Guid.NewGuid():N}";
             IIdentity identity = new GenericIdentity(userName);
 
-            string[] roles = { $"role--{Guid.NewGuid():N}" };
+            string[] roles = {$"role--{Guid.NewGuid():N}"};
             IPrincipal flowInitiator = new GenericPrincipal(identity, roles);
 
             ITodoItemService todoItemService =
                 testWebApplicationFactory.Services.GetRequiredService<ITodoItemService>();
+
             ILoggerFactory loggerFactory = testWebApplicationFactory.Services.GetRequiredService<ILoggerFactory>();
             ILogger logger = loggerFactory.CreateLogger<ApplicationFlowServingTestingPurposes>();
             string namePrefix = $"todo-item--{Guid.NewGuid():N}";
@@ -154,23 +158,26 @@ namespace Todo.ApplicationFlows
                     IsComplete = false,
                     Owner = flowInitiator
                 });
+
                 await localTodoItemService.AddAsync(new NewTodoItemInfo
                 {
                     Name = $"{namePrefix}--#2",
                     IsComplete = false,
                     Owner = flowInitiator
                 });
+
                 await localTodoItemService.AddAsync(new NewTodoItemInfo
                 {
                     Name = $"{namePrefix}--#3",
                     IsComplete = false,
                     Owner = flowInitiator
                 });
+
                 return null;
             }
 
-            IOptionsMonitor<ApplicationFlowOptions> applicationFlowOptions =
-                testWebApplicationFactory.Services.GetRequiredService<IOptionsMonitor<ApplicationFlowOptions>>();
+            ApplicationFlowOptions applicationFlowOptions =
+                testWebApplicationFactory.Services.GetRequiredService<ApplicationFlowOptions>();
 
             var applicationFlow = new ApplicationFlowServingTestingPurposes(FlowExpectedToSucceedAsync,
                 applicationFlowOptions, logger);
@@ -209,11 +216,12 @@ namespace Todo.ApplicationFlows
             string userName = $"test-user--{Guid.NewGuid():N}";
             IIdentity identity = new GenericIdentity(userName);
 
-            string[] roles = { $"role--{Guid.NewGuid():N}" };
+            string[] roles = {$"role--{Guid.NewGuid():N}"};
             IPrincipal flowInitiator = new GenericPrincipal(identity, roles);
 
             ITodoItemService todoItemService =
                 testWebApplicationFactory.Services.GetRequiredService<ITodoItemService>();
+
             ILoggerFactory loggerFactory = testWebApplicationFactory.Services.GetRequiredService<ILoggerFactory>();
             ILogger logger = loggerFactory.CreateLogger<ApplicationFlowServingTestingPurposes>();
             string namePrefix = $"todo-item--{Guid.NewGuid():N}";
@@ -250,11 +258,11 @@ namespace Todo.ApplicationFlows
                 NamePattern = $"{namePrefix}%"
             };
 
-            IOptionsMonitor<ApplicationFlowOptions> applicationFlowOptions =
-                testWebApplicationFactory.Services.GetRequiredService<IOptionsMonitor<ApplicationFlowOptions>>();
+            ApplicationFlowOptions applicationFlowOptions =
+                testWebApplicationFactory.Services.GetRequiredService<ApplicationFlowOptions>();
 
             // Ensure the application flow will use a very short timeout value for its transaction.
-            applicationFlowOptions.CurrentValue.TransactionOptions.Timeout = transactionTimeOut;
+            applicationFlowOptions.TransactionOptions.Timeout = transactionTimeOut;
 
             var applicationFlow =
                 new ApplicationFlowServingTestingPurposes(FlowExpectedToFailAsync, applicationFlowOptions, logger);
@@ -289,7 +297,7 @@ namespace Todo.ApplicationFlows
             private readonly Func<Task<object>> applicationFlow;
 
             public ApplicationFlowServingTestingPurposes(Func<Task<object>> applicationFlow,
-                IOptionsMonitor<ApplicationFlowOptions> applicationFlowOptions, ILogger logger)
+                ApplicationFlowOptions applicationFlowOptions, ILogger logger)
                 : base(nameof(ApplicationFlowServingTestingPurposes), applicationFlowOptions, logger)
             {
                 this.applicationFlow = applicationFlow;

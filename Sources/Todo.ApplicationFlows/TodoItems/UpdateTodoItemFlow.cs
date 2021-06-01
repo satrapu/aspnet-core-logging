@@ -5,7 +5,6 @@ namespace Todo.ApplicationFlows.TodoItems
     using System.Threading.Tasks;
 
     using Microsoft.Extensions.Logging;
-    using Microsoft.Extensions.Options;
 
     using Services.TodoItemLifecycleManagement;
 
@@ -17,7 +16,7 @@ namespace Todo.ApplicationFlows.TodoItems
         private readonly ITodoItemService todoItemService;
 
         public UpdateTodoItemFlow(ITodoItemService todoItemService,
-            IOptionsMonitor<ApplicationFlowOptions> applicationFlowOptions, ILogger<UpdateTodoItemFlow> logger) :
+            ApplicationFlowOptions applicationFlowOptions, ILogger<UpdateTodoItemFlow> logger) :
             base("TodoItem/Update", applicationFlowOptions, logger)
         {
             this.todoItemService = todoItemService ?? throw new ArgumentNullException(nameof(todoItemService));

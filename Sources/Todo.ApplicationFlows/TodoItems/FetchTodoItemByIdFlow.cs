@@ -7,7 +7,6 @@ namespace Todo.ApplicationFlows.TodoItems
     using System.Threading.Tasks;
 
     using Microsoft.Extensions.Logging;
-    using Microsoft.Extensions.Options;
 
     using Services.TodoItemLifecycleManagement;
 
@@ -19,7 +18,7 @@ namespace Todo.ApplicationFlows.TodoItems
         private readonly ITodoItemService todoItemService;
 
         public FetchTodoItemByIdFlow(ITodoItemService todoItemService,
-            IOptionsMonitor<ApplicationFlowOptions> applicationFlowOptions, ILogger<FetchTodoItemByIdFlow> logger) :
+            ApplicationFlowOptions applicationFlowOptions, ILogger<FetchTodoItemByIdFlow> logger) :
             base("TodoItem/FetchById", applicationFlowOptions, logger)
         {
             this.todoItemService = todoItemService ?? throw new ArgumentNullException(nameof(todoItemService));
