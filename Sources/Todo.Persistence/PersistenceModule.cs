@@ -1,3 +1,6 @@
+// ReSharper disable MemberCanBePrivate.Global
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+
 namespace Todo.Persistence
 {
     using System;
@@ -13,22 +16,20 @@ namespace Todo.Persistence
     /// </summary>
     public class PersistenceModule : Module
     {
-        private bool IsRunningLocally { get; }
-
-        private string ConnectionStringName { get; }
+        /// <summary>
+        /// Gets or sets whether Entity Framework Core will enable sensitive data logging.
+        /// </summary>
+        public bool EnableSensitiveDataLogging { get; set; }
 
         /// <summary>
-        /// Creates a new instance of the <see cref="PersistenceModule"/> class.
+        /// Gets or sets whether Entity Framework Core will enable detailed errors.
         /// </summary>
-        /// <param name="connectionStringName">The name of the connection string to use when communicating with
-        /// the underlying RDBMS.</param>
-        /// <param name="isRunningLocally">Value representing whether the services configured via this module will run
-        /// inside a development environment (e.g. locally or inside a CI pipeline).</param>
-        public PersistenceModule(string connectionStringName, bool isRunningLocally)
-        {
-            ConnectionStringName = connectionStringName;
-            IsRunningLocally = isRunningLocally;
-        }
+        public bool EnableDetailedErrors { get; set; }
+
+        /// <summary>
+        /// Gets or sets the name of the connection string to be used when connecting to the underlying RDBMS.
+        /// </summary>
+        public string ConnectionStringName { get; set; }
 
         protected override void Load(ContainerBuilder builder)
         {
@@ -48,10 +49,14 @@ namespace Todo.Persistence
                         .UseNpgsql(connectionString)
                         .UseLoggerFactory(loggerFactory);
 
-                    if (IsRunningLocally)
+                    if (EnableDetailedErrors)
+                    {
+                        dbContextOptionsBuilder.EnableDetailedErrors();
+                    }
+
+                    if (EnableSensitiveDataLogging)
                     {
                         dbContextOptionsBuilder.EnableSensitiveDataLogging();
-                        dbContextOptionsBuilder.EnableDetailedErrors();
                     }
 
                     return dbContextOptionsBuilder.Options;

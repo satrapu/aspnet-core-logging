@@ -1,0 +1,12 @@
+﻿{
+  "modules": [
+    {
+      "type": "Todo.Persistence.PersistenceModule, Todo.Persistence",
+      "properties": {
+        "ConnectionStringName": "Todo",
+        "EnableSensitiveDataLogging": true,
+        "EnableDetailedErrors": true
+      }
+    }
+  ]
+}
