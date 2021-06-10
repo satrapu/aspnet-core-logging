@@ -108,7 +108,8 @@ namespace Todo.TestInfrastructure
             var connectionStringBuilder =
                 new NpgsqlConnectionStringBuilder(configurationRoot.GetValue<string>(ConnectionStringKey))
                 {
-                    Database = $"db4it--{applicationName}"
+                    Database = $"db4it--{applicationName}",
+                    IncludeErrorDetails = true
                 };
 
             var memoryConfigurationSource = new MemoryConfigurationSource
