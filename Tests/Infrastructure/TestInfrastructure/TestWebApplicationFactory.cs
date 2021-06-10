@@ -42,10 +42,10 @@ namespace Todo.TestInfrastructure
             this.applicationName = applicationName;
         }
 
-        public async Task<HttpClient> CreateClientWithJwtAsync()
+        public async Task<HttpClient> CreateHttpClientWithJwtAsync()
         {
             string accessToken = await GetAccessTokenAsync();
-            HttpClient httpClient = CreateClientWithLoggingCapabilities();
+            HttpClient httpClient = CreateHttpClientWithLoggingCapabilities();
             httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
 
             return httpClient;
@@ -127,7 +127,7 @@ namespace Todo.TestInfrastructure
             return enhancedConfigurationRoot;
         }
 
-        private HttpClient CreateClientWithLoggingCapabilities()
+        private HttpClient CreateHttpClientWithLoggingCapabilities()
         {
             ILoggerFactory loggerFactory = Server.Services.GetService<ILoggerFactory>();
             ILogger logger = loggerFactory.CreateLogger<TestWebApplicationFactory>();
@@ -144,7 +144,7 @@ namespace Todo.TestInfrastructure
                 Password = $"password-{Guid.NewGuid():N}",
             };
 
-            using HttpClient httpClient = CreateClientWithLoggingCapabilities();
+            HttpClient httpClient = CreateHttpClientWithLoggingCapabilities();
 
             HttpResponseMessage httpResponseMessage = await httpClient.PostAsync("api/jwt",
                 new StringContent(JsonConvert.SerializeObject(generateJwtModel), Encoding.UTF8, "application/json"));
