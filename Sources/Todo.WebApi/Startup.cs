@@ -43,13 +43,12 @@ namespace Todo.WebApi
     [ExcludeFromCodeCoverage]
     public class Startup
     {
+        private const string ApplicationName = "Todo ASP.NET Core Web API";
         private const string LogsHomeEnvironmentVariable = "LOGS_HOME";
 
         private IConfiguration Configuration { get; }
 
         private IWebHostEnvironment WebHostEnvironment { get; }
-
-        private string ApplicationName { get; }
 
         private bool IsHttpLoggingEnabled { get; }
 
@@ -63,13 +62,11 @@ namespace Todo.WebApi
         /// Creates a new instance of the <see cref="Startup"/> class.
         /// </summary>
         /// <param name="configuration">The configuration to be used for setting up this application.</param>
-        /// <param name="webHostEnvironment">The web hosting environment running this application.</param>
+        /// <param name="webHostEnvironment">The web host environment running this application.</param>
         public Startup(IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
         {
             Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             WebHostEnvironment = webHostEnvironment ?? throw new ArgumentNullException(nameof(webHostEnvironment));
-            ApplicationName = $"Todo ASP.NET Core Web API [environment={WebHostEnvironment.EnvironmentName}]";
-
             IsMiniProfilerEnabled = Configuration.GetValue<bool>("MiniProfiler:Enabled");
             IsHttpLoggingEnabled = Configuration.GetValue<bool>("HttpLogging:Enabled");
 
@@ -85,13 +82,11 @@ namespace Todo.WebApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddOptions();
-
+            ConfigureExceptionHandling(services);
             ConfigureLogging(services);
             ConfigureSecurity(services);
             ConfigureMiniProfiler(services);
             ConfigureWebApi(services);
-            ConfigureApplicationServices(services);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -305,20 +300,19 @@ namespace Todo.WebApi
                             Status = StatusCodes.Status422UnprocessableEntity,
                             Detail = "See the errors property for more details",
                             Instance = context.HttpContext.Request.Path,
-                            Extensions = { { "TraceId", context.HttpContext.TraceIdentifier } }
+                            Extensions = {{"TraceId", context.HttpContext.TraceIdentifier}}
                         };
 
                         return new UnprocessableEntityObjectResult(validationProblemDetails)
                         {
-                            ContentTypes = { "application/problem+json" }
+                            ContentTypes = {"application/problem+json"}
                         };
                     };
                 });
         }
 
-        private void ConfigureApplicationServices(IServiceCollection services)
+        private void ConfigureExceptionHandling(IServiceCollection services)
         {
-            // Configure options used when handling exceptions.
             services.Configure<ExceptionHandlingOptions>(Configuration.GetSection("ExceptionHandling"));
         }
 
@@ -365,12 +359,13 @@ namespace Todo.WebApi
             }
             catch (Exception exception)
             {
-                logger.LogCritical(exception, "Failed to migrate database {DatabaseName}", database);
+                logger.LogCritical(exception,
+                    "Failed to migrate database {DatabaseName}; application will stop immediately", database);
 
-                throw;
+                serviceScope.ServiceProvider.GetRequiredService<IHostApplicationLifetime>().StopApplication();
             }
 
-            logger.LogInformation("Database {DatabaseName} has been migrated", database);
+            logger.LogInformation("Database {DatabaseName} has been migrated successfully ", database);
         }
     }
 }
