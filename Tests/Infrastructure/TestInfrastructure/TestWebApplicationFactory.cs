@@ -99,14 +99,14 @@ namespace Todo.TestInfrastructure
 
         private IConfiguration CreateConfigurationForEnvironment(string environmentName)
         {
-            IConfigurationRoot configurationRoot = new ConfigurationBuilder()
+            IConfiguration configuration = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
                 .AddJsonFile($"appsettings.{environmentName}.json", optional: false, reloadOnChange: false)
                 .AddEnvironmentVariables()
                 .Build();
 
             var connectionStringBuilder =
-                new NpgsqlConnectionStringBuilder(configurationRoot.GetValue<string>(ConnectionStringKey))
+                new NpgsqlConnectionStringBuilder(configuration.GetValue<string>(ConnectionStringKey))
                 {
                     Database = $"db4it--{applicationName}",
                     IncludeErrorDetails = true
@@ -120,12 +120,12 @@ namespace Todo.TestInfrastructure
                 }
             };
 
-            IConfigurationRoot enhancedConfigurationRoot = new ConfigurationBuilder()
-                .AddConfiguration(configurationRoot)
+            IConfiguration enhancedConfiguration = new ConfigurationBuilder()
+                .AddConfiguration(configuration)
                 .Add(memoryConfigurationSource)
                 .Build();
 
-            return enhancedConfigurationRoot;
+            return enhancedConfiguration;
         }
 
         private HttpClient CreateHttpClientWithLoggingCapabilities()
