@@ -296,7 +296,7 @@ namespace Todo.WebApi
                     {
                         var validationProblemDetails = new ValidationProblemDetails(context.ModelState)
                         {
-                            Title = "One or more model validation error have occurred",
+                            Title = "One or more model validation errors have occurred",
                             Status = StatusCodes.Status422UnprocessableEntity,
                             Detail = "See the errors property for more details",
                             Instance = context.HttpContext.Request.Path,
