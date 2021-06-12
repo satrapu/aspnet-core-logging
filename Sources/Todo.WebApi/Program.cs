@@ -93,6 +93,8 @@ namespace Todo.WebApi
                     })
                     .ConfigureWebHostDefaults(localHostBuilder =>
                     {
+                        localHostBuilder.SuppressStatusMessages(true);
+
                         // Ensure that when an error occurs during startup, host will exit.
                         // See more about capturing startup errors here:
                         // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/web-host?view=aspnetcore-5.0#capture-startup-errors.
