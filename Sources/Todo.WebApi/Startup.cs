@@ -319,17 +319,17 @@ namespace Todo.WebApi
         private void OnApplicationStarted(IApplicationBuilder applicationBuilder, ILogger logger)
         {
             MigrateDatabase(applicationBuilder, logger);
-            logger.LogInformation("{ApplicationName} has started", ApplicationName);
+            logger.LogInformation("{ApplicationName} application has started", ApplicationName);
         }
 
         private void OnApplicationStopping(ILogger logger)
         {
-            logger.LogInformation("{ApplicationName} is stopping ...", ApplicationName);
+            logger.LogInformation("{ApplicationName} application is stopping ...", ApplicationName);
         }
 
         private void OnApplicationStopped(ILogger logger)
         {
-            logger.LogInformation("{ApplicationName} has stopped", ApplicationName);
+            logger.LogInformation("{ApplicationName} application has stopped", ApplicationName);
         }
 
         private void MigrateDatabase(IApplicationBuilder applicationBuilder, ILogger logger)
