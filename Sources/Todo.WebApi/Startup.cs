@@ -9,6 +9,8 @@ namespace Todo.WebApi
     using System.Text;
     using System.Threading.Tasks;
 
+    using Commons;
+
     using Authorization;
 
     using ExceptionHandling;
@@ -21,7 +23,6 @@ namespace Todo.WebApi
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Hosting;
@@ -30,8 +31,6 @@ namespace Todo.WebApi
     using Microsoft.IdentityModel.Tokens;
 
     using Models;
-
-    using Persistence;
 
     using Serilog;
 
@@ -92,7 +91,7 @@ namespace Todo.WebApi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         // ReSharper disable once UnusedMember.Global
         public void Configure(IApplicationBuilder applicationBuilder, IHostApplicationLifetime hostApplicationLifetime,
-            ILogger<Startup> logger)
+            ICollection<IApplicationStartup> applicationStartups, ILogger<Startup> logger)
         {
             logger.LogInformation("{ApplicationName} is starting ...", ApplicationName);
 
@@ -129,7 +128,9 @@ namespace Todo.WebApi
             applicationBuilder.UseAuthorization();
             applicationBuilder.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 
-            hostApplicationLifetime.ApplicationStarted.Register(() => OnApplicationStarted(applicationBuilder, logger));
+            hostApplicationLifetime.ApplicationStarted.Register(() =>
+                OnApplicationStarted(applicationStartups, logger));
+
             hostApplicationLifetime.ApplicationStopping.Register(() => OnApplicationStopping(logger));
             hostApplicationLifetime.ApplicationStopped.Register(() => OnApplicationStopped(logger));
         }
@@ -300,12 +301,12 @@ namespace Todo.WebApi
                             Status = StatusCodes.Status422UnprocessableEntity,
                             Detail = "See the errors property for more details",
                             Instance = context.HttpContext.Request.Path,
-                            Extensions = { { "TraceId", context.HttpContext.TraceIdentifier } }
+                            Extensions = {{"TraceId", context.HttpContext.TraceIdentifier}}
                         };
 
                         return new UnprocessableEntityObjectResult(validationProblemDetails)
                         {
-                            ContentTypes = { "application/problem+json" }
+                            ContentTypes = {"application/problem+json"}
                         };
                     };
                 });
@@ -316,9 +317,10 @@ namespace Todo.WebApi
             services.Configure<ExceptionHandlingOptions>(Configuration.GetSection("ExceptionHandling"));
         }
 
-        private void OnApplicationStarted(IApplicationBuilder applicationBuilder, ILogger logger)
+        private void OnApplicationStarted(ICollection<IApplicationStartup> applicationStartups, ILogger logger)
         {
-            MigrateDatabase(applicationBuilder, logger);
+            ExecuteApplicationStartups(applicationStartups, logger);
+
             logger.LogInformation("{ApplicationName} application has started", ApplicationName);
         }
 
@@ -332,40 +334,26 @@ namespace Todo.WebApi
             logger.LogInformation("{ApplicationName} application has stopped", ApplicationName);
         }
 
-        private void MigrateDatabase(IApplicationBuilder applicationBuilder, ILogger logger)
+        private void ExecuteApplicationStartups(ICollection<IApplicationStartup> applicationStartups, ILogger logger)
         {
-            bool shouldMigrateDatabase = Configuration.GetValue<bool>("MigrateDatabase");
-
-            if (!shouldMigrateDatabase)
+            if (applicationStartups == null)
             {
-                logger.LogInformation("Migrating database has been turned off");
-
-                return;
+                throw new ArgumentNullException(nameof(applicationStartups));
             }
 
-            logger.LogInformation("Migrating database has been turned on");
-
-            using var serviceScope =
-                applicationBuilder.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope();
-
-            using var todoDbContext = serviceScope.ServiceProvider.GetRequiredService<TodoDbContext>();
-            string database = todoDbContext.Database.GetDbConnection().Database;
-
-            logger.LogInformation("About to migrate database {DatabaseName} ...", database);
-
-            try
+            foreach (IApplicationStartup applicationStartup in applicationStartups)
             {
-                todoDbContext.Database.Migrate();
-            }
-            catch (Exception exception)
-            {
-                logger.LogCritical(exception,
-                    "Failed to migrate database {DatabaseName}; application will stop immediately", database);
+                string registeredApplicationStartup = applicationStartup.GetType().AssemblyQualifiedName;
 
-                serviceScope.ServiceProvider.GetRequiredService<IHostApplicationLifetime>().StopApplication();
-            }
+                logger.LogInformation("About to execute application startup class: [{ApplicationStartupClassName}] ...",
+                    registeredApplicationStartup);
 
-            logger.LogInformation("Database {DatabaseName} has been migrated successfully ", database);
+                applicationStartup.Execute();
+
+                logger.LogInformation(
+                    "Application startup class: [{ApplicationStartupClassName}] has been executed successfully",
+                    registeredApplicationStartup);
+            }
         }
     }
 }

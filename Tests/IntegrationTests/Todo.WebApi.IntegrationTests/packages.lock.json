@@ -1957,8 +1957,12 @@
           "Autofac": "6.2.0",
           "Microsoft.Extensions.Options": "5.0.0",
           "Microsoft.Extensions.Options.ConfigurationExtensions": "5.0.0",
+          "Todo.Commons": "1.0.0",
           "Todo.Services": "1.0.0"
         }
+      },
+      "todo.commons": {
+        "type": "Project"
       },
       "todo.integrations.serilog": {
         "type": "Project",
@@ -1973,7 +1977,10 @@
           "Autofac": "6.2.0",
           "Microsoft.EntityFrameworkCore": "5.0.6",
           "Microsoft.EntityFrameworkCore.Design": "5.0.6",
-          "Npgsql.EntityFrameworkCore.PostgreSQL": "5.0.6"
+          "Microsoft.Extensions.Configuration.Binder": "3.1.6",
+          "Microsoft.Extensions.Hosting.Abstractions": "5.0.0",
+          "Npgsql.EntityFrameworkCore.PostgreSQL": "5.0.6",
+          "Todo.Commons": "1.0.0"
         }
       },
       "todo.services": {
@@ -2000,6 +2007,7 @@
           "Serilog.Sinks.ApplicationInsights": "3.1.0",
           "Serilog.Sinks.Seq": "5.0.1",
           "Todo.ApplicationFlows": "1.0.0",
+          "Todo.Commons": "1.0.0",
           "Todo.Integrations.Serilog": "1.0.0"
         }
       }

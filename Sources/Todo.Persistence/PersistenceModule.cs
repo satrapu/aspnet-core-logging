@@ -5,6 +5,8 @@ namespace Todo.Persistence
 {
     using System;
 
+    using Commons;
+
     using Autofac;
 
     using Microsoft.EntityFrameworkCore;
@@ -73,6 +75,11 @@ namespace Todo.Persistence
                 .RegisterType<TodoDbContext>()
                 .AsSelf()
                 .InstancePerLifetimeScope();
+
+            builder
+                .RegisterType<RunDatabaseMigrations>()
+                .As<IApplicationStartup>()
+                .SingleInstance();
         }
     }
 }

@@ -6,6 +6,8 @@ namespace Todo.ApplicationFlows
     using System.Security.Principal;
     using System.Threading.Tasks;
 
+    using Commons;
+
     using Microsoft.Extensions.Logging;
 
     using Todo.Services.Security;
@@ -15,7 +17,6 @@ namespace Todo.ApplicationFlows
     /// </summary>
     public abstract class NonTransactionalBaseApplicationFlow<TInput, TOutput> : IApplicationFlow<TInput, TOutput>
     {
-        private const string ApplicationFlowName = "ApplicationFlowName";
         private readonly string flowName;
         private readonly ILogger logger;
 
@@ -47,7 +48,7 @@ namespace Todo.ApplicationFlows
         /// <returns></returns>
         public async Task<TOutput> ExecuteAsync(TInput input, IPrincipal flowInitiator)
         {
-            using (logger.BeginScope(new Dictionary<string, object> { [ApplicationFlowName] = flowName }))
+            using (logger.BeginScope(new Dictionary<string, object> { [Constants.ApplicationFlowName] = flowName }))
             {
                 bool isSuccess = false;
                 Stopwatch stopwatch = Stopwatch.StartNew();

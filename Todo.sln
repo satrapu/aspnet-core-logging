@@ -90,6 +90,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Run", "Run", "{2760AF02-37D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.Integrations.Serilog", "Sources\Todo.Integrations.Serilog\Todo.Integrations.Serilog\Todo.Integrations.Serilog.csproj", "{A0877BAD-5E02-4EF1-AE43-73A174034A66}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.Commons", "Sources\Todo.Commons\Todo.Commons.csproj", "{6935CABF-0DBD-4315-AB8B-DE92A4D81B00}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -148,6 +150,10 @@ Global
 		{A0877BAD-5E02-4EF1-AE43-73A174034A66}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A0877BAD-5E02-4EF1-AE43-73A174034A66}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A0877BAD-5E02-4EF1-AE43-73A174034A66}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6935CABF-0DBD-4315-AB8B-DE92A4D81B00}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6935CABF-0DBD-4315-AB8B-DE92A4D81B00}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6935CABF-0DBD-4315-AB8B-DE92A4D81B00}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6935CABF-0DBD-4315-AB8B-DE92A4D81B00}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -172,6 +178,7 @@ Global
 		{851D8B4A-A6C9-469E-8633-E6679738DA72} = {398FFE78-1C6A-4CC2-AB9F-220B7F1CDAE3}
 		{74414D41-EEF5-4217-9B47-52B19342A987} = {D084DD17-3480-4A70-8296-92FB55BAD433}
 		{A0877BAD-5E02-4EF1-AE43-73A174034A66} = {ED7A5363-C21A-4D47-A2A5-67DEB1E0DDE3}
+		{6935CABF-0DBD-4315-AB8B-DE92A4D81B00} = {ED7A5363-C21A-4D47-A2A5-67DEB1E0DDE3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {74318BEF-DB50-4852-A16D-E2FB8671BE7F}

@@ -4,6 +4,8 @@ namespace Todo.WebApi.Logging
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
+    using Commons;
+
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Primitives;
@@ -14,7 +16,6 @@ namespace Todo.WebApi.Logging
     // ReSharper disable once ClassNeverInstantiated.Global
     public class ConversationIdProviderMiddleware
     {
-        private const string ConversationId = "ConversationId";
         private readonly RequestDelegate nextRequestDelegate;
         private readonly ILogger logger;
 
@@ -23,23 +24,26 @@ namespace Todo.WebApi.Logging
         {
             this.nextRequestDelegate =
                 nextRequestDelegate ?? throw new ArgumentNullException(nameof(nextRequestDelegate));
+
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         public async Task Invoke(HttpContext httpContext)
         {
-            if (!httpContext.Request.Headers.TryGetValue(ConversationId, out StringValues conversationId)
+            string conversationIdKey = Constants.ConversationId;
+
+            if (!httpContext.Request.Headers.TryGetValue(conversationIdKey, out StringValues conversationId)
                 || string.IsNullOrWhiteSpace(conversationId))
             {
                 conversationId = Guid.NewGuid().ToString("N");
-                httpContext.Request.Headers.Add(ConversationId, conversationId);
+                httpContext.Request.Headers.Add(conversationIdKey, conversationId);
             }
 
-            httpContext.Response.Headers.Add(ConversationId, conversationId);
+            httpContext.Response.Headers.Add(conversationIdKey, conversationId);
 
             using (logger.BeginScope(new Dictionary<string, object>
             {
-                [ConversationId] = conversationId.ToString()
+                [conversationIdKey] = conversationId.ToString()
             }))
             {
                 await nextRequestDelegate(httpContext);
