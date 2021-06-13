@@ -5,9 +5,9 @@ namespace Todo.Persistence
 {
     using System;
 
-    using Commons;
-
     using Autofac;
+
+    using Commons;
 
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;

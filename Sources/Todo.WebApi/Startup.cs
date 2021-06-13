@@ -9,9 +9,9 @@ namespace Todo.WebApi
     using System.Text;
     using System.Threading.Tasks;
 
-    using Commons;
-
     using Authorization;
+
+    using Commons;
 
     using ExceptionHandling;
 
@@ -301,12 +301,12 @@ namespace Todo.WebApi
                             Status = StatusCodes.Status422UnprocessableEntity,
                             Detail = "See the errors property for more details",
                             Instance = context.HttpContext.Request.Path,
-                            Extensions = {{"TraceId", context.HttpContext.TraceIdentifier}}
+                            Extensions = { { "TraceId", context.HttpContext.TraceIdentifier } }
                         };
 
                         return new UnprocessableEntityObjectResult(validationProblemDetails)
                         {
-                            ContentTypes = {"application/problem+json"}
+                            ContentTypes = { "application/problem+json" }
                         };
                     };
                 });

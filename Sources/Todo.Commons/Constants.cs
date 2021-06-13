@@ -1,4 +1,4 @@
-﻿namespace Todo.Commons
+namespace Todo.Commons
 {
     /// <summary>
     /// Contains constants used by the various application components.

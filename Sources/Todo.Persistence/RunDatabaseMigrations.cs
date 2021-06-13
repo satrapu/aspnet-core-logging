@@ -1,4 +1,4 @@
-﻿namespace Todo.Persistence
+namespace Todo.Persistence
 {
     using System;
     using System.Collections.Generic;

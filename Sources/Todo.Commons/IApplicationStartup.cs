@@ -1,4 +1,4 @@
-﻿namespace Todo.Commons
+namespace Todo.Commons
 {
     /// <summary>
     /// Allows services to execute logic application startup.
