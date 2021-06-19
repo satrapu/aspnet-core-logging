@@ -5,11 +5,11 @@
 echo 'Installing Docker ...'
 start=$SECONDS
 
-# Install specific Docker brew formula git commit, as documented here:
+# Install specific Docker brew formula, as documented here:
 # https://cmichel.io/how-to-install-an-old-package-version-with-brew/.
-cd /usr/local/Homebrew/Library/Taps/docker || exit
-git checkout 3a9354c9b793296cfcce281c676d8df9acabab9c
-HOMEBREW_NO_AUTO_UPDATE=1 brew install docker
+brew tap-new $USER/local-docker
+brew extract --version=3.3.3 docker $USER/local-docker
+brew install docker@3.3.3
 
 end=$SECONDS
 duration=$(( end - start ))
