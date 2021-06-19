@@ -9,13 +9,13 @@ start=$SECONDS
 # https://cmichel.io/how-to-install-an-old-package-version-with-brew/.
 # Docker brew formula can be found here:
 # https://github.com/Homebrew/homebrew-cask/blob/961b663cc4defff883089f33e0e2687bcfd8d934/Casks/docker.rb.
-echo 'Folders under homebrew-cask:'
-ls -ld /usr/local/Homebrew/Library/Taps/homebrew/homebrew-cask/*/
+echo 'Folders under homebrew-cask/Casks:'
+ls -ld /usr/local/Homebrew/Library/Taps/homebrew/homebrew-cask/Casks/*/
 
-echo 'Folders under homebrew-core:'
-ls -ld /usr/local/Homebrew/Library/Taps/homebrew/homebrew-core/*/
+echo 'Folders under homebrew-core/Formula:'
+ls -ld /usr/local/Homebrew/Library/Taps/homebrew/homebrew-core/Formula/*/
 
-cd /usr/local/Homebrew/Library/Taps/homebrew/homebrew-cask/docker || exit
+cd /usr/local/Homebrew/Library/Taps/homebrew/homebrew-cask/Formula/docker || exit
 git checkout 961b663cc4defff883089f33e0e2687bcfd8d934
 HOMEBREW_NO_AUTO_UPDATE=1 brew install docker
 
