@@ -7,9 +7,11 @@ start=$SECONDS
 
 # Install specific Docker brew formula, as documented here:
 # https://cmichel.io/how-to-install-an-old-package-version-with-brew/.
+# Docker brew formula can be found here:
+# https://github.com/Homebrew/homebrew-cask/blob/961b663cc4defff883089f33e0e2687bcfd8d934/Casks/docker.rb.
 brew tap-new $USER/local-docker
-brew extract --version=3.3.3 docker $USER/local-docker
-brew install docker@3.3.3
+brew extract --version=3.3.3,64133 docker $USER/local-docker
+brew install docker@3.3.3,64133
 
 end=$SECONDS
 duration=$(( end - start ))
