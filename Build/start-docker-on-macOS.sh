@@ -5,7 +5,7 @@
 echo 'Installing Docker ...'
 start=$SECONDS
 
-brew install --cask docker
+brew install --cask docker@3.3.3
 
 end=$SECONDS
 duration=$(( end - start ))
