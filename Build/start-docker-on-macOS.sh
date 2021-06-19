@@ -5,8 +5,11 @@
 echo 'Installing Docker ...'
 start=$SECONDS
 
-# Install Docker v20.10.6
-brew install https://raw.githubusercontent.com/Homebrew/homebrew-core/3a9354c9b793296cfcce281c676d8df9acabab9c/Formula/docker.rb
+# Install specific Docker brew formula git commit, as documented here:
+# https://cmichel.io/how-to-install-an-old-package-version-with-brew/.
+cd /usr/local/Homebrew/Library/Taps/docker || exit
+git checkout 3a9354c9b793296cfcce281c676d8df9acabab9c
+HOMEBREW_NO_AUTO_UPDATE=1 brew install docker
 
 end=$SECONDS
 duration=$(( end - start ))
