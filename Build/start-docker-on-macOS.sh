@@ -6,8 +6,10 @@ echo 'Installing Docker ...'
 start=$SECONDS
 
 # Install Docker v20.10.6
-brew unlink docker
-curl -O https://raw.githubusercontent.com/Homebrew/homebrew-core/62aced99afd24aacd9003a7593b6210f3fdb8a65/Formula/docker.rb && brew install --cask ./docker.rb
+dockerInstallationScriptName='docker.rb'
+gitCommitSha='62aced99afd24aacd9003a7593b6210f3fdb8a65'
+dockerInstallationScriptUrl="https://raw.githubusercontent.com/Homebrew/homebrew-cask/$gitCommitSha/Casks/$dockerInstallationScriptName"
+curl -L  $dockerInstallationScriptUrl > $dockerInstallationScriptName && brew install $dockerInstallationScriptName
 
 end=$SECONDS
 duration=$(( end - start ))
