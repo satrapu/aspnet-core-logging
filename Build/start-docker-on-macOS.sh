@@ -5,7 +5,8 @@
 echo 'Installing Docker ...'
 start=$SECONDS
 
-brew install --cask docker@20.10.6
+# Install Docker v20.10.6
+brew install --cask https://raw.githubusercontent.com/Homebrew/homebrew-core/62aced99afd24aacd9003a7593b6210f3fdb8a65/Formula/docker.rb
 
 end=$SECONDS
 duration=$(( end - start ))
