@@ -6,17 +6,16 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Todo.Persistence\Todo.Persistence.csproj"/>
+        <ProjectReference Include="..\Todo.Persistence\Todo.Persistence.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Autofac"/>
-        <PackageReference Include="Microsoft.IdentityModel.Tokens"/>
+        <PackageReference Include="Microsoft.IdentityModel.Tokens" />
         <PackageReference Include="SonarAnalyzer.CSharp">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="System.IdentityModel.Tokens.Jwt"/>
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
     </ItemGroup>
 
     <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">

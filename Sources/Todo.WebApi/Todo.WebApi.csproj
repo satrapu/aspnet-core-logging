@@ -8,6 +8,8 @@
     <ItemGroup>
         <ProjectReference Include="..\Todo.ApplicationFlows\Todo.ApplicationFlows.csproj" />
         <ProjectReference Include="..\Todo.Commons\Todo.Commons.csproj" />
+        <ProjectReference Include="..\Todo.Integrations.Autofac\Todo.Integrations.Autofac.csproj" />
+        <ProjectReference Include="..\Todo.Integrations.MiniProfiler\Todo.Integrations.MiniProfiler.csproj" />
         <ProjectReference Include="..\Todo.Integrations.Serilog\Todo.Integrations.Serilog\Todo.Integrations.Serilog.csproj" />
     </ItemGroup>
 
@@ -16,8 +18,6 @@
         <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
         <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" />
-        <PackageReference Include="MiniProfiler.AspNetCore.Mvc" />
-        <PackageReference Include="MiniProfiler.EntityFrameworkCore" />
         <PackageReference Include="Serilog.AspNetCore" />
         <PackageReference Include="Serilog.Enrichers.Thread" />
         <PackageReference Include="Serilog.Sinks.ApplicationInsights" />
