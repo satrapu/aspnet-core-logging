@@ -28,6 +28,7 @@ namespace Todo.Commons
             /// <summary>
             /// Represents an Azure environment used for demonstrating various application features.
             /// </summary>
+            // ReSharper disable once UnusedMember.Global
             public const string DemoInAzure = "DemoInAzure";
 
             /// <summary>

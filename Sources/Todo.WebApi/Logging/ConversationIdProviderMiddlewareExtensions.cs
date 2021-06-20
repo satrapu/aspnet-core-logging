@@ -14,6 +14,7 @@ namespace Todo.WebApi.Logging
         /// </summary>
         /// <param name="applicationBuilder"></param>
         /// <returns></returns>
+        // ReSharper disable once UnusedMethodReturnValue.Global
         public static IApplicationBuilder UseConversationId(this IApplicationBuilder applicationBuilder)
         {
             if (applicationBuilder == null)

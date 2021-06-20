@@ -11,6 +11,7 @@ namespace Todo.WebApi.Logging
         /// <summary>
         /// Gets or sets the instrumentation key pointing to the proper Azure Application Insights instance.
         /// </summary>
+        // ReSharper disable once UnusedAutoPropertyAccessor.Global
         public string InstrumentationKey { get; set; }
     }
 }

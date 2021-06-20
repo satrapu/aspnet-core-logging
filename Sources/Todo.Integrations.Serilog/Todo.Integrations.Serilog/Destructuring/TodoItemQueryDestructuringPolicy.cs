@@ -11,6 +11,7 @@ namespace Todo.Integrations.Serilog.Destructuring
     /// <summary>
     /// Instructs Serilog how to log instances of <seealso cref="TodoItemQuery"/> class.
     /// </summary>
+    // ReSharper disable once UnusedType.Global
     public class TodoItemQueryDestructuringPolicy : IDestructuringPolicy
     {
         public bool TryDestructure(object value, ILogEventPropertyValueFactory propertyValueFactory,
