@@ -40,15 +40,6 @@
           "Microsoft.IdentityModel.Protocols.OpenIdConnect": "6.7.1"
         }
       },
-      "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore": {
-        "type": "Direct",
-        "requested": "[5.0.7, )",
-        "resolved": "5.0.7",
-        "contentHash": "dvDEKeTCuUAZLdUl7u7/HMd1abhyNGCzfOZG7ncP13XM5gGjL4ZY+5yJvZD2qoj5xuj0obsq6jk2hJMqdj2Tbg==",
-        "dependencies": {
-          "Microsoft.EntityFrameworkCore.Relational": "5.0.7"
-        }
-      },
       "Serilog.AspNetCore": {
         "type": "Direct",
         "requested": "[4.1.0, )",

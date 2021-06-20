@@ -164,14 +164,6 @@
           "Microsoft.IdentityModel.Protocols.OpenIdConnect": "6.7.1"
         }
       },
-      "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore": {
-        "type": "Transitive",
-        "resolved": "5.0.7",
-        "contentHash": "dvDEKeTCuUAZLdUl7u7/HMd1abhyNGCzfOZG7ncP13XM5gGjL4ZY+5yJvZD2qoj5xuj0obsq6jk2hJMqdj2Tbg==",
-        "dependencies": {
-          "Microsoft.EntityFrameworkCore.Relational": "5.0.7"
-        }
-      },
       "Microsoft.AspNetCore.Hosting": {
         "type": "Transitive",
         "resolved": "2.1.1",
@@ -1646,7 +1638,6 @@
           "Autofac.Extensions.DependencyInjection": "7.1.0",
           "Microsoft.ApplicationInsights.AspNetCore": "2.17.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "5.0.7",
-          "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore": "5.0.7",
           "Serilog.AspNetCore": "4.1.0",
           "Serilog.Enrichers.Thread": "3.1.0",
           "Serilog.Sinks.ApplicationInsights": "3.1.0",
