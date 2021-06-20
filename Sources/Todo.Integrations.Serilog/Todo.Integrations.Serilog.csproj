@@ -3,18 +3,18 @@
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
         <IsTestProject>false</IsTestProject>
-        <RootNamespace>Todo.Integrations.Serilog</RootNamespace>
     </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Todo.Services\Todo.Services.csproj"/>
+    </ItemGroup>
+
     <ItemGroup>
         <PackageReference Include="Serilog"/>
         <PackageReference Include="SonarAnalyzer.CSharp">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-    </ItemGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\Todo.Services\Todo.Services.csproj"/>
     </ItemGroup>
 
 </Project>

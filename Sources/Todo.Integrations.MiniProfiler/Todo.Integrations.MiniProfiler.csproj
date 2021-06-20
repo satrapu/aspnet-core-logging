@@ -3,7 +3,6 @@
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
         <IsTestProject>false</IsTestProject>
-        <RootNamespace>Todo.Integrations.MiniProfiler</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>

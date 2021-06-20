@@ -3,17 +3,16 @@
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
         <IsTestProject>false</IsTestProject>
-        <RootNamespace>Todo.Integrations.Autofac</RootNamespace>
     </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Todo.ApplicationFlows\Todo.ApplicationFlows.csproj"/>
+    </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="Autofac"/>
         <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions"/>
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <ProjectReference Include="..\Todo.ApplicationFlows\Todo.ApplicationFlows.csproj"/>
     </ItemGroup>
 
 </Project>
