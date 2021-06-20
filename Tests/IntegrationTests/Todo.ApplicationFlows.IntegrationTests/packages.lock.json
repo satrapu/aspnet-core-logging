@@ -116,16 +116,6 @@
           "System.Diagnostics.DiagnosticSource": "4.7.1"
         }
       },
-      "Autofac.Configuration": {
-        "type": "Transitive",
-        "resolved": "6.0.0",
-        "contentHash": "ziOpbr0S0ufYv+6LqM8GX9oR7rlP6KICVxZmCAML6PcncvZ9Y/m8tcpuPXLD6vDyfNvfCq1drYxNVzwBT0+gkA==",
-        "dependencies": {
-          "Autofac": "6.0.0",
-          "Microsoft.Extensions.Configuration": "2.2.0",
-          "Microsoft.Extensions.Configuration.Binder": "2.2.0"
-        }
-      },
       "Autofac.Extensions.DependencyInjection": {
         "type": "Transitive",
         "resolved": "7.1.0",
@@ -1997,7 +1987,6 @@
       "todo.webapi": {
         "type": "Project",
         "dependencies": {
-          "Autofac.Configuration": "6.0.0",
           "Autofac.Extensions.DependencyInjection": "7.1.0",
           "Microsoft.ApplicationInsights.AspNetCore": "2.17.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "5.0.6",

@@ -3,7 +3,7 @@
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
         <IsTestProject>false</IsTestProject>
-        <RootNamespace>Todo.Infrastructure</RootNamespace>
+        <RootNamespace>Todo.Commons</RootNamespace>
     </PropertyGroup>
 
 </Project>

@@ -15,16 +15,24 @@ namespace Todo.ApplicationFlows
     /// </summary>
     public class ApplicationFlowsModule : Module
     {
+        private string EnvironmentName { get; }
+
+        private IConfiguration ApplicationConfiguration { get; }
+
+        public ApplicationFlowsModule(string environmentName, IConfiguration applicationConfiguration)
+        {
+            EnvironmentName = environmentName;
+            ApplicationConfiguration = applicationConfiguration;
+        }
+
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterModule<ServicesModule>();
+            builder.RegisterModule(new ServicesModule(EnvironmentName));
 
             // ReSharper disable once SettingNotFoundInConfiguration
             builder
-                .Register(componentContext => componentContext
-                    .Resolve<IConfiguration>()
-                    .GetSection("ApplicationFlows")
-                    .Get<ApplicationFlowOptions>())
+                .Register(componentContext =>
+                    ApplicationConfiguration.GetSection("ApplicationFlows").Get<ApplicationFlowOptions>())
                 .SingleInstance();
 
             builder

@@ -6,7 +6,6 @@ namespace Todo.WebApi
     using ApplicationFlows;
 
     using Autofac;
-    using Autofac.Configuration;
     using Autofac.Extensions.DependencyInjection;
 
     using Microsoft.AspNetCore.Hosting;
@@ -75,21 +74,11 @@ namespace Todo.WebApi
                         // prohibits injecting mock services, as seen here:
                         // https://github.com/dotnet/aspnetcore/issues/14907#issuecomment-850407104.
 
-                        // Load Autofac configuration from JSON files.
-                        IConfigurationRoot autofacConfiguration = new ConfigurationBuilder()
-                            .AddJsonFile("autofac.json", optional: false, reloadOnChange: true)
-                            .AddJsonFile($"autofac.{hostBuilderContext.HostingEnvironment.EnvironmentName}.json",
-                                optional: true, reloadOnChange: true)
-                            .Build();
+                        var applicationFlowModule =
+                            new ApplicationFlowsModule(hostBuilderContext.HostingEnvironment.EnvironmentName,
+                                hostBuilderContext.Configuration);
 
-                        // Register Autofac.Configuration.ConfigurationModule in order to read module configuration
-                        // from JSON files. This is needed in order to configure PersistenceModule which depends upon
-                        // the name of the connection string pointing to the underlying RDBMS and upon the name of the
-                        // current ASP.NET Core web host environment.
-                        // Read more about this Autofac module here:
-                        // https://autofac.readthedocs.io/en/latest/configuration/xml.html#quick-start.
-                        containerBuilder.RegisterModule<ApplicationFlowsModule>();
-                        containerBuilder.RegisterModule(new ConfigurationModule(autofacConfiguration));
+                        containerBuilder.RegisterModule(applicationFlowModule);
                     })
                     .ConfigureWebHostDefaults(localHostBuilder =>
                     {

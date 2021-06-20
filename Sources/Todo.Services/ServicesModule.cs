@@ -2,6 +2,10 @@ namespace Todo.Services
 {
     using Autofac;
 
+    using Commons;
+
+    using Persistence;
+
     using Security;
 
     using TodoItemLifecycleManagement;
@@ -11,13 +15,28 @@ namespace Todo.Services
     /// </summary>
     public class ServicesModule : Module
     {
+        private string EnvironmentName { get; }
+
+        public ServicesModule(string environmentName)
+        {
+            EnvironmentName = environmentName;
+        }
+
         protected override void Load(ContainerBuilder builder)
         {
-            // satrapu 2021-06-13: Should register PersistenceModule here, but doing this
-            // while the module is declared inside autofac.json file means the RunDatabaseMigrations class will be
-            // executed twice, since the module will be registered twice (once here and once inside the JSON file).
-            // Need to find a better way of registering a module which requires complex setup!
-            //// builder.RegisterModule<PersistenceModule>();
+            bool isDevelopmentEnvironment = Constants.EnvironmentNames.Development.Equals(EnvironmentName);
+            bool isIntegrationTestsEnvironment = Constants.EnvironmentNames.IntegrationTests.Equals(EnvironmentName);
+
+            var persistenceModule = new PersistenceModule
+            {
+                ConnectionStringName = isIntegrationTestsEnvironment
+                    ? "TodoForIntegrationTests"
+                    : "Todo",
+                EnableDetailedErrors = isDevelopmentEnvironment || isIntegrationTestsEnvironment,
+                EnableSensitiveDataLogging = isDevelopmentEnvironment || isIntegrationTestsEnvironment
+            };
+
+            builder.RegisterModule(persistenceModule);
 
             builder
                 .RegisterType<JwtService>()
