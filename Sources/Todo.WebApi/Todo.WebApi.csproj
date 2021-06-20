@@ -10,7 +10,8 @@
         <ProjectReference Include="..\Todo.Commons\Todo.Commons.csproj" />
         <ProjectReference Include="..\Todo.Integrations.Autofac\Todo.Integrations.Autofac.csproj" />
         <ProjectReference Include="..\Todo.Integrations.MiniProfiler\Todo.Integrations.MiniProfiler.csproj" />
-        <ProjectReference Include="..\Todo.Integrations.Serilog\Todo.Integrations.Serilog\Todo.Integrations.Serilog.csproj" />
+        <ProjectReference Include="..\Todo.Integrations.Serilog\Todo.Integrations.Serilog.csproj" />
+        <ProjectReference Include="..\Todo.Services\Todo.Services.csproj" />
     </ItemGroup>
 
     <ItemGroup>
