@@ -2,8 +2,8 @@
 
 ## Description
 
-This repo shows ASP.NET Core v5.x logging in action; it also serves as a learning, experimenting and teaching path to [Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/).  
-  
+This repo shows ASP.NET Core v5.x logging in action; it also serves as a learning, experimenting and teaching path to [Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/).
+
 :exclamation: Currently this web API uses JSON web tokens (JWT) for authentication & authorization purposes, but momentarily the mechanism used for generating these tokens has been __greatly__ simplified to the point of being actually naive as my focus is set on other topics; on the other hand, I do intend on providing a more realistic implementation in a not so far away future.
 
 This project has several posts associated with it:
@@ -18,7 +18,6 @@ This project has several posts associated with it:
 | Build Server                                                                    | Operating System | Status                                                                                                                                                                                                                                                          |
 | ------------------------------------------------------------------------------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/) | Linux            | [![Build Status](https://dev.azure.com/satrapu/aspnet-core-logging/_apis/build/status/ci-pipeline?branchName=master&jobName=Run%20on%20Linux)](https://dev.azure.com/satrapu/aspnet-core-logging/_build/latest?definitionId=2&branchName=master)                |
-| [Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/) | macOs            | [![Build Status](https://dev.azure.com/satrapu/aspnet-core-logging/_apis/build/status/ci-pipeline?branchName=master&jobName=Run%20on%20macOS)](https://dev.azure.com/satrapu/aspnet-core-logging/_build/latest?definitionId=2&branchName=master)                |
 | [Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/) | Windows          | [![Build Status](https://dev.azure.com/satrapu/aspnet-core-logging/_apis/build/status/ci-pipeline?branchName=master&jobName=Run%20on%20Windows)](https://dev.azure.com/satrapu/aspnet-core-logging/_build/latest?definitionId=2&branchName=master)              |
 
 ## Code quality
@@ -31,7 +30,7 @@ This project has several posts associated with it:
 
 ## Setup local development environment
 
-In order to run this application locally, you need to setup some things first, like: run PostgreSQL and pgAdmin via Docker Compose, create a PostgreSQL database using EF Core database migrations, etc.  
+In order to run this application locally, you need to setup some things first, like: run PostgreSQL and pgAdmin via Docker Compose, create a PostgreSQL database using EF Core database migrations, etc.
 
 ### Setup local persistence services
 
@@ -67,7 +66,7 @@ docker volume create --name=seq_data
 
 #### Create .env file
 
-The [.env](https://docs.docker.com/compose/env-file/) file is used by Docker Compose to avoid storing sensitive data inside `docker-compose.yml` file.  
+The [.env](https://docs.docker.com/compose/env-file/) file is used by Docker Compose to avoid storing sensitive data inside `docker-compose.yml` file.
 Create a new file named `.env` inside the folder where you have checked-out this git repository and add the following lines:
 
 ```properties
@@ -90,11 +89,11 @@ PGADMIN_DEFAULT_EMAIL=<PGADMIN_EMAIL_ADDRESS>
 PGADMIN_DEFAULT_PASSWORD=<PGADMIN_PASSWORD>
 ```
 
-Make sure you replace all of the above `<DB_DEV_USER>`, `<DB_DEV_PASSWORD>`, ..., `<PGADMIN_PASSWORD>` tokens with the appropriate values.  
+Make sure you replace all of the above `<DB_DEV_USER>`, `<DB_DEV_PASSWORD>`, ..., `<PGADMIN_PASSWORD>` tokens with the appropriate values.
 
 #### Compose commands
 
-All of the commands below must be run from the folder where you have checked-out this git repository.  
+All of the commands below must be run from the folder where you have checked-out this git repository.
 This folder contains a `docker-compose.yml` file describing the aforementioned compose services.
 
 ##### Run compose services
@@ -137,15 +136,15 @@ Once the services have been started using `docker-compose up` command, pgAdmin U
 
 #### Open pgAdmin UI
 
-Open your browser and navigate to [http://localhost:8080](http://localhost:8080).  
+Open your browser and navigate to [http://localhost:8080](http://localhost:8080).
 In order to start using pgAdmin, you need to authenticate - use the `PGADMIN_DEFAULT_EMAIL` and `PGADMIN_DEFAULT_PASSWORD` properties found in your `.env` file to login.
 
 #### Register your local database server
 
 When asked about a PostgreSQL server to register, populate the fields found inside `Connection` tab as below:
 
-- Host name/address = `aspnet-core-logging-dev` - the compose service name and *not* the container name 
-(the Docker Compose [networking page](https://docs.docker.com/compose/networking/) is a little bit misleading, 
+- Host name/address = `aspnet-core-logging-dev` - the compose service name and *not* the container name
+(the Docker Compose [networking page](https://docs.docker.com/compose/networking/) is a little bit misleading,
 as it mentions *container name*, that's why the services found inside the `docker-compose.yml` file are named differently than their containers)
 - Port = `5432` - the Docker internal port
 - Username = the value of the `${DB_DEV_POSTGRES_USER}` property from the local `.env` file
@@ -162,18 +161,18 @@ the following environment variables must be defined on your local development ma
 | CONNECTIONSTRINGS__TODOFORINTEGRATIONTESTS | Server=localhost; Port=5433; Database=aspnet-core-logging-it; Username=satrapu; Password=***;  | The connection string pointing to the integration tests database               |
 | GENERATEJWT__SECRET                        | <YOUR_JWT_SECRET>                                                                              | The secret used for generating JSON web tokens for experimenting purposes only |
 
-The connection strings above use the same username and password pairs find in the local `.env` file.  
-The port from each connection string represent the host port declared inside the local `docker-compose.yml` file - 
+The connection strings above use the same username and password pairs find in the local `.env` file.
+The port from each connection string represent the host port declared inside the local `docker-compose.yml` file -
 see more about ports [here](https://docs.docker.com/compose/compose-file/#ports).
 
 ### Setup local development database
 
-In order to run the application locally, you need to have an online PostgreSQL database whose schema is up-to-date.  
-The database will be started using the aforementioned Docker Compose commands, while its schema will be updated via one of the options below. 
+In order to run the application locally, you need to have an online PostgreSQL database whose schema is up-to-date.
+The database will be started using the aforementioned Docker Compose commands, while its schema will be updated via one of the options below.
 
 #### Option 1: Manually run database migrations
 
-In order to create and update the local development database, you need to install EF Core CLI tools; the reference documentation can be found [here](https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/dotnet). I also recommend reading about database migrations [here](https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/?tabs=dotnet-core-cli).  
+In order to create and update the local development database, you need to install EF Core CLI tools; the reference documentation can be found [here](https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/dotnet). I also recommend reading about database migrations [here](https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/?tabs=dotnet-core-cli).
 All of the commands below should be executed from the folder where you have checked-out this git repository.
 
 - Install dotnet-ef
@@ -216,7 +215,7 @@ dotnet ef database drop --startup-project ./Sources/Todo.WebApi --project ./Sour
 
 #### Option 2: Run database migrations at application startup
 
-Ensure the `MigrateDatabase` configuration property is set to `true`.  
+Ensure the `MigrateDatabase` configuration property is set to `true`.
 See more about applying EF Core migrations at runtime [here](https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/applying?tabs=dotnet-core-cli#apply-migrations-at-runtime).
 
 ### Inspect MiniProfiler results
@@ -229,4 +228,4 @@ If you enable [MiniProfiler](https://miniprofiler.com/) by setting the configura
 
 ### Inspect log events using Seq
 
-In order to inspect application log events generated via [Serilog](https://serilog.net/), navigate to [http://localhost:8888](http://localhost:8888), which will open [Seq](https://datalust.co/seq) UI. 
+In order to inspect application log events generated via [Serilog](https://serilog.net/), navigate to [http://localhost:8888](http://localhost:8888), which will open [Seq](https://datalust.co/seq) UI.
