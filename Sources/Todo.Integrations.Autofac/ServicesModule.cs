@@ -1,14 +1,11 @@
-namespace Todo.Services
+namespace Todo.Integrations.Autofac
 {
-    using Autofac;
-
     using Commons;
 
-    using Persistence;
+    using global::Autofac;
 
-    using Security;
-
-    using TodoItemLifecycleManagement;
+    using Services.Security;
+    using Services.TodoItemLifecycleManagement;
 
     /// <summary>
     /// Configures business related services used by this application.

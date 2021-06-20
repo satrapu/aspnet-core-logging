@@ -1,14 +1,12 @@
-namespace Todo.ApplicationFlows
+namespace Todo.Integrations.Autofac
 {
-    using Autofac;
+    using ApplicationFlows;
+    using ApplicationFlows.Security;
+    using ApplicationFlows.TodoItems;
+
+    using global::Autofac;
 
     using Microsoft.Extensions.Configuration;
-
-    using Security;
-
-    using Services;
-
-    using TodoItems;
 
     /// <summary>
     /// Configures application flow related services used by this application.

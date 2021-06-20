@@ -1,17 +1,19 @@
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
 
-namespace Todo.Persistence
+namespace Todo.Integrations.Autofac
 {
     using System;
 
-    using Autofac;
-
     using Commons;
+
+    using global::Autofac;
 
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
+
+    using Persistence;
 
     /// <summary>
     /// Configures persistence related services used by this application.
