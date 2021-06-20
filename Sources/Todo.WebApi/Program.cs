@@ -51,7 +51,7 @@ namespace Todo.WebApi
 
         private static IHostBuilder CreateHostBuilder(string[] args)
         {
-            logger.Information("Configuring host builder needed to run the application ...");
+            logger.Information("Configuring the host builder needed to run the application ...");
 
             IHostBuilder hostBuilder =
                 Host.CreateDefaultBuilder(args)
@@ -99,7 +99,7 @@ namespace Todo.WebApi
                         localHostBuilder.UseStartup<Startup>();
                     });
 
-            logger.Information("Host builder needed to run the application has been configured");
+            logger.Information("The host builder needed to run the application has been configured");
 
             return hostBuilder;
         }
