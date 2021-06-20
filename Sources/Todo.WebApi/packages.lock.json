@@ -1533,6 +1533,13 @@
           "MiniProfiler.EntityFrameworkCore": "4.2.22"
         }
       },
+      "todo.integrations.serilog": {
+        "type": "Project",
+        "dependencies": {
+          "Serilog": "2.10.0",
+          "Todo.Services": "1.0.0"
+        }
+      },
       "todo.persistence": {
         "type": "Project",
         "dependencies": {

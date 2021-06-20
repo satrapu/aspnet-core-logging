@@ -2128,6 +2128,13 @@
           "MiniProfiler.EntityFrameworkCore": "4.2.22"
         }
       },
+      "todo.integrations.serilog": {
+        "type": "Project",
+        "dependencies": {
+          "Serilog": "2.10.0",
+          "Todo.Services": "1.0.0"
+        }
+      },
       "todo.persistence": {
         "type": "Project",
         "dependencies": {
@@ -2160,7 +2167,9 @@
           "Todo.ApplicationFlows": "1.0.0",
           "Todo.Commons": "1.0.0",
           "Todo.Integrations.Autofac": "1.0.0",
-          "Todo.Integrations.MiniProfiler": "1.0.0"
+          "Todo.Integrations.MiniProfiler": "1.0.0",
+          "Todo.Integrations.Serilog": "1.0.0",
+          "Todo.Services": "1.0.0"
         }
       }
     }
