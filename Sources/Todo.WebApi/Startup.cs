@@ -91,7 +91,7 @@ namespace Todo.WebApi
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         // ReSharper disable once UnusedMember.Global
         public void Configure(IApplicationBuilder applicationBuilder, IHostApplicationLifetime hostApplicationLifetime,
-            ICollection<IApplicationStartup> applicationStartups, ILogger<Startup> logger)
+            IEnumerable<IApplicationStartedEventListener> applicationStartedEventListeners, ILogger<Startup> logger)
         {
             logger.LogInformation("{ApplicationName} is starting ...", ApplicationName);
 
@@ -129,7 +129,7 @@ namespace Todo.WebApi
             applicationBuilder.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 
             hostApplicationLifetime.ApplicationStarted.Register(() =>
-                OnApplicationStarted(applicationStartups, logger));
+                OnApplicationStarted(applicationStartedEventListeners, logger));
 
             hostApplicationLifetime.ApplicationStopping.Register(() => OnApplicationStopping(logger));
             hostApplicationLifetime.ApplicationStopped.Register(() => OnApplicationStopped(logger));
@@ -301,12 +301,12 @@ namespace Todo.WebApi
                             Status = StatusCodes.Status422UnprocessableEntity,
                             Detail = "See the errors property for more details",
                             Instance = context.HttpContext.Request.Path,
-                            Extensions = { { "TraceId", context.HttpContext.TraceIdentifier } }
+                            Extensions = {{"TraceId", context.HttpContext.TraceIdentifier}}
                         };
 
                         return new UnprocessableEntityObjectResult(validationProblemDetails)
                         {
-                            ContentTypes = { "application/problem+json" }
+                            ContentTypes = {"application/problem+json"}
                         };
                     };
                 });
@@ -317,9 +317,9 @@ namespace Todo.WebApi
             services.Configure<ExceptionHandlingOptions>(Configuration.GetSection("ExceptionHandling"));
         }
 
-        private void OnApplicationStarted(ICollection<IApplicationStartup> applicationStartups, ILogger logger)
+        private void OnApplicationStarted(IEnumerable<IApplicationStartedEventListener> eventListeners, ILogger logger)
         {
-            ExecuteApplicationStartups(applicationStartups, logger);
+            ExecuteApplicationStartedEventListeners(eventListeners, logger);
 
             logger.LogInformation("{ApplicationName} application has started", ApplicationName);
         }
@@ -334,25 +334,28 @@ namespace Todo.WebApi
             logger.LogInformation("{ApplicationName} application has stopped", ApplicationName);
         }
 
-        private void ExecuteApplicationStartups(ICollection<IApplicationStartup> applicationStartups, ILogger logger)
+        private void ExecuteApplicationStartedEventListeners(
+            IEnumerable<IApplicationStartedEventListener> eventListeners,
+            ILogger logger)
         {
-            if (applicationStartups == null)
+            if (eventListeners == null)
             {
-                throw new ArgumentNullException(nameof(applicationStartups));
+                throw new ArgumentNullException(nameof(eventListeners));
             }
 
-            foreach (IApplicationStartup applicationStartup in applicationStartups)
+            foreach (IApplicationStartedEventListener eventListener in eventListeners)
             {
-                string registeredApplicationStartup = applicationStartup.GetType().AssemblyQualifiedName;
-
-                logger.LogInformation("About to execute application startup class: [{ApplicationStartupClassName}] ...",
-                    registeredApplicationStartup);
-
-                applicationStartup.Execute();
+                string eventListenerName = eventListener.GetType().AssemblyQualifiedName;
 
                 logger.LogInformation(
-                    "Application startup class: [{ApplicationStartupClassName}] has been executed successfully",
-                    registeredApplicationStartup);
+                    "About to execute application started event listener: [{ApplicationStartedEventListener}] ...",
+                    eventListenerName);
+
+                eventListener.OnApplicationStarted();
+
+                logger.LogInformation(
+                    "Application started event listener: [{ApplicationStartedEventListener}] has been executed successfully",
+                    eventListenerName);
             }
         }
     }

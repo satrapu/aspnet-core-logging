@@ -78,7 +78,7 @@ namespace Todo.Persistence
 
             builder
                 .RegisterType<RunDatabaseMigrations>()
-                .As<IApplicationStartup>()
+                .As<IApplicationStartedEventListener>()
                 .SingleInstance();
         }
     }
