@@ -9,7 +9,7 @@ namespace Todo.Integrations.MiniProfiler
     public static class MiniProfilerActivator
     {
         /// <summary>
-        /// Adds MiniProfiler related services to the current <paramref name="services"/> instance.
+        /// Adds MiniProfiler to the current <paramref name="services"/> instance.
         /// </summary>
         /// <param name="services">The application services collection.</param>
         /// <param name="configuration">The application configuration.</param>
