@@ -3,10 +3,10 @@ namespace Todo.WebApi
     using System;
     using System.Diagnostics.CodeAnalysis;
 
-    using ApplicationFlows;
-
     using Autofac;
     using Autofac.Extensions.DependencyInjection;
+
+    using Integrations.Autofac;
 
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
