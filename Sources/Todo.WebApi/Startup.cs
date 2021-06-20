@@ -131,7 +131,7 @@ namespace Todo.WebApi
             applicationBuilder.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 
             hostApplicationLifetime.ApplicationStarted.Register(() =>
-                OnApplicationStarted(applicationStartedEventListeners, logger));
+                OnApplicationStarted(applicationStartedEventListeners, hostApplicationLifetime, logger));
 
             hostApplicationLifetime.ApplicationStopping.Register(() => OnApplicationStopping(logger));
             hostApplicationLifetime.ApplicationStopped.Register(() => OnApplicationStopped(logger));
@@ -306,11 +306,21 @@ namespace Todo.WebApi
             services.Configure<ExceptionHandlingOptions>(Configuration.GetSection("ExceptionHandling"));
         }
 
-        private void OnApplicationStarted(IEnumerable<IApplicationStartedEventListener> eventListeners, ILogger logger)
+        private void OnApplicationStarted(IEnumerable<IApplicationStartedEventListener> eventListeners,
+            IHostApplicationLifetime hostApplicationLifetime, ILogger logger)
         {
-            ExecuteApplicationStartedEventListeners(eventListeners, logger);
+            try
+            {
+                ExecuteApplicationStartedEventListeners(eventListeners, logger);
+                logger.LogInformation("{ApplicationName} application has started", ApplicationName);
+            }
+            catch (Exception exception)
+            {
+                logger.LogCritical(exception,
+                    "An error has occurred while executing application started event listeners");
 
-            logger.LogInformation("{ApplicationName} application has started", ApplicationName);
+                hostApplicationLifetime.StopApplication();
+            }
         }
 
         private void OnApplicationStopping(ILogger logger)
