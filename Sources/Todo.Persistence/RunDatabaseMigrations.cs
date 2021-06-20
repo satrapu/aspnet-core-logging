@@ -11,9 +11,9 @@ namespace Todo.Persistence
     using Microsoft.Extensions.Logging;
 
     /// <summary>
-    /// Runs database migrations during application startup.
+    /// Runs database migrations during application started event.
     /// </summary>
-    public class RunDatabaseMigrations : IApplicationStartup
+    public class RunDatabaseMigrations : IApplicationStartedEventListener
     {
         private readonly TodoDbContext todoDbContext;
         private readonly IConfiguration configuration;
@@ -35,11 +35,12 @@ namespace Todo.Persistence
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public void Execute()
+        public void OnApplicationStarted()
         {
             using (logger.BeginScope(new Dictionary<string, object>
             {
-                [Constants.ConversationId] = Guid.NewGuid().ToString("N")
+                [Constants.ConversationId] = Guid.NewGuid().ToString("N"),
+                [Constants.ApplicationFlowName] = "Database/RunMigrations"
             }))
             {
                 InternalRunDatabaseMigrations();
