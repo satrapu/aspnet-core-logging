@@ -1,91 +1,66 @@
 #!/bin/bash
 
-# This script is based on https://github.com/docker/for-mac/issues/2359#issuecomment-853420567.
+# Based on: http://web.archive.org/web/20201012054023if_/https://github.com/microsoft/azure-pipelines-image-generation/issues/738#issuecomment-522301481.
+# The original GitHub issue link is no longer available, thus I had to resort to the Wayback Machine URL!
 
-echo 'Installing Docker ...'
+# Fail script in case of unset variables - see more here:
+# http://web.archive.org/web/20110314180918/http://www.davidpashley.com/articles/writing-robust-shell-scripts.html#id2577541.
+set -o nounset
+
+# Fail scripts in case a command fails - see more here:
+# http://web.archive.org/web/20110314180918/http://www.davidpashley.com/articles/writing-robust-shell-scripts.html#id2577574.
+set -o errexit
+
+# Install Docker Desktop for Mac via brew tool
+echo 'Downloading and then running docker brew formula ...'
 start=$SECONDS
 
-# Install specific Docker brew formula, as documented here:
-# https://cmichel.io/how-to-install-an-old-package-version-with-brew/.
-# Docker brew formula can be found here:
-# https://github.com/Homebrew/homebrew-cask/blob/961b663cc4defff883089f33e0e2687bcfd8d934/Casks/docker.rb.
-echo 'Folders under homebrew-cask/Casks:'
-ls -ld /usr/local/Homebrew/Library/Taps/homebrew/homebrew-cask/Casks/*/
-
-echo 'Folders under homebrew-core/Formula:'
-ls -ld /usr/local/Homebrew/Library/Taps/homebrew/homebrew-core/Formula/*/
-
-cd /usr/local/Homebrew/Library/Taps/homebrew/homebrew-cask/Formula/docker || exit
-git checkout 961b663cc4defff883089f33e0e2687bcfd8d934
-HOMEBREW_NO_AUTO_UPDATE=1 brew install docker
+# The brew formula below will install Docker Desktop for Mac, v2.0.0.3,31259.
+dockerInstallationScriptName='docker.rb'
+dockerInstallationScriptUrl="https://raw.githubusercontent.com/Homebrew/homebrew-cask/8ce4e89d10716666743b28c5a46cd54af59a9cc2/Casks/$dockerInstallationScriptName"
+curl -L  $dockerInstallationScriptUrl > $dockerInstallationScriptName && brew install $dockerInstallationScriptName
 
 end=$SECONDS
 duration=$(( end - start ))
-echo "Docker has been installed in $duration seconds"
+echo "Docker brew formula has been downloaded & run in $duration seconds"
 
-# allow the app to run without confirmation
-xattr -d -r com.apple.quarantine /Applications/Docker.app
+echo 'Installing Docker Desktop for Mac ...'
+start=$SECONDS
+sudo /Applications/Docker.app/Contents/MacOS/Docker --quit-after-install --unattended
+/Applications/Docker.app/Contents/MacOS/Docker --unattended &
 
-# preemptively do docker.app's setup to avoid any gui prompts
-sudo /bin/cp /Applications/Docker.app/Contents/Library/LaunchServices/com.docker.vmnetd /Library/PrivilegedHelperTools
+end=$SECONDS
+duration=$(( end - start ))
+echo "Docker Desktop for Mac has been installed in $duration seconds"
 
-# the plist we need used to be in /Applications/Docker.app/Contents/Resources, but
-# is now dynamically generated. So we dynamically generate our own:
-sudo tee "/Library/LaunchDaemons/com.docker.vmnetd.plist" > /dev/null <<'EOF'
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-	<key>Label</key>
-	<string>com.docker.vmnetd</string>
-	<key>Program</key>
-	<string>/Library/PrivilegedHelperTools/com.docker.vmnetd</string>
-	<key>ProgramArguments</key>
-	<array>
-		<string>/Library/PrivilegedHelperTools/com.docker.vmnetd</string>
-	</array>
-	<key>RunAtLoad</key>
-	<true/>
-	<key>Sockets</key>
-	<dict>
-		<key>Listener</key>
-		<dict>
-			<key>SockPathMode</key>
-			<integer>438</integer>
-			<key>SockPathName</key>
-			<string>/var/run/com.docker.vmnetd.sock</string>
-		</dict>
-	</dict>
-	<key>Version</key>
-	<string>59</string>
-</dict>
-</plist>
-
-EOF
-
-sudo /bin/chmod 544 /Library/PrivilegedHelperTools/com.docker.vmnetd
-sudo /bin/chmod 644 /Library/LaunchDaemons/com.docker.vmnetd.plist
-sudo /bin/launchctl load /Library/LaunchDaemons/com.docker.vmnetd.plist
-
-echo 'Starting Docker.app, if necessary ...'
+echo 'Starting Docker service ...'
 start=$SECONDS
 
-sleep 5s
-open -g -a Docker.app || exit
+retries=0
+maxRetries=30
 
-# Wait for the server to start up, if applicable.
-i=0
+while ! docker info 2>/dev/null ; do
+    sleep 5s
+    ((retries=retries+1))
 
-while ! docker system info &>/dev/null; do
-  (( i++ == 0 )) && printf %s 'Waiting for Docker to finish starting up...' || printf '.'
-  sleep 3s
+    if pgrep -xq -- 'Docker'; then
+        echo 'Docker service is still booting'
+    else
+        echo 'Docker service is no longer running, need to restart it'
+        /Applications/Docker.app/Contents/MacOS/Docker --unattended &
+    fi
+
+    if [[ ${retries} -gt ${maxRetries} ]]; then
+        >&2 echo 'Docker service failed to enter running state during the expected time'
+        exit 1
+    fi;
+
+    echo 'Waiting for Docker service to enter running state ...'
 done
 
-(( i )) && printf '\n'
-
 end=$SECONDS
 duration=$(( end - start ))
-echo "Docker has started in $duration seconds"
+echo "Docker service has started after $duration seconds"
 
 docker --version
 docker-compose --version
