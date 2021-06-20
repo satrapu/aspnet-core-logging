@@ -15,6 +15,8 @@ namespace Todo.WebApi
 
     using ExceptionHandling;
 
+    using Integrations.MiniProfiler;
+
     using Logging;
 
     using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -267,22 +269,9 @@ namespace Todo.WebApi
 
         private void ConfigureMiniProfiler(IServiceCollection services)
         {
-            // Configure MiniProfiler for Web API and EF Core.
-            // Based on: https://dotnetthoughts.net/using-miniprofiler-in-aspnetcore-webapi/.
             if (IsMiniProfilerEnabled)
             {
-                services
-                    .AddMemoryCache()
-                    .AddMiniProfiler(options =>
-                    {
-                        // MiniProfiler URLs (assuming options.RouteBasePath has been set to '/miniprofiler')
-                        // - show all requests:         /miniprofiler/results-index
-                        // - show current request:      /miniprofiler/results
-                        // - show all requests as JSON: /miniprofiler/results-list
-                        options.RouteBasePath = Configuration.GetValue<string>("MiniProfiler:RouteBasePath");
-                        options.EnableServerTimingHeader = true;
-                    })
-                    .AddEntityFramework();
+                services.ActivateMiniProfiler(Configuration);
             }
         }
 
