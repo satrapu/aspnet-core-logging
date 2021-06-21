@@ -60,7 +60,8 @@ namespace Todo.WebApi
                     {
                         configurationBuilder.Sources.Clear();
 
-                        configurationBuilder.SetBasePath(hostBuilderContext.HostingEnvironment.ContentRootPath)
+                        configurationBuilder
+                            .SetBasePath(hostBuilderContext.HostingEnvironment.ContentRootPath)
                             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                             .AddJsonFile($"appsettings.{hostBuilderContext.HostingEnvironment.EnvironmentName}.json",
                                 optional: true, reloadOnChange: true)
