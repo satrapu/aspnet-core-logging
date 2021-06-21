@@ -2123,7 +2123,11 @@
       "todo.integrations.serilog": {
         "type": "Project",
         "dependencies": {
-          "Serilog": "2.10.0",
+          "Microsoft.ApplicationInsights.AspNetCore": "2.17.0",
+          "Serilog.AspNetCore": "4.1.0",
+          "Serilog.Enrichers.Thread": "3.1.0",
+          "Serilog.Sinks.ApplicationInsights": "3.1.0",
+          "Serilog.Sinks.Seq": "5.0.1",
           "Todo.Services": "1.0.0"
         }
       },
@@ -2149,12 +2153,7 @@
         "type": "Project",
         "dependencies": {
           "Autofac.Extensions.DependencyInjection": "7.1.0",
-          "Microsoft.ApplicationInsights.AspNetCore": "2.17.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "5.0.7",
-          "Serilog.AspNetCore": "4.1.0",
-          "Serilog.Enrichers.Thread": "3.1.0",
-          "Serilog.Sinks.ApplicationInsights": "3.1.0",
-          "Serilog.Sinks.Seq": "5.0.1",
           "Todo.ApplicationFlows": "1.0.0",
           "Todo.Commons": "1.0.0",
           "Todo.Integrations.Autofac": "1.0.0",
