@@ -68,8 +68,8 @@ namespace Todo.WebApi
         {
             Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             WebHostEnvironment = webHostEnvironment ?? throw new ArgumentNullException(nameof(webHostEnvironment));
-            IsMiniProfilerEnabled = Configuration.GetValue<bool>("MiniProfiler:Enabled");
             IsHttpLoggingEnabled = Configuration.GetValue<bool>("HttpLogging:Enabled");
+            IsMiniProfilerEnabled = Configuration.GetValue<bool>("MiniProfiler:Enabled");
 
             IEnumerable<KeyValuePair<string, string>> configuredSerilogSinks =
                 Configuration.GetSection("Serilog:Using").AsEnumerable().ToList();
@@ -80,28 +80,37 @@ namespace Todo.WebApi
                 configuredSerilogSinks.Any(sink => "Serilog.Sinks.ApplicationInsights".Equals(sink.Value));
         }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
+        /// <summary>
+        /// This method gets called by the runtime; use it to add services to the container.
+        /// </summary>
+        /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
             ConfigureExceptionHandling(services);
             ConfigureLogging(services);
-            ConfigureSecurity(services);
             ConfigureMiniProfiler(services);
+            ConfigureSecurity(services);
             ConfigureWebApi(services);
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        // ReSharper disable once UnusedMember.Global
+        /// <summary>
+        /// This method gets called by the runtime; use it to configure the ASP.NET Core request processing pipeline.
+        /// </summary>
+        /// <param name="applicationBuilder"></param>
+        /// <param name="hostApplicationLifetime"></param>
+        /// <param name="applicationStartedEventListeners"></param>
+        /// <param name="logger"></param>
         public void Configure(IApplicationBuilder applicationBuilder, IHostApplicationLifetime hostApplicationLifetime,
             IEnumerable<IApplicationStartedEventListener> applicationStartedEventListeners, ILogger<Startup> logger)
         {
-            logger.LogInformation("{ApplicationName} is starting ...", ApplicationName);
+            logger.LogInformation("Configuring ASP.NET Core request processing pipeline ...");
 
             if (IsSerilogFileSinkConfigured)
             {
                 logger.LogInformation(
-                    "The {LogsHomeEnvironmentVariable} environment variable now points to directory: {LogsHomeDirectory}",
-                    LogsHomeEnvironmentVariable, Environment.GetEnvironmentVariable(LogsHomeEnvironmentVariable));
+                    "The {LogsHomeEnvironmentVariable} environment variable now points to directory: [{LogsHomeDirectory}]",
+                    LogsHomeEnvironmentVariable,
+                    Environment.GetEnvironmentVariable(LogsHomeEnvironmentVariable));
             }
 
             applicationBuilder.UseConversationId();
@@ -111,7 +120,7 @@ namespace Todo.WebApi
                 applicationBuilder.UseHttpLogging();
             }
 
-            // The exception handling middleware must be added inside the ASP.NET Core request pipeline
+            // The exception handling middleware must be added inside the ASP.NET Core request processing pipeline
             // as soon as possible to ensure any unhandled exception is eventually handled.
             applicationBuilder.UseExceptionHandler(new ExceptionHandlerOptions
             {
@@ -144,7 +153,10 @@ namespace Todo.WebApi
                 var applicationInsightsOptions = new ApplicationInsightsOptions();
                 Configuration.Bind(applicationInsightsOptions);
 
-                services.AddApplicationInsightsTelemetry(applicationInsightsOptions.InstrumentationKey);
+                services.AddApplicationInsightsTelemetry(options =>
+                {
+                    options.InstrumentationKey = applicationInsightsOptions.InstrumentationKey;
+                });
             }
         }
 
@@ -290,12 +302,12 @@ namespace Todo.WebApi
                             Status = StatusCodes.Status422UnprocessableEntity,
                             Detail = "See the errors property for more details",
                             Instance = context.HttpContext.Request.Path,
-                            Extensions = { { "TraceId", context.HttpContext.TraceIdentifier } }
+                            Extensions = {{"TraceId", context.HttpContext.TraceIdentifier}}
                         };
 
                         return new UnprocessableEntityObjectResult(validationProblemDetails)
                         {
-                            ContentTypes = { "application/problem+json" }
+                            ContentTypes = {"application/problem+json"}
                         };
                     };
                 });
