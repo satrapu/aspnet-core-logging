@@ -22,7 +22,6 @@
         <PackageReference Update="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="5.0.0"/>
         <PackageReference Update="Microsoft.Extensions.Configuration.Json" Version="5.0.0"/>
         <PackageReference Update="Microsoft.Extensions.DependencyInjection" Version="5.0.1"/>
-        <PackageReference Update="Microsoft.Extensions.Hosting.Abstractions" Version="5.0.0"/>
         <PackageReference Update="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0"/>
         <PackageReference Update="Microsoft.Extensions.Options" Version="5.0.0"/>
         <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="5.0.0"/>
@@ -36,7 +35,6 @@
         <PackageReference Update="NUnit" Version="3.13.2"/>
         <PackageReference Update="NUnit3TestAdapter" Version="4.0.0"/>
         <PackageReference Update="NunitXml.TestLogger" Version="3.0.107"/>
-        <PackageReference Update="Serilog" Version="2.10.0"/>
         <PackageReference Update="Serilog.AspNetCore" Version="4.1.0"/>
         <PackageReference Update="Serilog.Enrichers.Thread" Version="3.1.0"/>
         <PackageReference Update="Serilog.Sinks.ApplicationInsights" Version="3.1.0"/>
