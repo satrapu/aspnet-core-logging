@@ -1,5 +1,7 @@
 namespace Todo.Integrations.MiniProfiler
 {
+    using System;
+
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
 
@@ -13,8 +15,22 @@ namespace Todo.Integrations.MiniProfiler
         /// </summary>
         /// <param name="services">The application services collection.</param>
         /// <param name="configuration">The application configuration.</param>
-        public static void ActivateMiniProfiler(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection ActivateMiniProfiler(this IServiceCollection services,
+            IConfiguration configuration)
         {
+            if (services == null)
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
+
+            // ReSharper disable once SettingNotFoundInConfiguration
+            bool isMiniProfilerEnabled = configuration.GetValue<bool>("MiniProfiler:Enabled");
+
+            if (!isMiniProfilerEnabled)
+            {
+                return services;
+            }
+
             // Configure MiniProfiler for Web API and EF Core.
             // Based on: https://dotnetthoughts.net/using-miniprofiler-in-aspnetcore-webapi/.
             services
@@ -30,6 +46,8 @@ namespace Todo.Integrations.MiniProfiler
                     options.EnableServerTimingHeader = true;
                 })
                 .AddEntityFramework();
+
+            return services;
         }
     }
 }
