@@ -1,10 +1,10 @@
-namespace Todo.Integrations.Autofac
+namespace Todo.DependencyInjection
 {
     using ApplicationFlows;
     using ApplicationFlows.Security;
     using ApplicationFlows.TodoItems;
 
-    using global::Autofac;
+    using Autofac;
 
     using Microsoft.Extensions.Configuration;
 

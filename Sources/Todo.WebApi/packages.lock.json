@@ -1502,7 +1502,7 @@
       "todo.commons": {
         "type": "Project"
       },
-      "todo.integrations.autofac": {
+      "todo.dependencyinjection": {
         "type": "Project",
         "dependencies": {
           "Autofac": "6.2.0",

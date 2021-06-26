@@ -1823,7 +1823,7 @@
       "todo.commons": {
         "type": "Project"
       },
-      "todo.integrations.autofac": {
+      "todo.dependencyinjection": {
         "type": "Project",
         "dependencies": {
           "Autofac": "6.2.0",
@@ -1876,7 +1876,7 @@
           "Microsoft.AspNetCore.Authentication.JwtBearer": "5.0.7",
           "Todo.ApplicationFlows": "1.0.0",
           "Todo.Commons": "1.0.0",
-          "Todo.Integrations.Autofac": "1.0.0",
+          "Todo.DependencyInjection": "1.0.0",
           "Todo.Integrations.MiniProfiler": "1.0.0",
           "Todo.Logging": "1.0.0",
           "Todo.Services": "1.0.0"

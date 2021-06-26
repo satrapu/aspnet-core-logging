@@ -1,13 +1,10 @@
-// ReSharper disable MemberCanBePrivate.Global
-// ReSharper disable UnusedAutoPropertyAccessor.Global
-
-namespace Todo.Integrations.Autofac
+namespace Todo.DependencyInjection
 {
     using System;
 
-    using Commons;
+    using Autofac;
 
-    using global::Autofac;
+    using Commons;
 
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;

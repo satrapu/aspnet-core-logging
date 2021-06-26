@@ -1,8 +1,8 @@
-namespace Todo.Integrations.Autofac
+namespace Todo.DependencyInjection
 {
-    using Commons;
+    using Autofac;
 
-    using global::Autofac;
+    using Commons;
 
     using Services.Security;
     using Services.TodoItemLifecycleManagement;

@@ -6,7 +6,7 @@ namespace Todo.WebApi
     using Autofac;
     using Autofac.Extensions.DependencyInjection;
 
-    using Integrations.Autofac;
+    using DependencyInjection;
 
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
