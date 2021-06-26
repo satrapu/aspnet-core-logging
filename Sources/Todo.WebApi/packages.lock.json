@@ -1519,7 +1519,7 @@
           "MiniProfiler.EntityFrameworkCore": "4.2.22"
         }
       },
-      "todo.integrations.serilog": {
+      "todo.logging": {
         "type": "Project",
         "dependencies": {
           "Microsoft.ApplicationInsights.AspNetCore": "2.17.0",

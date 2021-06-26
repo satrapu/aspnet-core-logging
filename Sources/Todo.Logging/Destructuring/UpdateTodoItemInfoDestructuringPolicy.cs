@@ -1,9 +1,9 @@
-namespace Todo.Integrations.Serilog.Destructuring
+namespace Todo.Logging.Destructuring
 {
     using System.Collections.Generic;
 
-    using global::Serilog.Core;
-    using global::Serilog.Events;
+    using Serilog.Core;
+    using Serilog.Events;
 
     using Services.Security;
     using Services.TodoItemLifecycleManagement;

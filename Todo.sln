@@ -94,7 +94,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.Integrations.Autofac",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.Integrations.MiniProfiler", "Sources\Todo.Integrations.MiniProfiler\Todo.Integrations.MiniProfiler.csproj", "{45BF2317-5218-4677-8F50-92909CB38850}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.Integrations.Serilog", "Sources\Todo.Integrations.Serilog\Todo.Integrations.Serilog.csproj", "{56457F61-D12C-4BA8-8E87-90A022FEDB8C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.Logging", "Sources\Todo.Logging\Todo.Logging.csproj", "{06A85419-4798-4043-90FA-062F34345AE5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -162,10 +162,10 @@ Global
 		{45BF2317-5218-4677-8F50-92909CB38850}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{45BF2317-5218-4677-8F50-92909CB38850}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{45BF2317-5218-4677-8F50-92909CB38850}.Release|Any CPU.Build.0 = Release|Any CPU
-		{56457F61-D12C-4BA8-8E87-90A022FEDB8C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{56457F61-D12C-4BA8-8E87-90A022FEDB8C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{56457F61-D12C-4BA8-8E87-90A022FEDB8C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{56457F61-D12C-4BA8-8E87-90A022FEDB8C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{06A85419-4798-4043-90FA-062F34345AE5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{06A85419-4798-4043-90FA-062F34345AE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{06A85419-4798-4043-90FA-062F34345AE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{06A85419-4798-4043-90FA-062F34345AE5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -192,7 +192,7 @@ Global
 		{6935CABF-0DBD-4315-AB8B-DE92A4D81B00} = {ED7A5363-C21A-4D47-A2A5-67DEB1E0DDE3}
 		{1B541322-088A-4265-A63B-A173BC1D9284} = {ED7A5363-C21A-4D47-A2A5-67DEB1E0DDE3}
 		{45BF2317-5218-4677-8F50-92909CB38850} = {ED7A5363-C21A-4D47-A2A5-67DEB1E0DDE3}
-		{56457F61-D12C-4BA8-8E87-90A022FEDB8C} = {ED7A5363-C21A-4D47-A2A5-67DEB1E0DDE3}
+		{06A85419-4798-4043-90FA-062F34345AE5} = {ED7A5363-C21A-4D47-A2A5-67DEB1E0DDE3}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {74318BEF-DB50-4852-A16D-E2FB8671BE7F}
