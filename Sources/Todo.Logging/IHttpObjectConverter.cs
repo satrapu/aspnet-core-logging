@@ -1,4 +1,4 @@
-namespace Todo.WebApi.Logging
+namespace Todo.Logging
 {
     using System.Threading.Tasks;
 

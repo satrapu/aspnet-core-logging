@@ -6,6 +6,8 @@ namespace Todo.WebApi.Logging
 
     using NUnit.Framework;
 
+    using Todo.Logging;
+
     /// <summary>
     /// Contains unit tests targeting <see cref="LoggingMiddlewareExtensions"/> class.
     /// </summary>
