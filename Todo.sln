@@ -88,7 +88,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Run", "Run", "{2760AF02-37D
 		docker-compose.yml = docker-compose.yml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.Integrations.Serilog", "Sources\Todo.Integrations.Serilog\Todo.Integrations.Serilog\Todo.Integrations.Serilog.csproj", "{A0877BAD-5E02-4EF1-AE43-73A174034A66}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.Integrations.Serilog", "Sources\Todo.Integrations.Serilog\Todo.Integrations.Serilog.csproj", "{A0877BAD-5E02-4EF1-AE43-73A174034A66}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
