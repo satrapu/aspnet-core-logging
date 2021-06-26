@@ -81,9 +81,9 @@
       },
       "SonarAnalyzer.CSharp": {
         "type": "Direct",
-        "requested": "[8.24.0.32949, )",
-        "resolved": "8.24.0.32949",
-        "contentHash": "fKb7XoE+7k7y/jb6FQUZwGjUlwxqkD2bwZjS2Asr2mTQE3K8qHfBL7mrIbY8ooFnq9kYP8IDEHa4wpUaJzpE7w=="
+        "requested": "[8.25.0.33663, )",
+        "resolved": "8.25.0.33663",
+        "contentHash": "6Iu2gGAt/6WLT9Rg+pE1Kgnu2eHz4LwcDemcIPAZ9iV+pyHxa0S3WLLy1GS2E7u34/tJGA/WvHhZ04LI7BF9wA=="
       },
       "Castle.Core": {
         "type": "Transitive",
