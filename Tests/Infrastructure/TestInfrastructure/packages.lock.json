@@ -2112,14 +2112,6 @@
           "Todo.ApplicationFlows": "1.0.0"
         }
       },
-      "todo.integrations.miniprofiler": {
-        "type": "Project",
-        "dependencies": {
-          "Microsoft.Extensions.DependencyInjection": "5.0.1",
-          "MiniProfiler.AspNetCore.Mvc": "4.2.22",
-          "MiniProfiler.EntityFrameworkCore": "4.2.22"
-        }
-      },
       "todo.logging": {
         "type": "Project",
         "dependencies": {
@@ -2141,6 +2133,14 @@
           "Todo.Commons": "1.0.0"
         }
       },
+      "todo.profiling": {
+        "type": "Project",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection": "5.0.1",
+          "MiniProfiler.AspNetCore.Mvc": "4.2.22",
+          "MiniProfiler.EntityFrameworkCore": "4.2.22"
+        }
+      },
       "todo.services": {
         "type": "Project",
         "dependencies": {
@@ -2157,8 +2157,8 @@
           "Todo.ApplicationFlows": "1.0.0",
           "Todo.Commons": "1.0.0",
           "Todo.DependencyInjection": "1.0.0",
-          "Todo.Integrations.MiniProfiler": "1.0.0",
           "Todo.Logging": "1.0.0",
+          "Todo.Profiling": "1.0.0",
           "Todo.Services": "1.0.0"
         }
       }

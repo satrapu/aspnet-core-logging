@@ -1,4 +1,4 @@
-namespace Todo.Integrations.MiniProfiler
+namespace Todo.Profiling
 {
     using System;
 

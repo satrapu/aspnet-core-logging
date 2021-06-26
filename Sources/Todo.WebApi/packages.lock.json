@@ -1511,14 +1511,6 @@
           "Todo.ApplicationFlows": "1.0.0"
         }
       },
-      "todo.integrations.miniprofiler": {
-        "type": "Project",
-        "dependencies": {
-          "Microsoft.Extensions.DependencyInjection": "5.0.1",
-          "MiniProfiler.AspNetCore.Mvc": "4.2.22",
-          "MiniProfiler.EntityFrameworkCore": "4.2.22"
-        }
-      },
       "todo.logging": {
         "type": "Project",
         "dependencies": {
@@ -1538,6 +1530,14 @@
           "Microsoft.Extensions.Configuration.Binder": "5.0.0",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "5.0.7",
           "Todo.Commons": "1.0.0"
+        }
+      },
+      "todo.profiling": {
+        "type": "Project",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection": "5.0.1",
+          "MiniProfiler.AspNetCore.Mvc": "4.2.22",
+          "MiniProfiler.EntityFrameworkCore": "4.2.22"
         }
       },
       "todo.services": {

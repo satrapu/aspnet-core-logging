@@ -15,8 +15,6 @@ namespace Todo.WebApi
 
     using ExceptionHandling;
 
-    using Integrations.MiniProfiler;
-
     using Logging;
 
     using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -33,6 +31,8 @@ namespace Todo.WebApi
     using Microsoft.IdentityModel.Tokens;
 
     using Models;
+
+    using Profiling;
 
     using Serilog;
 
@@ -302,12 +302,12 @@ namespace Todo.WebApi
                             Status = StatusCodes.Status422UnprocessableEntity,
                             Detail = "See the errors property for more details",
                             Instance = context.HttpContext.Request.Path,
-                            Extensions = { { "TraceId", context.HttpContext.TraceIdentifier } }
+                            Extensions = {{"TraceId", context.HttpContext.TraceIdentifier}}
                         };
 
                         return new UnprocessableEntityObjectResult(validationProblemDetails)
                         {
-                            ContentTypes = { "application/problem+json" }
+                            ContentTypes = {"application/problem+json"}
                         };
                     };
                 });
