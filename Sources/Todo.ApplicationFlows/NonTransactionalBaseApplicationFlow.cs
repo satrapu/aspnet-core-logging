@@ -48,7 +48,10 @@ namespace Todo.ApplicationFlows
         /// <returns></returns>
         public async Task<TOutput> ExecuteAsync(TInput input, IPrincipal flowInitiator)
         {
-            using (logger.BeginScope(new Dictionary<string, object> { [Constants.ApplicationFlowName] = flowName }))
+            using (logger.BeginScope(new Dictionary<string, object>
+            {
+                [Constants.Logging.ApplicationFlowName] = flowName
+            }))
             {
                 bool isSuccess = false;
                 Stopwatch stopwatch = Stopwatch.StartNew();
@@ -59,13 +62,16 @@ namespace Todo.ApplicationFlows
                     logger.LogInformation(
                         "User [{FlowInitiator}] has started executing application flow [{ApplicationFlowName}] ...",
                         flowInitiatorName, flowName);
+
                     TOutput output = await InternalExecuteAsync(input, flowInitiator);
                     isSuccess = true;
+
                     return output;
                 }
                 finally
                 {
                     stopwatch.Stop();
+
                     logger.LogInformation(
                         "User [{FlowInitiator}] has finished executing application flow [{ApplicationFlowName}] "
                         + "with the outcome: [{ApplicationFlowOutcome}]; "
@@ -86,6 +92,7 @@ namespace Todo.ApplicationFlows
         protected virtual async Task<TOutput> InternalExecuteAsync(TInput input, IPrincipal flowInitiator)
         {
             TOutput output = await ExecuteFlowStepsAsync(input, flowInitiator);
+
             return output;
         }
 

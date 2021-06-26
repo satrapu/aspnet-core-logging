@@ -32,8 +32,8 @@ namespace Todo.Persistence
         {
             using (logger.BeginScope(new Dictionary<string, object>
             {
-                [Constants.ConversationId] = Guid.NewGuid().ToString("N"),
-                [Constants.ApplicationFlowName] = "Database/RunMigrations"
+                [Constants.Logging.ConversationId] = Guid.NewGuid().ToString("N"),
+                [Constants.Logging.ApplicationFlowName] = "Database/RunMigrations"
             }))
             {
                 InternalRunDatabaseMigrations();

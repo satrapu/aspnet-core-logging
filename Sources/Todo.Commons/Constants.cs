@@ -6,14 +6,20 @@ namespace Todo.Commons
     public static class Constants
     {
         /// <summary>
-        /// Represents the identifier of the conversation grouping several events related to the same operation.
+        /// Contains constants used for logging.
         /// </summary>
-        public const string ConversationId = "ConversationId";
+        public static class Logging
+        {
+            /// <summary>
+            /// Represents the identifier of the conversation grouping several events related to the same operation.
+            /// </summary>
+            public const string ConversationId = "ConversationId";
 
-        /// <summary>
-        /// Represents the name of an application flow.
-        /// </summary>
-        public const string ApplicationFlowName = "ApplicationFlowName";
+            /// <summary>
+            /// Represents the name of an application flow.
+            /// </summary>
+            public const string ApplicationFlowName = "ApplicationFlowName";
+        }
 
         /// <summary>
         /// Contains the names of the environments where this application will run.

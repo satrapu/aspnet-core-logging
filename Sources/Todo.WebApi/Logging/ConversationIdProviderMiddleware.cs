@@ -30,7 +30,7 @@ namespace Todo.WebApi.Logging
 
         public async Task Invoke(HttpContext httpContext)
         {
-            string conversationIdKey = Constants.ConversationId;
+            string conversationIdKey = Constants.Logging.ConversationId;
 
             if (!httpContext.Request.Headers.TryGetValue(conversationIdKey, out StringValues conversationId)
                 || string.IsNullOrWhiteSpace(conversationId))
