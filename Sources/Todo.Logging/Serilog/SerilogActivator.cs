@@ -1,4 +1,4 @@
-﻿namespace Todo.Logging.Serilog
+namespace Todo.Logging.Serilog
 {
     using System;
     using System.Collections.Generic;

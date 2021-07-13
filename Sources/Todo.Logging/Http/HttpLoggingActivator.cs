@@ -1,4 +1,4 @@
-﻿namespace Todo.Logging.Http
+namespace Todo.Logging.Http
 {
     using System;
 
