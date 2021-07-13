@@ -1818,7 +1818,8 @@
           "Autofac": "6.2.0",
           "Microsoft.Extensions.Configuration.Abstractions": "5.0.0",
           "Microsoft.Extensions.Logging.Abstractions": "5.0.0",
-          "Todo.ApplicationFlows": "1.0.0"
+          "Todo.ApplicationFlows": "1.0.0",
+          "Todo.Logging": "1.0.0"
         }
       },
       "todo.logging": {
@@ -1863,10 +1864,7 @@
         "dependencies": {
           "Autofac.Extensions.DependencyInjection": "7.1.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "5.0.8",
-          "Todo.ApplicationFlows": "1.0.0",
-          "Todo.Commons": "1.0.0",
           "Todo.DependencyInjection": "1.0.0",
-          "Todo.Logging": "1.0.0",
           "Todo.Profiling": "1.0.0",
           "Todo.Services": "1.0.0"
         }

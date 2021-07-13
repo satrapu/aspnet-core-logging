@@ -11,6 +11,11 @@ namespace Todo.Commons
         public static class Logging
         {
             /// <summary>
+            /// Represents the name of the folder where log files will be created.
+            /// </summary>
+            public const string LogsHomeEnvironmentVariable = "LOGS_HOME";
+
+            /// <summary>
             /// Represents the identifier of the conversation grouping several events related to the same operation.
             /// </summary>
             public const string ConversationId = "ConversationId";

@@ -3,8 +3,6 @@ namespace Todo.WebApi
     using System;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
-    using System.IO;
-    using System.Linq;
     using System.Security.Claims;
     using System.Text;
     using System.Threading.Tasks;
@@ -17,6 +15,7 @@ namespace Todo.WebApi
 
     using Logging.ApplicationInsights;
     using Logging.Http;
+    using Logging.Serilog;
 
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Authorization;
@@ -35,8 +34,6 @@ namespace Todo.WebApi
 
     using Profiling;
 
-    using Serilog;
-
     using ILogger = Microsoft.Extensions.Logging.ILogger;
 
     /// <summary>
@@ -46,19 +43,10 @@ namespace Todo.WebApi
     public class Startup
     {
         private const string ApplicationName = "Todo ASP.NET Core Web API";
-        private const string LogsHomeEnvironmentVariable = "LOGS_HOME";
 
         private IConfiguration Configuration { get; }
 
         private IWebHostEnvironment WebHostEnvironment { get; }
-
-        private bool IsHttpLoggingEnabled { get; }
-
-        private bool IsMiniProfilerEnabled { get; }
-
-        private bool IsSerilogFileSinkConfigured { get; }
-
-        private bool IsSerilogApplicationInsightsSinkConfigured { get; }
 
         /// <summary>
         /// Creates a new instance of the <see cref="Startup"/> class.
@@ -69,16 +57,6 @@ namespace Todo.WebApi
         {
             Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             WebHostEnvironment = webHostEnvironment ?? throw new ArgumentNullException(nameof(webHostEnvironment));
-            IsHttpLoggingEnabled = Configuration.GetValue<bool>("HttpLogging:Enabled");
-            IsMiniProfilerEnabled = Configuration.GetValue<bool>("MiniProfiler:Enabled");
-
-            IEnumerable<KeyValuePair<string, string>> configuredSerilogSinks =
-                Configuration.GetSection("Serilog:Using").AsEnumerable().ToList();
-
-            IsSerilogFileSinkConfigured = configuredSerilogSinks.Any(sink => "Serilog.Sinks.File".Equals(sink.Value));
-
-            IsSerilogApplicationInsightsSinkConfigured =
-                configuredSerilogSinks.Any(sink => "Serilog.Sinks.ApplicationInsights".Equals(sink.Value));
         }
 
         /// <summary>
@@ -89,7 +67,7 @@ namespace Todo.WebApi
         {
             ConfigureExceptionHandling(services);
             ConfigureLogging(services);
-            ConfigureMiniProfiler(services);
+            ConfigureProfiling(services);
             ConfigureSecurity(services);
             ConfigureWebApi(services);
         }
@@ -106,39 +84,26 @@ namespace Todo.WebApi
         {
             logger.LogInformation("Configuring ASP.NET Core request processing pipeline ...");
 
-            if (IsSerilogFileSinkConfigured)
-            {
-                logger.LogInformation(
-                    "The {LogsHomeEnvironmentVariable} environment variable now points to directory: [{LogsHomeDirectory}]",
-                    LogsHomeEnvironmentVariable,
-                    Environment.GetEnvironmentVariable(LogsHomeEnvironmentVariable));
-            }
+            string logsHomeEnvironmentVariableName = Constants.Logging.LogsHomeEnvironmentVariable;
 
-            applicationBuilder.UseConversationId();
+            logger.LogInformation(
+                "The {LogsHomeEnvironmentVariable} environment variable now points to directory: [{LogsHomeDirectory}]",
+                logsHomeEnvironmentVariableName, Environment.GetEnvironmentVariable(logsHomeEnvironmentVariableName));
 
-            if (IsHttpLoggingEnabled)
-            {
-                applicationBuilder.UseHttpLogging();
-            }
-
-            // The exception handling middleware must be added inside the ASP.NET Core request processing pipeline
-            // as soon as possible to ensure any unhandled exception is eventually handled.
-            applicationBuilder.UseExceptionHandler(new ExceptionHandlerOptions
-            {
-                ExceptionHandler = CustomExceptionHandler.HandleException,
-                AllowStatusCode404Response = true
-            });
-
-            if (IsMiniProfilerEnabled)
-            {
-                applicationBuilder.UseMiniProfiler();
-            }
-
-            applicationBuilder.UseHttpsRedirection();
-            applicationBuilder.UseRouting();
-            applicationBuilder.UseAuthentication();
-            applicationBuilder.UseAuthorization();
-            applicationBuilder.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            applicationBuilder
+                .UseConversationId()
+                .UseHttpLogging(Configuration)
+                .UseExceptionHandler(new ExceptionHandlerOptions
+                {
+                    ExceptionHandler = CustomExceptionHandler.HandleException,
+                    AllowStatusCode404Response = true
+                })
+                .UseMiniProfiler(Configuration)
+                .UseHttpsRedirection()
+                .UseRouting()
+                .UseAuthentication()
+                .UseAuthorization()
+                .UseEndpoints(endpoints => { endpoints.MapControllers(); });
 
             hostApplicationLifetime.ApplicationStarted.Register(() =>
                 OnApplicationStarted(applicationStartedEventListeners, hostApplicationLifetime, logger));
@@ -147,60 +112,11 @@ namespace Todo.WebApi
             hostApplicationLifetime.ApplicationStopped.Register(() => OnApplicationStopped(logger));
         }
 
-        private void ConfigureApplicationInsights(IServiceCollection services)
-        {
-            if (IsSerilogApplicationInsightsSinkConfigured)
-            {
-                var applicationInsightsOptions = new ApplicationInsightsOptions();
-                Configuration.Bind(applicationInsightsOptions);
-
-                services.AddApplicationInsightsTelemetry(options =>
-                {
-                    options.InstrumentationKey = applicationInsightsOptions.InstrumentationKey;
-                });
-            }
-        }
-
-        private void ConfigureHttpLogging(IServiceCollection services)
-        {
-            if (IsHttpLoggingEnabled)
-            {
-                // Register service with 2 interfaces.
-                // See more here: https://andrewlock.net/how-to-register-a-service-with-multiple-interfaces-for-in-asp-net-core-di/.
-                services
-                    .AddSingleton<LoggingService>()
-                    .AddSingleton<IHttpObjectConverter>(serviceProvider =>
-                        serviceProvider.GetRequiredService<LoggingService>())
-                    .AddSingleton<IHttpContextLoggingHandler>(serviceProvider =>
-                        serviceProvider.GetRequiredService<LoggingService>());
-            }
-        }
-
         private void ConfigureLogging(IServiceCollection services)
         {
-            ConfigureApplicationInsights(services);
-            ConfigureHttpLogging(services);
-
-            services.AddLogging(loggingBuilder =>
-            {
-                if (IsSerilogFileSinkConfigured)
-                {
-                    string logsHomeDirectoryPath = Environment.GetEnvironmentVariable(LogsHomeEnvironmentVariable);
-
-                    if (string.IsNullOrWhiteSpace(logsHomeDirectoryPath) || !Directory.Exists(logsHomeDirectoryPath))
-                    {
-                        var currentWorkingDirectory = new DirectoryInfo(Directory.GetCurrentDirectory());
-                        DirectoryInfo logsHomeDirectory = currentWorkingDirectory.CreateSubdirectory("Logs");
-                        Environment.SetEnvironmentVariable(LogsHomeEnvironmentVariable, logsHomeDirectory.FullName);
-                    }
-                }
-
-                loggingBuilder.ClearProviders();
-
-                loggingBuilder.AddSerilog(new LoggerConfiguration()
-                    .ReadFrom.Configuration(Configuration)
-                    .CreateLogger(), dispose: true);
-            });
+            services
+                .ActivateApplicationInsights(Configuration)
+                .ActivateSerilog(Configuration);
         }
 
         private void ConfigureSecurity(IServiceCollection services)
@@ -280,12 +196,9 @@ namespace Todo.WebApi
             services.Configure<GenerateJwtOptions>(generateJwtOptions);
         }
 
-        private void ConfigureMiniProfiler(IServiceCollection services)
+        private void ConfigureProfiling(IServiceCollection services)
         {
-            if (IsMiniProfilerEnabled)
-            {
-                services.ActivateMiniProfiler(Configuration);
-            }
+            services.ActivateMiniProfiler(Configuration);
         }
 
         private static void ConfigureWebApi(IServiceCollection services)
@@ -303,12 +216,12 @@ namespace Todo.WebApi
                             Status = StatusCodes.Status422UnprocessableEntity,
                             Detail = "See the errors property for more details",
                             Instance = context.HttpContext.Request.Path,
-                            Extensions = { { "TraceId", context.HttpContext.TraceIdentifier } }
+                            Extensions = {{"TraceId", context.HttpContext.TraceIdentifier}}
                         };
 
                         return new UnprocessableEntityObjectResult(validationProblemDetails)
                         {
-                            ContentTypes = { "application/problem+json" }
+                            ContentTypes = {"application/problem+json"}
                         };
                     };
                 });

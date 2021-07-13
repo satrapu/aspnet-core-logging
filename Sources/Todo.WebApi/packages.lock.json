@@ -1508,7 +1508,8 @@
           "Autofac": "6.2.0",
           "Microsoft.Extensions.Configuration.Abstractions": "5.0.0",
           "Microsoft.Extensions.Logging.Abstractions": "5.0.0",
-          "Todo.ApplicationFlows": "1.0.0"
+          "Todo.ApplicationFlows": "1.0.0",
+          "Todo.Logging": "1.0.0"
         }
       },
       "todo.logging": {

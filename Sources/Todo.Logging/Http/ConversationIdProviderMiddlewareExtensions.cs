@@ -12,9 +12,8 @@ namespace Todo.Logging.Http
         /// <summary>
         /// Adds middleware for providing a conversation ID to each HTTP request.
         /// </summary>
-        /// <param name="applicationBuilder"></param>
-        /// <returns></returns>
-        // ReSharper disable once UnusedMethodReturnValue.Global
+        /// <param name="applicationBuilder">Configures ASP.NET Core request processing pipeline.</param>
+        /// <returns>The given <paramref name="applicationBuilder"/> instance.</returns>
         public static IApplicationBuilder UseConversationId(this IApplicationBuilder applicationBuilder)
         {
             if (applicationBuilder == null)

@@ -15,7 +15,7 @@ namespace Todo.Logging.Http
         /// <param name="applicationBuilder"></param>
         /// <returns></returns>
         // ReSharper disable once UnusedMethodReturnValue.Global
-        public static IApplicationBuilder UseHttpLogging(this IApplicationBuilder applicationBuilder)
+        internal static IApplicationBuilder UseHttpLogging(this IApplicationBuilder applicationBuilder)
         {
             if (applicationBuilder == null)
             {
