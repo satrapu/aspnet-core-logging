@@ -15,7 +15,8 @@ namespace Todo.WebApi
 
     using ExceptionHandling;
 
-    using Logging;
+    using Logging.ApplicationInsights;
+    using Logging.Http;
 
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Authorization;
