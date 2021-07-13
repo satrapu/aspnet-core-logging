@@ -12,6 +12,9 @@ namespace Todo.DependencyInjection
     /// </summary>
     public class ServicesModule : Module
     {
+        /// <summary>
+        /// Gets or sets the name of the environment where this application runs.
+        /// </summary>
         public string EnvironmentName { get; set; }
 
         protected override void Load(ContainerBuilder builder)
