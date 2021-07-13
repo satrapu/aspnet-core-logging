@@ -12,7 +12,6 @@ resources:
   - repository: 'aspnet_core_logging'
     type: 'github'
     name: 'satrapu/aspnet-core-logging'
-    clean: True
     # The value of the "endpoint" element must match the service connection name
     # declared in Project Settings -> Service connections section of your Azure DevOps organization.
     endpoint: 'satrapu'
