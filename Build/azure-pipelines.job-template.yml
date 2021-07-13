@@ -64,9 +64,11 @@ jobs:
   # Customize the way this job checkouts the current Git branch.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=azure-devops&tabs=schema%2Cparameter-schema#checkout.
   - checkout: self
-    clean: True
+    clean: False
     fetchDepth: 1
     lfs: False
+    submodules: False
+    persistCredentials: False
 
   # Install specific .NET SDK version used for building the application.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/tool/dotnet-core-tool-installer?view=azure-devops.
