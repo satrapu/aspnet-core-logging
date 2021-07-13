@@ -1,4 +1,4 @@
-namespace Todo.Services
+namespace Todo.Services.TodoItemManagement
 {
     using System;
     using System.Collections.Generic;
@@ -19,8 +19,6 @@ namespace Todo.Services
 
     using Persistence;
     using Persistence.Entities;
-
-    using TodoItemManagement;
 
     /// <summary>
     /// Contains unit tests targeting <see cref="TodoItemService"/> class.

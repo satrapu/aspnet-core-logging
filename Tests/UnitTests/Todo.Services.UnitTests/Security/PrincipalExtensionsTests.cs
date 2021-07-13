@@ -1,4 +1,4 @@
-namespace Todo.Services
+namespace Todo.Services.Security
 {
     using System;
     using System.Collections.Generic;
@@ -10,8 +10,6 @@ namespace Todo.Services
     using Moq;
 
     using NUnit.Framework;
-
-    using Security;
 
     /// <summary>
     /// Contains unit tests targeting <see cref="PrincipalExtensions"/> class.
