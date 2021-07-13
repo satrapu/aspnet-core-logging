@@ -11,6 +11,7 @@ namespace Todo.DependencyInjection
     using Microsoft.Extensions.Logging;
 
     using Persistence;
+    using Persistence.Migrations;
 
     /// <summary>
     /// Configures persistence related services used by this application.

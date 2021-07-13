@@ -1,4 +1,4 @@
-namespace Todo.Persistence
+namespace Todo.Persistence.Migrations
 {
     using System;
     using System.Collections.Generic;
