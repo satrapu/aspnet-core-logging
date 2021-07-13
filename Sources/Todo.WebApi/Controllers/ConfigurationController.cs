@@ -28,7 +28,6 @@ namespace Todo.WebApi.Controllers
             this.webHostEnvironment = webHostEnvironment ?? throw new ArgumentNullException(nameof(webHostEnvironment));
         }
 
-
         /// <summary>
         /// Display each application configuration property, along with its source.
         /// </summary>
