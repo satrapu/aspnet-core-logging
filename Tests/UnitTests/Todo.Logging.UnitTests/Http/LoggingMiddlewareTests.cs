@@ -1,4 +1,4 @@
-namespace Todo.WebApi.Logging
+namespace Todo.Logging.Http
 {
     using System;
     using System.Threading.Tasks;
@@ -11,8 +11,6 @@ namespace Todo.WebApi.Logging
     using Moq;
 
     using NUnit.Framework;
-
-    using Todo.Logging;
 
     /// <summary>
     /// Contains unit tests targeting <see cref="LoggingMiddleware"/> class.

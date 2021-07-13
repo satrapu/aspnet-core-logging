@@ -1,4 +1,4 @@
-namespace Todo.WebApi.Logging
+namespace Todo.Logging.Http
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
@@ -13,8 +13,6 @@ namespace Todo.WebApi.Logging
     using Moq;
 
     using NUnit.Framework;
-
-    using Todo.Logging;
 
     /// <summary>
     /// Contains unit tests targeting <see cref="LoggingService"/> class.

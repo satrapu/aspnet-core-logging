@@ -96,6 +96,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.DependencyInjection", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.Profiling", "Sources\Todo.Profiling\Todo.Profiling.csproj", "{1405472E-2B2D-4640-B111-0B2F0BB06DF8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.Logging.UnitTests", "Tests\UnitTests\Todo.Logging.UnitTests\Todo.Logging.UnitTests.csproj", "{B197FF86-D267-484B-98E2-08577EFBF4D9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -166,6 +168,10 @@ Global
 		{1405472E-2B2D-4640-B111-0B2F0BB06DF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1405472E-2B2D-4640-B111-0B2F0BB06DF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1405472E-2B2D-4640-B111-0B2F0BB06DF8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B197FF86-D267-484B-98E2-08577EFBF4D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B197FF86-D267-484B-98E2-08577EFBF4D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B197FF86-D267-484B-98E2-08577EFBF4D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B197FF86-D267-484B-98E2-08577EFBF4D9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -193,6 +199,7 @@ Global
 		{06A85419-4798-4043-90FA-062F34345AE5} = {ED7A5363-C21A-4D47-A2A5-67DEB1E0DDE3}
 		{22053712-0B51-48C7-83FE-581888FA7493} = {ED7A5363-C21A-4D47-A2A5-67DEB1E0DDE3}
 		{1405472E-2B2D-4640-B111-0B2F0BB06DF8} = {ED7A5363-C21A-4D47-A2A5-67DEB1E0DDE3}
+		{B197FF86-D267-484B-98E2-08577EFBF4D9} = {D084DD17-3480-4A70-8296-92FB55BAD433}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {74318BEF-DB50-4852-A16D-E2FB8671BE7F}
