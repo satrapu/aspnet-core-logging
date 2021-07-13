@@ -75,6 +75,13 @@ namespace Todo.WebApi
                         // prohibits injecting mock services, as seen here:
                         // https://github.com/dotnet/aspnetcore/issues/14907#issuecomment-850407104.
 
+                        var loggingModule = new LoggingModule
+                        {
+                            EnableHttpLogging = hostBuilderContext.Configuration.GetValue<bool>("HttpLogging:Enabled")
+                        };
+
+                        containerBuilder.RegisterModule(loggingModule);
+
                         var applicationFlowModule = new ApplicationFlowsModule
                         {
                             EnvironmentName = hostBuilderContext.HostingEnvironment.EnvironmentName,
