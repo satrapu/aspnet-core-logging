@@ -13,19 +13,16 @@ namespace Todo.DependencyInjection
     /// </summary>
     public class ApplicationFlowsModule : Module
     {
-        private string EnvironmentName { get; }
+        public string EnvironmentName { get; set; }
 
-        private IConfiguration ApplicationConfiguration { get; }
-
-        public ApplicationFlowsModule(string environmentName, IConfiguration applicationConfiguration)
-        {
-            EnvironmentName = environmentName;
-            ApplicationConfiguration = applicationConfiguration;
-        }
+        public IConfiguration ApplicationConfiguration { get; set; }
 
         protected override void Load(ContainerBuilder builder)
         {
-            builder.RegisterModule(new ServicesModule(EnvironmentName));
+            builder.RegisterModule(new ServicesModule
+            {
+                EnvironmentName = EnvironmentName
+            });
 
             // ReSharper disable once SettingNotFoundInConfiguration
             builder

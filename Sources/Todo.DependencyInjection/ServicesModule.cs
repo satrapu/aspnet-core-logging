@@ -12,12 +12,7 @@ namespace Todo.DependencyInjection
     /// </summary>
     public class ServicesModule : Module
     {
-        private string EnvironmentName { get; }
-
-        public ServicesModule(string environmentName)
-        {
-            EnvironmentName = environmentName;
-        }
+        public string EnvironmentName { get; set; }
 
         protected override void Load(ContainerBuilder builder)
         {
