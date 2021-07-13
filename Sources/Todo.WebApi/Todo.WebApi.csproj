@@ -6,10 +6,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Todo.ApplicationFlows\Todo.ApplicationFlows.csproj" />
-        <ProjectReference Include="..\Todo.Commons\Todo.Commons.csproj" />
         <ProjectReference Include="..\Todo.DependencyInjection\Todo.DependencyInjection.csproj" />
-        <ProjectReference Include="..\Todo.Logging\Todo.Logging.csproj" />
         <ProjectReference Include="..\Todo.Profiling\Todo.Profiling.csproj" />
         <ProjectReference Include="..\Todo.Services\Todo.Services.csproj" />
     </ItemGroup>
