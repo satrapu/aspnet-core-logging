@@ -43,8 +43,8 @@ namespace Todo.Logging
                 logger.LogDebug($"Checking whether the HTTP context {httpContext.TraceIdentifier} should be logged or not ...");
             }
 
-            var result = IsTextBased(httpContext.Request);
-            var willBeLoggedOutcome = result ? string.Empty : " NOT";
+            bool result = IsTextBased(httpContext.Request);
+            string willBeLoggedOutcome = result ? string.Empty : " NOT";
 
             if (logger.IsEnabled(LogLevel.Debug))
             {
