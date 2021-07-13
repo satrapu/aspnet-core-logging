@@ -5,7 +5,7 @@ namespace Todo.DependencyInjection
     using Commons;
 
     using Services.Security;
-    using Services.TodoItemLifecycleManagement;
+    using Services.TodoItemManagement;
 
     /// <summary>
     /// Configures business related services used by this application.

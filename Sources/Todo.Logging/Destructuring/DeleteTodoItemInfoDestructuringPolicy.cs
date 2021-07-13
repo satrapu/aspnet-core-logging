@@ -6,7 +6,7 @@ namespace Todo.Logging.Destructuring
     using Serilog.Events;
 
     using Services.Security;
-    using Services.TodoItemLifecycleManagement;
+    using Services.TodoItemManagement;
 
     /// <summary>
     /// Instructs Serilog how to log instances of <seealso cref="DeleteTodoItemInfo"/> class.

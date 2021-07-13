@@ -20,7 +20,7 @@ namespace Todo.Services
     using Persistence;
     using Persistence.Entities;
 
-    using TodoItemLifecycleManagement;
+    using TodoItemManagement;
 
     /// <summary>
     /// Contains unit tests targeting <see cref="TodoItemService"/> class.

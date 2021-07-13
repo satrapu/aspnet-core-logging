@@ -1,4 +1,4 @@
-namespace Todo.Services.TodoItemLifecycleManagement
+namespace Todo.Services.TodoItemManagement
 {
     using System;
     using System.Collections.Generic;

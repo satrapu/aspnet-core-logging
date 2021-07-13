@@ -15,7 +15,7 @@ namespace Todo
 
     using Persistence;
 
-    using Services.TodoItemLifecycleManagement;
+    using Services.TodoItemManagement;
 
     using WebApi;
 

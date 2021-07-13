@@ -17,7 +17,7 @@ namespace Todo.ApplicationFlows
 
     using NUnit.Framework;
 
-    using Services.TodoItemLifecycleManagement;
+    using Services.TodoItemManagement;
 
     using TestInfrastructure;
 
