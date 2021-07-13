@@ -11,17 +11,17 @@
         <PackageReference Update="FluentAssertions" Version="5.10.3"/>
         <PackageReference Update="Microsoft.ApplicationInsights.AspNetCore" Version="2.17.0"/>
         <PackageReference Update="Microsoft.AspNet.WebApi.Client" Version="5.2.7"/>
-        <PackageReference Update="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.7"/>
-        <PackageReference Update="Microsoft.AspNetCore.Mvc.Testing" Version="5.0.7"/>
-        <PackageReference Update="Microsoft.EntityFrameworkCore" Version="5.0.7"/>
-        <PackageReference Update="Microsoft.EntityFrameworkCore.Design" Version="5.0.7"/>
-        <PackageReference Update="Microsoft.EntityFrameworkCore.InMemory" Version="5.0.7"/>
+        <PackageReference Update="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.8"/>
+        <PackageReference Update="Microsoft.AspNetCore.Mvc.Testing" Version="5.0.8"/>
+        <PackageReference Update="Microsoft.EntityFrameworkCore" Version="5.0.8"/>
+        <PackageReference Update="Microsoft.EntityFrameworkCore.Design" Version="5.0.8"/>
+        <PackageReference Update="Microsoft.EntityFrameworkCore.InMemory" Version="5.0.8"/>
         <PackageReference Update="Microsoft.Extensions.Configuration" Version="5.0.0"/>
         <PackageReference Update="Microsoft.Extensions.Configuration.Abstractions" Version="5.0.0"/>
         <PackageReference Update="Microsoft.Extensions.Configuration.Binder" Version="5.0.0"/>
         <PackageReference Update="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="5.0.0"/>
         <PackageReference Update="Microsoft.Extensions.Configuration.Json" Version="5.0.0"/>
-        <PackageReference Update="Microsoft.Extensions.DependencyInjection" Version="5.0.1"/>
+        <PackageReference Update="Microsoft.Extensions.DependencyInjection" Version="5.0.2"/>
         <PackageReference Update="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0"/>
         <PackageReference Update="Microsoft.Extensions.Options" Version="5.0.0"/>
         <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="5.0.0"/>
@@ -39,7 +39,7 @@
         <PackageReference Update="Serilog.Enrichers.Thread" Version="3.1.0"/>
         <PackageReference Update="Serilog.Sinks.ApplicationInsights" Version="3.1.0"/>
         <PackageReference Update="Serilog.Sinks.Seq" Version="5.0.1"/>
-        <PackageReference Update="SonarAnalyzer.CSharp" Version="8.25.0.33663"/>
+        <PackageReference Update="SonarAnalyzer.CSharp" Version="8.26.0.34506"/>
         <PackageReference Update="System.IdentityModel.Tokens.Jwt" Version="6.11.1"/>
     </ItemGroup>
 </Project>
