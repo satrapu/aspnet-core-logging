@@ -11,7 +11,7 @@ namespace Todo.Logging.Http
     /// Logs HTTP requests and responses.
     /// </summary>
     // ReSharper disable once ClassNeverInstantiated.Global
-    public class LoggingMiddleware
+    public class HttpLoggingMiddleware
     {
         /// <summary>
         /// Represents the response buffer size.
@@ -24,16 +24,16 @@ namespace Todo.Logging.Http
         private readonly ILogger logger;
 
         /// <summary>
-        /// Creates a new instance of the <see cref="LoggingMiddleware"/> class.
+        /// Creates a new instance of the <see cref="HttpLoggingMiddleware"/> class.
         /// </summary>
         /// <param name="nextRequestDelegate"></param>
         /// <param name="httpContextLoggingHandler"></param>
         /// <param name="httpObjectConverter"></param>
         /// <param name="logger"></param>
-        public LoggingMiddleware(RequestDelegate nextRequestDelegate
+        public HttpLoggingMiddleware(RequestDelegate nextRequestDelegate
             , IHttpContextLoggingHandler httpContextLoggingHandler
             , IHttpObjectConverter httpObjectConverter
-            , ILogger<LoggingMiddleware> logger)
+            , ILogger<HttpLoggingMiddleware> logger)
         {
             this.nextRequestDelegate =
                 nextRequestDelegate ?? throw new ArgumentNullException(nameof(nextRequestDelegate));

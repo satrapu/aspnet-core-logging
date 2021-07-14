@@ -19,7 +19,7 @@ namespace Todo.DependencyInjection
             if (EnableHttpLogging)
             {
                 builder
-                    .RegisterType<LoggingService>()
+                    .RegisterType<HttpLoggingService>()
                     .AsSelf()
                     .As<IHttpObjectConverter>()
                     .As<IHttpContextLoggingHandler>()

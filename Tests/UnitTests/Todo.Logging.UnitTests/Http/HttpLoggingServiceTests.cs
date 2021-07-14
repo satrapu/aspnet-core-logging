@@ -15,13 +15,13 @@ namespace Todo.Logging.Http
     using NUnit.Framework;
 
     /// <summary>
-    /// Contains unit tests targeting <see cref="LoggingService"/> class.
+    /// Contains unit tests targeting <see cref="HttpLoggingService"/> class.
     /// </summary>
     [TestFixture]
-    public class LoggingServiceTests
+    public class HttpLoggingServiceTests
     {
         /// <summary>
-        /// Tests the constructor of <see cref="LoggingService"/> class.
+        /// Tests the constructor of <see cref="HttpLoggingService"/> class.
         /// </summary>
         [Test]
         [SuppressMessage("Microsoft.Performance", "CA1806:Do not ignore method results",
@@ -29,12 +29,12 @@ namespace Todo.Logging.Http
         public void Constructor_UsingNullLogger_MustThrowException()
         {
             // Arrange
-            ILogger<LoggingService> logger = null;
+            ILogger<HttpLoggingService> logger = null;
 
             // Act
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once ExpressionIsAlwaysNull
-            Action createServiceAction = () => new LoggingService(logger);
+            Action createServiceAction = () => new HttpLoggingService(logger);
 
             // Assert
             createServiceAction
@@ -43,14 +43,14 @@ namespace Todo.Logging.Http
         }
 
         /// <summary>
-        /// Tests the <see cref="LoggingService.ShouldLog"/> method.
+        /// Tests the <see cref="HttpLoggingService.ShouldLog"/> method.
         /// </summary>
         [Test]
         public void ShouldLog_UsingNullHttpContext_MustThrowException()
         {
             // Arrange
-            var loggerMock = new Mock<ILogger<LoggingService>>();
-            var loggingService = new LoggingService(loggerMock.Object);
+            var loggerMock = new Mock<ILogger<HttpLoggingService>>();
+            var loggingService = new HttpLoggingService(loggerMock.Object);
             HttpContext httpContext = null;
 
             // Act
@@ -64,14 +64,14 @@ namespace Todo.Logging.Http
         }
 
         /// <summary>
-        /// Tests the <see cref="LoggingService.ToLogMessageAsync(HttpRequest)"/> method.
+        /// Tests the <see cref="HttpLoggingService.ToLogMessageAsync(HttpRequest)"/> method.
         /// </summary>
         [Test]
         public void ToLogMessageAsync_UsingNullHttpRequest_MustThrowException()
         {
             // Arrange
-            var loggerMock = new Mock<ILogger<LoggingService>>();
-            var loggingService = new LoggingService(loggerMock.Object);
+            var loggerMock = new Mock<ILogger<HttpLoggingService>>();
+            var loggingService = new HttpLoggingService(loggerMock.Object);
             HttpRequest httpRequest = null;
 
             // Act
@@ -85,14 +85,14 @@ namespace Todo.Logging.Http
         }
 
         /// <summary>
-        /// Tests the <see cref="LoggingService.ToLogMessageAsync(HttpRequest)"/> method.
+        /// Tests the <see cref="HttpLoggingService.ToLogMessageAsync(HttpRequest)"/> method.
         /// </summary>
         [Test]
         public void ToLogMessageAsync_UsingNullHttpResponse_MustThrowException()
         {
             // Arrange
-            var loggerMock = new Mock<ILogger<LoggingService>>();
-            var loggingService = new LoggingService(loggerMock.Object);
+            var loggerMock = new Mock<ILogger<HttpLoggingService>>();
+            var loggingService = new HttpLoggingService(loggerMock.Object);
             HttpResponse httpResponse = null;
 
             // Act

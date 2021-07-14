@@ -13,13 +13,13 @@ namespace Todo.Logging.Http
     using NUnit.Framework;
 
     /// <summary>
-    /// Contains unit tests targeting <see cref="LoggingMiddleware"/> class.
+    /// Contains unit tests targeting <see cref="HttpLoggingMiddleware"/> class.
     /// </summary>
     [TestFixture]
-    public class LoggingMiddlewareTests
+    public class HttpLoggingMiddlewareTests
     {
         /// <summary>
-        /// Tests the constructor of <see cref="LoggingMiddleware"/> class.
+        /// Tests the constructor of <see cref="HttpLoggingMiddleware"/> class.
         /// </summary>
         [Test]
         public void Constructor_WhenInvokedWithValidParameters_MustSucceed()
@@ -28,10 +28,10 @@ namespace Todo.Logging.Http
             var requestDelegateMock = new Mock<RequestDelegate>();
             var httpContextLoggingHandlerMock = new Mock<IHttpContextLoggingHandler>();
             var httpObjectConverterMock = new Mock<IHttpObjectConverter>();
-            var loggerMock = new Mock<ILogger<LoggingMiddleware>>();
+            var loggerMock = new Mock<ILogger<HttpLoggingMiddleware>>();
 
             // Act
-            var loggingMiddleware = new LoggingMiddleware(requestDelegateMock.Object
+            var loggingMiddleware = new HttpLoggingMiddleware(requestDelegateMock.Object
                 , httpContextLoggingHandlerMock.Object
                 , httpObjectConverterMock.Object
                 , loggerMock.Object);
@@ -41,7 +41,7 @@ namespace Todo.Logging.Http
         }
 
         /// <summary>
-        /// Tests <see cref="LoggingMiddleware.Invoke"/> method.
+        /// Tests <see cref="HttpLoggingMiddleware.Invoke"/> method.
         /// </summary>
         [Test]
         public void Invoke_WhenLoggingIsDisabled_MustSucceed()
@@ -54,9 +54,9 @@ namespace Todo.Logging.Http
                 .Returns(false);
 
             var httpObjectConverterMock = new Mock<IHttpObjectConverter>();
-            var loggerMock = new Mock<ILogger<LoggingMiddleware>>();
+            var loggerMock = new Mock<ILogger<HttpLoggingMiddleware>>();
 
-            var loggingMiddleware = new LoggingMiddleware(requestDelegateMock.Object
+            var loggingMiddleware = new HttpLoggingMiddleware(requestDelegateMock.Object
                 , httpContextLoggingHandlerMock.Object
                 , httpObjectConverterMock.Object
                 , loggerMock.Object);
@@ -69,7 +69,7 @@ namespace Todo.Logging.Http
         }
 
         /// <summary>
-        /// Tests <see cref="LoggingMiddleware.Invoke"/> method.
+        /// Tests <see cref="HttpLoggingMiddleware.Invoke"/> method.
         /// </summary>
         [Test]
         public void Invoke_WhenLoggingIsEnabled_MustSucceed()
@@ -82,9 +82,9 @@ namespace Todo.Logging.Http
                 .Returns(true);
 
             var httpObjectConverterMock = new Mock<IHttpObjectConverter>();
-            var loggerMock = new Mock<ILogger<LoggingMiddleware>>();
+            var loggerMock = new Mock<ILogger<HttpLoggingMiddleware>>();
 
-            var loggingMiddleware = new LoggingMiddleware(requestDelegateMock.Object
+            var loggingMiddleware = new HttpLoggingMiddleware(requestDelegateMock.Object
                 , httpContextLoggingHandlerMock.Object
                 , httpObjectConverterMock.Object
                 , loggerMock.Object);

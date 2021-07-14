@@ -22,7 +22,7 @@ namespace Todo.Logging.Http
                 throw new ArgumentNullException(nameof(applicationBuilder));
             }
 
-            applicationBuilder.UseMiddleware<LoggingMiddleware>();
+            applicationBuilder.UseMiddleware<HttpLoggingMiddleware>();
             return applicationBuilder;
         }
     }

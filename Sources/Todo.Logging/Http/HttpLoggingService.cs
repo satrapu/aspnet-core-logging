@@ -12,7 +12,7 @@ namespace Todo.Logging.Http
     /// <summary>
     /// Logs text-based only HTTP requests and responses (e.g. plain text, JSON or XML).
     /// </summary>
-    public class LoggingService : IHttpContextLoggingHandler, IHttpObjectConverter
+    public class HttpLoggingService : IHttpContextLoggingHandler, IHttpObjectConverter
     {
         private const int BufferSize = 1000;
 
@@ -22,10 +22,10 @@ namespace Todo.Logging.Http
         private readonly ILogger logger;
 
         /// <summary>
-        /// Creates a new instance of the <see cref="LoggingService"/> class.
+        /// Creates a new instance of the <see cref="HttpLoggingService"/> class.
         /// </summary>
         /// <param name="logger"></param>
-        public LoggingService(ILogger<LoggingService> logger)
+        public HttpLoggingService(ILogger<HttpLoggingService> logger)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }

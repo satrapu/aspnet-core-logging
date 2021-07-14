@@ -37,7 +37,7 @@ namespace Todo.Logging.Http
 
             if (isHttpLoggingEnabled)
             {
-                applicationBuilder.UseMiddleware<LoggingMiddleware>();
+                applicationBuilder.UseMiddleware<HttpLoggingMiddleware>();
             }
 
             return applicationBuilder;
