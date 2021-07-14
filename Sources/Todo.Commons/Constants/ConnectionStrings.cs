@@ -1,4 +1,4 @@
-﻿namespace Todo.Commons.Constants
+namespace Todo.Commons.Constants
 {
     /// <summary>
     /// Contains constants related to the connection strings used by this application.

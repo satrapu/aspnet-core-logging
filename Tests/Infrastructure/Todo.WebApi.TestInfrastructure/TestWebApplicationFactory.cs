@@ -8,6 +8,8 @@ namespace Todo.WebApi.TestInfrastructure
 
     using Autofac;
 
+    using Commons.Constants;
+
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc.Testing;
     using Microsoft.AspNetCore.TestHost;
@@ -17,8 +19,6 @@ namespace Todo.WebApi.TestInfrastructure
     using Microsoft.Extensions.DependencyInjection.Extensions;
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
-
-    using Commons.Constants;
 
     using Models;
 
