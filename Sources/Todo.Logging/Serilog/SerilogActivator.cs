@@ -52,7 +52,7 @@ namespace Todo.Logging.Serilog
             return services;
         }
 
-        private static void ConfigureFileSink(IConfiguration configuration)
+        public static bool IsFileSinkConfigured(IConfiguration configuration)
         {
             // ReSharper disable once SettingNotFoundInConfiguration
             IEnumerable<KeyValuePair<string, string>> configuredSerilogSinks =
@@ -61,7 +61,12 @@ namespace Todo.Logging.Serilog
             bool isSerilogFileSinkConfigured =
                 configuredSerilogSinks.Any(sink => "Serilog.Sinks.File".Equals(sink.Value));
 
-            if (!isSerilogFileSinkConfigured)
+            return isSerilogFileSinkConfigured;
+        }
+
+        private static void ConfigureFileSink(IConfiguration configuration)
+        {
+            if (!IsFileSinkConfigured(configuration))
             {
                 return;
             }
