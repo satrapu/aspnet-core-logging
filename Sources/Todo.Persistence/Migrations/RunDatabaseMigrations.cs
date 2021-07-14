@@ -4,6 +4,7 @@ namespace Todo.Persistence.Migrations
     using System.Collections.Generic;
 
     using Commons;
+    using Commons.ApplicationEvents;
 
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;

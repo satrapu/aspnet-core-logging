@@ -4,7 +4,7 @@ namespace Todo.DependencyInjection
 
     using Autofac;
 
-    using Commons;
+    using Commons.ApplicationEvents;
 
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;

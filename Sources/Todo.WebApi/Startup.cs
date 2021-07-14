@@ -10,6 +10,7 @@ namespace Todo.WebApi
     using Authorization;
 
     using Commons;
+    using Commons.ApplicationEvents;
 
     using ExceptionHandling;
 

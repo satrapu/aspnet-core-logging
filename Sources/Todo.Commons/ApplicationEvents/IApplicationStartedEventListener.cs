@@ -1,4 +1,4 @@
-namespace Todo.Commons
+namespace Todo.Commons.ApplicationEvents
 {
     /// <summary>
     /// Listens to application started event.
