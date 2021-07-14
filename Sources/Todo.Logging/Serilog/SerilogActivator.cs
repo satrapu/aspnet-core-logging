@@ -52,6 +52,11 @@ namespace Todo.Logging.Serilog
             return services;
         }
 
+        /// <summary>
+        /// Checks whether the given <paramref name="configuration"/> declares a Serilog file sink.
+        /// </summary>
+        /// <param name="configuration">The <see cref="IConfiguration"/> instance to check.</param>
+        /// <returns>True, if a Serilog file sink has been configured; false, otherwise.</returns>
         public static bool IsFileSinkConfigured(IConfiguration configuration)
         {
             // ReSharper disable once SettingNotFoundInConfiguration
