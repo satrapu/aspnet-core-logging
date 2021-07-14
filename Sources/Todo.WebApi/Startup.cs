@@ -10,7 +10,6 @@ namespace Todo.WebApi
     using Authorization;
 
     using Commons.ApplicationEvents;
-    using Commons.Constants;
 
     using ExceptionHandling;
 
@@ -84,12 +83,6 @@ namespace Todo.WebApi
             IEnumerable<IApplicationStartedEventListener> applicationStartedEventListeners, ILogger<Startup> logger)
         {
             logger.LogInformation("Configuring ASP.NET Core request processing pipeline ...");
-
-            const string logsHomeEnvironmentVariableName = Logging.LogsHomeEnvironmentVariable;
-
-            logger.LogInformation(
-                "The {LogsHomeEnvironmentVariable} environment variable now points to directory: [{LogsHomeDirectory}]",
-                logsHomeEnvironmentVariableName, Environment.GetEnvironmentVariable(logsHomeEnvironmentVariableName));
 
             applicationBuilder
                 .UseConversationId()
