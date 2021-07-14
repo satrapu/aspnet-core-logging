@@ -1839,7 +1839,6 @@
       "todo.profiling": {
         "type": "Project",
         "dependencies": {
-          "Microsoft.Extensions.DependencyInjection": "5.0.2",
           "MiniProfiler.AspNetCore.Mvc": "4.2.22",
           "MiniProfiler.EntityFrameworkCore": "4.2.22"
         }
