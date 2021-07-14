@@ -21,4 +21,12 @@
         </PackageReference>
     </ItemGroup>
 
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+        <CodeAnalysisRuleSet>Todo.Logging.ruleset</CodeAnalysisRuleSet>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+        <CodeAnalysisRuleSet>Todo.Logging.ruleset</CodeAnalysisRuleSet>
+    </PropertyGroup>
+
 </Project>

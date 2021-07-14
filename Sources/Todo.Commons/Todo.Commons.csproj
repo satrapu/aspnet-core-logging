@@ -12,4 +12,12 @@
         </PackageReference>
     </ItemGroup>
 
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+        <CodeAnalysisRuleSet>Todo.Commons.ruleset</CodeAnalysisRuleSet>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+        <CodeAnalysisRuleSet>Todo.Commons.ruleset</CodeAnalysisRuleSet>
+    </PropertyGroup>
+
 </Project>

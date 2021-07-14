@@ -29,6 +29,14 @@
         </PackageReference>
     </ItemGroup>
 
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+        <CodeAnalysisRuleSet>Todo.ApplicationFlows.UnitTests.ruleset</CodeAnalysisRuleSet>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+        <CodeAnalysisRuleSet>Todo.ApplicationFlows.UnitTests.ruleset</CodeAnalysisRuleSet>
+    </PropertyGroup>
+
     <ItemGroup>
         <Compile Remove="TestResults\**" />
         <EmbeddedResource Remove="TestResults\**" />
