@@ -40,7 +40,7 @@ namespace Todo.Logging.Serilog
 
             services.AddLogging(loggingBuilder =>
             {
-                ConfigureFileSink(configuration);
+                SetFileSinkDestinationFolder(configuration);
 
                 loggingBuilder
                     .ClearProviders()
@@ -69,7 +69,7 @@ namespace Todo.Logging.Serilog
             return isSerilogFileSinkConfigured;
         }
 
-        private static void ConfigureFileSink(IConfiguration configuration)
+        private static void SetFileSinkDestinationFolder(IConfiguration configuration)
         {
             if (!IsFileSinkConfigured(configuration))
             {
