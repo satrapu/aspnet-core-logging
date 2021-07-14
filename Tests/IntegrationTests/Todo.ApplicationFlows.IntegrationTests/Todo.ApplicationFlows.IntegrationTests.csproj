@@ -16,7 +16,7 @@
         appsettings.IntegrationTests.json configuration files.
         -->
         <ProjectReference Include="..\..\..\Sources\Todo.WebApi\Todo.WebApi.csproj" />
-        <ProjectReference Include="..\..\Infrastructure\TestInfrastructure\TestInfrastructure.csproj" />
+        <ProjectReference Include="..\..\Infrastructure\Todo.WebApi.TestInfrastructure\Todo.WebApi.TestInfrastructure.csproj" />
         <ProjectReference Include="..\Todo.WebApi.IntegrationTests\Todo.WebApi.IntegrationTests.csproj" />
     </ItemGroup>
 

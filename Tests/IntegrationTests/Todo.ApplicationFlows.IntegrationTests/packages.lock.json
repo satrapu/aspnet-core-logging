@@ -1793,13 +1793,6 @@
           "System.Xml.XmlDocument": "4.3.0"
         }
       },
-      "testinfrastructure": {
-        "type": "Project",
-        "dependencies": {
-          "Microsoft.AspNetCore.Mvc.Testing": "5.0.8",
-          "Todo.WebApi": "1.0.0"
-        }
-      },
       "todo.applicationflows": {
         "type": "Project",
         "dependencies": {
@@ -1878,7 +1871,14 @@
           "NUnit": "3.13.2",
           "NUnit3TestAdapter": "4.0.0",
           "NunitXml.TestLogger": "3.0.107",
-          "TestInfrastructure": "1.0.0",
+          "Todo.WebApi": "1.0.0",
+          "Todo.WebApi.TestInfrastructure": "1.0.0"
+        }
+      },
+      "todo.webapi.testinfrastructure": {
+        "type": "Project",
+        "dependencies": {
+          "Microsoft.AspNetCore.Mvc.Testing": "5.0.8",
           "Todo.WebApi": "1.0.0"
         }
       }

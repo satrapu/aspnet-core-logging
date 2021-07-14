@@ -1791,13 +1791,6 @@
           "System.Xml.XmlDocument": "4.3.0"
         }
       },
-      "testinfrastructure": {
-        "type": "Project",
-        "dependencies": {
-          "Microsoft.AspNetCore.Mvc.Testing": "5.0.8",
-          "Todo.WebApi": "1.0.0"
-        }
-      },
       "todo.applicationflows": {
         "type": "Project",
         "dependencies": {
@@ -1865,6 +1858,13 @@
           "Todo.DependencyInjection": "1.0.0",
           "Todo.Profiling": "1.0.0",
           "Todo.Services": "1.0.0"
+        }
+      },
+      "todo.webapi.testinfrastructure": {
+        "type": "Project",
+        "dependencies": {
+          "Microsoft.AspNetCore.Mvc.Testing": "5.0.8",
+          "Todo.WebApi": "1.0.0"
         }
       }
     }

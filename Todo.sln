@@ -56,7 +56,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Todo.ApplicationFlows", "So
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Todo.ApplicationFlows.IntegrationTests", "Tests\IntegrationTests\Todo.ApplicationFlows.IntegrationTests\Todo.ApplicationFlows.IntegrationTests.csproj", "{8E33CD19-558D-4342-B639-B4FB9160B462}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestInfrastructure", "Tests\Infrastructure\TestInfrastructure\TestInfrastructure.csproj", "{2D55F79C-3EFA-4DBE-9900-B23400894FAA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Todo.WebApi.TestInfrastructure", "Tests\Infrastructure\Todo.WebApi.TestInfrastructure\Todo.WebApi.TestInfrastructure.csproj", "{2D55F79C-3EFA-4DBE-9900-B23400894FAA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{E773243B-5DCB-46A8-9012-1AD0084F0149}"
 EndProject
