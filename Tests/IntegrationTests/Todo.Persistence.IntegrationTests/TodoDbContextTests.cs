@@ -3,6 +3,8 @@ namespace Todo.Persistence
     using System;
     using System.Threading.Tasks;
 
+    using Commons;
+
     using Entities;
 
     using FluentAssertions;
@@ -145,12 +147,13 @@ namespace Todo.Persistence
             var configurationBuilder = new ConfigurationBuilder();
 
             IConfigurationRoot testConfiguration = configurationBuilder.AddJsonFile("appsettings.json", false)
-                .AddJsonFile("appsettings.IntegrationTests.json", false)
+                .AddJsonFile($"appsettings.{Constants.EnvironmentNames.IntegrationTests}.json", false)
                 .AddEnvironmentVariables()
                 .Build();
 
             // ReSharper disable once SettingNotFoundInConfiguration
-            var testConnectionString = testConfiguration.GetConnectionString("TodoForIntegrationTests");
+            var testConnectionString =
+                testConfiguration.GetConnectionString(Constants.ConnectionStrings.UsedByIntegrationTests);
 
             var connectionStringBuilder = new NpgsqlConnectionStringBuilder(testConnectionString)
             {

@@ -25,8 +25,8 @@ namespace Todo.DependencyInjection
             var persistenceModule = new PersistenceModule
             {
                 ConnectionStringName = isIntegrationTestsEnvironment
-                    ? "TodoForIntegrationTests"
-                    : "Todo",
+                    ? Constants.ConnectionStrings.UsedByIntegrationTests
+                    : Constants.ConnectionStrings.UsedByApplication,
                 EnableDetailedErrors = isDevelopmentEnvironment || isIntegrationTestsEnvironment,
                 EnableSensitiveDataLogging = isDevelopmentEnvironment || isIntegrationTestsEnvironment
             };

@@ -48,5 +48,21 @@ namespace Todo.Commons
             /// </summary>
             public const string IntegrationTests = "IntegrationTests";
         }
+
+        /// <summary>
+        /// Contains the names of the connection strings used by this application.
+        /// </summary>
+        public static class ConnectionStrings
+        {
+            /// <summary>
+            /// Represents the connection string to be used when running integration tests.
+            /// </summary>
+            public const string UsedByIntegrationTests = "TodoForIntegrationTests";
+
+            /// <summary>
+            /// Represents the connection string to be used when running the application.
+            /// </summary>
+            public const string UsedByApplication = "Todo";
+        }
     }
 }
