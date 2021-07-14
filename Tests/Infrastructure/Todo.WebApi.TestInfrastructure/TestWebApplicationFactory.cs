@@ -18,6 +18,8 @@ namespace Todo.WebApi.TestInfrastructure
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
 
+    using Commons.Constants;
+
     using Models;
 
     using Newtonsoft.Json;
@@ -81,7 +83,7 @@ namespace Todo.WebApi.TestInfrastructure
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
-            string environmentName = Commons.Constants.EnvironmentNames.IntegrationTests;
+            string environmentName = EnvironmentNames.IntegrationTests;
             builder.UseEnvironment(environmentName);
 
             builder.ConfigureAppConfiguration((webHostBuilderContext, configurationBuilder) =>

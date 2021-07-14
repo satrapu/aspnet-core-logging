@@ -5,6 +5,8 @@ namespace Todo.Logging.Serilog
     using System.IO;
     using System.Linq;
 
+    using Commons.Constants;
+
     using global::Serilog;
 
     using Microsoft.Extensions.Configuration;
@@ -64,7 +66,7 @@ namespace Todo.Logging.Serilog
                 return;
             }
 
-            string logsHomeEnvironmentVariableName = Commons.Constants.Logging.LogsHomeEnvironmentVariable;
+            string logsHomeEnvironmentVariableName = Logging.LogsHomeEnvironmentVariable;
             string logsHomeDirectoryPath = Environment.GetEnvironmentVariable(logsHomeEnvironmentVariableName);
 
             if (string.IsNullOrWhiteSpace(logsHomeDirectoryPath) || !Directory.Exists(logsHomeDirectoryPath))

@@ -3,8 +3,8 @@ namespace Todo.Persistence.Migrations
     using System;
     using System.Collections.Generic;
 
-    using Commons;
     using Commons.ApplicationEvents;
+    using Commons.Constants;
 
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
@@ -33,8 +33,8 @@ namespace Todo.Persistence.Migrations
         {
             using (logger.BeginScope(new Dictionary<string, object>
             {
-                [Commons.Constants.Logging.ConversationId] = Guid.NewGuid().ToString("N"),
-                [Commons.Constants.Logging.ApplicationFlowName] = "Database/RunMigrations"
+                [Logging.ConversationId] = Guid.NewGuid().ToString("N"),
+                [Logging.ApplicationFlowName] = "Database/RunMigrations"
             }))
             {
                 InternalRunDatabaseMigrations();
@@ -68,6 +68,7 @@ namespace Todo.Persistence.Migrations
             catch (Exception exception)
             {
                 logger.LogCritical(exception, "Failed to migrate database {DatabaseName}", database);
+
                 throw;
             }
         }

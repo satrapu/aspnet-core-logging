@@ -2,6 +2,8 @@ namespace Todo.DependencyInjection
 {
     using Autofac;
 
+    using Commons.Constants;
+
     using Services.Security;
     using Services.TodoItemManagement;
 
@@ -17,16 +19,14 @@ namespace Todo.DependencyInjection
 
         protected override void Load(ContainerBuilder builder)
         {
-            bool isDevelopmentEnvironment = Commons.Constants.EnvironmentNames.Development.Equals(EnvironmentName);
-
-            bool isIntegrationTestsEnvironment =
-                Commons.Constants.EnvironmentNames.IntegrationTests.Equals(EnvironmentName);
+            bool isDevelopmentEnvironment = EnvironmentNames.Development.Equals(EnvironmentName);
+            bool isIntegrationTestsEnvironment = EnvironmentNames.IntegrationTests.Equals(EnvironmentName);
 
             var persistenceModule = new PersistenceModule
             {
                 ConnectionStringName = isIntegrationTestsEnvironment
-                    ? Commons.Constants.ConnectionStrings.UsedByIntegrationTests
-                    : Commons.Constants.ConnectionStrings.UsedByApplication,
+                    ? ConnectionStrings.UsedByIntegrationTests
+                    : ConnectionStrings.UsedByApplication,
                 EnableDetailedErrors = isDevelopmentEnvironment || isIntegrationTestsEnvironment,
                 EnableSensitiveDataLogging = isDevelopmentEnvironment || isIntegrationTestsEnvironment
             };

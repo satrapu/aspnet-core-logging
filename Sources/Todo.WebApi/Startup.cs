@@ -9,8 +9,8 @@ namespace Todo.WebApi
 
     using Authorization;
 
-    using Commons;
     using Commons.ApplicationEvents;
+    using Commons.Constants;
 
     using ExceptionHandling;
 
@@ -85,7 +85,7 @@ namespace Todo.WebApi
         {
             logger.LogInformation("Configuring ASP.NET Core request processing pipeline ...");
 
-            string logsHomeEnvironmentVariableName = Commons.Constants.Logging.LogsHomeEnvironmentVariable;
+            string logsHomeEnvironmentVariableName = Logging.LogsHomeEnvironmentVariable;
 
             logger.LogInformation(
                 "The {LogsHomeEnvironmentVariable} environment variable now points to directory: [{LogsHomeDirectory}]",
@@ -217,12 +217,12 @@ namespace Todo.WebApi
                             Status = StatusCodes.Status422UnprocessableEntity,
                             Detail = "See the errors property for more details",
                             Instance = context.HttpContext.Request.Path,
-                            Extensions = { { "TraceId", context.HttpContext.TraceIdentifier } }
+                            Extensions = {{"TraceId", context.HttpContext.TraceIdentifier}}
                         };
 
                         return new UnprocessableEntityObjectResult(validationProblemDetails)
                         {
-                            ContentTypes = { "application/problem+json" }
+                            ContentTypes = {"application/problem+json"}
                         };
                     };
                 });
