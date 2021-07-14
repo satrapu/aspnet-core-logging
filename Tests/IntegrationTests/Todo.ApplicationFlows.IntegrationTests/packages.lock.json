@@ -1874,7 +1874,6 @@
         "dependencies": {
           "FluentAssertions": "5.10.3",
           "Microsoft.AspNet.WebApi.Client": "5.2.7",
-          "Microsoft.AspNetCore.Mvc.Testing": "5.0.8",
           "Microsoft.NET.Test.Sdk": "16.10.0",
           "NUnit": "3.13.2",
           "NUnit3TestAdapter": "4.0.0",

@@ -27,17 +27,6 @@
           "Newtonsoft.Json.Bson": "1.0.1"
         }
       },
-      "Microsoft.AspNetCore.Mvc.Testing": {
-        "type": "Direct",
-        "requested": "[5.0.8, )",
-        "resolved": "5.0.8",
-        "contentHash": "x76apKyWyYRs9dxOVHFkQVe5qtoZ7w/+zX7krXURKSwKqKxoI7WofOFZkY+370j8HGIGszgzUX1pDtyXtQfj3g==",
-        "dependencies": {
-          "Microsoft.AspNetCore.TestHost": "5.0.8",
-          "Microsoft.Extensions.DependencyModel": "5.0.0",
-          "Microsoft.Extensions.Hosting": "5.0.0"
-        }
-      },
       "Microsoft.NET.Test.Sdk": {
         "type": "Direct",
         "requested": "[16.10.0, )",
@@ -259,6 +248,16 @@
         "contentHash": "VklZ7hWgSvHBcDtwYYkdMdI/adlf7ebxTZ9kdzAhX+gUs5jSHE9mZlTamdgf9miSsxc1QjNazHXTDJdVPZKKTw==",
         "dependencies": {
           "Microsoft.Extensions.Primitives": "2.1.1"
+        }
+      },
+      "Microsoft.AspNetCore.Mvc.Testing": {
+        "type": "Transitive",
+        "resolved": "5.0.8",
+        "contentHash": "x76apKyWyYRs9dxOVHFkQVe5qtoZ7w/+zX7krXURKSwKqKxoI7WofOFZkY+370j8HGIGszgzUX1pDtyXtQfj3g==",
+        "dependencies": {
+          "Microsoft.AspNetCore.TestHost": "5.0.8",
+          "Microsoft.Extensions.DependencyModel": "5.0.0",
+          "Microsoft.Extensions.Hosting": "5.0.0"
         }
       },
       "Microsoft.AspNetCore.TestHost": {
