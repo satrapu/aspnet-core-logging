@@ -1796,7 +1796,6 @@
         "type": "Project",
         "dependencies": {
           "Microsoft.AspNetCore.Mvc.Testing": "5.0.8",
-          "Microsoft.EntityFrameworkCore": "5.0.8",
           "Todo.WebApi": "1.0.0"
         }
       },
