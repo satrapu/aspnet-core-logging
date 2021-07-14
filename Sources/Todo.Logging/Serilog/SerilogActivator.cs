@@ -56,7 +56,7 @@ namespace Todo.Logging.Serilog
         {
             // ReSharper disable once SettingNotFoundInConfiguration
             IEnumerable<KeyValuePair<string, string>> configuredSerilogSinks =
-                configuration.GetSection("Serilog:Using").AsEnumerable().ToList();
+                configuration.GetSection("Serilog:Using").AsEnumerable();
 
             bool isSerilogFileSinkConfigured =
                 configuredSerilogSinks.Any(sink => "Serilog.Sinks.File".Equals(sink.Value));
@@ -66,15 +66,17 @@ namespace Todo.Logging.Serilog
                 return;
             }
 
-            string logsHomeEnvironmentVariableName = Logging.LogsHomeEnvironmentVariable;
+            const string logsHomeEnvironmentVariableName = Logging.LogsHomeEnvironmentVariable;
             string logsHomeDirectoryPath = Environment.GetEnvironmentVariable(logsHomeEnvironmentVariableName);
 
-            if (string.IsNullOrWhiteSpace(logsHomeDirectoryPath) || !Directory.Exists(logsHomeDirectoryPath))
+            if (!string.IsNullOrWhiteSpace(logsHomeDirectoryPath) && Directory.Exists(logsHomeDirectoryPath))
             {
-                var currentWorkingDirectory = new DirectoryInfo(Directory.GetCurrentDirectory());
-                DirectoryInfo logsHomeDirectory = currentWorkingDirectory.CreateSubdirectory("Logs");
-                Environment.SetEnvironmentVariable(logsHomeEnvironmentVariableName, logsHomeDirectory.FullName);
+                return;
             }
+
+            var currentWorkingDirectory = new DirectoryInfo(Directory.GetCurrentDirectory());
+            DirectoryInfo logsHomeDirectory = currentWorkingDirectory.CreateSubdirectory("Logs");
+            Environment.SetEnvironmentVariable(logsHomeEnvironmentVariableName, logsHomeDirectory.FullName);
         }
     }
 }
