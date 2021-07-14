@@ -4,8 +4,6 @@ namespace Todo.Logging.Http
     using System.Collections.Generic;
     using System.Threading.Tasks;
 
-    using Commons;
-
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Primitives;
@@ -30,7 +28,7 @@ namespace Todo.Logging.Http
 
         public async Task Invoke(HttpContext httpContext)
         {
-            string conversationIdKey = Constants.Logging.ConversationId;
+            string conversationIdKey = Commons.Constants.Logging.ConversationId;
 
             if (!httpContext.Request.Headers.TryGetValue(conversationIdKey, out StringValues conversationId)
                 || string.IsNullOrWhiteSpace(conversationId))

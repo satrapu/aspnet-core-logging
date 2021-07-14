@@ -84,7 +84,7 @@ namespace Todo.WebApi
         {
             logger.LogInformation("Configuring ASP.NET Core request processing pipeline ...");
 
-            string logsHomeEnvironmentVariableName = Constants.Logging.LogsHomeEnvironmentVariable;
+            string logsHomeEnvironmentVariableName = Commons.Constants.Logging.LogsHomeEnvironmentVariable;
 
             logger.LogInformation(
                 "The {LogsHomeEnvironmentVariable} environment variable now points to directory: [{LogsHomeDirectory}]",

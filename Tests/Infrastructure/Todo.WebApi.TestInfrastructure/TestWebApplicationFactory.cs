@@ -8,8 +8,6 @@ namespace Todo.WebApi.TestInfrastructure
 
     using Autofac;
 
-    using Commons;
-
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc.Testing;
     using Microsoft.AspNetCore.TestHost;
@@ -83,7 +81,7 @@ namespace Todo.WebApi.TestInfrastructure
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
-            string environmentName = Constants.EnvironmentNames.IntegrationTests;
+            string environmentName = Commons.Constants.EnvironmentNames.IntegrationTests;
             builder.UseEnvironment(environmentName);
 
             builder.ConfigureAppConfiguration((webHostBuilderContext, configurationBuilder) =>

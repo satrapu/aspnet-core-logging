@@ -6,8 +6,6 @@ namespace Todo.ApplicationFlows
     using System.Security.Principal;
     using System.Threading.Tasks;
 
-    using Commons;
-
     using Microsoft.Extensions.Logging;
 
     using Todo.Services.Security;
@@ -50,7 +48,7 @@ namespace Todo.ApplicationFlows
         {
             using (logger.BeginScope(new Dictionary<string, object>
             {
-                [Constants.Logging.ApplicationFlowName] = flowName
+                [Commons.Constants.Logging.ApplicationFlowName] = flowName
             }))
             {
                 bool isSuccess = false;
