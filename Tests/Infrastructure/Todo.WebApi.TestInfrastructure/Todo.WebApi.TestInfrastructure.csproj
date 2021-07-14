@@ -5,7 +5,7 @@
         <OutputType>Library</OutputType>
         <IsPackable>false</IsPackable>
         <IsTestProject>false</IsTestProject>
-        <RootNamespace>Todo.TestInfrastructure</RootNamespace>
+        <RootNamespace>Todo.WebApi.TestInfrastructure</RootNamespace>
         <SonarQubeTestProject>False</SonarQubeTestProject>
     </PropertyGroup>
 
@@ -20,5 +20,13 @@
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
     </ItemGroup>
+
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+        <CodeAnalysisRuleSet>Todo.WebApi.TestInfrastructure.ruleset</CodeAnalysisRuleSet>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+        <CodeAnalysisRuleSet>Todo.WebApi.TestInfrastructure.ruleset</CodeAnalysisRuleSet>
+    </PropertyGroup>
 
 </Project>

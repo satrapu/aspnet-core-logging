@@ -19,7 +19,7 @@ namespace Todo.ApplicationFlows
 
     using Services.TodoItemManagement;
 
-    using TestInfrastructure;
+    using WebApi.TestInfrastructure;
 
     /// <summary>
     /// Contains integration tests targeting <see cref="TransactionalBaseApplicationFlow{TInput,TOutput}"/> class.

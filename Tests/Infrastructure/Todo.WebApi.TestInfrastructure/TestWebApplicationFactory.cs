@@ -1,4 +1,4 @@
-namespace Todo.TestInfrastructure
+namespace Todo.WebApi.TestInfrastructure
 {
     using System;
     using System.Collections.Generic;
@@ -20,12 +20,13 @@ namespace Todo.TestInfrastructure
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
 
+    using Models;
+
     using Newtonsoft.Json;
 
     using Npgsql;
 
     using WebApi;
-    using WebApi.Models;
 
     /// <summary>
     /// A <see cref="WebApplicationFactory{TEntryPoint}"/> implementation to be used for running integration tests.
