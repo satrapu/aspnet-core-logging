@@ -2,7 +2,10 @@ namespace Todo.DependencyInjection
 {
     using Autofac;
 
+    using Commons.ApplicationEvents;
+
     using Logging.Http;
+    using Logging.Serilog;
 
     /// <summary>
     /// Configures logging related services used by this application.
@@ -25,6 +28,11 @@ namespace Todo.DependencyInjection
                     .As<IHttpContextLoggingHandler>()
                     .SingleInstance();
             }
+
+            builder
+                .RegisterType<SerilogFileSinkMetadataLogger>()
+                .As<IApplicationStartedEventListener>()
+                .SingleInstance();
         }
     }
 }
