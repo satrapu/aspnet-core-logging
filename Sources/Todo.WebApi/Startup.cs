@@ -1,7 +1,6 @@
 namespace Todo.WebApi
 {
     using System;
-    using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Security.Claims;
     using System.Text;
@@ -100,11 +99,11 @@ namespace Todo.WebApi
                 .UseAuthorization()
                 .UseEndpoints(endpoints => { endpoints.MapControllers(); });
 
-            IEnumerable<IApplicationStartedEventListener> applicationStartedEventListeners =
-                serviceProvider.GetServices<IApplicationStartedEventListener>();
+            IApplicationStartedEventNotifier applicationStartedEventNotifier =
+                serviceProvider.GetRequiredService<IApplicationStartedEventNotifier>();
 
             hostApplicationLifetime.ApplicationStarted.Register(() =>
-                OnApplicationStarted(applicationStartedEventListeners, hostApplicationLifetime, logger));
+                OnApplicationStarted(applicationStartedEventNotifier, logger));
 
             hostApplicationLifetime.ApplicationStopping.Register(() => OnApplicationStopping(logger));
             hostApplicationLifetime.ApplicationStopped.Register(() => OnApplicationStopped(logger));
@@ -230,21 +229,12 @@ namespace Todo.WebApi
             services.Configure<ExceptionHandlingOptions>(Configuration.GetSection("ExceptionHandling"));
         }
 
-        private void OnApplicationStarted(IEnumerable<IApplicationStartedEventListener> eventListeners,
-            IHostApplicationLifetime hostApplicationLifetime, ILogger logger)
+        private void OnApplicationStarted(IApplicationStartedEventNotifier applicationStartedEventNotifier,
+            ILogger logger)
         {
-            try
-            {
-                ExecuteApplicationStartedEventListeners(eventListeners, logger);
-                logger.LogInformation("{ApplicationName} application has started", ApplicationName);
-            }
-            catch (Exception exception)
-            {
-                logger.LogCritical(exception,
-                    "An error has occurred while executing application started event listeners");
+            applicationStartedEventNotifier.Notify();
 
-                hostApplicationLifetime.StopApplication();
-            }
+            logger.LogInformation("{ApplicationName} application has started", ApplicationName);
         }
 
         private void OnApplicationStopping(ILogger logger)
@@ -255,31 +245,6 @@ namespace Todo.WebApi
         private void OnApplicationStopped(ILogger logger)
         {
             logger.LogInformation("{ApplicationName} application has stopped", ApplicationName);
-        }
-
-        private void ExecuteApplicationStartedEventListeners(
-            IEnumerable<IApplicationStartedEventListener> eventListeners,
-            ILogger logger)
-        {
-            if (eventListeners == null)
-            {
-                throw new ArgumentNullException(nameof(eventListeners));
-            }
-
-            foreach (IApplicationStartedEventListener eventListener in eventListeners)
-            {
-                string eventListenerName = eventListener.GetType().AssemblyQualifiedName;
-
-                logger.LogInformation(
-                    "About to execute application started event listener: [{ApplicationStartedEventListener}] ...",
-                    eventListenerName);
-
-                eventListener.OnApplicationStarted();
-
-                logger.LogInformation(
-                    "Application started event listener: [{ApplicationStartedEventListener}] has been executed successfully",
-                    eventListenerName);
-            }
         }
     }
 }

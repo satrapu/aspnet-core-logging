@@ -70,21 +70,24 @@ namespace Todo.WebApi
                     })
                     .ConfigureContainer<ContainerBuilder>((hostBuilderContext, containerBuilder) =>
                     {
-                        // The purpose of this method is to configure Autofac DI container.
+                        // The purpose of this method is to configure Autofac as replacement for the default
+                        // ASP.NET Core service provider.
                         // This method is not present inside Startup class (where it should), due to a known issue which
                         // prohibits injecting mock services, as seen here:
                         // https://github.com/dotnet/aspnetcore/issues/14907#issuecomment-850407104.
 
-                        containerBuilder.RegisterModule(new LoggingModule
-                        {
-                            EnableHttpLogging = hostBuilderContext.Configuration.GetValue<bool>("HttpLogging:Enabled")
-                        });
-
-                        containerBuilder.RegisterModule(new ApplicationFlowsModule
-                        {
-                            EnvironmentName = hostBuilderContext.HostingEnvironment.EnvironmentName,
-                            ApplicationConfiguration = hostBuilderContext.Configuration
-                        });
+                        containerBuilder
+                            .RegisterModule(new CommonsModule())
+                            .RegisterModule(new LoggingModule
+                            {
+                                EnableHttpLogging =
+                                    hostBuilderContext.Configuration.GetValue<bool>("HttpLogging:Enabled")
+                            })
+                            .RegisterModule(new ApplicationFlowsModule
+                            {
+                                EnvironmentName = hostBuilderContext.HostingEnvironment.EnvironmentName,
+                                ApplicationConfiguration = hostBuilderContext.Configuration
+                            });
                     })
                     .ConfigureWebHostDefaults(localHostBuilder =>
                     {
