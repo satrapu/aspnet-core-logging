@@ -2,7 +2,7 @@
 
 ## Description
 
-This repo shows ASP.NET Core v5.x logging in action; it also serves as a learning, experimenting and teaching path to [Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/).
+This repo shows ASP.NET Core v5.x logging in action; it also serves as a learning, experimenting and teaching path for .NET, Azure Pipelines and other technologies & tools.
 
 :exclamation: Currently this web API uses JSON web tokens (JWT) for authentication & authorization purposes, but momentarily the mechanism used for generating these tokens has been __greatly__ simplified to the point of being actually naive as my focus is set on other topics; on the other hand, I do intend on providing a more realistic implementation in a not so far away future.
 
