@@ -30,7 +30,7 @@ namespace Todo.DependencyInjection
             }
 
             builder
-                .RegisterType<SerilogFileSinkMetadataLogger>()
+                .RegisterType<FileSinkMetadataLogger>()
                 .As<IApplicationStartedEventListener>()
                 .SingleInstance();
         }
