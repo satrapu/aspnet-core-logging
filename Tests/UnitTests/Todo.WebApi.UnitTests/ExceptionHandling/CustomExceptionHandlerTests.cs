@@ -23,7 +23,7 @@ namespace Todo.WebApi.ExceptionHandling
 
     using Persistence.Entities;
 
-    using Services.TodoItemLifecycleManagement;
+    using Services.TodoItemManagement;
 
     /// <summary>
     /// Contains unit tests targeting <see cref="CustomExceptionHandler"/> class.

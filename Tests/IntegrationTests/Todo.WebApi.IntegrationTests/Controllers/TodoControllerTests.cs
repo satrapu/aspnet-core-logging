@@ -91,7 +91,7 @@ namespace Todo.WebApi.Controllers
         public async Task CreateAsync_UsingValidTodoItem_ReturnsExpectedData()
         {
             // Arrange
-            using HttpClient httpClient = await webApplicationFactory.CreateClientWithJwtAsync();
+            using HttpClient httpClient = await webApplicationFactory.CreateHttpClientWithJwtAsync();
             long? id = null;
             const long idThreshold = 1;
 
@@ -137,7 +137,7 @@ namespace Todo.WebApi.Controllers
         public async Task CreateAsync_UsingInvalidTodoItem_ReturnsExpectedHttpStatusCode()
         {
             // Arrange
-            using HttpClient httpClient = await webApplicationFactory.CreateClientWithJwtAsync();
+            using HttpClient httpClient = await webApplicationFactory.CreateHttpClientWithJwtAsync();
             var invalidModel = new NewTodoItemModel();
 
             // Act
@@ -191,7 +191,7 @@ namespace Todo.WebApi.Controllers
         public async Task GetByQueryAsync_UsingDefaults_ReturnsExpectedResult()
         {
             // Arrange
-            using HttpClient httpClient = await webApplicationFactory.CreateClientWithJwtAsync();
+            using HttpClient httpClient = await webApplicationFactory.CreateHttpClientWithJwtAsync();
             long? id = null;
 
             try
@@ -282,7 +282,7 @@ namespace Todo.WebApi.Controllers
         public async Task GetByIdAsync_UsingNewlyCreatedItem_ReturnsExpectedResult()
         {
             // Arrange
-            using HttpClient httpClient = await webApplicationFactory.CreateClientWithJwtAsync();
+            using HttpClient httpClient = await webApplicationFactory.CreateHttpClientWithJwtAsync();
             long? id = null;
 
             try
@@ -336,7 +336,7 @@ namespace Todo.WebApi.Controllers
         public async Task GetByIdAsync_UsingNonExistingId_ReturnsNotFoundHttpStatusCode()
         {
             // Arrange
-            using HttpClient httpClient = await webApplicationFactory.CreateClientWithJwtAsync();
+            using HttpClient httpClient = await webApplicationFactory.CreateHttpClientWithJwtAsync();
             long? id = null;
 
             try
@@ -410,7 +410,7 @@ namespace Todo.WebApi.Controllers
         public async Task UpdateAsync_UsingNewlyCreatedTodoItem_MustSucceed()
         {
             // Arrange
-            using HttpClient httpClient = await webApplicationFactory.CreateClientWithJwtAsync();
+            using HttpClient httpClient = await webApplicationFactory.CreateHttpClientWithJwtAsync();
             long? id = null;
 
             try
@@ -504,7 +504,7 @@ namespace Todo.WebApi.Controllers
                 IsComplete = isComplete
             };
 
-            using HttpClient httpClient = await webApplicationFactory.CreateClientWithJwtAsync();
+            using HttpClient httpClient = await webApplicationFactory.CreateHttpClientWithJwtAsync();
             HttpResponseMessage response = await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemInfo);
             response.IsSuccessStatusCode.Should().BeTrue(BecauseNewEntityHasBeenCreated);
             long? id = await response.Content.ReadAsAsync<long>();

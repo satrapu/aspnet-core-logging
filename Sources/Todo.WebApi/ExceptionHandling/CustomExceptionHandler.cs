@@ -14,7 +14,7 @@ namespace Todo.WebApi.ExceptionHandling
 
     using Npgsql;
 
-    using Services.TodoItemLifecycleManagement;
+    using Services.TodoItemManagement;
 
     /// <summary>
     /// Handles any exceptions occurring inside this application.

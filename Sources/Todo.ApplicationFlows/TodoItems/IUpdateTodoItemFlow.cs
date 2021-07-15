@@ -2,7 +2,7 @@ namespace Todo.ApplicationFlows.TodoItems
 {
     using System.Diagnostics.CodeAnalysis;
 
-    using Services.TodoItemLifecycleManagement;
+    using Services.TodoItemManagement;
 
     /// <summary>
     /// Application flow used for updating an existing todo item.

@@ -16,7 +16,7 @@
         appsettings.IntegrationTests.json configuration files.
         -->
         <ProjectReference Include="..\..\..\Sources\Todo.WebApi\Todo.WebApi.csproj" />
-        <ProjectReference Include="..\..\Infrastructure\TestInfrastructure\TestInfrastructure.csproj" />
+        <ProjectReference Include="..\..\Infrastructure\Todo.WebApi.TestInfrastructure\Todo.WebApi.TestInfrastructure.csproj" />
         <ProjectReference Include="..\Todo.WebApi.IntegrationTests\Todo.WebApi.IntegrationTests.csproj" />
     </ItemGroup>
 
@@ -26,7 +26,6 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
         <PackageReference Include="FluentAssertions" />
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.1.8" />
         <PackageReference Include="Microsoft.Extensions.Configuration" />
         <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Json" />
@@ -35,10 +34,18 @@
         <PackageReference Include="NUnit3TestAdapter" />
         <PackageReference Include="NunitXml.TestLogger" />
         <PackageReference Include="SonarAnalyzer.CSharp">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
     </ItemGroup>
+
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+        <CodeAnalysisRuleSet>Todo.ApplicationFlows.IntegrationTests.ruleset</CodeAnalysisRuleSet>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+        <CodeAnalysisRuleSet>Todo.ApplicationFlows.IntegrationTests.ruleset</CodeAnalysisRuleSet>
+    </PropertyGroup>
 
     <ItemGroup>
         <Compile Remove="TestResults\**" />

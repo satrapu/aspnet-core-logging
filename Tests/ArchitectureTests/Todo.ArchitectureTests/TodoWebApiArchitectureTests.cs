@@ -15,40 +15,27 @@ namespace Todo
 
     using Persistence;
 
-    using Services.TodoItemLifecycleManagement;
+    using Services.TodoItemManagement;
 
     using WebApi;
 
     /// <summary>
-    /// Contains tests ensuring the architecture of the Todo Web API has not deviate from the intended one.
+    /// Contains tests ensuring the architecture of this application has not deviate from the intended one.
     /// </summary>
     [SuppressMessage("ReSharper", "S1135", Justification = "The todo word represents an entity")]
     [TestFixture]
     public class TodoWebApiArchitectureTests
     {
-        private PredicateList webApiControllers;
-
         /// <summary>
-        /// Identifies all controllers found in Todo Web API.
-        /// </summary>
-        [OneTimeSetUp]
-        public void IdentifyWebApiControllers()
-        {
-            webApiControllers = Types.InAssembly(typeof(Startup).Assembly)
-                .That()
-                .AreClasses()
-                .And().ArePublic()
-                .And().Inherit(typeof(ControllerBase));
-        }
-
-        /// <summary>
-        /// Ensures Todo Web API controllers do not depend on any service interface.
+        /// Ensures the controllers found in this application do not depend on any service interface.
         /// </summary>
         /// <returns></returns>
         [Test]
         public async Task GivenTodoWebApiControllers_WhenBeingAnalyzed_ThenEnsureTheyDoNotDependOnServiceInterfaces()
         {
             // Arrange
+            PredicateList webApiControllers = GetWebApiControllers();
+
             string[] serviceInterfaces = Types.InAssembly(typeof(ITodoItemService).Assembly)
                 .That()
                 .ArePublic()
@@ -68,13 +55,15 @@ namespace Todo
         }
 
         /// <summary>
-        /// Ensures Todo Web API controllers do not depend on any service class.
+        /// Ensures the controllers of this application do not depend on any service class.
         /// </summary>
         /// <returns></returns>
         [Test]
         public async Task GivenTodoWebApiControllers_WhenBeingAnalyzed_ThenEnsureTheyDoNotDependOnServices()
         {
             // Arrange
+            PredicateList webApiControllers = GetWebApiControllers();
+
             string[] services = Types.InAssembly(typeof(ITodoItemService).Assembly)
                 .That()
                 .ArePublic()
@@ -99,6 +88,8 @@ namespace Todo
         public async Task GivenTodoWebApiControllers_WhenBeingAnalyzed_ThenEnsureTheyDoNotDependOnPersistence()
         {
             // Arrange
+            PredicateList webApiControllers = GetWebApiControllers();
+
             string[] persistenceNamespaces = Types.InAssembly(typeof(TodoDbContext).Assembly)
                 .GetTypes()
                 .Where(localType => !string.IsNullOrWhiteSpace(localType.Namespace))
@@ -115,6 +106,20 @@ namespace Todo
             // Assert
             testResult.IsSuccessful
                 .Should().Be(true, "Web API controllers must *not* depend on persistence related namespaces");
+        }
+
+        /// <summary>
+        /// Fetches all controllers found in this application.
+        /// </summary>
+        private static PredicateList GetWebApiControllers()
+        {
+            PredicateList webApiControllers = Types.InAssembly(typeof(Startup).Assembly)
+                .That()
+                .AreClasses()
+                .And().ArePublic()
+                .And().Inherit(typeof(ControllerBase));
+
+            return webApiControllers;
         }
 
         /// <summary>

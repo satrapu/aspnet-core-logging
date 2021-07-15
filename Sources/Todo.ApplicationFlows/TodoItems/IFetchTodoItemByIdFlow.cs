@@ -1,6 +1,6 @@
 namespace Todo.ApplicationFlows.TodoItems
 {
-    using Services.TodoItemLifecycleManagement;
+    using Services.TodoItemManagement;
 
     /// <summary>
     /// Application flow used for fetching a <see cref="TodoItemInfo"/> instance matching a given identifier.

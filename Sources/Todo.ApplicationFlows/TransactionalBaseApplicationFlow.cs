@@ -6,7 +6,6 @@ namespace Todo.ApplicationFlows
     using System.Transactions;
 
     using Microsoft.Extensions.Logging;
-    using Microsoft.Extensions.Options;
 
     /// <summary>
     /// Base class for all application flows which make use of transactions.
@@ -14,7 +13,7 @@ namespace Todo.ApplicationFlows
     public abstract class TransactionalBaseApplicationFlow<TInput, TOutput>
         : NonTransactionalBaseApplicationFlow<TInput, TOutput>
     {
-        private readonly IOptionsMonitor<ApplicationFlowOptions> applicationFlowOptions;
+        private readonly ApplicationFlowOptions applicationFlowOptions;
 
         /// <summary>
         /// Creates a new instance of a particular application flow.
@@ -27,7 +26,7 @@ namespace Todo.ApplicationFlows
         /// white-space only.</exception>
         /// <exception cref="ArgumentNullException">Thrown when the given <paramref name="logger"/> is null</exception>
         protected TransactionalBaseApplicationFlow(string flowName,
-            IOptionsMonitor<ApplicationFlowOptions> applicationFlowOptions,
+            ApplicationFlowOptions applicationFlowOptions,
             ILogger logger) : base(flowName, logger)
         {
             this.applicationFlowOptions = applicationFlowOptions ??
@@ -45,8 +44,8 @@ namespace Todo.ApplicationFlows
         {
             var transactionOptions = new System.Transactions.TransactionOptions
             {
-                IsolationLevel = applicationFlowOptions.CurrentValue.TransactionOptions.IsolationLevel,
-                Timeout = applicationFlowOptions.CurrentValue.TransactionOptions.Timeout
+                IsolationLevel = applicationFlowOptions.TransactionOptions.IsolationLevel,
+                Timeout = applicationFlowOptions.TransactionOptions.Timeout
             };
 
             using var transactionScope = new TransactionScope(TransactionScopeOption.Required, transactionOptions,
