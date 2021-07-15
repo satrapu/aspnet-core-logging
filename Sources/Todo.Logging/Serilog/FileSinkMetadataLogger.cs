@@ -42,12 +42,11 @@ namespace Todo.Logging.Serilog
                 return;
             }
 
-            const string environmentVariableName = Logging.LogsHomeEnvironmentVariable;
-            string environmentVariableValue = Environment.GetEnvironmentVariable(environmentVariableName);
+            string logsHomeDirectory = Environment.GetEnvironmentVariable(Logging.LogsHomeEnvironmentVariable);
 
             logger.LogInformation(
                 "The currently configured Serilog file sink will write files to the directory: [{LogsHomeDirectory}]",
-                environmentVariableValue);
+                logsHomeDirectory);
         }
     }
 }
