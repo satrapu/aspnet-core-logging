@@ -24,7 +24,7 @@ namespace Todo.Logging.Serilog
         /// <param name="services">The application services collection.</param>
         /// <param name="configuration">The application configuration.</param>
         /// <returns>The given <paramref name="services"/> instance.</returns>
-        /// <exception cref="ArgumentNullException">Throw when either <paramref name="services"/>
+        /// <exception cref="ArgumentNullException">Thrown when either <paramref name="services"/>
         /// or <paramref name="configuration"/> is null.</exception>
         public static IServiceCollection ActivateSerilog(this IServiceCollection services, IConfiguration configuration)
         {

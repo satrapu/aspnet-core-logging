@@ -17,7 +17,7 @@ namespace Todo.Profiling
         /// <param name="services">The application services collection.</param>
         /// <param name="configuration">The application configuration.</param>
         /// <returns>The given <paramref name="services"/> instance.</returns>
-        /// <exception cref="ArgumentNullException">Throw when either <paramref name="services"/>
+        /// <exception cref="ArgumentNullException">Thrown when either <paramref name="services"/>
         /// or <paramref name="configuration"/> is null.</exception>
         public static IServiceCollection ActivateMiniProfiler(this IServiceCollection services,
             IConfiguration configuration)
@@ -65,7 +65,7 @@ namespace Todo.Profiling
         /// <param name="applicationBuilder">Configures ASP.NET Core request processing pipeline.</param>
         /// <param name="configuration">The application configuration.</param>
         /// <returns>The given <paramref name="applicationBuilder"/> instance.</returns>
-        /// <exception cref="ArgumentNullException">Throw when either <paramref name="applicationBuilder"/>
+        /// <exception cref="ArgumentNullException">Thrown when either <paramref name="applicationBuilder"/>
         /// or <paramref name="configuration"/> is null.</exception>
         public static IApplicationBuilder UseMiniProfiler(this IApplicationBuilder applicationBuilder,
             IConfiguration configuration)

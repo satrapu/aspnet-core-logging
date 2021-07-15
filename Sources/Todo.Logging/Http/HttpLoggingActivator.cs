@@ -17,7 +17,7 @@ namespace Todo.Logging.Http
         /// <param name="applicationBuilder">Configures ASP.NET Core request processing pipeline.</param>
         /// <param name="configuration">The application configuration.</param>
         /// <returns>The given <paramref name="applicationBuilder"/> instance.</returns>
-        /// <exception cref="ArgumentNullException">Throw when either <paramref name="applicationBuilder"/>
+        /// <exception cref="ArgumentNullException">Thrown when either <paramref name="applicationBuilder"/>
         /// or <paramref name="configuration"/> is null.</exception>
         public static IApplicationBuilder UseHttpLogging(this IApplicationBuilder applicationBuilder,
             IConfiguration configuration)

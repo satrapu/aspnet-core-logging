@@ -18,7 +18,7 @@ namespace Todo.Logging.ApplicationInsights
         /// <param name="services">The application services collection.</param>
         /// <param name="configuration">The application configuration.</param>
         /// <returns>The given <paramref name="services"/> instance.</returns>
-        /// <exception cref="ArgumentNullException">Throw when either <paramref name="services"/>
+        /// <exception cref="ArgumentNullException">Thrown when either <paramref name="services"/>
         /// or <paramref name="configuration"/> is null.</exception>
         public static IServiceCollection ActivateApplicationInsights(this IServiceCollection services,
             IConfiguration configuration)
