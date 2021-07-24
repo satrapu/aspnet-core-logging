@@ -5,6 +5,17 @@ services:
     container_name: aspnet-core-logging-dev-db
     image: postgres:12-alpine
     restart: unless-stopped
+    healthcheck:
+      test: >
+        pg_isready \
+          --host=localhost \
+          --port=5432 \
+          --dbname=aspnet-core-logging-dev \
+          --username=${DB_DEV_POSTGRES_USER}
+      interval: "2s"
+      timeout: "5s"
+      retries: 5
+      start_period: "1s"
     volumes:
       - aspnet-core-logging-dev_data:/var/lib/postgresql/data
     ports:
@@ -20,6 +31,17 @@ services:
     container_name: aspnet-core-logging-it-db
     image: postgres:12-alpine
     restart: unless-stopped
+    healthcheck:
+      test: >
+        pg_isready \
+          --host=localhost \
+          --port=5432 \
+          --dbname=aspnet-core-logging-it \
+          --username=${DB_IT_POSTGRES_USER}
+      interval: "2s"
+      timeout: "5s"
+      retries: 5
+      start_period: "1s"
     volumes:
       - aspnet-core-logging-it_data:/var/lib/postgresql/data
     ports:
