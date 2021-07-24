@@ -282,7 +282,7 @@ jobs:
       publishRunAttachments: True
 
   # Install and start Docker Engine on macOS based agents only.
-  # See more here: https://github.com/microsoft/azure-pipelines-image-generation/issues/738#issuecomment-527013065.
+  # See more here: https://web.archive.org/web/20201012054023if_/https://github.com/microsoft/azure-pipelines-image-generation/issues/738#issuecomment-519571491.
   - script: |
       chmod +x $(Build.SourcesDirectory)/Build/start-docker-on-macOS.sh
       $(Build.SourcesDirectory)/Build/start-docker-on-macOS.sh
