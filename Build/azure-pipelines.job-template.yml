@@ -531,7 +531,7 @@ jobs:
 
   # Load the current Git branch name into a build variable to be later used when querying SonarCloud web API for the
   # results of the static analysis performed against this branch.
-  # This build step will be run only in case the build was triggered by a pul request.
+  # This build step will be run only in case the build was triggered by a pull request.
   - task: PowerShell@2
     name: 'load_current_git_branch_name_from_pull_request_info'
     displayName: 'Load current Git branch name from PR info'
