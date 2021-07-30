@@ -1,4 +1,1 @@
-using NUnit.Framework;
-
-[assembly: Category("UnitTests")]
-[assembly: Parallelizable(ParallelScope.Children)]
+[assembly: NUnit.Framework.Category("UnitTests")]
