@@ -185,15 +185,6 @@
           "System.IO.FileSystem.AccessControl": "4.7.0"
         }
       },
-      "Microsoft.AspNet.WebApi.Client": {
-        "type": "Transitive",
-        "resolved": "5.2.7",
-        "contentHash": "/76fAHknzvFqbznS6Uj2sOyE9rJB3PltY+f53TH8dX9RiGhk02EhuFCWljSj5nnqKaTsmma8DFR50OGyQ4yJ1g==",
-        "dependencies": {
-          "Newtonsoft.Json": "10.0.1",
-          "Newtonsoft.Json.Bson": "1.0.1"
-        }
-      },
       "Microsoft.AspNetCore.Authentication.JwtBearer": {
         "type": "Transitive",
         "resolved": "5.0.8",
@@ -786,15 +777,6 @@
           "System.Runtime.Serialization.Formatters": "4.3.0",
           "System.Runtime.Serialization.Primitives": "4.3.0",
           "System.Xml.XmlDocument": "4.3.0"
-        }
-      },
-      "Newtonsoft.Json.Bson": {
-        "type": "Transitive",
-        "resolved": "1.0.1",
-        "contentHash": "5PYT/IqQ+UK31AmZiSS102R6EsTo+LGTSI8bp7WAUqDKaF4wHXD8U9u4WxTI1vc64tYi++8p3dk3WWNqPFgldw==",
-        "dependencies": {
-          "NETStandard.Library": "1.6.1",
-          "Newtonsoft.Json": "10.0.1"
         }
       },
       "Npgsql": {
@@ -1831,19 +1813,6 @@
           "Todo.DependencyInjection": "1.0.0",
           "Todo.Profiling": "1.0.0",
           "Todo.Services": "1.0.0"
-        }
-      },
-      "todo.webapi.integrationtests": {
-        "type": "Project",
-        "dependencies": {
-          "FluentAssertions": "5.10.3",
-          "Microsoft.AspNet.WebApi.Client": "5.2.7",
-          "Microsoft.NET.Test.Sdk": "16.10.0",
-          "NUnit": "3.13.2",
-          "NUnit3TestAdapter": "4.0.0",
-          "NunitXml.TestLogger": "3.0.107",
-          "Todo.WebApi": "1.0.0",
-          "Todo.WebApi.TestInfrastructure": "1.0.0"
         }
       },
       "todo.webapi.testinfrastructure": {

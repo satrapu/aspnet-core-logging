@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
@@ -46,5 +46,11 @@
     <ItemGroup>
         <None Remove="coverage.opencover.xml" />
     </ItemGroup>
+
+    <PropertyGroup Label="FineCodeCoverage">
+        <Enabled>True</Enabled>
+        <Include>[*]*</Include>
+        <IncludeTestAssembly>False</IncludeTestAssembly>
+    </PropertyGroup>
 
 </Project>

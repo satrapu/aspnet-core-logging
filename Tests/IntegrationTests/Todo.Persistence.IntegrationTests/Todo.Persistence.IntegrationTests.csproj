@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
@@ -12,7 +12,7 @@
     <ItemGroup>
         <ProjectReference Include="..\..\..\Sources\Todo.Persistence\Todo.Persistence.csproj" />
         <!--
-        The referene to Todo.WebApi.csproj is needed in order to have access to appsettings.json and
+        The reference to Todo.WebApi.csproj is needed in order to have access to appsettings.json and
         appsettings.IntegrationTests.json configuration files.
         -->
         <ProjectReference Include="..\..\..\Sources\Todo.WebApi\Todo.WebApi.csproj" />
@@ -54,5 +54,11 @@
     <ItemGroup>
         <None Remove="coverage.opencover.xml" />
     </ItemGroup>
+
+    <PropertyGroup Label="FineCodeCoverage">
+        <Enabled>True</Enabled>
+        <Include>[*]*</Include>
+        <IncludeTestAssembly>False</IncludeTestAssembly>
+    </PropertyGroup>
 
 </Project>

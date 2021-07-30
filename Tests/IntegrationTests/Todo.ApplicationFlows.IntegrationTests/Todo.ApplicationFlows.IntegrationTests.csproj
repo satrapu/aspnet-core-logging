@@ -12,12 +12,11 @@
     <ItemGroup>
         <ProjectReference Include="..\..\..\Sources\Todo.ApplicationFlows\Todo.ApplicationFlows.csproj" />
         <!--
-        The referene to Todo.WebApi.csproj is needed in order to have access to appsettings.json and
+        The reference to Todo.WebApi.csproj is needed in order to have access to appsettings.json and
         appsettings.IntegrationTests.json configuration files.
         -->
         <ProjectReference Include="..\..\..\Sources\Todo.WebApi\Todo.WebApi.csproj" />
         <ProjectReference Include="..\..\Infrastructure\Todo.WebApi.TestInfrastructure\Todo.WebApi.TestInfrastructure.csproj" />
-        <ProjectReference Include="..\Todo.WebApi.IntegrationTests\Todo.WebApi.IntegrationTests.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -56,5 +55,14 @@
     <ItemGroup>
         <None Remove="coverage.opencover.xml" />
     </ItemGroup>
+
+    <PropertyGroup Label="FineCodeCoverage">
+        <Enabled>True</Enabled>
+        <Exclude>
+            [Todo.WebApi.TestInfrastructure]*
+        </Exclude>
+        <Include>[*]*</Include>
+        <IncludeTestAssembly>False</IncludeTestAssembly>
+    </PropertyGroup>
 
 </Project>

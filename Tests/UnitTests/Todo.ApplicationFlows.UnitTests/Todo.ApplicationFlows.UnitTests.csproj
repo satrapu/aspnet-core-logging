@@ -47,4 +47,10 @@
         <None Remove="coverage.opencover.xml" />
     </ItemGroup>
 
+    <PropertyGroup Label="FineCodeCoverage">
+        <Enabled>True</Enabled>
+        <Include>[*]*</Include>
+        <IncludeTestAssembly>False</IncludeTestAssembly>
+    </PropertyGroup>
+
 </Project>

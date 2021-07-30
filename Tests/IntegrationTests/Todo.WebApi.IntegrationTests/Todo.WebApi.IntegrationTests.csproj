@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
@@ -49,5 +49,14 @@
     <ItemGroup>
         <None Remove="coverage.opencover.xml" />
     </ItemGroup>
+
+    <PropertyGroup Label="FineCodeCoverage">
+        <Enabled>True</Enabled>
+        <Exclude>
+            [Todo.WebApi.TestInfrastructure]*
+        </Exclude>
+        <Include>[*]*</Include>
+        <IncludeTestAssembly>False</IncludeTestAssembly>
+    </PropertyGroup>
 
 </Project>
