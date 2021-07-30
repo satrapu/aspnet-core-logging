@@ -15,7 +15,7 @@
         <LangVersion>8.0</LangVersion>
 
         <!--
-            Fix issue: "error NU1403: Package content hash validation failed for ..." occuring when restoring NuGet
+            Fix issue: "error NU1403: Package content hash validation failed for ..." occurring when restoring NuGet
             packages when using lock files.
             See more about the fix here: https://github.com/NuGet/Home/issues/7921#issuecomment-478152479.
         -->
@@ -23,5 +23,5 @@
         <RestoreLockedMode>true</RestoreLockedMode>
         <NoWarn>NU1603</NoWarn>
         <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
-    </PropertyGroup>
+    </PropertyGroup>    
 </Project>
