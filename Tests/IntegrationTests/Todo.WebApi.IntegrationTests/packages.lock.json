@@ -4,9 +4,9 @@
     ".NETCoreApp,Version=v5.0": {
       "coverlet.msbuild": {
         "type": "Direct",
-        "requested": "[3.0.3, )",
-        "resolved": "3.0.3",
-        "contentHash": "fzxcn4+TZEfNEPP96mzmGWnKARCVKkEdBfhor8oTVhQWtxwZz9NuxuJxK7A2j7X20Rr8BSIK8qGclIJgTW7lsg=="
+        "requested": "[3.1.0, )",
+        "resolved": "3.1.0",
+        "contentHash": "xOv5HZagq0I6uF4vt8NVVpwcA2W/uGmNcbLStao2eMk98RQH5NFPQuouh2nWWPSZrNIhGG/iYbBn2pO4s5i+ig=="
       },
       "FluentAssertions": {
         "type": "Direct",
@@ -88,67 +88,67 @@
       },
       "Microsoft.ApplicationInsights": {
         "type": "Transitive",
-        "resolved": "2.17.0",
-        "contentHash": "moAOrjhwiCWdg8I4fXPEd+bnnyCSRxo6wmYQ0HuNrWJUctzZEiyVTbJ8QTS6+dBOFTxpI6x+OY5wHPHrgWOk1Q==",
+        "resolved": "2.18.0",
+        "contentHash": "milJB3VOCoC4EWmpE/Co9cOJ7SV6Ji6VqV4Rf5UlqL9QCg+rAX1y+3Y+j1Gu/j4IExYiPq7SEKqkP2BFnEu6Vw==",
         "dependencies": {
           "System.Diagnostics.DiagnosticSource": "5.0.0"
         }
       },
       "Microsoft.ApplicationInsights.AspNetCore": {
         "type": "Transitive",
-        "resolved": "2.17.0",
-        "contentHash": "c7qNSAD0plBaU4sJfAat6so+hJA0hGh/Ub8Z/A3KqYdMIpuRiQRmTmS/TvVSCHh6h6+2JyjLhY/NN8txNZvVPA==",
+        "resolved": "2.18.0",
+        "contentHash": "QTKpEu2cJzAE6wgy36X+smLqqWdDE1TqK5PIKQ8fO20hgqydEbqjOpLy+OB2+f71YmDUeeUkFEVjIlMEErX0/g==",
         "dependencies": {
-          "Microsoft.ApplicationInsights": "2.17.0",
-          "Microsoft.ApplicationInsights.DependencyCollector": "2.17.0",
-          "Microsoft.ApplicationInsights.EventCounterCollector": "2.17.0",
-          "Microsoft.ApplicationInsights.PerfCounterCollector": "2.17.0",
-          "Microsoft.ApplicationInsights.WindowsServer": "2.17.0",
-          "Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel": "2.17.0",
+          "Microsoft.ApplicationInsights": "2.18.0",
+          "Microsoft.ApplicationInsights.DependencyCollector": "2.18.0",
+          "Microsoft.ApplicationInsights.EventCounterCollector": "2.18.0",
+          "Microsoft.ApplicationInsights.PerfCounterCollector": "2.18.0",
+          "Microsoft.ApplicationInsights.WindowsServer": "2.18.0",
+          "Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel": "2.18.0",
           "Microsoft.AspNetCore.Hosting": "2.1.1",
+          "Microsoft.AspNetCore.Http": "2.1.22",
           "Microsoft.Extensions.Configuration.Json": "2.1.0",
-          "Microsoft.Extensions.Logging.ApplicationInsights": "2.17.0",
-          "System.Diagnostics.DiagnosticSource": "5.0.0",
-          "System.Net.NameResolution": "4.3.0"
+          "Microsoft.Extensions.Logging.ApplicationInsights": "2.18.0",
+          "System.Text.Encodings.Web": "4.5.1"
         }
       },
       "Microsoft.ApplicationInsights.DependencyCollector": {
         "type": "Transitive",
-        "resolved": "2.17.0",
-        "contentHash": "Jw1QlTBvl6nAw+kozLMbp2DVklxbx8Ck/GUQan1lOQVf9BvpudfsilKOoL93Z/QseR3NJdNyW3tpNoCi9kFJMw==",
+        "resolved": "2.18.0",
+        "contentHash": "Rj6lAcPEK46rCF1fqwhDDLCGqqLzuDcbEhlfsLVv7lBX3CFXkoPyYXUpUp6dlXeNl4UdViZLkpXHo4nLVZoGCg==",
         "dependencies": {
-          "Microsoft.ApplicationInsights": "2.17.0",
+          "Microsoft.ApplicationInsights": "2.18.0",
           "System.Diagnostics.DiagnosticSource": "5.0.0",
           "System.Diagnostics.StackTrace": "4.3.0"
         }
       },
       "Microsoft.ApplicationInsights.EventCounterCollector": {
         "type": "Transitive",
-        "resolved": "2.17.0",
-        "contentHash": "Xzx6jSJYlKq7THgS0OPkDEO91giGc7iNK9bwQl4/WShb3s2eV0beEHWDdzMLXG/x1gg9ke0xuvbof9OtVMJfRA==",
+        "resolved": "2.18.0",
+        "contentHash": "t+A160RIlJB0JnEaHFI2qeF0KdsqZLTT1dF8Wy1xzHWX3EguHkGJbQYSWy7VbIEwOzF+AcHHLwYhQastDm/MCA==",
         "dependencies": {
-          "Microsoft.ApplicationInsights": "2.17.0"
+          "Microsoft.ApplicationInsights": "2.18.0"
         }
       },
       "Microsoft.ApplicationInsights.PerfCounterCollector": {
         "type": "Transitive",
-        "resolved": "2.17.0",
-        "contentHash": "NY7d6TEOfs2E+cvGedhh/nuViRHCpRq+/xqBjeodz0GVv128YuqZBJCJnWlX03dlLM4T3ohqXHDV/kTJhsOvGA==",
+        "resolved": "2.18.0",
+        "contentHash": "2sUfSyJ16h2VPsJLbQUl1NjtY0xZBDT03O4qA16HbVsaiIu2elIXfwmfH+uJKgdY65r62QRtRrKgGmyIL/o6hA==",
         "dependencies": {
-          "Microsoft.ApplicationInsights": "2.17.0",
+          "Microsoft.ApplicationInsights": "2.18.0",
           "Microsoft.Extensions.Caching.Memory": "1.0.0",
           "System.Diagnostics.PerformanceCounter": "4.7.0"
         }
       },
       "Microsoft.ApplicationInsights.WindowsServer": {
         "type": "Transitive",
-        "resolved": "2.17.0",
-        "contentHash": "M8u0sRm0nzkOQlTup4GT1zp1E1ytFGfu82sv70eMM0KR1HHGBtC+nBa3iNQPG5ElArhUmmHqy9fyo30cur/1hg==",
+        "resolved": "2.18.0",
+        "contentHash": "RviW2xai6hHELJV9ojEZLfwB7PsTTMrZnQmaPux5d7YzDDAkcuaiyR+Tm+AQua5ydJdYF9Q05CkTknxbVO36PQ==",
         "dependencies": {
-          "Microsoft.ApplicationInsights": "2.17.0",
-          "Microsoft.ApplicationInsights.DependencyCollector": "2.17.0",
-          "Microsoft.ApplicationInsights.PerfCounterCollector": "2.17.0",
-          "Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel": "2.17.0",
+          "Microsoft.ApplicationInsights": "2.18.0",
+          "Microsoft.ApplicationInsights.DependencyCollector": "2.18.0",
+          "Microsoft.ApplicationInsights.PerfCounterCollector": "2.18.0",
+          "Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel": "2.18.0",
           "System.Diagnostics.DiagnosticSource": "5.0.0",
           "System.Runtime.Serialization.Json": "4.3.0",
           "System.Runtime.Serialization.Primitives": "4.3.0"
@@ -156,10 +156,10 @@
       },
       "Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel": {
         "type": "Transitive",
-        "resolved": "2.17.0",
-        "contentHash": "8fnoWBTWRZWrASKKepi99YQ3PRyolVqZGQiC/VV1eyFoMMBnvHeeorNu52EiWshw9DYoKDuuX1wlb+C1gB1V8A==",
+        "resolved": "2.18.0",
+        "contentHash": "OUZrvX1SpcpB5VlPRb7Q2TYR8Sb+i1N5g2tkeFeTZnbp9klWRCyZtvIzuCoz+kIrPbw7NiDbQ/SW8Pqi+WUWDQ==",
         "dependencies": {
-          "Microsoft.ApplicationInsights": "2.17.0",
+          "Microsoft.ApplicationInsights": "2.18.0",
           "System.IO.FileSystem.AccessControl": "4.7.0"
         }
       },
@@ -212,8 +212,8 @@
       },
       "Microsoft.AspNetCore.Http": {
         "type": "Transitive",
-        "resolved": "2.1.1",
-        "contentHash": "pPDcCW8spnyibK3krpxrOpaFHf5fjV6k1Hsl6gfh77N/8gRYlLU7MOQDUnjpEwdlHmtxwJKQJNxZqVQOmJGRUw==",
+        "resolved": "2.1.22",
+        "contentHash": "+Blk++1JWqghbl8+3azQmKhiNZA5wAepL9dY2I6KVmu2Ri07MAcvAVC888qUvO7yd7xgRgZOMfihezKg14O/2A==",
         "dependencies": {
           "Microsoft.AspNetCore.Http.Abstractions": "2.1.1",
           "Microsoft.AspNetCore.WebUtilities": "2.1.1",
@@ -525,11 +525,11 @@
       },
       "Microsoft.Extensions.Logging.ApplicationInsights": {
         "type": "Transitive",
-        "resolved": "2.17.0",
-        "contentHash": "no6gCIpGCdTtdrvcXoL2tU1BaiG+Z+VM73feCp1hfNIBQ0lDrblxCWS3ReLBgj/WhofUQHpl3qwMXtINaiUycg==",
+        "resolved": "2.18.0",
+        "contentHash": "1PUJtxdeOl3bTkV8gNemmJAXkoXXDmmrWpRWIE6dEod2VcfhxrbUv8wmnf/XEcgqoVWjGNI4ADZpllfcJOkg3A==",
         "dependencies": {
-          "Microsoft.ApplicationInsights": "2.17.0",
-          "Microsoft.Extensions.Logging": "2.1.0"
+          "Microsoft.ApplicationInsights": "2.18.0",
+          "Microsoft.Extensions.Logging": "2.1.1"
         }
       },
       "Microsoft.Extensions.Logging.Configuration": {
@@ -628,16 +628,16 @@
       },
       "Microsoft.IdentityModel.JsonWebTokens": {
         "type": "Transitive",
-        "resolved": "6.11.1",
-        "contentHash": "WviaeOAlwxxDXMBj9GN4dKvKXHqEPqN7LtQdwjMdNvd/NR1ry43BpqIMk4MyHBhgwBCcXlq8079CzHhGxb3Prw==",
+        "resolved": "6.12.0",
+        "contentHash": "/qmSO1U+4R5Nj6BDn5v6lKRo9prTk4W/vMR/H+Qnn6E/9FU+1uykT0Idn0HWpxB0yv7YYRCUcFMxBN5S8hUv8A==",
         "dependencies": {
-          "Microsoft.IdentityModel.Tokens": "6.11.1"
+          "Microsoft.IdentityModel.Tokens": "6.12.0"
         }
       },
       "Microsoft.IdentityModel.Logging": {
         "type": "Transitive",
-        "resolved": "6.11.1",
-        "contentHash": "8G/kXAoKVCvTJyB4Ld8me4oDV/E9uWD+Rk86JBy7nfYpzVsrxvqG5svSlwaIltQFjVD5VOHwq1o+9kMw3Q7tGg=="
+        "resolved": "6.12.0",
+        "contentHash": "WEEle1M7bbq+oY8tLN+FpUA6kRUvA1JgCKhj0C/0EZaBgs0f82hxcSMXdczuoVtBhCT5+1WR4gDlBec/d5KhrQ=="
       },
       "Microsoft.IdentityModel.Protocols": {
         "type": "Transitive",
@@ -659,11 +659,11 @@
       },
       "Microsoft.IdentityModel.Tokens": {
         "type": "Transitive",
-        "resolved": "6.11.1",
-        "contentHash": "B7vWX+WevuluZDjsf4Br2Zb7k20ps1D3RMX/J8DKsrkzJ4F3fcsLIEknI98JNYKPlN9VcqEZ1qeeEKEuwU3XcA==",
+        "resolved": "6.12.0",
+        "contentHash": "fdWwZ33IpSNRBwcQlHSuG9OpEz25xAWMbtSFygfl1l9iSV29I241+Lw3tI6mEYIhL4K6Fe0cDuqnfIQ5ymiWkw==",
         "dependencies": {
           "Microsoft.CSharp": "4.5.0",
-          "Microsoft.IdentityModel.Logging": "6.11.1",
+          "Microsoft.IdentityModel.Logging": "6.12.0",
           "System.Security.Cryptography.Cng": "4.5.0"
         }
       },
@@ -1223,11 +1223,11 @@
       },
       "System.IdentityModel.Tokens.Jwt": {
         "type": "Transitive",
-        "resolved": "6.11.1",
-        "contentHash": "xh6/P+XdsUZoTbN1MgRg1zONdHTVfH8TDFSnPwXF4p8qhKvmUdXtE6UmTDN8HLe8jveY7Bjdjr+YP7sm2l7ufA==",
+        "resolved": "6.12.0",
+        "contentHash": "ItNtskBwZu/5wLgpnl0HekeChEVqqVHLskHufdfa41zZsiziOHU4j4VvUnIqm6oywUMpbccvCU4Wp0hqNQ0H/Q==",
         "dependencies": {
-          "Microsoft.IdentityModel.JsonWebTokens": "6.11.1",
-          "Microsoft.IdentityModel.Tokens": "6.11.1"
+          "Microsoft.IdentityModel.JsonWebTokens": "6.12.0",
+          "Microsoft.IdentityModel.Tokens": "6.12.0"
         }
       },
       "System.IO": {
@@ -1313,38 +1313,6 @@
           "System.Runtime": "4.3.0",
           "System.Runtime.Extensions": "4.3.0",
           "System.Threading": "4.3.0"
-        }
-      },
-      "System.Net.NameResolution": {
-        "type": "Transitive",
-        "resolved": "4.3.0",
-        "contentHash": "AFYl08R7MrsrEjqpQWTZWBadqXyTzNDaWpMqyxhb0d6sGhV6xMDKueuBXlLL30gz+DIRY6MpdgnHWlCh5wmq9w==",
-        "dependencies": {
-          "Microsoft.NETCore.Platforms": "1.1.0",
-          "System.Collections": "4.3.0",
-          "System.Diagnostics.Tracing": "4.3.0",
-          "System.Globalization": "4.3.0",
-          "System.Net.Primitives": "4.3.0",
-          "System.Resources.ResourceManager": "4.3.0",
-          "System.Runtime": "4.3.0",
-          "System.Runtime.Extensions": "4.3.0",
-          "System.Runtime.Handles": "4.3.0",
-          "System.Runtime.InteropServices": "4.3.0",
-          "System.Security.Principal.Windows": "4.3.0",
-          "System.Threading": "4.3.0",
-          "System.Threading.Tasks": "4.3.0",
-          "runtime.native.System": "4.3.0"
-        }
-      },
-      "System.Net.Primitives": {
-        "type": "Transitive",
-        "resolved": "4.3.0",
-        "contentHash": "qOu+hDwFwoZPbzPvwut2qATe3ygjeQBDQj91xlsaqGFQUI5i4ZnZb8yyQuLGpDGivEPIt8EJkd1BVzVoP31FXA==",
-        "dependencies": {
-          "Microsoft.NETCore.Platforms": "1.1.0",
-          "Microsoft.NETCore.Targets": "1.1.0",
-          "System.Runtime": "4.3.0",
-          "System.Runtime.Handles": "4.3.0"
         }
       },
       "System.ObjectModel": {
@@ -1631,8 +1599,8 @@
       },
       "System.Text.Encodings.Web": {
         "type": "Transitive",
-        "resolved": "4.5.0",
-        "contentHash": "Xg4G4Indi4dqP1iuAiMSwpiWS54ZghzR644OtsRCm/m/lBMG8dUBhLVN7hLm8NNrNTR+iGbshCPTwrvxZPlm4g=="
+        "resolved": "4.5.1",
+        "contentHash": "8lfETN/1lu0QD+XQaDCxn6InX3KYJHCFO6Iqrm92zn9eOEeonTuyisKxW0nLZfse598LibhEItiRdPzVn8Beyg=="
       },
       "System.Text.Json": {
         "type": "Transitive",
@@ -1820,7 +1788,7 @@
       "todo.logging": {
         "type": "Project",
         "dependencies": {
-          "Microsoft.ApplicationInsights.AspNetCore": "2.17.0",
+          "Microsoft.ApplicationInsights.AspNetCore": "2.18.0",
           "Serilog.AspNetCore": "4.1.0",
           "Serilog.Enrichers.Thread": "3.1.0",
           "Serilog.Sinks.ApplicationInsights": "3.1.0",
@@ -1848,8 +1816,8 @@
       "todo.services": {
         "type": "Project",
         "dependencies": {
-          "Microsoft.IdentityModel.Tokens": "6.11.1",
-          "System.IdentityModel.Tokens.Jwt": "6.11.1",
+          "Microsoft.IdentityModel.Tokens": "6.12.0",
+          "System.IdentityModel.Tokens.Jwt": "6.12.0",
           "Todo.Persistence": "1.0.0"
         }
       },

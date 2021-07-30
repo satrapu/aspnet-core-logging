@@ -6,10 +6,10 @@
     <ItemGroup>
         <PackageReference Update="Autofac" Version="6.2.0"/>
         <PackageReference Update="Autofac.Extensions.DependencyInjection" Version="7.1.0"/>
-        <PackageReference Update="coverlet.msbuild" Version="3.0.3"/>
+        <PackageReference Update="coverlet.msbuild" Version="3.1.0"/>
         <PackageReference Update="EntityFrameworkCoreMock.Moq" Version="2.2.0"/>
         <PackageReference Update="FluentAssertions" Version="5.10.3"/>
-        <PackageReference Update="Microsoft.ApplicationInsights.AspNetCore" Version="2.17.0"/>
+        <PackageReference Update="Microsoft.ApplicationInsights.AspNetCore" Version="2.18.0"/>
         <PackageReference Update="Microsoft.AspNet.WebApi.Client" Version="5.2.7"/>
         <PackageReference Update="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.8"/>
         <PackageReference Update="Microsoft.AspNetCore.Mvc.Testing" Version="5.0.8"/>
@@ -26,7 +26,7 @@
         <PackageReference Update="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0"/>
         <PackageReference Update="Microsoft.Extensions.Options" Version="5.0.0"/>
         <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="5.0.0"/>
-        <PackageReference Update="Microsoft.IdentityModel.Tokens" Version="6.11.1"/>
+        <PackageReference Update="Microsoft.IdentityModel.Tokens" Version="6.12.0"/>
         <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.10.0"/>
         <PackageReference Update="MiniProfiler.AspNetCore.Mvc" Version="4.2.22"/>
         <PackageReference Update="MiniProfiler.EntityFrameworkCore" Version="4.2.22"/>
@@ -41,6 +41,6 @@
         <PackageReference Update="Serilog.Sinks.ApplicationInsights" Version="3.1.0"/>
         <PackageReference Update="Serilog.Sinks.Seq" Version="5.0.1"/>
         <PackageReference Update="SonarAnalyzer.CSharp" Version="8.26.0.34506"/>
-        <PackageReference Update="System.IdentityModel.Tokens.Jwt" Version="6.11.1"/>
+        <PackageReference Update="System.IdentityModel.Tokens.Jwt" Version="6.12.0"/>
     </ItemGroup>
 </Project>
