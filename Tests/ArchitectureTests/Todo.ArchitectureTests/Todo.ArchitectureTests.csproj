@@ -48,9 +48,7 @@
     </ItemGroup>
 
     <PropertyGroup Label="FineCodeCoverage">
-        <Enabled>True</Enabled>
-        <Include>[*]*</Include>
-        <IncludeTestAssembly>False</IncludeTestAssembly>
+        <Enabled>False</Enabled>
     </PropertyGroup>
 
 </Project>
