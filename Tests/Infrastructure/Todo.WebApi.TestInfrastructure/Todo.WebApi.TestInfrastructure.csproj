@@ -7,6 +7,7 @@
         <IsTestProject>false</IsTestProject>
         <SonarQubeTestProject>false</SonarQubeTestProject>
         <RootNamespace>Todo.WebApi.TestInfrastructure</RootNamespace>
+        <CodeAnalysisRuleSet>..\..\..\.sonarlint\aspnet-core-loggingcsharp.ruleset</CodeAnalysisRuleSet>
         <!--
         Instruct Visual Studio to stop creating launchSettings.json file.
         See more here: https://andrewlock.net/how-to-stop-visual-studio-from-creating-launchsettings-json/.

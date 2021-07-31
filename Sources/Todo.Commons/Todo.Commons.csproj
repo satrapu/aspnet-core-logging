@@ -3,9 +3,10 @@
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
         <IsTestProject>false</IsTestProject>
+        <CodeAnalysisRuleSet>..\..\.sonarlint\aspnet-core-loggingcsharp.ruleset</CodeAnalysisRuleSet>
     </PropertyGroup>
-	
-	<ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" />
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
         <PackageReference Include="SonarAnalyzer.CSharp">

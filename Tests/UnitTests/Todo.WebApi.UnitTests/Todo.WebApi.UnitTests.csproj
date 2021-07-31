@@ -7,6 +7,7 @@
         <IsTestProject>true</IsTestProject>
         <SonarQubeTestProject>true</SonarQubeTestProject>
         <RootNamespace>Todo.WebApi</RootNamespace>
+        <CodeAnalysisRuleSet>..\..\..\.sonarlint\aspnet-core-loggingcsharp.ruleset</CodeAnalysisRuleSet>
     </PropertyGroup>
 
     <ItemGroup>
@@ -31,6 +32,10 @@
     </ItemGroup>
 
     <ItemGroup>
+        <AdditionalFiles Include="..\..\..\.sonarlint\aspnet-core-logging\CSharp\SonarLint.xml" Link="SonarLint.xml" />
+    </ItemGroup>
+
+    <ItemGroup>
         <Compile Remove="TestResults\**" />
         <EmbeddedResource Remove="TestResults\**" />
         <None Remove="TestResults\**" />
@@ -39,7 +44,7 @@
     <ItemGroup>
         <None Remove="coverage.opencover.xml" />
     </ItemGroup>
-
+    
     <PropertyGroup Label="FineCodeCoverage">
         <Enabled>true</Enabled>
         <Include>[*]*</Include>

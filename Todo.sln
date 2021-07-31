@@ -65,9 +65,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Todo.ArchitectureTests", "Tests\ArchitectureTests\Todo.ArchitectureTests\Todo.ArchitectureTests.csproj", "{D9CB10FA-DBFB-4A35-8C20-E0CAB538BAC6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "db4it", "db4it", "{851D8B4A-A6C9-469E-8633-E6679738DA72}"
-ProjectSection(SolutionItems) = preProject
-	Build\db4it\docker-compose.yml = Build\db4it\docker-compose.yml
-EndProjectSection
+	ProjectSection(SolutionItems) = preProject
+		Build\db4it\docker-compose.yml = Build\db4it\docker-compose.yml
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CodeStyle", "CodeStyle", "{3FCA9560-CE93-4B1F-9DE3-21461427E995}"
 	ProjectSection(SolutionItems) = preProject
@@ -88,15 +88,22 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Run", "Run", "{2760AF02-37D
 		docker-compose.yml = docker-compose.yml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.Commons", "Sources\Todo.Commons\Todo.Commons.csproj", "{6935CABF-0DBD-4315-AB8B-DE92A4D81B00}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Todo.Commons", "Sources\Todo.Commons\Todo.Commons.csproj", "{6935CABF-0DBD-4315-AB8B-DE92A4D81B00}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.Logging", "Sources\Todo.Logging\Todo.Logging.csproj", "{06A85419-4798-4043-90FA-062F34345AE5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Todo.Logging", "Sources\Todo.Logging\Todo.Logging.csproj", "{06A85419-4798-4043-90FA-062F34345AE5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.DependencyInjection", "Sources\Todo.DependencyInjection\Todo.DependencyInjection.csproj", "{22053712-0B51-48C7-83FE-581888FA7493}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Todo.DependencyInjection", "Sources\Todo.DependencyInjection\Todo.DependencyInjection.csproj", "{22053712-0B51-48C7-83FE-581888FA7493}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.Profiling", "Sources\Todo.Profiling\Todo.Profiling.csproj", "{1405472E-2B2D-4640-B111-0B2F0BB06DF8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Todo.Profiling", "Sources\Todo.Profiling\Todo.Profiling.csproj", "{1405472E-2B2D-4640-B111-0B2F0BB06DF8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.Logging.UnitTests", "Tests\UnitTests\Todo.Logging.UnitTests\Todo.Logging.UnitTests.csproj", "{B197FF86-D267-484B-98E2-08577EFBF4D9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Todo.Logging.UnitTests", "Tests\UnitTests\Todo.Logging.UnitTests\Todo.Logging.UnitTests.csproj", "{B197FF86-D267-484B-98E2-08577EFBF4D9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "aspnet-core-logging", "aspnet-core-logging", "{EA22758E-FC4F-45E3-B278-6E9AC413634F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CSharp", "CSharp", "{B7EE20EF-C064-4C84-95A1-9A53D8FAC213}"
+	ProjectSection(SolutionItems) = preProject
+		.sonarlint\aspnet-core-logging\CSharp\SonarLint.xml = .sonarlint\aspnet-core-logging\CSharp\SonarLint.xml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -200,6 +207,8 @@ Global
 		{22053712-0B51-48C7-83FE-581888FA7493} = {ED7A5363-C21A-4D47-A2A5-67DEB1E0DDE3}
 		{1405472E-2B2D-4640-B111-0B2F0BB06DF8} = {ED7A5363-C21A-4D47-A2A5-67DEB1E0DDE3}
 		{B197FF86-D267-484B-98E2-08577EFBF4D9} = {D084DD17-3480-4A70-8296-92FB55BAD433}
+		{EA22758E-FC4F-45E3-B278-6E9AC413634F} = {9F40326A-D20A-40DE-A0D9-6D06EB4C71C5}
+		{B7EE20EF-C064-4C84-95A1-9A53D8FAC213} = {EA22758E-FC4F-45E3-B278-6E9AC413634F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {74318BEF-DB50-4852-A16D-E2FB8671BE7F}
