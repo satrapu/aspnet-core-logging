@@ -229,7 +229,7 @@ namespace Todo.WebApi
             services.Configure<ExceptionHandlingOptions>(Configuration.GetSection("ExceptionHandling"));
         }
 
-        private void OnApplicationStarted(IApplicationStartedEventNotifier applicationStartedEventNotifier,
+        private static void OnApplicationStarted(IApplicationStartedEventNotifier applicationStartedEventNotifier,
             ILogger logger)
         {
             applicationStartedEventNotifier.Notify();
@@ -237,12 +237,12 @@ namespace Todo.WebApi
             logger.LogInformation("{ApplicationName} application has started", ApplicationName);
         }
 
-        private void OnApplicationStopping(ILogger logger)
+        private static void OnApplicationStopping(ILogger logger)
         {
             logger.LogInformation("{ApplicationName} application is stopping ...", ApplicationName);
         }
 
-        private void OnApplicationStopped(ILogger logger)
+        private static void OnApplicationStopped(ILogger logger)
         {
             logger.LogInformation("{ApplicationName} application has stopped", ApplicationName);
         }
