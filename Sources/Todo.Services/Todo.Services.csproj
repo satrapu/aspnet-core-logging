@@ -18,14 +18,6 @@
         <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
     </ItemGroup>
 
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-        <CodeAnalysisRuleSet>Todo.Services.ruleset</CodeAnalysisRuleSet>
-    </PropertyGroup>
-
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-        <CodeAnalysisRuleSet>Todo.Services.ruleset</CodeAnalysisRuleSet>
-    </PropertyGroup>
-
     <ItemGroup>
         <AdditionalFiles Include="..\..\.sonarlint\aspnet-core-logging\CSharp\SonarLint.xml" Link="SonarLint.xml" />
     </ItemGroup>
