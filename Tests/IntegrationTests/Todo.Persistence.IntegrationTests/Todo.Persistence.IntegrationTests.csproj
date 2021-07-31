@@ -5,8 +5,8 @@
         <OutputType>Library</OutputType>
         <IsPackable>false</IsPackable>
         <IsTestProject>true</IsTestProject>
+        <SonarQubeTestProject>true</SonarQubeTestProject>
         <RootNamespace>Todo.Persistence</RootNamespace>
-        <SonarQubeTestProject>True</SonarQubeTestProject>
     </PropertyGroup>
 
     <ItemGroup>
@@ -56,9 +56,9 @@
     </ItemGroup>
 
     <PropertyGroup Label="FineCodeCoverage">
-        <Enabled>True</Enabled>
+        <Enabled>true</Enabled>
         <Include>[*]*</Include>
-        <IncludeTestAssembly>False</IncludeTestAssembly>
+        <IncludeTestAssembly>false</IncludeTestAssembly>
     </PropertyGroup>
 
 </Project>

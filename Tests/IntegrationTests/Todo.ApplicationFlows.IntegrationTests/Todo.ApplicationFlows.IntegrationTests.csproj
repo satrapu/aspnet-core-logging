@@ -5,8 +5,8 @@
         <OutputType>Library</OutputType>
         <IsPackable>false</IsPackable>
         <IsTestProject>true</IsTestProject>
+        <SonarQubeTestProject>true</SonarQubeTestProject>
         <RootNamespace>Todo.ApplicationFlows</RootNamespace>
-        <SonarQubeTestProject>True</SonarQubeTestProject>
     </PropertyGroup>
 
     <ItemGroup>
@@ -57,12 +57,12 @@
     </ItemGroup>
 
     <PropertyGroup Label="FineCodeCoverage">
-        <Enabled>True</Enabled>
+        <Enabled>true</Enabled>
         <Exclude>
             [Todo.WebApi.TestInfrastructure]*
         </Exclude>
         <Include>[*]*</Include>
-        <IncludeTestAssembly>False</IncludeTestAssembly>
+        <IncludeTestAssembly>false</IncludeTestAssembly>
     </PropertyGroup>
 
 </Project>

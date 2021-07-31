@@ -5,6 +5,7 @@
         <OutputType>Library</OutputType>
         <IsPackable>false</IsPackable>
         <IsTestProject>true</IsTestProject>
+        <SonarQubeTestProject>true</SonarQubeTestProject>
         <RootNamespace>Todo.Services</RootNamespace>
     </PropertyGroup>
 
@@ -50,9 +51,9 @@
     </ItemGroup>
 
     <PropertyGroup Label="FineCodeCoverage">
-        <Enabled>True</Enabled>
+        <Enabled>true</Enabled>
         <Include>[*]*</Include>
-        <IncludeTestAssembly>False</IncludeTestAssembly>
+        <IncludeTestAssembly>false</IncludeTestAssembly>
     </PropertyGroup>
 
 </Project>

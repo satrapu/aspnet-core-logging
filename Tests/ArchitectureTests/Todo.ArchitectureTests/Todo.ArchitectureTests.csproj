@@ -5,8 +5,8 @@
         <OutputType>Library</OutputType>
         <IsPackable>false</IsPackable>
         <IsTestProject>true</IsTestProject>
+        <SonarQubeTestProject>true</SonarQubeTestProject>
         <RootNamespace>Todo</RootNamespace>
-        <SonarQubeTestProject>True</SonarQubeTestProject>
     </PropertyGroup>
 
     <ItemGroup>
@@ -48,7 +48,7 @@
     </ItemGroup>
 
     <PropertyGroup Label="FineCodeCoverage">
-        <Enabled>False</Enabled>
+        <Enabled>false</Enabled>
     </PropertyGroup>
 
 </Project>
