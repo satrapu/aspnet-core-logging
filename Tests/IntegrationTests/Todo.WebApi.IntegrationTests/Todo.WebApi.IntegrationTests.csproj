@@ -5,9 +5,13 @@
         <OutputType>Library</OutputType>
         <IsPackable>false</IsPackable>
         <IsTestProject>true</IsTestProject>
+        <SonarQubeTestProject>true</SonarQubeTestProject>
         <RootNamespace>Todo.WebApi</RootNamespace>
-        <AspNetCoreHostingModel>InProcess</AspNetCoreHostingModel>
-        <SonarQubeTestProject>True</SonarQubeTestProject>
+        <!--
+        Instruct Visual Studio to stop creating launchSettings.json file.
+        See more here: https://andrewlock.net/how-to-stop-visual-studio-from-creating-launchsettings-json/.
+        -->
+        <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
     </PropertyGroup>
 
     <ItemGroup>
@@ -51,12 +55,12 @@
     </ItemGroup>
 
     <PropertyGroup Label="FineCodeCoverage">
-        <Enabled>True</Enabled>
+        <Enabled>true</Enabled>
         <Exclude>
             [Todo.WebApi.TestInfrastructure]*
         </Exclude>
         <Include>[*]*</Include>
-        <IncludeTestAssembly>False</IncludeTestAssembly>
+        <IncludeTestAssembly>false</IncludeTestAssembly>
     </PropertyGroup>
 
 </Project>

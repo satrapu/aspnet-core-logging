@@ -5,8 +5,13 @@
         <OutputType>Library</OutputType>
         <IsPackable>false</IsPackable>
         <IsTestProject>false</IsTestProject>
+        <SonarQubeTestProject>false</SonarQubeTestProject>
         <RootNamespace>Todo.WebApi.TestInfrastructure</RootNamespace>
-        <SonarQubeTestProject>False</SonarQubeTestProject>
+        <!--
+        Instruct Visual Studio to stop creating launchSettings.json file.
+        See more here: https://andrewlock.net/how-to-stop-visual-studio-from-creating-launchsettings-json/.
+        -->
+        <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
     </PropertyGroup>
 
     <ItemGroup>
@@ -34,7 +39,7 @@
     </ItemGroup>
 
     <PropertyGroup Label="FineCodeCoverage">
-        <Enabled>False</Enabled>
+        <Enabled>false</Enabled>
     </PropertyGroup>
 
 </Project>
