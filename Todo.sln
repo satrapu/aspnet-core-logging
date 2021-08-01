@@ -25,6 +25,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{280A9085
 	ProjectSection(SolutionItems) = preProject
 		Tests\.artifactignore = Tests\.artifactignore
 		Tests\Directory.Build.props = Tests\Directory.Build.props
+		Tests\Directory.Build.targets = Tests\Directory.Build.targets
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{D084DD17-3480-4A70-8296-92FB55BAD433}"
@@ -65,6 +66,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Todo.WebApi.TestInfrastruct
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{E773243B-5DCB-46A8-9012-1AD0084F0149}"
 	ProjectSection(SolutionItems) = preProject
+		Tests\Infrastructure\Directory.Build.props = Tests\Infrastructure\Directory.Build.props
 		Tests\Infrastructure\Directory.Build.targets = Tests\Infrastructure\Directory.Build.targets
 	EndProjectSection
 EndProject
