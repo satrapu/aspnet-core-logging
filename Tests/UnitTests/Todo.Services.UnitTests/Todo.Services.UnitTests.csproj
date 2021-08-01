@@ -3,11 +3,7 @@
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
         <OutputType>Library</OutputType>
-        <IsPackable>false</IsPackable>
-        <IsTestProject>true</IsTestProject>
-        <SonarQubeTestProject>true</SonarQubeTestProject>
         <RootNamespace>Todo.Services</RootNamespace>
-        <CodeAnalysisRuleSet>..\..\..\.sonarlint\aspnet-core-loggingcsharp.ruleset</CodeAnalysisRuleSet>
     </PropertyGroup>
 
     <ItemGroup>
@@ -15,10 +11,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="coverlet.msbuild">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-        </PackageReference>
         <PackageReference Include="EntityFrameworkCoreMock.Moq" />
         <PackageReference Include="FluentAssertions" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
@@ -27,20 +19,6 @@
         <PackageReference Include="NUnit" />
         <PackageReference Include="NUnit3TestAdapter" />
         <PackageReference Include="NunitXml.TestLogger" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <AdditionalFiles Include="..\..\..\.sonarlint\aspnet-core-logging\CSharp\SonarLint.xml" Link="SonarLint.xml" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <Compile Remove="TestResults\**" />
-        <EmbeddedResource Remove="TestResults\**" />
-        <None Remove="TestResults\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <None Remove="coverage.opencover.xml" />
     </ItemGroup>
 
     <PropertyGroup Label="FineCodeCoverage">

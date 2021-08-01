@@ -24,6 +24,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{280A9085-F56E-43CA-A419-1E4609E378EA}"
 	ProjectSection(SolutionItems) = preProject
 		Tests\.artifactignore = Tests\.artifactignore
+		Tests\Directory.Build.props = Tests\Directory.Build.props
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{D084DD17-3480-4A70-8296-92FB55BAD433}"
@@ -63,8 +64,14 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Todo.WebApi.TestInfrastructure", "Tests\Infrastructure\Todo.WebApi.TestInfrastructure\Todo.WebApi.TestInfrastructure.csproj", "{2D55F79C-3EFA-4DBE-9900-B23400894FAA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{E773243B-5DCB-46A8-9012-1AD0084F0149}"
+	ProjectSection(SolutionItems) = preProject
+		Tests\Infrastructure\Directory.Build.targets = Tests\Infrastructure\Directory.Build.targets
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ArchitectureTests", "ArchitectureTests", "{AB306CB9-FAA1-4058-9A9C-111EA5BF04C7}"
+	ProjectSection(SolutionItems) = preProject
+		Tests\ArchitectureTests\Directory.Build.targets = Tests\ArchitectureTests\Directory.Build.targets
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Todo.ArchitectureTests", "Tests\ArchitectureTests\Todo.ArchitectureTests\Todo.ArchitectureTests.csproj", "{D9CB10FA-DBFB-4A35-8C20-E0CAB538BAC6}"
 EndProject

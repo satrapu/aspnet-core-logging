@@ -6,7 +6,16 @@
     <ItemGroup>
         <PackageReference Update="Autofac" Version="6.2.0"/>
         <PackageReference Update="Autofac.Extensions.DependencyInjection" Version="7.1.0"/>
-        <PackageReference Update="coverlet.msbuild" Version="3.1.0"/>
+
+        <!--
+        Use 'Include' XML attribute instead of 'Update' since this reference will be added to all projects affected
+        by this .targets file, more specifically, all test projects found in this solution!
+        -->
+        <PackageReference Include="coverlet.msbuild" Version="3.1.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+        </PackageReference>
+        
         <PackageReference Update="EntityFrameworkCoreMock.Moq" Version="2.2.0"/>
         <PackageReference Update="FluentAssertions" Version="5.10.3"/>
         <PackageReference Update="Microsoft.ApplicationInsights.AspNetCore" Version="2.18.0"/>

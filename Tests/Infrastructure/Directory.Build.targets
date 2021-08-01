@@ -1,0 +1,11 @@
+<Project>
+    <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.targets', '$(MSBuildThisFileDirectory)../'))" />
+
+    <!--
+    Ensure projects which are not test related will *not* use a code coverage related NuGet package.
+    -->
+    <ItemGroup>
+        <PackageReference Remove="coverlet.msbuild"/>
+    </ItemGroup>
+
+</Project>

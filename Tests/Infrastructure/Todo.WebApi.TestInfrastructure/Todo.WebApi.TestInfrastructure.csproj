@@ -1,13 +1,9 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
         <OutputType>Library</OutputType>
-        <IsPackable>false</IsPackable>
-        <IsTestProject>false</IsTestProject>
-        <SonarQubeTestProject>false</SonarQubeTestProject>
         <RootNamespace>Todo.WebApi.TestInfrastructure</RootNamespace>
-        <CodeAnalysisRuleSet>..\..\..\.sonarlint\aspnet-core-loggingcsharp.ruleset</CodeAnalysisRuleSet>
         <!--
         Instruct Visual Studio to stop creating launchSettings.json file.
         See more here: https://andrewlock.net/how-to-stop-visual-studio-from-creating-launchsettings-json/.
@@ -21,10 +17,6 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <AdditionalFiles Include="..\..\..\.sonarlint\aspnet-core-logging\CSharp\SonarLint.xml" Link="SonarLint.xml" />
     </ItemGroup>
 
     <PropertyGroup Label="FineCodeCoverage">
