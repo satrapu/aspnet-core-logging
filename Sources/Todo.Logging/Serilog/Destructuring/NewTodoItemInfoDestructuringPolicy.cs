@@ -17,22 +17,20 @@ namespace Todo.Logging.Serilog.Destructuring
         public bool TryDestructure(object value, ILogEventPropertyValueFactory propertyValueFactory,
             out LogEventPropertyValue result)
         {
-            result = null;
-            NewTodoItemInfo newTodoItemInfo = value as NewTodoItemInfo;
-
-            if (newTodoItemInfo == null)
+            if (value is NewTodoItemInfo newTodoItemInfo)
             {
-                return false;
+                result = new StructureValue(new List<LogEventProperty>
+                {
+                    new LogEventProperty(nameof(newTodoItemInfo.Name), new ScalarValue(newTodoItemInfo.Name)),
+                    new LogEventProperty(nameof(newTodoItemInfo.Owner),
+                        new ScalarValue(newTodoItemInfo.Owner.GetNameOrDefault()))
+                });
+
+                return true;
             }
 
-            result = new StructureValue(new List<LogEventProperty>
-            {
-                new LogEventProperty(nameof(newTodoItemInfo.Name), new ScalarValue(newTodoItemInfo.Name)),
-                new LogEventProperty(nameof(newTodoItemInfo.Owner),
-                    new ScalarValue(newTodoItemInfo.Owner.GetNameOrDefault()))
-            });
-
-            return true;
+            result = null;
+            return false;
         }
     }
 }

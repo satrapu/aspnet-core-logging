@@ -17,24 +17,23 @@ namespace Todo.Logging.Serilog.Destructuring
         public bool TryDestructure(object value, ILogEventPropertyValueFactory propertyValueFactory,
             out LogEventPropertyValue result)
         {
-            result = null;
-            UpdateTodoItemInfo updateTodoItemInfo = value as UpdateTodoItemInfo;
-
-            if (updateTodoItemInfo == null)
+            if (value is UpdateTodoItemInfo updateTodoItemInfo)
             {
-                return false;
+                result = new StructureValue(new List<LogEventProperty>
+                {
+                    new LogEventProperty(nameof(updateTodoItemInfo.Id), new ScalarValue(updateTodoItemInfo.Id)),
+                    new LogEventProperty(nameof(updateTodoItemInfo.Name), new ScalarValue(updateTodoItemInfo.Name)),
+                    new LogEventProperty(nameof(updateTodoItemInfo.IsComplete),
+                        new ScalarValue(updateTodoItemInfo.IsComplete)),
+                    new LogEventProperty(nameof(updateTodoItemInfo.Owner),
+                        new ScalarValue(updateTodoItemInfo.Owner.GetNameOrDefault()))
+                });
+
+                return true;
             }
 
-            result = new StructureValue(new List<LogEventProperty>
-            {
-                new LogEventProperty(nameof(updateTodoItemInfo.Id), new ScalarValue(updateTodoItemInfo.Id)),
-                new LogEventProperty(nameof(updateTodoItemInfo.Name), new ScalarValue(updateTodoItemInfo.Name)),
-                new LogEventProperty(nameof(updateTodoItemInfo.IsComplete), new ScalarValue(updateTodoItemInfo.IsComplete)),
-                new LogEventProperty(nameof(updateTodoItemInfo.Owner),
-                    new ScalarValue(updateTodoItemInfo.Owner.GetNameOrDefault()))
-            });
-
-            return true;
+            result = null;
+            return false;
         }
     }
 }
