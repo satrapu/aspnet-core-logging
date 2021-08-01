@@ -1705,8 +1705,7 @@
           "Autofac.Extensions.DependencyInjection": "7.1.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "5.0.8",
           "Todo.DependencyInjection": "1.0.0",
-          "Todo.Profiling": "1.0.0",
-          "Todo.Services": "1.0.0"
+          "Todo.Profiling": "1.0.0"
         }
       }
     }

@@ -9,7 +9,6 @@
     <ItemGroup>
         <ProjectReference Include="..\Todo.DependencyInjection\Todo.DependencyInjection.csproj" />
         <ProjectReference Include="..\Todo.Profiling\Todo.Profiling.csproj" />
-        <ProjectReference Include="..\Todo.Services\Todo.Services.csproj" />
     </ItemGroup>
 
     <ItemGroup>
