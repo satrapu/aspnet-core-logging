@@ -29,6 +29,9 @@
 
     <PropertyGroup Label="FineCodeCoverage">
         <Enabled>true</Enabled>
+        <Exclude>
+            [Todo.WebApi.TestInfrastructure]*
+        </Exclude>
         <Include>[*]*</Include>
         <IncludeTestAssembly>false</IncludeTestAssembly>
     </PropertyGroup>

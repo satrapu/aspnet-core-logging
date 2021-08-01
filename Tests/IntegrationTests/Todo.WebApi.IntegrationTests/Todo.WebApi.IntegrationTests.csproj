@@ -5,8 +5,8 @@
         <OutputType>Library</OutputType>
         <RootNamespace>Todo.WebApi</RootNamespace>
         <!--
-        Instruct Visual Studio to stop creating launchSettings.json file.
-        See more here: https://andrewlock.net/how-to-stop-visual-studio-from-creating-launchsettings-json/.
+            Instruct Visual Studio to stop creating launchSettings.json file.
+            See more here: https://andrewlock.net/how-to-stop-visual-studio-from-creating-launchsettings-json/.
         -->
         <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
     </PropertyGroup>

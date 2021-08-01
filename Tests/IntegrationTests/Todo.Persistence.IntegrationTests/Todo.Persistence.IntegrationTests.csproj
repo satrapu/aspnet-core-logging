@@ -9,8 +9,8 @@
     <ItemGroup>
         <ProjectReference Include="..\..\..\Sources\Todo.Persistence\Todo.Persistence.csproj" />
         <!--
-        The reference to Todo.WebApi.csproj is needed in order to have access to appsettings.json and
-        appsettings.IntegrationTests.json configuration files.
+            The reference to Todo.WebApi.csproj is needed in order to have access to appsettings.json and
+            appsettings.IntegrationTests.json configuration files.
         -->
         <ProjectReference Include="..\..\..\Sources\Todo.WebApi\Todo.WebApi.csproj" />
     </ItemGroup>
