@@ -1,3 +1,13 @@
 <Project>
     <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.targets', '$(MSBuildThisFileDirectory)../'))" />
+
+    <ItemGroup>
+        <Compile Remove="TestResults\**" />
+        <EmbeddedResource Remove="TestResults\**" />
+        <None Remove="TestResults\**" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Remove="coverage.opencover.xml" />
+    </ItemGroup>
 </Project>
