@@ -7,9 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\..\Sources\Todo.ApplicationFlows\Todo.ApplicationFlows.csproj" />
-        <ProjectReference Include="..\..\..\Sources\Todo.Persistence\Todo.Persistence.csproj" />
-        <ProjectReference Include="..\..\..\Sources\Todo.Services\Todo.Services.csproj" />
         <ProjectReference Include="..\..\..\Sources\Todo.WebApi\Todo.WebApi.csproj" />
     </ItemGroup>
 

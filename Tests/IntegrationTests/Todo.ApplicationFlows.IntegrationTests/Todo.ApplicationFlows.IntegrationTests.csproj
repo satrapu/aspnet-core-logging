@@ -7,7 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\..\Sources\Todo.ApplicationFlows\Todo.ApplicationFlows.csproj" />
         <!--
             The reference to Todo.WebApi.csproj is needed in order to have access to appsettings.json and
             appsettings.IntegrationTests.json configuration files.
@@ -18,9 +17,6 @@
 
     <ItemGroup>
         <PackageReference Include="FluentAssertions" />
-        <PackageReference Include="Microsoft.Extensions.Configuration" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Json" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" />
         <PackageReference Include="NUnit" />
         <PackageReference Include="NUnit3TestAdapter" />
