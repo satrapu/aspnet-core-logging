@@ -8,6 +8,7 @@
     
     <PropertyGroup>
         <IsTestProject>false</IsTestProject>
+        <SonarQubeTestProject>false</SonarQubeTestProject>
         <CodeAnalysisRuleSet>..\..\.sonarlint\aspnet-core-loggingcsharp.ruleset</CodeAnalysisRuleSet>
     </PropertyGroup>
     
