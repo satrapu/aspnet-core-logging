@@ -2,8 +2,6 @@
 
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
-        <IsTestProject>false</IsTestProject>
-        <CodeAnalysisRuleSet>..\..\.sonarlint\aspnet-core-loggingcsharp.ruleset</CodeAnalysisRuleSet>
     </PropertyGroup>
 
     <ItemGroup>
@@ -18,9 +16,5 @@
         </PackageReference>
         <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
     </ItemGroup>
-
-    <ItemGroup>
-        <AdditionalFiles Include="..\..\.sonarlint\aspnet-core-logging\CSharp\SonarLint.xml" Link="SonarLint.xml" />
-    </ItemGroup>
-
+    
 </Project>

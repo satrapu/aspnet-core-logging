@@ -16,6 +16,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{398FFE78
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sources", "Sources", "{ED7A5363-C21A-4D47-A2A5-67DEB1E0DDE3}"
+	ProjectSection(SolutionItems) = preProject
+		Sources\Directory.Build.props = Sources\Directory.Build.props
+		Sources\Directory.Build.targets = Sources\Directory.Build.targets
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{280A9085-F56E-43CA-A419-1E4609E378EA}"
 	ProjectSection(SolutionItems) = preProject
