@@ -33,7 +33,7 @@ namespace Todo.WebApi.ExceptionHandling
     {
         [Test]
         [TestCaseSource(nameof(GetExceptions))]
-        public void HandleException_WhenThereIsAnExceptionToHandle_MustSucceed(Exception exception,
+        public async Task HandleException_WhenThereIsAnExceptionToHandle_MustSucceed(Exception exception,
             bool includeDetails)
         {
             // Arrange
@@ -77,7 +77,7 @@ namespace Todo.WebApi.ExceptionHandling
                 async () => await CustomExceptionHandler.HandleException(httpContext.Object);
 
             // Assert
-            handleExceptionCall.Should().NotThrow("there is no exception to handle");
+            await handleExceptionCall.Should().NotThrowAsync("there is no exception to handle");
         }
 
         private static IEnumerable<object[]> GetExceptions()

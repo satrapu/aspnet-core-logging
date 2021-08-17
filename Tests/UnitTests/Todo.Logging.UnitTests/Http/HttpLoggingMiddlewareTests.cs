@@ -44,7 +44,7 @@ namespace Todo.Logging.Http
         /// Tests <see cref="HttpLoggingMiddleware.Invoke"/> method.
         /// </summary>
         [Test]
-        public void Invoke_WhenLoggingIsDisabled_MustSucceed()
+        public async Task Invoke_WhenLoggingIsDisabled_MustSucceed()
         {
             // Arrange
             var requestDelegateMock = new Mock<RequestDelegate>();
@@ -65,14 +65,14 @@ namespace Todo.Logging.Http
             Func<Task> invoke = async () => await loggingMiddleware.Invoke(new DefaultHttpContext());
 
             // Assert
-            invoke.Should().NotThrow("logging middleware was built using correct values");
+            await invoke.Should().NotThrowAsync("logging middleware was built using correct values");
         }
 
         /// <summary>
         /// Tests <see cref="HttpLoggingMiddleware.Invoke"/> method.
         /// </summary>
         [Test]
-        public void Invoke_WhenLoggingIsEnabled_MustSucceed()
+        public async Task Invoke_WhenLoggingIsEnabled_MustSucceed()
         {
             // Arrange
             var requestDelegateMock = new Mock<RequestDelegate>();
@@ -93,7 +93,7 @@ namespace Todo.Logging.Http
             Func<Task> invoke = async () => await loggingMiddleware.Invoke(new DefaultHttpContext());
 
             // Assert
-            invoke.Should().NotThrow("logging middleware was built using correct values");
+            await invoke.Should().NotThrowAsync("logging middleware was built using correct values");
         }
     }
 }

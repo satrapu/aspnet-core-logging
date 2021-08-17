@@ -5,7 +5,6 @@ namespace Todo.Logging.Http
     using System.Threading.Tasks;
 
     using FluentAssertions;
-    using FluentAssertions.Common;
 
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Logging;
@@ -38,8 +37,9 @@ namespace Todo.Logging.Http
 
             // Assert
             createServiceAction
-                .Should().ThrowExactly<ArgumentNullException>("must not create instance using null argument")
-                .And.ParamName.IsSameOrEqualTo(nameof(logger));
+                .Should()
+                .ThrowExactly<ArgumentNullException>("must not create instance using null argument")
+                .WithParameterName(nameof(logger));
         }
 
         /// <summary>
@@ -59,15 +59,16 @@ namespace Todo.Logging.Http
 
             // Assert
             shouldLogAction
-                .Should().ThrowExactly<ArgumentNullException>("HTTP context is null")
-                .And.ParamName.IsSameOrEqualTo(nameof(httpContext));
+                .Should()
+                .ThrowExactly<ArgumentNullException>("HTTP context is null")
+                .WithParameterName(nameof(httpContext));
         }
 
         /// <summary>
         /// Tests the <see cref="HttpLoggingService.ToLogMessageAsync(HttpRequest)"/> method.
         /// </summary>
         [Test]
-        public void ToLogMessageAsync_UsingNullHttpRequest_MustThrowException()
+        public async Task ToLogMessageAsync_UsingNullHttpRequest_MustThrowException()
         {
             // Arrange
             var loggerMock = new Mock<ILogger<HttpLoggingService>>();
@@ -79,16 +80,17 @@ namespace Todo.Logging.Http
             Func<Task> toLogMessageAsyncCall = async () => await loggingService.ToLogMessageAsync(httpRequest);
 
             // Assert
-            toLogMessageAsyncCall
-                .Should().ThrowExactly<ArgumentNullException>()
-                .And.ParamName.Should().Be(nameof(httpRequest));
+            await toLogMessageAsyncCall
+                .Should()
+                .ThrowExactlyAsync<ArgumentNullException>("HTTP context is null")
+                .WithParameterName(nameof(httpRequest));
         }
 
         /// <summary>
         /// Tests the <see cref="HttpLoggingService.ToLogMessageAsync(HttpRequest)"/> method.
         /// </summary>
         [Test]
-        public void ToLogMessageAsync_UsingNullHttpResponse_MustThrowException()
+        public async Task ToLogMessageAsync_UsingNullHttpResponse_MustThrowException()
         {
             // Arrange
             var loggerMock = new Mock<ILogger<HttpLoggingService>>();
@@ -100,9 +102,10 @@ namespace Todo.Logging.Http
             Func<Task> toLogMessageAsyncCall = async () => await loggingService.ToLogMessageAsync(httpResponse);
 
             // Assert
-            toLogMessageAsyncCall
-                .Should().ThrowExactly<ArgumentNullException>()
-                .And.ParamName.Should().Be(nameof(httpResponse));
+            await toLogMessageAsyncCall
+                .Should()
+                .ThrowExactlyAsync<ArgumentNullException>()
+                .WithParameterName(nameof(httpResponse));
         }
     }
 }

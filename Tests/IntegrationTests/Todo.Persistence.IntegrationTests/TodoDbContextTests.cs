@@ -132,8 +132,9 @@ namespace Todo.Persistence
                 };
 
                 // Assert
-                saveChangesAsyncCall.Should()
-                    .ThrowExactly<DbUpdateConcurrencyException>(
+                await saveChangesAsyncCall
+                    .Should()
+                    .ThrowExactlyAsync<DbUpdateConcurrencyException>(
                         "2 transactions were concurrently modifying the same entity");
             }
             finally

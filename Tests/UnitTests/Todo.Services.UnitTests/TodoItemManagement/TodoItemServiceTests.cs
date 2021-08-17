@@ -101,7 +101,7 @@ namespace Todo.Services.TodoItemManagement
         /// Tests <see cref="TodoItemService.GetByQueryAsync"/> method.
         /// </summary>
         [Test]
-        public void GetByQueryAsync_UsingNullAsQuery_MustThrowException()
+        public async Task GetByQueryAsync_UsingNullAsQuery_MustThrowException()
         {
             // Arrange
             var mockTodoDbContext = new DbContextMock<TodoDbContext>(DummyOptions);
@@ -115,7 +115,8 @@ namespace Todo.Services.TodoItemManagement
                 async () => await todoItemService.GetByQueryAsync(todoItemQuery);
 
             // Assert
-            getByQueryAsyncCall.Should().Throw<ArgumentNullException>("service cannot fetch data using a null query");
+            await getByQueryAsyncCall.Should().ThrowExactlyAsync<ArgumentNullException>(
+                "service cannot fetch data using a null query");
         }
 
         /// <summary>
@@ -123,7 +124,7 @@ namespace Todo.Services.TodoItemManagement
         /// </summary>
         [Test]
         [TestCaseSource(nameof(GetTodoItemQuery))]
-        public void GetByQueryAsync_UsingValidQuery_MustSucceed(TodoItemQuery todoItemQuery)
+        public async Task GetByQueryAsync_UsingValidQuery_MustSucceed(TodoItemQuery todoItemQuery)
         {
             // Arrange
             var inMemoryDatabase =
@@ -146,14 +147,14 @@ namespace Todo.Services.TodoItemManagement
                 async () => await todoItemService.GetByQueryAsync(todoItemQuery);
 
             // Assert
-            getByQueryAsyncCall.Should().NotThrow("query is valid");
+            await getByQueryAsyncCall.Should().NotThrowAsync("query is valid");
         }
 
         /// <summary>
         /// Tests <see cref="TodoItemService.AddAsync"/> method.
         /// </summary>
         [Test]
-        public void AddAsync_UsingNullAsNewTodoItemInfo_MustThrowException()
+        public async Task AddAsync_UsingNullAsNewTodoItemInfo_MustThrowException()
         {
             // Arrange
             var mockTodoDbContext = new DbContextMock<TodoDbContext>(DummyOptions);
@@ -166,14 +167,16 @@ namespace Todo.Services.TodoItemManagement
             Func<Task<long>> addAsyncCall = async () => await todoItemService.AddAsync(newTodoItemInfo);
 
             // Assert
-            addAsyncCall.Should().Throw<ArgumentNullException>("service cannot add data using a null item");
+            await addAsyncCall
+                .Should()
+                .ThrowExactlyAsync<ArgumentNullException>("service cannot add data using a null item");
         }
 
         /// <summary>
         /// Tests <see cref="TodoItemService.UpdateAsync"/> method.
         /// </summary>
         [Test]
-        public void UpdateAsync_UsingNullAsUpdateTodoItemInfo_MustThrowException()
+        public async Task UpdateAsync_UsingNullAsUpdateTodoItemInfo_MustThrowException()
         {
             // Arrange
             var mockTodoDbContext = new DbContextMock<TodoDbContext>(DummyOptions);
@@ -186,14 +189,15 @@ namespace Todo.Services.TodoItemManagement
             Func<Task> updateAsyncCall = async () => await todoItemService.UpdateAsync(updateTodoItemInfo);
 
             // Assert
-            updateAsyncCall.Should().Throw<ArgumentNullException>("service cannot update data using a null item");
+            await updateAsyncCall.Should().ThrowExactlyAsync<ArgumentNullException>(
+                "service cannot update data using a null item");
         }
 
         /// <summary>
         /// Tests <see cref="TodoItemService.UpdateAsync"/> method.
         /// </summary>
         [Test]
-        public void UpdateAsync_UsingNonexistentEntityKey_MustThrowException()
+        public async Task UpdateAsync_UsingNonexistentEntityKey_MustThrowException()
         {
             // Arrange
             var inMemoryDatabase =
@@ -221,7 +225,7 @@ namespace Todo.Services.TodoItemManagement
             Func<Task> updateAsyncCall = async () => await todoItemService.UpdateAsync(updateTodoItemInfo);
 
             // Assert
-            updateAsyncCall.Should().Throw<EntityNotFoundException>(
+            await updateAsyncCall.Should().ThrowExactlyAsync<EntityNotFoundException>(
                 "service cannot update data using nonexistent entity key");
         }
 
@@ -229,7 +233,7 @@ namespace Todo.Services.TodoItemManagement
         /// Tests <see cref="TodoItemService.DeleteAsync"/> method.
         /// </summary>
         [Test]
-        public void DeleteAsync_UsingNullAsDeleteTodoItemInfo_MustThrowException()
+        public async Task DeleteAsync_UsingNullAsDeleteTodoItemInfo_MustThrowException()
         {
             // Arrange
             var mockTodoDbContext = new DbContextMock<TodoDbContext>(DummyOptions);
@@ -242,16 +246,16 @@ namespace Todo.Services.TodoItemManagement
             Func<Task> deleteAsyncCall = async () => await todoItemService.DeleteAsync(deleteTodoItemInfo);
 
             // Assert
-            deleteAsyncCall
-                .Should().Throw<ArgumentNullException>("service cannot delete data using a null item")
-                .And.ParamName.Should().Be(nameof(deleteTodoItemInfo), "the item is null");
+            await deleteAsyncCall
+                .Should().ThrowExactlyAsync<ArgumentNullException>("service cannot delete data using a null item")
+                .WithParameterName(nameof(deleteTodoItemInfo), "the item is null");
         }
 
         /// <summary>
         /// Tests <see cref="TodoItemService.DeleteAsync"/> method.
         /// </summary>
         [Test]
-        public void DeleteAsync_UsingNonexistentEntityKey_MustThrowException()
+        public async Task DeleteAsync_UsingNonexistentEntityKey_MustThrowException()
         {
             // Arrange
             var inMemoryDatabase =
@@ -277,7 +281,7 @@ namespace Todo.Services.TodoItemManagement
             Func<Task> deleteAsyncCall = async () => await todoItemService.DeleteAsync(deleteTodoItemInfo);
 
             // Assert
-            deleteAsyncCall.Should().Throw<EntityNotFoundException>(
+           await  deleteAsyncCall.Should().ThrowExactlyAsync<EntityNotFoundException>(
                 "service cannot delete data using nonexistent entity key");
         }
 

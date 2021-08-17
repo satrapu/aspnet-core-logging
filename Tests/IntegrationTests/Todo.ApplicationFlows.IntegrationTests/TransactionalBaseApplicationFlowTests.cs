@@ -106,8 +106,9 @@ namespace Todo.ApplicationFlows
             // Assert
             using (new AssertionScope())
             {
-                executeAsyncCall.Should()
-                    .ThrowExactly<ValidationException>("application flow must fail in case of an error");
+                await executeAsyncCall
+                    .Should()
+                    .ThrowExactlyAsync<ValidationException>("application flow must fail in case of an error");
 
                 var query = new TodoItemQuery
                 {
@@ -278,8 +279,9 @@ namespace Todo.ApplicationFlows
             // Assert
             using (new AssertionScope())
             {
-                executeAsyncCall.Should()
-                    .ThrowExactly<TransactionAbortedException>(
+                await executeAsyncCall
+                    .Should()
+                    .ThrowExactlyAsync<TransactionAbortedException>(
                         "application flow must fail in case of transaction timeout");
 
                 list.Count.Should().Be(expected: 0,
