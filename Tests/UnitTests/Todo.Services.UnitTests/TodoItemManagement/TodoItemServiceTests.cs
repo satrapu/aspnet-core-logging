@@ -281,8 +281,8 @@ namespace Todo.Services.TodoItemManagement
             Func<Task> deleteAsyncCall = async () => await todoItemService.DeleteAsync(deleteTodoItemInfo);
 
             // Assert
-           await  deleteAsyncCall.Should().ThrowExactlyAsync<EntityNotFoundException>(
-                "service cannot delete data using nonexistent entity key");
+            await deleteAsyncCall.Should().ThrowExactlyAsync<EntityNotFoundException>(
+                 "service cannot delete data using nonexistent entity key");
         }
 
         private static IEnumerable<object[]> GetTodoItemQuery()
