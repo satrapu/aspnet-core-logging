@@ -16,15 +16,15 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
         
-        <PackageReference Update="EntityFrameworkCoreMock.Moq" Version="2.2.0"/>
-        <PackageReference Update="FluentAssertions" Version="5.10.3"/>
+        <PackageReference Update="EntityFrameworkCoreMock.Moq" Version="2.3.0"/>
+        <PackageReference Update="FluentAssertions" Version="6.0.0"/>
         <PackageReference Update="Microsoft.ApplicationInsights.AspNetCore" Version="2.18.0"/>
         <PackageReference Update="Microsoft.AspNet.WebApi.Client" Version="5.2.7"/>
-        <PackageReference Update="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.8"/>
-        <PackageReference Update="Microsoft.AspNetCore.Mvc.Testing" Version="5.0.8"/>
-        <PackageReference Update="Microsoft.EntityFrameworkCore" Version="5.0.8"/>
-        <PackageReference Update="Microsoft.EntityFrameworkCore.Design" Version="5.0.8"/>
-        <PackageReference Update="Microsoft.EntityFrameworkCore.InMemory" Version="5.0.8"/>
+        <PackageReference Update="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.9"/>
+        <PackageReference Update="Microsoft.AspNetCore.Mvc.Testing" Version="5.0.9"/>
+        <PackageReference Update="Microsoft.EntityFrameworkCore" Version="5.0.9"/>
+        <PackageReference Update="Microsoft.EntityFrameworkCore.Design" Version="5.0.9"/>
+        <PackageReference Update="Microsoft.EntityFrameworkCore.InMemory" Version="5.0.9"/>
         <PackageReference Update="Microsoft.Extensions.Configuration" Version="5.0.0"/>
         <PackageReference Update="Microsoft.Extensions.Configuration.Abstractions" Version="5.0.0"/>
         <PackageReference Update="Microsoft.Extensions.Configuration.Binder" Version="5.0.0"/>
@@ -35,8 +35,8 @@
         <PackageReference Update="Microsoft.Extensions.Logging.Abstractions" Version="5.0.0"/>
         <PackageReference Update="Microsoft.Extensions.Options" Version="5.0.0"/>
         <PackageReference Update="Microsoft.Extensions.Options.ConfigurationExtensions" Version="5.0.0"/>
-        <PackageReference Update="Microsoft.IdentityModel.Tokens" Version="6.12.0"/>
-        <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.10.0"/>
+        <PackageReference Update="Microsoft.IdentityModel.Tokens" Version="6.12.1"/>
+        <PackageReference Update="Microsoft.NET.Test.Sdk" Version="16.11.0"/>
         <PackageReference Update="MiniProfiler.AspNetCore.Mvc" Version="4.2.22"/>
         <PackageReference Update="MiniProfiler.EntityFrameworkCore" Version="4.2.22"/>
         <PackageReference Update="Moq" Version="4.16.1"/>
@@ -54,11 +54,11 @@
             Use 'Include' XML attribute instead of 'Update' since this reference will be added to all projects affected
             by this .targets file, more specifically, all projects found in this solution!
         -->
-        <PackageReference Include="SonarAnalyzer.CSharp" Version="8.26.0.34506">
+        <PackageReference Include="SonarAnalyzer.CSharp" Version="8.27.0.35380">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         
-        <PackageReference Update="System.IdentityModel.Tokens.Jwt" Version="6.12.0"/>
+        <PackageReference Update="System.IdentityModel.Tokens.Jwt" Version="6.12.1"/>
     </ItemGroup>
 </Project>
