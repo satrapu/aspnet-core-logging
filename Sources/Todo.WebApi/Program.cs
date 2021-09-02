@@ -17,9 +17,6 @@ namespace Todo.WebApi
     [ExcludeFromCodeCoverage]
     public static class Program
     {
-        private const string UserName = "BMA";
-        private const string Password = "SoMEE Faqe P@zzW0rd1";
-
         private static readonly Logger Logger = new LoggerConfiguration()
             .Enrich.FromLogContext()
             .WriteTo.Console()
@@ -31,8 +28,6 @@ namespace Todo.WebApi
         /// <param name="args"></param>
         public static void Main(string[] args)
         {
-            Logger.Information("Credentials -> user name: {UserName}, password: {Password}", UserName, Password);
-
             try
             {
                 CreateHostBuilder(args).Build().Run();
