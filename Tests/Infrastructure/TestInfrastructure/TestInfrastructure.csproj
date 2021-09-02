@@ -7,7 +7,12 @@
         <IsTestProject>false</IsTestProject>
         <RootNamespace>Todo.TestInfrastructure</RootNamespace>
         <SonarQubeTestProject>False</SonarQubeTestProject>
+        <CodeAnalysisRuleSet>..\..\..\.sonarlint\aspnet-core-loggingcsharp.ruleset</CodeAnalysisRuleSet>
     </PropertyGroup>
+
+    <ItemGroup>
+      <AdditionalFiles Include="..\..\..\.sonarlint\aspnet-core-logging\CSharp\SonarLint.xml" Link="SonarLint.xml" />
+    </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\..\..\Sources\Todo.WebApi\Todo.WebApi.csproj" />

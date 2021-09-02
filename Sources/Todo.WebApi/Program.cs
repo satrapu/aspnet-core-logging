@@ -17,7 +17,10 @@ namespace Todo.WebApi
     [ExcludeFromCodeCoverage]
     public static class Program
     {
-        private static readonly Logger logger = new LoggerConfiguration()
+        private const string UserName = "BMA";
+        private const string Password = "SoMEE Faqe P@zzW0rd1";
+
+        private static readonly Logger Logger = new LoggerConfiguration()
             .Enrich.FromLogContext()
             .WriteTo.Console()
             .CreateLogger();
@@ -28,24 +31,26 @@ namespace Todo.WebApi
         /// <param name="args"></param>
         public static void Main(string[] args)
         {
+            Logger.Information("Credentials -> user name: {UserName}, password: {Password}", UserName, Password);
+
             try
             {
                 CreateHostBuilder(args).Build().Run();
             }
             catch (Exception exception)
             {
-                logger.Fatal(exception, "Todo ASP.NET Core Web API failed to start");
+                Logger.Fatal(exception, "Todo ASP.NET Core Web API failed to start");
                 throw;
             }
             finally
             {
-                logger.Dispose();
+                Logger.Dispose();
             }
         }
 
         private static IHostBuilder CreateHostBuilder(string[] args)
         {
-            logger.Information("Configuring host builder needed to run Todo ASP.NET Core Web API ...");
+            Logger.Information("Configuring host builder needed to run Todo ASP.NET Core Web API ...");
             IHostBuilder hostBuilder =
                 Host.CreateDefaultBuilder(args)
                     .ConfigureAppConfiguration((hostBuilderContext, configurationBuilder) =>
@@ -74,7 +79,7 @@ namespace Todo.WebApi
                         // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/startup?view=aspnetcore-5.0.
                         localHostBuilder.UseStartup<Startup>();
                     });
-            logger.Information("Host builder needed to run Todo ASP.NET Core Web API has been configured");
+            Logger.Information("Host builder needed to run Todo ASP.NET Core Web API has been configured");
             return hostBuilder;
         }
     }
