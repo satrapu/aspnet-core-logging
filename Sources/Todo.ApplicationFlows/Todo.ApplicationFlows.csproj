@@ -9,19 +9,4 @@
         <ProjectReference Include="..\Todo.Services\Todo.Services.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <PackageReference Include="SonarAnalyzer.CSharp">
-        <PrivateAssets>all</PrivateAssets>
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      </PackageReference>
-    </ItemGroup>
-
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
-        <CodeAnalysisRuleSet>Todo.ApplicationFlows.ruleset</CodeAnalysisRuleSet>
-    </PropertyGroup>
-
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-        <CodeAnalysisRuleSet>Todo.ApplicationFlows.ruleset</CodeAnalysisRuleSet>
-    </PropertyGroup>
-
 </Project>

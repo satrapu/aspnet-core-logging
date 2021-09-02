@@ -8,12 +8,6 @@
         "resolved": "2.10.0",
         "contentHash": "+QX0hmf37a0/OZLxM3wL7V6/ADvC1XihXN4Kq/p6d8lCPfgkRdiuhbWlMaFjR9Av0dy5F0+MBeDmDdRZN/YwQA=="
       },
-      "SonarAnalyzer.CSharp": {
-        "type": "Direct",
-        "requested": "[8.23.0.32424, )",
-        "resolved": "8.23.0.32424",
-        "contentHash": "3hO675YXFq6tRt/J5kq+QQSbnr0XkD+7RSDVAqfg5E2Z9/J+f8xNrmzNex5JQCvhe1umTTosThV9A5ADU4jVXA=="
-      },
       "Humanizer.Core": {
         "type": "Transitive",
         "resolved": "2.8.26",

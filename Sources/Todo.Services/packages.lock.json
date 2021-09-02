@@ -13,12 +13,6 @@
           "System.Security.Cryptography.Cng": "4.5.0"
         }
       },
-      "SonarAnalyzer.CSharp": {
-        "type": "Direct",
-        "requested": "[8.23.0.32424, )",
-        "resolved": "8.23.0.32424",
-        "contentHash": "3hO675YXFq6tRt/J5kq+QQSbnr0XkD+7RSDVAqfg5E2Z9/J+f8xNrmzNex5JQCvhe1umTTosThV9A5ADU4jVXA=="
-      },
       "System.IdentityModel.Tokens.Jwt": {
         "type": "Direct",
         "requested": "[6.11.1, )",

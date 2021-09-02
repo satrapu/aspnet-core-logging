@@ -80,12 +80,6 @@
         "resolved": "3.0.107",
         "contentHash": "KUWil9sEnA7Rgv41FKTWedvL8UcpmBhbKI9pD9YxFUo5rv4mdEuq14Ms/i7+OU2hC1Zyg8x9Ik1mn/byQ2o9SQ=="
       },
-      "SonarAnalyzer.CSharp": {
-        "type": "Direct",
-        "requested": "[8.23.0.32424, )",
-        "resolved": "8.23.0.32424",
-        "contentHash": "3hO675YXFq6tRt/J5kq+QQSbnr0XkD+7RSDVAqfg5E2Z9/J+f8xNrmzNex5JQCvhe1umTTosThV9A5ADU4jVXA=="
-      },
       "Castle.Core": {
         "type": "Transitive",
         "resolved": "4.4.0",
