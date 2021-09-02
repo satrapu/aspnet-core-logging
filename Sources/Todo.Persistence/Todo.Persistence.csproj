@@ -6,10 +6,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <AdditionalFiles Include="..\..\.sonarlint\aspnet-core-logging\CSharp\SonarLint.xml" Link="SonarLint.xml" />
-    </ItemGroup>
-
-    <ItemGroup>
         <PackageReference Include="Microsoft.EntityFrameworkCore" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />

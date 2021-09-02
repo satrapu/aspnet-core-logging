@@ -6,10 +6,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <AdditionalFiles Include="..\..\.sonarlint\aspnet-core-logging\CSharp\SonarLint.xml" Link="SonarLint.xml" />
-    </ItemGroup>
-
-    <ItemGroup>
         <ProjectReference Include="..\Todo.ApplicationFlows\Todo.ApplicationFlows.csproj" />
         <ProjectReference Include="..\Todo.Integrations.Serilog\Todo.Integrations.Serilog.csproj" />
         <ProjectReference Include="..\Todo.Services\Todo.Services.csproj" />
