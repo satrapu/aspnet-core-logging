@@ -27,7 +27,7 @@ namespace Todo.Services.TodoItemLifecycleManagement
         private const string SortById = nameof(TodoItem.Id);
         private const string SortByLastUpdatedOn = nameof(TodoItem.LastUpdatedOn);
         private const string SortByName = nameof(TodoItem.Name);
-        private static readonly Expression<Func<TodoItem, object>> defaultKeySelector = todoItem => todoItem.Id;
+        private static readonly Expression<Func<TodoItem, object>> DefaultKeySelector = todoItem => todoItem.Id;
 
         /// <summary>
         /// Creates a new instance of the <see cref="TodoItemService"/> class.
@@ -41,11 +41,32 @@ namespace Todo.Services.TodoItemLifecycleManagement
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public Task<IList<TodoItemInfo>> GetByQueryAsync(TodoItemQuery todoItemQuery)
+        public async Task<IList<TodoItemInfo>> GetByQueryAsync(TodoItemQuery todoItemQuery)
         {
             Validator.ValidateObject(todoItemQuery, new ValidationContext(todoItemQuery), validateAllProperties: true);
 
-            return InternalGetByQueryAsync(todoItemQuery);
+            logger.LogInformation("About to fetch items using query {@TodoItemQuery} ...", todoItemQuery);
+
+            IQueryable<TodoItem> todoItems = FilterItems(todoItemQuery)
+                // Read more about query tags here:
+                // https://docs.microsoft.com/en-us/ef/core/querying/tags
+                .TagWith($"{nameof(TodoItemService)}#{nameof(GetByQueryAsync)}")
+                // Read more about no tracking queries here:
+                // https://docs.microsoft.com/en-us/ef/core/querying/tracking#no-tracking-queries
+                .AsNoTracking();
+            todoItems = SortItems(todoItems, todoItemQuery);
+            todoItems = PaginateItems(todoItems, todoItemQuery);
+            IQueryable<TodoItemInfo> todoItemInfos = ProjectItems(todoItems);
+            IList<TodoItemInfo> result = await todoItemInfos.ToListAsync();
+
+            logger.LogInformation("Fetched {TodoItemInfoListCount} todo item(s)", result.Count);
+
+            if (logger.IsEnabled(LogLevel.Debug))
+            {
+                logger.LogDebug("{@TodoItemInfoList}", result);
+            }
+
+            return result;
         }
 
         public Task<long> AddAsync(NewTodoItemInfo newTodoItemInfo)
@@ -75,32 +96,6 @@ namespace Todo.Services.TodoItemLifecycleManagement
                 validateAllProperties: true);
 
             return InternalDeleteAsync(deleteTodoItemInfo);
-        }
-
-        private async Task<IList<TodoItemInfo>> InternalGetByQueryAsync(TodoItemQuery todoItemQuery)
-        {
-            logger.LogInformation("About to fetch items using query {@TodoItemQuery} ...", todoItemQuery);
-
-            IQueryable<TodoItem> todoItems = FilterItems(todoItemQuery)
-                // Read more about query tags here:
-                // https://docs.microsoft.com/en-us/ef/core/querying/tags
-                .TagWith($"{nameof(TodoItemService)}#{nameof(GetByQueryAsync)}")
-                // Read more about no tracking queries here:
-                // https://docs.microsoft.com/en-us/ef/core/querying/tracking#no-tracking-queries
-                .AsNoTracking();
-            todoItems = SortItems(todoItems, todoItemQuery);
-            todoItems = PaginateItems(todoItems, todoItemQuery);
-            IQueryable<TodoItemInfo> todoItemInfos = ProjectItems(todoItems);
-            IList<TodoItemInfo> result = await todoItemInfos.ToListAsync();
-
-            logger.LogInformation("Fetched {TodoItemInfoListCount} todo item(s)", result.Count);
-
-            if (logger.IsEnabled(LogLevel.Debug))
-            {
-                logger.LogDebug("{@TodoItemInfoList}", result);
-            }
-
-            return result;
         }
 
         private async Task<long> InternalAddAsync(NewTodoItemInfo newTodoItemInfo)
@@ -214,7 +209,7 @@ namespace Todo.Services.TodoItemLifecycleManagement
         {
             if (string.IsNullOrWhiteSpace(sortByProperty))
             {
-                return defaultKeySelector;
+                return DefaultKeySelector;
             }
 
             if (SortByCreatedOn.Equals(sortByProperty, StringComparison.InvariantCultureIgnoreCase))
@@ -237,7 +232,7 @@ namespace Todo.Services.TodoItemLifecycleManagement
                 return todoItem => todoItem.Name;
             }
 
-            return defaultKeySelector;
+            return DefaultKeySelector;
         }
 
         private static IQueryable<TodoItemInfo> ProjectItems(IQueryable<TodoItem> todoItems)
