@@ -26,9 +26,12 @@ jobs:
     lfs: False
 
   - script: |
+      # Install Podman client on via brew
       brew install podman
-      # Creates a new Linux VM with 2 CPU, 1GB of RAM and 1GB of disk
+      podman info
+
+      # Creates a new Linux VM (having 2 CPUs, 1GB of RAM and 1GB of disk) to host containers
       # See more about 'podman machine init' command here: https://docs.podman.io/en/latest/markdown/podman-machine-init.1.html.
       podman machine init --cpus=2 --memory=1024 --disk-size=1 myvm
+      podman machine list
       podman machine start myvm
-      podman info
