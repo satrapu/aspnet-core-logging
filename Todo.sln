@@ -5,6 +5,7 @@ VisualStudioVersion = 16.0.28922.388
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{398FFE78-1C6A-4CC2-AB9F-220B7F1CDAE3}"
 	ProjectSection(SolutionItems) = preProject
+		Build\azure-pipelines-run-podman.yml = Build\azure-pipelines-run-podman.yml
 		Build\azure-pipelines.job-template.yml = Build\azure-pipelines.job-template.yml
 		Build\azure-pipelines.yml = Build\azure-pipelines.yml
 		Directory.Build.props = Directory.Build.props
@@ -65,9 +66,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Todo.ArchitectureTests", "Tests\ArchitectureTests\Todo.ArchitectureTests\Todo.ArchitectureTests.csproj", "{D9CB10FA-DBFB-4A35-8C20-E0CAB538BAC6}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "db4it", "db4it", "{851D8B4A-A6C9-469E-8633-E6679738DA72}"
-ProjectSection(SolutionItems) = preProject
-	Build\db4it\docker-compose.yml = Build\db4it\docker-compose.yml
-EndProjectSection
+	ProjectSection(SolutionItems) = preProject
+		Build\db4it\docker-compose.yml = Build\db4it\docker-compose.yml
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CodeStyle", "CodeStyle", "{3FCA9560-CE93-4B1F-9DE3-21461427E995}"
 	ProjectSection(SolutionItems) = preProject
@@ -88,7 +89,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Run", "Run", "{2760AF02-37D
 		docker-compose.yml = docker-compose.yml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.Integrations.Serilog", "Sources\Todo.Integrations.Serilog\Todo.Integrations.Serilog.csproj", "{A0877BAD-5E02-4EF1-AE43-73A174034A66}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Todo.Integrations.Serilog", "Sources\Todo.Integrations.Serilog\Todo.Integrations.Serilog.csproj", "{A0877BAD-5E02-4EF1-AE43-73A174034A66}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

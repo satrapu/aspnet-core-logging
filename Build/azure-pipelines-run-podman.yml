@@ -30,4 +30,3 @@ jobs:
     podman machine init
     podman machine start
     podman info
-
