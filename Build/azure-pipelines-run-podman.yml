@@ -1,0 +1,33 @@
+# Installs and runs Podman on macOS-based agents
+name: '$(SourceBranchName)_$(Date:yyyyMMdd).$(Rev:rrr)'
+
+resources:
+  repositories:
+  - repository: 'aspnet_core_logging'
+    type: 'github'
+    name: 'satrapu/aspnet-core-logging'
+    clean: True
+    endpoint: 'satrapu'
+
+trigger: none
+
+jobs:
+- job: run_containers_via_podman
+  displayName: Run containers via Podman
+  continueOnError: False
+  pool:
+    vmImage: 'macOS-10.15'
+  workspace:
+    clean: all
+  steps:
+  - checkout: self
+    clean: True
+    fetchDepth: 1
+    lfs: False
+
+  - script: |
+    brew install podman
+    podman machine init
+    podman machine start
+    podman info
+
