@@ -26,9 +26,6 @@ jobs:
     lfs: False
 
   - script: |
-      echo 'Checking whether nested virtualization is enabled on this host ...'
-      cat /sys/module/kvm_intel/parameters/nested
-
       echo 'Installing QEMU machine emulator and visualizer ...'
       brew install qemu
       echo 'QEMU has been installed'
@@ -45,4 +42,7 @@ jobs:
 
       echo 'Listing all available Podman machines ...'
       podman machine list
-      #podman machine start myvm
+
+      echo 'Starting Podman machine ...'
+      podman machine start myvm
+      echo 'Podman machine has been started'
