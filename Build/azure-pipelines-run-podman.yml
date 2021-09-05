@@ -26,14 +26,23 @@ jobs:
     lfs: False
 
   - script: |
-      # Install qemu machine emulator and visualizer view brew
-      brew install qemu
+      echo 'Checking whether nested virtualization is enabled on this host ...'
+      cat /sys/module/kvm_intel/parameters/nested
 
-      # Install Podman client on via brew
+      echo 'Installing QEMU machine emulator and visualizer ...'
+      brew install qemu
+      echo 'QEMU has been installed'
+
+      echo 'Installing Podman ...'
       brew install podman
+      echo 'Podman has been installed'
       
       # Creates a new Linux VM (having 2 CPUs, 1GB of RAM and 1GB of disk) to host containers
       # See more about 'podman machine init' command here: https://docs.podman.io/en/latest/markdown/podman-machine-init.1.html.
+      echo 'Creating a Podman machine to host containers ...'
       podman machine init --cpus=2 --memory=1024 --disk-size=1 myvm
+      echo 'Podman machine has been created'
+
+      echo 'Listing all available Podman machines ...'
       podman machine list
-      podman machine start myvm
+      #podman machine start myvm
