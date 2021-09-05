@@ -16,7 +16,7 @@ jobs:
   displayName: Run containers via Podman
   continueOnError: False
   pool:
-    vmImage: 'macOS-10.15'
+    vmImage: 'macOS-11'
   workspace:
     clean: all
   steps:
