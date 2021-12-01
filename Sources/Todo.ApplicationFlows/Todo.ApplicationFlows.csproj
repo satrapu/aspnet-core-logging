@@ -9,14 +9,4 @@
         <ProjectReference Include="..\Todo.Services\Todo.Services.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-        <PackageReference Include="Autofac" />
-        <PackageReference Include="Microsoft.Extensions.Options" />
-        <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="DependencyInjection\" />
-    </ItemGroup>
-
 </Project>

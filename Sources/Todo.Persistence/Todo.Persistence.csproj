@@ -9,15 +9,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Autofac" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Binder" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="DependencyInjection\" />
     </ItemGroup>
 
 </Project>
