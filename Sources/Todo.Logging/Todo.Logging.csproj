@@ -9,6 +9,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="Autofac" />
         <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
         <PackageReference Include="Serilog.AspNetCore" />
         <PackageReference Include="Serilog.Enrichers.Thread" />

@@ -21,6 +21,25 @@
           "Microsoft.IdentityModel.Protocols.OpenIdConnect": "6.7.1"
         }
       },
+      "MiniProfiler.AspNetCore.Mvc": {
+        "type": "Direct",
+        "requested": "[4.2.22, )",
+        "resolved": "4.2.22",
+        "contentHash": "nzCEaZnh77U9jw+c/qu4CtwYUpHEf+FH1ZMbYKMzIXr8CNNPlypSR6AJEAwjo3bq9TIJIpBMZIaK3inRLUCg4g==",
+        "dependencies": {
+          "MiniProfiler.AspNetCore": "4.2.22"
+        }
+      },
+      "MiniProfiler.EntityFrameworkCore": {
+        "type": "Direct",
+        "requested": "[4.2.22, )",
+        "resolved": "4.2.22",
+        "contentHash": "DV8jDHmp7DVN3B/FevAaAqLDBnPYRxjS8NDF7ZAJ3/6ZqOGjhyvIG1e44XjUUOeUtmJQoPSwqmeX692Y6m+G/A==",
+        "dependencies": {
+          "Microsoft.EntityFrameworkCore.Relational": "2.0.0",
+          "MiniProfiler.Shared": "4.2.22"
+        }
+      },
       "SonarAnalyzer.CSharp": {
         "type": "Direct",
         "requested": "[8.27.0.35380, )",
@@ -537,23 +556,6 @@
         "dependencies": {
           "MiniProfiler.Shared": "4.2.22",
           "System.Text.Json": "4.6.0"
-        }
-      },
-      "MiniProfiler.AspNetCore.Mvc": {
-        "type": "Transitive",
-        "resolved": "4.2.22",
-        "contentHash": "nzCEaZnh77U9jw+c/qu4CtwYUpHEf+FH1ZMbYKMzIXr8CNNPlypSR6AJEAwjo3bq9TIJIpBMZIaK3inRLUCg4g==",
-        "dependencies": {
-          "MiniProfiler.AspNetCore": "4.2.22"
-        }
-      },
-      "MiniProfiler.EntityFrameworkCore": {
-        "type": "Transitive",
-        "resolved": "4.2.22",
-        "contentHash": "DV8jDHmp7DVN3B/FevAaAqLDBnPYRxjS8NDF7ZAJ3/6ZqOGjhyvIG1e44XjUUOeUtmJQoPSwqmeX692Y6m+G/A==",
-        "dependencies": {
-          "Microsoft.EntityFrameworkCore.Relational": "2.0.0",
-          "MiniProfiler.Shared": "4.2.22"
         }
       },
       "MiniProfiler.Shared": {
@@ -1460,6 +1462,7 @@
       "todo.applicationflows": {
         "type": "Project",
         "dependencies": {
+          "Autofac": "6.2.0",
           "Microsoft.Extensions.Options": "5.0.0",
           "Microsoft.Extensions.Options.ConfigurationExtensions": "5.0.0",
           "Todo.Commons": "1.0.0",
@@ -1469,23 +1472,15 @@
       "todo.commons": {
         "type": "Project",
         "dependencies": {
+          "Autofac": "6.2.0",
           "Microsoft.Extensions.Hosting.Abstractions": "5.0.0",
           "Microsoft.Extensions.Logging.Abstractions": "5.0.0"
-        }
-      },
-      "todo.dependencyinjection": {
-        "type": "Project",
-        "dependencies": {
-          "Autofac": "6.2.0",
-          "Microsoft.Extensions.Configuration.Abstractions": "5.0.0",
-          "Microsoft.Extensions.Logging.Abstractions": "5.0.0",
-          "Todo.ApplicationFlows": "1.0.0",
-          "Todo.Logging": "1.0.0"
         }
       },
       "todo.logging": {
         "type": "Project",
         "dependencies": {
+          "Autofac": "6.2.0",
           "Microsoft.ApplicationInsights.AspNetCore": "2.18.0",
           "Serilog.AspNetCore": "4.1.0",
           "Serilog.Enrichers.Thread": "3.1.0",
@@ -1497,6 +1492,7 @@
       "todo.persistence": {
         "type": "Project",
         "dependencies": {
+          "Autofac": "6.2.0",
           "Microsoft.EntityFrameworkCore": "5.0.9",
           "Microsoft.EntityFrameworkCore.Design": "5.0.9",
           "Microsoft.Extensions.Configuration.Binder": "5.0.0",
@@ -1504,16 +1500,10 @@
           "Todo.Commons": "1.0.0"
         }
       },
-      "todo.profiling": {
-        "type": "Project",
-        "dependencies": {
-          "MiniProfiler.AspNetCore.Mvc": "4.2.22",
-          "MiniProfiler.EntityFrameworkCore": "4.2.22"
-        }
-      },
       "todo.services": {
         "type": "Project",
         "dependencies": {
+          "Autofac": "6.2.0",
           "Microsoft.IdentityModel.Tokens": "6.12.1",
           "System.IdentityModel.Tokens.Jwt": "6.12.1",
           "Todo.Persistence": "1.0.0"

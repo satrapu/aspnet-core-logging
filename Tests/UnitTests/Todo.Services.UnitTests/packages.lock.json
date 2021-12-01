@@ -85,6 +85,14 @@
         "resolved": "8.27.0.35380",
         "contentHash": "ua8Gf3SvaKb/pAtU3aMPA+uu29SVBFr0WwipPpFhfA31SOaW3dcngj0J1kh8KfTa65QEaNmU/IbMd5MOxWaoig=="
       },
+      "Autofac": {
+        "type": "Transitive",
+        "resolved": "6.2.0",
+        "contentHash": "BX8IM0GANE38uSr4QwXL4PgA8vWWYt2P5cZzipn/vDnf0fDbPSGKSHEroJ09rB7ANxdyf7MdEgVs+pvL8kwYCg==",
+        "dependencies": {
+          "System.Diagnostics.DiagnosticSource": "4.7.1"
+        }
+      },
       "Castle.Core": {
         "type": "Transitive",
         "resolved": "4.4.1",
@@ -931,6 +939,7 @@
       "todo.commons": {
         "type": "Project",
         "dependencies": {
+          "Autofac": "6.2.0",
           "Microsoft.Extensions.Hosting.Abstractions": "5.0.0",
           "Microsoft.Extensions.Logging.Abstractions": "5.0.0"
         }
@@ -938,6 +947,7 @@
       "todo.persistence": {
         "type": "Project",
         "dependencies": {
+          "Autofac": "6.2.0",
           "Microsoft.EntityFrameworkCore": "5.0.9",
           "Microsoft.EntityFrameworkCore.Design": "5.0.9",
           "Microsoft.Extensions.Configuration.Binder": "5.0.0",
@@ -948,6 +958,7 @@
       "todo.services": {
         "type": "Project",
         "dependencies": {
+          "Autofac": "6.2.0",
           "Microsoft.IdentityModel.Tokens": "6.12.1",
           "System.IdentityModel.Tokens.Jwt": "6.12.1",
           "Todo.Persistence": "1.0.0"

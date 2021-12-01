@@ -2,6 +2,15 @@
   "version": 1,
   "dependencies": {
     ".NETCoreApp,Version=v5.0": {
+      "Autofac": {
+        "type": "Direct",
+        "requested": "[6.2.0, )",
+        "resolved": "6.2.0",
+        "contentHash": "BX8IM0GANE38uSr4QwXL4PgA8vWWYt2P5cZzipn/vDnf0fDbPSGKSHEroJ09rB7ANxdyf7MdEgVs+pvL8kwYCg==",
+        "dependencies": {
+          "System.Diagnostics.DiagnosticSource": "4.7.1"
+        }
+      },
       "Microsoft.Extensions.Hosting.Abstractions": {
         "type": "Direct",
         "requested": "[5.0.0, )",
@@ -50,6 +59,11 @@
         "type": "Transitive",
         "resolved": "5.0.0",
         "contentHash": "cI/VWn9G1fghXrNDagX9nYaaB/nokkZn0HYAawGaELQrl8InSezfe9OnfPZLcJq3esXxygh3hkq2c3qoV3SDyQ=="
+      },
+      "System.Diagnostics.DiagnosticSource": {
+        "type": "Transitive",
+        "resolved": "4.7.1",
+        "contentHash": "j81Lovt90PDAq8kLpaJfJKV/rWdWuEk6jfV+MBkee33vzYLEUsy4gXK8laa9V2nZlLM9VM9yA/OOQxxPEJKAMw=="
       }
     }
   }

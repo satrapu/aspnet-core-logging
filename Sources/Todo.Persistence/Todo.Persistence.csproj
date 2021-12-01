@@ -9,6 +9,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="Autofac" />
         <PackageReference Include="Microsoft.EntityFrameworkCore" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Binder" />

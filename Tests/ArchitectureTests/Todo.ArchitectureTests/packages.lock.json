@@ -1548,6 +1548,7 @@
       "todo.applicationflows": {
         "type": "Project",
         "dependencies": {
+          "Autofac": "6.2.0",
           "Microsoft.Extensions.Options": "5.0.0",
           "Microsoft.Extensions.Options.ConfigurationExtensions": "5.0.0",
           "Todo.Commons": "1.0.0",
@@ -1557,23 +1558,15 @@
       "todo.commons": {
         "type": "Project",
         "dependencies": {
+          "Autofac": "6.2.0",
           "Microsoft.Extensions.Hosting.Abstractions": "5.0.0",
           "Microsoft.Extensions.Logging.Abstractions": "5.0.0"
-        }
-      },
-      "todo.dependencyinjection": {
-        "type": "Project",
-        "dependencies": {
-          "Autofac": "6.2.0",
-          "Microsoft.Extensions.Configuration.Abstractions": "5.0.0",
-          "Microsoft.Extensions.Logging.Abstractions": "5.0.0",
-          "Todo.ApplicationFlows": "1.0.0",
-          "Todo.Logging": "1.0.0"
         }
       },
       "todo.logging": {
         "type": "Project",
         "dependencies": {
+          "Autofac": "6.2.0",
           "Microsoft.ApplicationInsights.AspNetCore": "2.18.0",
           "Serilog.AspNetCore": "4.1.0",
           "Serilog.Enrichers.Thread": "3.1.0",
@@ -1585,6 +1578,7 @@
       "todo.persistence": {
         "type": "Project",
         "dependencies": {
+          "Autofac": "6.2.0",
           "Microsoft.EntityFrameworkCore": "5.0.9",
           "Microsoft.EntityFrameworkCore.Design": "5.0.9",
           "Microsoft.Extensions.Configuration.Binder": "5.0.0",
@@ -1592,16 +1586,10 @@
           "Todo.Commons": "1.0.0"
         }
       },
-      "todo.profiling": {
-        "type": "Project",
-        "dependencies": {
-          "MiniProfiler.AspNetCore.Mvc": "4.2.22",
-          "MiniProfiler.EntityFrameworkCore": "4.2.22"
-        }
-      },
       "todo.services": {
         "type": "Project",
         "dependencies": {
+          "Autofac": "6.2.0",
           "Microsoft.IdentityModel.Tokens": "6.12.1",
           "System.IdentityModel.Tokens.Jwt": "6.12.1",
           "Todo.Persistence": "1.0.0"
@@ -1612,8 +1600,10 @@
         "dependencies": {
           "Autofac.Extensions.DependencyInjection": "7.1.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "5.0.9",
-          "Todo.DependencyInjection": "1.0.0",
-          "Todo.Profiling": "1.0.0"
+          "MiniProfiler.AspNetCore.Mvc": "4.2.22",
+          "MiniProfiler.EntityFrameworkCore": "4.2.22",
+          "Todo.ApplicationFlows": "1.0.0",
+          "Todo.Logging": "1.0.0"
         }
       }
     }

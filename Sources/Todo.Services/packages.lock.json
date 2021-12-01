@@ -2,6 +2,15 @@
   "version": 1,
   "dependencies": {
     ".NETCoreApp,Version=v5.0": {
+      "Autofac": {
+        "type": "Direct",
+        "requested": "[6.2.0, )",
+        "resolved": "6.2.0",
+        "contentHash": "BX8IM0GANE38uSr4QwXL4PgA8vWWYt2P5cZzipn/vDnf0fDbPSGKSHEroJ09rB7ANxdyf7MdEgVs+pvL8kwYCg==",
+        "dependencies": {
+          "System.Diagnostics.DiagnosticSource": "4.7.1"
+        }
+      },
       "Microsoft.IdentityModel.Tokens": {
         "type": "Direct",
         "requested": "[6.12.1, )",
@@ -240,6 +249,7 @@
       "todo.commons": {
         "type": "Project",
         "dependencies": {
+          "Autofac": "6.2.0",
           "Microsoft.Extensions.Hosting.Abstractions": "5.0.0",
           "Microsoft.Extensions.Logging.Abstractions": "5.0.0"
         }
@@ -247,6 +257,7 @@
       "todo.persistence": {
         "type": "Project",
         "dependencies": {
+          "Autofac": "6.2.0",
           "Microsoft.EntityFrameworkCore": "5.0.9",
           "Microsoft.EntityFrameworkCore.Design": "5.0.9",
           "Microsoft.Extensions.Configuration.Binder": "5.0.0",

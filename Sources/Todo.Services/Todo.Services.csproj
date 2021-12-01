@@ -9,6 +9,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="Autofac" />
         <PackageReference Include="Microsoft.IdentityModel.Tokens" />
         <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
     </ItemGroup>
