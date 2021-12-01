@@ -64,9 +64,11 @@ jobs:
   # Customize the way this job checkouts the current Git branch.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=azure-devops&tabs=schema%2Cparameter-schema#checkout.
   - checkout: self
-    clean: True
+    clean: False
     fetchDepth: 1
     lfs: False
+    submodules: False
+    persistCredentials: False
 
   # Install specific .NET SDK version used for building the application.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/tool/dotnet-core-tool-installer?view=azure-devops.
@@ -195,7 +197,7 @@ jobs:
       --configuration ${{ parameters.build.configuration }}
       --test-adapter-path "."
       --logger "nunit"
-      -- NUnit.Where="cat == ArchitectureTests"
+      --filter "TestCategory=ArchitectureTests"
     name: 'run_architecture_tests'
     displayName: 'Run architecture tests'
     condition: eq(${{ parameters.runTests }}, True)
@@ -238,11 +240,11 @@ jobs:
       --configuration ${{ parameters.build.configuration }}
       --test-adapter-path "."
       --logger "nunit"
+      --filter "TestCategory=UnitTests"
       /p:CollectCoverage=True
       /p:CoverletOutputFormat=opencover
       /p:Include="[Todo.*]*"
-      /p:Exclude=\"[Todo.*.*Tests]*,[Todo.Persistence]*.Migrations.*\"
-      -- NUnit.Where="cat == UnitTests"
+      /p:Exclude=\"[Todo.*.*Tests]*,[Todo.WebApi.TestInfrastructure]*,[Todo.Persistence]*.Migrations.*\"
     name: 'run_unit_tests'
     displayName: 'Run unit tests'
     condition: |
@@ -340,11 +342,11 @@ jobs:
       --configuration ${{ parameters.build.configuration }}
       --test-adapter-path "."
       --logger "nunit"
+      --filter "TestCategory=IntegrationTests"
       /p:CollectCoverage=True
       /p:CoverletOutputFormat=opencover
       /p:Include="[Todo.*]*"
-      /p:Exclude=\"[Todo.*.*Tests]*,[Todo.Persistence]*.Migrations.*\"
-      -- NUnit.Where="cat == IntegrationTests"
+      /p:Exclude=\"[Todo.*.*Tests]*,[Todo.WebApi.TestInfrastructure]*,[Todo.Persistence]*.Migrations.*\"
     name: 'run_integration_tests'
     displayName: 'Run integration tests'
     condition: |

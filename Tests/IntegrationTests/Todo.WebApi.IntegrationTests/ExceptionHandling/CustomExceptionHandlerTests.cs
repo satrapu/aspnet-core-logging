@@ -3,23 +3,29 @@ namespace Todo.WebApi.ExceptionHandling
     using System;
     using System.Collections.Generic;
     using System.IO;
-    using System.Linq;
     using System.Net;
     using System.Net.Http;
+    using System.Reflection;
+    using System.Security.Principal;
     using System.Text.Json;
     using System.Threading.Tasks;
+
+    using ApplicationFlows.Security;
+
+    using Autofac;
 
     using FluentAssertions;
     using FluentAssertions.Execution;
 
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.TestHost;
-    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Configuration;
+
+    using Models;
 
     using NUnit.Framework;
 
-    using Services.TodoItemLifecycleManagement;
+    using Services.Security;
 
     using TestInfrastructure;
 
@@ -29,20 +35,6 @@ namespace Todo.WebApi.ExceptionHandling
     [TestFixture]
     public class CustomExceptionHandlerTests
     {
-        private WebApplicationFactoryWhichThrowsException webApplicationFactoryWhichThrowsException;
-
-        [OneTimeSetUp]
-        public void GivenAnHttpRequestIsToBePerformed()
-        {
-            webApplicationFactoryWhichThrowsException = new WebApplicationFactoryWhichThrowsException();
-        }
-
-        [OneTimeTearDown]
-        public void Cleanup()
-        {
-            webApplicationFactoryWhichThrowsException?.Dispose();
-        }
-
         /// <summary>
         /// Ensures <see cref="CustomExceptionHandler.HandleException"/> method successfully converts an API exception
         /// to an instance of the <see cref="ProblemDetails"/> class.
@@ -51,20 +43,51 @@ namespace Todo.WebApi.ExceptionHandling
         public async Task HandleException_WhenApiThrowsException_MustConvertExceptionToInstanceOfProblemDetailsClass()
         {
             // Arrange
-            using HttpClient httpClient = await webApplicationFactoryWhichThrowsException.CreateClientWithJwtAsync();
-            var httpRequestMessage = new HttpRequestMessage(HttpMethod.Get, "api/todo");
+            var generateJwtModel = new GenerateJwtModel
+            {
+                UserName = $"test-user--{Guid.NewGuid():N}",
+                Password = $"test-password--{Guid.NewGuid():N}",
+            };
+
+            using var testWebApplicationFactory =
+                new TestWebApplicationFactory(MethodBase.GetCurrentMethod()?.DeclaringType?.Name)
+                    .WithMockServices(containerBuilder =>
+                    {
+                        // Ensure a mock implementation will be injected whenever a service requires an instance of the
+                        // IGenerateJwtFlow interface.
+                        containerBuilder
+                            .RegisterType<GenerateJwtFlowWhichThrowsException>()
+                            .As<IGenerateJwtFlow>()
+                            .InstancePerLifetimeScope();
+                    })
+                    .WithWebHostBuilder(webHostBuilder =>
+                    {
+                        webHostBuilder.ConfigureAppConfiguration(configurationBuilder =>
+                        {
+                            configurationBuilder.AddInMemoryCollection(new[]
+                            {
+                                // Ensure database is not migrated, since having an up-to-date RDBMS will just complicate
+                                // this test method.
+                                new KeyValuePair<string, string>("MigrateDatabase", bool.FalseString)
+                            });
+                        });
+                    });
+
+            using HttpClient httpClient = testWebApplicationFactory.CreateClient();
 
             // Act
-            HttpResponseMessage httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
+            HttpResponseMessage httpResponseMessage = await httpClient.PostAsJsonAsync("api/jwt", generateJwtModel);
 
             // Assert
             using (new AssertionScope())
             {
+                const HttpStatusCode expectedStatusCode = HttpStatusCode.InternalServerError;
+
                 httpResponseMessage.IsSuccessStatusCode
                     .Should().BeFalse("the endpoint was supposed to throw a hard-coded exception");
 
-                httpResponseMessage.StatusCode
-                    .Should().Be(HttpStatusCode.NotFound, "the hard-coded exception was mapped to HTTP status 404");
+                httpResponseMessage.StatusCode.Should().Be(expectedStatusCode,
+                    $"the hard-coded exception was mapped to HTTP status {expectedStatusCode}");
 
                 byte[] problemDetailsAsBytes = await httpResponseMessage.Content.ReadAsByteArrayAsync();
                 await using var memoryStream = new MemoryStream(problemDetailsAsBytes);
@@ -79,68 +102,20 @@ namespace Todo.WebApi.ExceptionHandling
                 problemDetails.Extensions.Should().NotContainKey("errorData", "error data must not be present");
                 problemDetails.Extensions.Should().ContainKey("errorKey", "error key must be present");
                 problemDetails.Extensions.Should().ContainKey("errorId", "error id must be present");
+
                 Guid.TryParse(problemDetails.Extensions["errorId"].ToString(), out Guid _)
                     .Should().BeTrue("error id is a GUID");
             }
         }
 
         /// <summary>
-        /// An <see cref="TestWebApplicationFactory"/> which throws an exception whenever one particular service
-        /// is called.
+        /// An <see cref="IGenerateJwtFlow"/> implementation which throws an exception whenever its method is called.
         /// </summary>
-        private class WebApplicationFactoryWhichThrowsException : TestWebApplicationFactory
+        private class GenerateJwtFlowWhichThrowsException : IGenerateJwtFlow
         {
-            public WebApplicationFactoryWhichThrowsException() : base(nameof(CustomExceptionHandlerTests))
+            public Task<JwtInfo> ExecuteAsync(GenerateJwtInfo input, IPrincipal flowInitiator)
             {
-            }
-
-            protected override void ConfigureWebHost(IWebHostBuilder builder)
-            {
-                builder.ConfigureTestServices(services =>
-                {
-                    ServiceDescriptor serviceDescriptor = services.SingleOrDefault(localServiceDescriptor =>
-                        localServiceDescriptor.ServiceType == typeof(TodoItemService));
-
-                    if (serviceDescriptor != null)
-                    {
-                        services.Remove(serviceDescriptor);
-                    }
-
-                    services.AddScoped<ITodoItemService, TodoItemServiceWhichThrowsException>();
-                });
-
-                base.ConfigureWebHost(builder);
-            }
-        }
-
-        /// <summary>
-        /// An <see cref="ITodoItemService"/> implementation which throws an exception when any of its methods
-        /// are called.
-        /// </summary>
-        private class TodoItemServiceWhichThrowsException : ITodoItemService
-        {
-            public Task<IList<TodoItemInfo>> GetByQueryAsync(TodoItemQuery todoItemQuery)
-            {
-                var hardCodedException = new EntityNotFoundException(todoItemQuery.GetType(), null);
-                hardCodedException.Data.Add("Key1", "Value1");
-                hardCodedException.Data.Add("Key2", "Value2");
-
-                throw hardCodedException;
-            }
-
-            public Task<long> AddAsync(NewTodoItemInfo newTodoItemInfo)
-            {
-                throw new NotImplementedException();
-            }
-
-            public Task UpdateAsync(UpdateTodoItemInfo updateTodoItemInfo)
-            {
-                throw new NotImplementedException();
-            }
-
-            public Task DeleteAsync(DeleteTodoItemInfo deleteTodoItemInfo)
-            {
-                throw new NotImplementedException();
+                throw new InvalidOperationException("This method must fail for testing purposes");
             }
         }
     }

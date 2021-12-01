@@ -3,51 +3,33 @@
     <PropertyGroup>
         <TargetFramework>net5.0</TargetFramework>
         <OutputType>Library</OutputType>
-        <IsPackable>false</IsPackable>
-        <IsTestProject>true</IsTestProject>
         <RootNamespace>Todo.ApplicationFlows</RootNamespace>
-        <SonarQubeTestProject>True</SonarQubeTestProject>
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\..\Sources\Todo.ApplicationFlows\Todo.ApplicationFlows.csproj" />
         <!--
-        The referene to Todo.WebApi.csproj is needed in order to have access to appsettings.json and
-        appsettings.IntegrationTests.json configuration files.
+            The reference to Todo.WebApi.csproj is needed in order to have access to appsettings.json and
+            appsettings.IntegrationTests.json configuration files.
         -->
         <ProjectReference Include="..\..\..\Sources\Todo.WebApi\Todo.WebApi.csproj" />
-        <ProjectReference Include="..\..\Infrastructure\TestInfrastructure\TestInfrastructure.csproj" />
-        <ProjectReference Include="..\Todo.WebApi.IntegrationTests\Todo.WebApi.IntegrationTests.csproj" />
+        <ProjectReference Include="..\..\Infrastructure\Todo.WebApi.TestInfrastructure\Todo.WebApi.TestInfrastructure.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="coverlet.msbuild">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-        </PackageReference>
         <PackageReference Include="FluentAssertions" />
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="3.1.8" />
-        <PackageReference Include="Microsoft.Extensions.Configuration" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" />
-        <PackageReference Include="Microsoft.Extensions.Configuration.Json" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" />
         <PackageReference Include="NUnit" />
         <PackageReference Include="NUnit3TestAdapter" />
         <PackageReference Include="NunitXml.TestLogger" />
-        <PackageReference Include="SonarAnalyzer.CSharp">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
     </ItemGroup>
 
-    <ItemGroup>
-        <Compile Remove="TestResults\**" />
-        <EmbeddedResource Remove="TestResults\**" />
-        <None Remove="TestResults\**" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <None Remove="coverage.opencover.xml" />
-    </ItemGroup>
+    <PropertyGroup Label="FineCodeCoverage">
+        <Enabled>true</Enabled>
+        <Exclude>
+            [Todo.WebApi.TestInfrastructure]*
+        </Exclude>
+        <Include>[*]*</Include>
+        <IncludeTestAssembly>false</IncludeTestAssembly>
+    </PropertyGroup>
 
 </Project>

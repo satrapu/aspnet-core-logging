@@ -1,0 +1,17 @@
+<!--
+  Customize your build: https://docs.microsoft.com/en-us/visualstudio/msbuild/customize-your-build?view=vs-2017.
+  See more MSBuild properties here: https://docs.microsoft.com/en-us/visualstudio/msbuild/common-msbuild-project-properties?view=vs-2017.
+-->
+<Project>
+
+    <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+    
+    <!--
+        Ensure test infrastructure related projects must not be treated as test projects.
+    -->
+    <PropertyGroup>
+        <IsTestProject>false</IsTestProject>
+        <SonarQubeTestProject>false</SonarQubeTestProject>
+    </PropertyGroup>
+
+</Project>

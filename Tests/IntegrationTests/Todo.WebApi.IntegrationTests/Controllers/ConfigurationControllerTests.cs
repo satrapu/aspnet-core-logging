@@ -31,12 +31,16 @@ namespace Todo.WebApi.Controllers
                 {
                     webHostBuilder.UseEnvironment(environment);
 
-                    webHostBuilder.ConfigureAppConfiguration((webHostBuilderContext, configurationBuilder) =>
+                    webHostBuilder.ConfigureAppConfiguration((_, configurationBuilder) =>
                     {
                         configurationBuilder.AddInMemoryCollection(new[]
                         {
                             new KeyValuePair<string, string>("ConfigurationDebugViewEndpointEnabled",
-                                isDebugViewEnabled.ToString())
+                                isDebugViewEnabled.ToString()),
+
+                            // Ensure database is not migrated while running tests found in this test class, no matter
+                            // the environment specified in this method.
+                            new KeyValuePair<string, string>("MigrateDatabase", bool.FalseString)
                         });
                     });
                 });

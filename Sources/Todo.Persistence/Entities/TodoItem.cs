@@ -62,7 +62,7 @@ namespace Todo.Persistence.Entities
         /// <summary>
         /// Creates a new instance of the <see cref="TodoItem"/> class.
         /// </summary>
-        /// <param name="name">The name ot this item.</param>
+        /// <param name="name">The name of this item.</param>
         /// <param name="createdBy">The identifier of the user who's creating this item.</param>
         public TodoItem(string name, string createdBy)
         {

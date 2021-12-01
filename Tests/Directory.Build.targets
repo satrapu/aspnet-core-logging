@@ -1,0 +1,21 @@
+<Project>
+    
+    <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.targets', '$(MSBuildThisFileDirectory)../'))" />
+
+    <!--
+        Remove test results files from all test projects.
+    -->
+    <ItemGroup>
+        <Compile Remove="TestResults\**" />
+        <EmbeddedResource Remove="TestResults\**" />
+        <None Remove="TestResults\**" />
+    </ItemGroup>
+
+    <!--
+        Remove code coverage results files from all test projects.
+    -->
+    <ItemGroup>
+        <None Remove="coverage.opencover.xml" />
+    </ItemGroup>
+    
+</Project>

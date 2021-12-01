@@ -5,9 +5,8 @@ namespace Todo.ApplicationFlows.TodoItems
     using System.Threading.Tasks;
 
     using Microsoft.Extensions.Logging;
-    using Microsoft.Extensions.Options;
 
-    using Services.TodoItemLifecycleManagement;
+    using Services.TodoItemManagement;
 
     /// <summary>
     /// An <see cref="IDeleteTodoItemFlow"/> implementation.
@@ -17,7 +16,7 @@ namespace Todo.ApplicationFlows.TodoItems
         private readonly ITodoItemService todoItemService;
 
         public DeleteTodoItemFlow(ITodoItemService todoItemService,
-            IOptionsMonitor<ApplicationFlowOptions> applicationFlowOptions, ILogger<DeleteTodoItemFlow> logger) :
+            ApplicationFlowOptions applicationFlowOptions, ILogger<DeleteTodoItemFlow> logger) :
             base("TodoItem/Delete", applicationFlowOptions, logger)
         {
             this.todoItemService = todoItemService ?? throw new ArgumentNullException(nameof(todoItemService));
@@ -27,6 +26,7 @@ namespace Todo.ApplicationFlows.TodoItems
         {
             input.Owner = flowInitiator;
             await todoItemService.DeleteAsync(input);
+
             return null;
         }
     }

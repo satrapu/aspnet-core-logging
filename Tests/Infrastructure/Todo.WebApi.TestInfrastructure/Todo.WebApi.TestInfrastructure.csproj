@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <OutputType>Library</OutputType>
+        <RootNamespace>Todo.WebApi.TestInfrastructure</RootNamespace>
+        <!--
+            Instruct Visual Studio to stop creating launchSettings.json file.
+            See more here: https://andrewlock.net/how-to-stop-visual-studio-from-creating-launchsettings-json/.
+        -->
+        <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\..\..\Sources\Todo.WebApi\Todo.WebApi.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+    </ItemGroup>
+
+    <PropertyGroup Label="FineCodeCoverage">
+        <Enabled>false</Enabled>
+    </PropertyGroup>
+
+</Project>

@@ -5,9 +5,8 @@ namespace Todo.ApplicationFlows.TodoItems
     using System.Threading.Tasks;
 
     using Microsoft.Extensions.Logging;
-    using Microsoft.Extensions.Options;
 
-    using Services.TodoItemLifecycleManagement;
+    using Services.TodoItemManagement;
 
     /// <summary>
     /// An <see cref="IAddTodoItemFlow"/> implementation.
@@ -17,7 +16,7 @@ namespace Todo.ApplicationFlows.TodoItems
         private readonly ITodoItemService todoItemService;
 
         public AddTodoItemFlow(ITodoItemService todoItemService,
-            IOptionsMonitor<ApplicationFlowOptions> applicationFlowOptions,
+            ApplicationFlowOptions applicationFlowOptions,
             ILogger<AddTodoItemFlow> logger) :
             base("TodoItem/Add", applicationFlowOptions, logger)
         {
@@ -27,6 +26,7 @@ namespace Todo.ApplicationFlows.TodoItems
         protected override async Task<long> ExecuteFlowStepsAsync(NewTodoItemInfo input, IPrincipal flowInitiator)
         {
             input.Owner = flowInitiator;
+
             return await todoItemService.AddAsync(input);
         }
     }

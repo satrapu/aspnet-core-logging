@@ -6,6 +6,8 @@ namespace Todo.ApplicationFlows
     using System.Security.Principal;
     using System.Threading.Tasks;
 
+    using Commons.Constants;
+
     using Microsoft.Extensions.Logging;
 
     using Todo.Services.Security;
@@ -15,7 +17,6 @@ namespace Todo.ApplicationFlows
     /// </summary>
     public abstract class NonTransactionalBaseApplicationFlow<TInput, TOutput> : IApplicationFlow<TInput, TOutput>
     {
-        private const string ApplicationFlowName = "ApplicationFlowName";
         private readonly string flowName;
         private readonly ILogger logger;
 
@@ -47,7 +48,10 @@ namespace Todo.ApplicationFlows
         /// <returns></returns>
         public async Task<TOutput> ExecuteAsync(TInput input, IPrincipal flowInitiator)
         {
-            using (logger.BeginScope(new Dictionary<string, object> { [ApplicationFlowName] = flowName }))
+            using (logger.BeginScope(new Dictionary<string, object>
+            {
+                [Logging.ApplicationFlowName] = flowName
+            }))
             {
                 bool isSuccess = false;
                 Stopwatch stopwatch = Stopwatch.StartNew();
@@ -58,13 +62,16 @@ namespace Todo.ApplicationFlows
                     logger.LogInformation(
                         "User [{FlowInitiator}] has started executing application flow [{ApplicationFlowName}] ...",
                         flowInitiatorName, flowName);
+
                     TOutput output = await InternalExecuteAsync(input, flowInitiator);
                     isSuccess = true;
+
                     return output;
                 }
                 finally
                 {
                     stopwatch.Stop();
+
                     logger.LogInformation(
                         "User [{FlowInitiator}] has finished executing application flow [{ApplicationFlowName}] "
                         + "with the outcome: [{ApplicationFlowOutcome}]; "
@@ -85,6 +92,7 @@ namespace Todo.ApplicationFlows
         protected virtual async Task<TOutput> InternalExecuteAsync(TInput input, IPrincipal flowInitiator)
         {
             TOutput output = await ExecuteFlowStepsAsync(input, flowInitiator);
+
             return output;
         }
 

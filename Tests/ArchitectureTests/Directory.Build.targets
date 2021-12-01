@@ -1,0 +1,12 @@
+<Project>
+    <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.targets', '$(MSBuildThisFileDirectory)../'))" />
+
+    <!--
+        Since architecture test related projects do not verify method behavior, they do not need a code coverage
+        related NuGet package.
+    -->
+    <ItemGroup>
+        <PackageReference Remove="coverlet.msbuild"/>
+    </ItemGroup>
+
+</Project>

@@ -14,13 +14,12 @@ namespace Todo.ApplicationFlows
 
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
-    using Microsoft.Extensions.Options;
 
     using NUnit.Framework;
 
-    using Services.TodoItemLifecycleManagement;
+    using Services.TodoItemManagement;
 
-    using TestInfrastructure;
+    using WebApi.TestInfrastructure;
 
     /// <summary>
     /// Contains integration tests targeting <see cref="TransactionalBaseApplicationFlow{TInput,TOutput}"/> class.
@@ -64,6 +63,7 @@ namespace Todo.ApplicationFlows
 
             ITodoItemService todoItemService =
                 testWebApplicationFactory.Services.GetRequiredService<ITodoItemService>();
+
             ILoggerFactory loggerFactory = testWebApplicationFactory.Services.GetRequiredService<ILoggerFactory>();
             ILogger logger = loggerFactory.CreateLogger<ApplicationFlowServingTestingPurposes>();
             string namePrefix = $"todo-item--{Guid.NewGuid():N}";
@@ -78,21 +78,24 @@ namespace Todo.ApplicationFlows
                     Name = $"{namePrefix}--#1",
                     Owner = flowInitiator
                 });
+
                 await localTodoItemService.AddAsync(new NewTodoItemInfo
                 {
                     Name = $"{namePrefix}--#2",
                     Owner = flowInitiator
                 });
+
                 await localTodoItemService.AddAsync(new NewTodoItemInfo
                 {
                     Name = $"{namePrefix}--#3",
                     Owner = flowInitiator
                 });
+
                 return null;
             }
 
-            IOptionsMonitor<ApplicationFlowOptions> applicationFlowOptions =
-                testWebApplicationFactory.Services.GetRequiredService<IOptionsMonitor<ApplicationFlowOptions>>();
+            ApplicationFlowOptions applicationFlowOptions =
+                testWebApplicationFactory.Services.GetRequiredService<ApplicationFlowOptions>();
 
             var applicationFlow = new ApplicationFlowServingTestingPurposes(FlowExpectedToThrowExceptionAsync,
                 applicationFlowOptions, logger);
@@ -103,8 +106,9 @@ namespace Todo.ApplicationFlows
             // Assert
             using (new AssertionScope())
             {
-                executeAsyncCall.Should()
-                    .ThrowExactly<ValidationException>("application flow must fail in case of an error");
+                await executeAsyncCall
+                    .Should()
+                    .ThrowExactlyAsync<ValidationException>("application flow must fail in case of an error");
 
                 var query = new TodoItemQuery
                 {
@@ -139,6 +143,7 @@ namespace Todo.ApplicationFlows
 
             ITodoItemService todoItemService =
                 testWebApplicationFactory.Services.GetRequiredService<ITodoItemService>();
+
             ILoggerFactory loggerFactory = testWebApplicationFactory.Services.GetRequiredService<ILoggerFactory>();
             ILogger logger = loggerFactory.CreateLogger<ApplicationFlowServingTestingPurposes>();
             string namePrefix = $"todo-item--{Guid.NewGuid():N}";
@@ -154,23 +159,26 @@ namespace Todo.ApplicationFlows
                     IsComplete = false,
                     Owner = flowInitiator
                 });
+
                 await localTodoItemService.AddAsync(new NewTodoItemInfo
                 {
                     Name = $"{namePrefix}--#2",
                     IsComplete = false,
                     Owner = flowInitiator
                 });
+
                 await localTodoItemService.AddAsync(new NewTodoItemInfo
                 {
                     Name = $"{namePrefix}--#3",
                     IsComplete = false,
                     Owner = flowInitiator
                 });
+
                 return null;
             }
 
-            IOptionsMonitor<ApplicationFlowOptions> applicationFlowOptions =
-                testWebApplicationFactory.Services.GetRequiredService<IOptionsMonitor<ApplicationFlowOptions>>();
+            ApplicationFlowOptions applicationFlowOptions =
+                testWebApplicationFactory.Services.GetRequiredService<ApplicationFlowOptions>();
 
             var applicationFlow = new ApplicationFlowServingTestingPurposes(FlowExpectedToSucceedAsync,
                 applicationFlowOptions, logger);
@@ -214,6 +222,7 @@ namespace Todo.ApplicationFlows
 
             ITodoItemService todoItemService =
                 testWebApplicationFactory.Services.GetRequiredService<ITodoItemService>();
+
             ILoggerFactory loggerFactory = testWebApplicationFactory.Services.GetRequiredService<ILoggerFactory>();
             ILogger logger = loggerFactory.CreateLogger<ApplicationFlowServingTestingPurposes>();
             string namePrefix = $"todo-item--{Guid.NewGuid():N}";
@@ -250,11 +259,11 @@ namespace Todo.ApplicationFlows
                 NamePattern = $"{namePrefix}%"
             };
 
-            IOptionsMonitor<ApplicationFlowOptions> applicationFlowOptions =
-                testWebApplicationFactory.Services.GetRequiredService<IOptionsMonitor<ApplicationFlowOptions>>();
+            ApplicationFlowOptions applicationFlowOptions =
+                testWebApplicationFactory.Services.GetRequiredService<ApplicationFlowOptions>();
 
             // Ensure the application flow will use a very short timeout value for its transaction.
-            applicationFlowOptions.CurrentValue.TransactionOptions.Timeout = transactionTimeOut;
+            applicationFlowOptions.TransactionOptions.Timeout = transactionTimeOut;
 
             var applicationFlow =
                 new ApplicationFlowServingTestingPurposes(FlowExpectedToFailAsync, applicationFlowOptions, logger);
@@ -270,8 +279,9 @@ namespace Todo.ApplicationFlows
             // Assert
             using (new AssertionScope())
             {
-                executeAsyncCall.Should()
-                    .ThrowExactly<TransactionAbortedException>(
+                await executeAsyncCall
+                    .Should()
+                    .ThrowExactlyAsync<TransactionAbortedException>(
                         "application flow must fail in case of transaction timeout");
 
                 list.Count.Should().Be(expected: 0,
@@ -289,7 +299,7 @@ namespace Todo.ApplicationFlows
             private readonly Func<Task<object>> applicationFlow;
 
             public ApplicationFlowServingTestingPurposes(Func<Task<object>> applicationFlow,
-                IOptionsMonitor<ApplicationFlowOptions> applicationFlowOptions, ILogger logger)
+                ApplicationFlowOptions applicationFlowOptions, ILogger logger)
                 : base(nameof(ApplicationFlowServingTestingPurposes), applicationFlowOptions, logger)
             {
                 this.applicationFlow = applicationFlow;
