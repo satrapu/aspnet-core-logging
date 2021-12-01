@@ -13,5 +13,9 @@
         <PackageReference Include="Microsoft.IdentityModel.Tokens" />
         <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
     </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="DependencyInjection\" />
+    </ItemGroup>
     
 </Project>

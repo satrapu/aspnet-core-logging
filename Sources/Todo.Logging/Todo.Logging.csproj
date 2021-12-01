@@ -17,4 +17,8 @@
         <PackageReference Include="Serilog.Sinks.Seq" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="DependencyInjection\" />
+    </ItemGroup>
+
 </Project>
