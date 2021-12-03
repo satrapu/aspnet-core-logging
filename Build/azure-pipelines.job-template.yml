@@ -92,7 +92,7 @@ jobs:
     condition: eq(${{ parameters.sonar.enabled }}, True)
     inputs:
       packageType: 'sdk'
-      version: '2.1.803'
+      version: '3.1.415'
 
   # Prepares analysis on SonarCloud.
   # Before using any Sonar tasks, please make sure SonarCloud extension is installed in the Azure DevOps organization
