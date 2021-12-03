@@ -111,7 +111,7 @@ namespace Todo.WebApi.TestInfrastructure
                 new NpgsqlConnectionStringBuilder(configuration.GetValue<string>(ConnectionStringKey))
                 {
                     Database = $"db4it--{applicationName}",
-                    IncludeErrorDetails = true
+                    IncludeErrorDetail = true
                 };
 
             var memoryConfigurationSource = new MemoryConfigurationSource
