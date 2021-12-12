@@ -21,7 +21,7 @@ namespace Todo.WebApi.Controllers
     public class ConfigurationControllerTests
     {
         [Test]
-        [TestCaseSource(nameof(configurationEndpointContext))]
+        [TestCaseSource(nameof(ConfigurationEndpointContext))]
         public async Task GetConfigurationDebugView_WhenCalled_MustBehaveAsExpected(string environment,
             bool isDebugViewEnabled, HttpStatusCode expectedStatusCode)
         {
@@ -55,7 +55,7 @@ namespace Todo.WebApi.Controllers
                 "because configuration endpoint is available only in certain conditions");
         }
 
-        private static object[] configurationEndpointContext =
+        private static readonly object[] ConfigurationEndpointContext =
         {
             new object[] {Environments.Development, false, HttpStatusCode.Forbidden},
             new object[] {Environments.Development, true, HttpStatusCode.OK},

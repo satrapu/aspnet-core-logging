@@ -21,7 +21,7 @@ namespace Todo.Persistence
 
         public TodoDbContext(DbContextOptions<TodoDbContext> options) : base(options)
         {
-            
+
         }
 
         // ReSharper disable once UnusedAutoPropertyAccessor.Global
