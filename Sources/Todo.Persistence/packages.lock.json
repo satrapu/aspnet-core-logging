@@ -13,21 +13,21 @@
       },
       "Npgsql.EntityFrameworkCore.PostgreSQL": {
         "type": "Direct",
-        "requested": "[6.0.0, )",
-        "resolved": "6.0.0",
-        "contentHash": "3laelDbRuri90YL+RAezn1VWEkrzaYkKq8OJ2vzAp6In9c8UqkaFMidIHyS9ipIerrv5Qo+mU55+8s5mrCiAvg==",
+        "requested": "[6.0.1, )",
+        "resolved": "6.0.1",
+        "contentHash": "RosOHLphFZ5wIuqPct0IvCH4BrHB61ksW5WpywnWgdesNWvXKjhN+LJRwyGoZt9R1t4NCZhxHRePKgTHr94PJw==",
         "dependencies": {
           "Microsoft.EntityFrameworkCore": "6.0.0",
           "Microsoft.EntityFrameworkCore.Abstractions": "6.0.0",
           "Microsoft.EntityFrameworkCore.Relational": "6.0.0",
-          "Npgsql": "6.0.0"
+          "Npgsql": "6.0.1"
         }
       },
       "SonarAnalyzer.CSharp": {
         "type": "Direct",
-        "requested": "[8.32.0.39516, )",
-        "resolved": "8.32.0.39516",
-        "contentHash": "d2GUsEeyLrwNPvZyyUTL7MtEXaxmKCxShrqG8hVadNh+jvnKy1nHbLUbGVcMScWiymxP3KMWkarOasn4waYQ3w=="
+        "requested": "[8.33.0.40503, )",
+        "resolved": "8.33.0.40503",
+        "contentHash": "xXuJw7jBdTV/HlhdXlCPNgbGMcadJJsib0wC7N/Aa2gikAJ6UFvaGljh+vCkllWdAN5pATqozQ3uWUqQZP7TAg=="
       },
       "Autofac": {
         "type": "Transitive",
@@ -166,8 +166,8 @@
       },
       "Npgsql": {
         "type": "Transitive",
-        "resolved": "6.0.0",
-        "contentHash": "8m2AXZgX7b/VYL6D7aQ1M/hu7vQ+QvVHxaHelriupN2hZqEhcwJkPiICLBVSX/+xm+iN8mZVEUvD7ujmgpTgLw==",
+        "resolved": "6.0.1",
+        "contentHash": "T0v1fSBzcQaJoa6kHGiYYi/vwTJ5VYd8DDjCxW1jazAuO2Ak1KVWMkEcQxxz/C+H/+QteJRMi/xAVHzv1kKSgg==",
         "dependencies": {
           "System.Runtime.CompilerServices.Unsafe": "6.0.0"
         }

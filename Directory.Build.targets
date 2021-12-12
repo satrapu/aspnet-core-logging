@@ -30,7 +30,7 @@
         <PackageReference Update="MiniProfiler.AspNetCore.Mvc" Version="4.2.22"/>
         <PackageReference Update="MiniProfiler.EntityFrameworkCore" Version="4.2.22"/>
         <PackageReference Update="Moq" Version="4.16.1"/>
-        <PackageReference Update="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.0"/>
+        <PackageReference Update="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.1"/>
         <PackageReference Update="NetArchTest.Rules" Version="1.3.2"/>
         <PackageReference Update="NUnit" Version="3.13.2"/>
         <PackageReference Update="NUnit3TestAdapter" Version="4.1.0"/>
@@ -44,11 +44,11 @@
             Use 'Include' XML attribute instead of 'Update' since this reference will be added to all projects affected
             by this .targets file, more specifically, all projects found in this solution!
         -->
-        <PackageReference Include="SonarAnalyzer.CSharp" Version="8.32.0.39516">
+        <PackageReference Include="SonarAnalyzer.CSharp" Version="8.33.0.40503">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         
-        <PackageReference Update="System.IdentityModel.Tokens.Jwt" Version="6.14.1"/>
+        <PackageReference Update="System.IdentityModel.Tokens.Jwt" Version="6.15.0"/>
     </ItemGroup>
 </Project>
