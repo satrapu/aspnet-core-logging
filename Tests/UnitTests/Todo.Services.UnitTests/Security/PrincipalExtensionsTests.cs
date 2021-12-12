@@ -21,10 +21,20 @@ namespace Todo.Services.Security
         /// Tests <see cref="PrincipalExtensions.GetName"/> method.
         /// </summary>
         [Test]
-        [TestCaseSource(nameof(GetValidPrincipals))]
-        public void GetName_UsingValidPrincipal_MustReturnExpectedName(IPrincipal validPrincipal)
+        public void GetName_UsingValidPrincipal_MustReturnExpectedName()
         {
-            // Arrange & Act
+            // Arrange
+            const string authenticationType = "hard-coded-authentication-type-for-testing-purposes";
+
+            IPrincipal validPrincipal = new TestClaimsPrincipal(
+                     new ClaimsIdentity(
+                         new GenericIdentity($"{nameof(ClaimsPrincipal)}-{Guid.NewGuid():N}", authenticationType),
+                         new List<Claim>
+                         {
+                            new Claim(ClaimTypes.Email, $"person-{Guid.NewGuid():N}@server.net")
+                         }));
+
+            // Act
             string userName = validPrincipal.GetName();
 
             // Assert
@@ -72,46 +82,6 @@ namespace Todo.Services.Security
                     "because a principal with a null identity does not have a name");
         }
 
-        private static IEnumerable<IPrincipal> GetValidPrincipals()
-        {
-            const string authenticationType = "hard-coded-authentication-type-for-testing-purposes";
-
-            string[] roles = { "Developer" };
-
-            yield return
-                new TestGenericPrincipal(
-                    new GenericIdentity($"{nameof(GenericPrincipal)}-{Guid.NewGuid():N}", authenticationType), roles);
-
-            yield return
-                new TestClaimsPrincipal(
-                    new ClaimsIdentity(
-                        new GenericIdentity($"{nameof(ClaimsPrincipal)}-{Guid.NewGuid():N}", authenticationType)));
-
-            yield return
-                new TestClaimsPrincipal(
-                    new ClaimsIdentity(
-                        new GenericIdentity($"{nameof(ClaimsPrincipal)}-{Guid.NewGuid():N}", authenticationType),
-                        new List<Claim>
-                        {
-                            new Claim(ClaimTypes.Email, $"person-{Guid.NewGuid():N}@server.net")
-                        }));
-        }
-
-        /// <summary>
-        /// Class used for displaying a meaningful parameter description when running a parameterized test.
-        /// </summary>
-        private class TestGenericPrincipal : GenericPrincipal
-        {
-            public TestGenericPrincipal(IIdentity identity, string[] roles) : base(identity, roles)
-            {
-            }
-
-            public override string ToString()
-            {
-                return GetIdentityDescription(base.Identity);
-            }
-        }
-
         /// <summary>
         /// Class used for displaying a meaningful parameter description when running a parameterized test.
         /// </summary>
@@ -123,19 +93,9 @@ namespace Todo.Services.Security
 
             public override string ToString()
             {
-                return GetIdentityDescription(base.Identity);
+                return $"[{nameof(IIdentity.Name)}={Identity?.Name}; "
+                    + $"{nameof(IIdentity.AuthenticationType)}={Identity?.AuthenticationType}]";
             }
-        }
-
-        /// <summary>
-        /// Provides a meaningful description for the given <paramref name="identity"/> object.
-        /// </summary>
-        /// <param name="identity"></param>
-        /// <returns></returns>
-        private static string GetIdentityDescription(IIdentity identity)
-        {
-            return $"[{nameof(IIdentity.Name)}={identity?.Name}; "
-                   + $"{nameof(IIdentity.AuthenticationType)}={identity?.AuthenticationType}]";
         }
     }
 }
