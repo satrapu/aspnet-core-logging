@@ -47,7 +47,7 @@ namespace Todo.WebApi.TestInfrastructure
     internal static class StringBuilderExtensions
     {
         public static async Task AppendAsync(this StringBuilder stringBuilder, HttpRequestMessage request,
-        CancellationToken cancellationToken)
+            CancellationToken cancellationToken)
         {
             stringBuilder.AppendLine("-- REQUEST: BEGIN --");
             stringBuilder.AppendLine($"{request.Method.Method} {request.RequestUri.LocalPath} HTTP/{request.Version}");
