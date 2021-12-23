@@ -8,6 +8,7 @@ This repo shows ASP.NET Core 6.x logging in action; it also serves as a learning
 
 This project has several posts associated with it:
 
+- [Structured logging in ASP.NET Core using Serilog and Seq](https://crossprogramming.com/2021/12/23/structured-logging-in-asp-net-core-using-serilog-and-seq.html)
 - [Use Docker Compose when running integration tests with Azure Pipelines](https://crossprogramming.com/2020/09/03/use-docker-compose-when-running-integration-tests-with-azure-pipelines.html)
 - [Use Docker when running integration tests with Azure Pipelines](https://crossprogramming.com/2019/12/27/use-docker-when-running-integration-tests-with-azure-pipelines.html)
 - [Build an ASP.NET Core application using Azure Pipelines](https://crossprogramming.com/2019/03/17/build-asp-net-core-app-using-azure-pipelines.html)
