@@ -77,7 +77,6 @@ namespace Todo.WebApi
                         // https://github.com/dotnet/aspnetcore/issues/14907#issuecomment-850407104.
 
                         containerBuilder
-                            .RegisterModule(new CommonsModule())
                             .RegisterModule(new LoggingModule
                             {
                                 EnableHttpLogging =
