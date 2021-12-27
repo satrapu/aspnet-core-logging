@@ -8,6 +8,9 @@ namespace Todo.DependencyInjection
 
     using Microsoft.Extensions.Configuration;
 
+    using Todo.ApplicationFlows.ApplicationEvents;
+    using Todo.Commons.ApplicationEvents;
+
     /// <summary>
     /// Configures application flow related services used by this application.
     /// </summary>
@@ -65,6 +68,16 @@ namespace Todo.DependencyInjection
                 .RegisterType<DeleteTodoItemFlow>()
                 .As<IDeleteTodoItemFlow>()
                 .InstancePerLifetimeScope();
+
+            builder
+                .RegisterType<ApplicationStartedEventNotifier>()
+                .As<IApplicationStartedEventNotifier>()
+                .SingleInstance();
+
+            builder
+                .RegisterType<RunDatabaseMigrations>()
+                .As<IApplicationStartedEventListener>()
+                .SingleInstance();
         }
     }
 }

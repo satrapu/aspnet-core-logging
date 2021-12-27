@@ -4,14 +4,11 @@ namespace Todo.DependencyInjection
 
     using Autofac;
 
-    using Commons.ApplicationEvents;
-
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
 
     using Persistence;
-    using Persistence.Migrations;
 
     /// <summary>
     /// Configures persistence related services used by this application.
@@ -75,11 +72,6 @@ namespace Todo.DependencyInjection
                 .RegisterType<TodoDbContext>()
                 .AsSelf()
                 .InstancePerLifetimeScope();
-
-            builder
-                .RegisterType<RunDatabaseMigrations>()
-                .As<IApplicationStartedEventListener>()
-                .SingleInstance();
         }
     }
 }

@@ -1,12 +1,13 @@
-namespace Todo.Commons.ApplicationEvents
+namespace Todo.ApplicationFlows.ApplicationEvents
 {
     using System;
     using System.Collections.Generic;
-
-    using Constants;
+    using System.Security.Principal;
 
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
+
+    using Todo.Commons.ApplicationEvents;
 
     /// <summary>
     /// An <see cref="IApplicationStartedEventNotifier"/> implementation which runs all registered
@@ -14,6 +15,11 @@ namespace Todo.Commons.ApplicationEvents
     /// </summary>
     public class ApplicationStartedEventNotifier : IApplicationStartedEventNotifier
     {
+        private const string FlowName = "Events/ApplicationStarted/NotifyListeners";
+
+        private static readonly IPrincipal Principal =
+            new GenericPrincipal(new GenericIdentity("application-started-event-notifier"), Array.Empty<string>());
+
         private readonly IEnumerable<IApplicationStartedEventListener> eventListeners;
         private readonly IHostApplicationLifetime hostApplicationLifetime;
         private readonly ILogger logger;
@@ -31,14 +37,7 @@ namespace Todo.Commons.ApplicationEvents
 
         public void Notify()
         {
-            using (logger.BeginScope(new Dictionary<string, object>
-            {
-                [Logging.ConversationId] = Guid.NewGuid().ToString("N"),
-                [Logging.ApplicationFlowName] = "Events/ApplicationStarted"
-            }))
-            {
-                InternalNotify();
-            }
+            SimpleApplicationFlow.Execute(FlowName, InternalNotify, Principal, logger);
         }
 
         private void InternalNotify()
