@@ -9,7 +9,7 @@ namespace Todo.Logging.Serilog.Destructuring
     using Services.TodoItemManagement;
 
     /// <summary>
-    /// Instructs Serilog how to log instances of <seealso cref="DeleteTodoItemInfo"/> class.
+    /// Instructs Serilog how to log instances of <see cref="DeleteTodoItemInfo"/> class.
     /// </summary>
     // ReSharper disable once UnusedType.Global
     public class DeleteTodoItemInfoDestructuringPolicy : IDestructuringPolicy

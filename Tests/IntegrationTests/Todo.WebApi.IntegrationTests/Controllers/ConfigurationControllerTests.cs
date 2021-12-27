@@ -15,7 +15,7 @@ namespace Todo.WebApi.Controllers
     using NUnit.Framework;
 
     /// <summary>
-    /// Contains integration tests targeting <seealso cref="ConfigurationController" /> class.
+    /// Contains integration tests targeting <see cref="ConfigurationController" /> class.
     /// </summary>
     [TestFixture]
     public class ConfigurationControllerTests

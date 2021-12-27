@@ -12,7 +12,7 @@ namespace Todo.ApplicationFlows
     using NUnit.Framework;
 
     /// <summary>
-    /// Contains unit tests targeting <seealso cref="NonTransactionalBaseApplicationFlow{TInput, TOuput}"/> class.
+    /// Contains unit tests targeting <see cref="NonTransactionalBaseApplicationFlow{TInput, TOuput}"/> class.
     /// </summary>
     [TestFixture]
     public class NonTransactionalBaseApplicationFlowTests

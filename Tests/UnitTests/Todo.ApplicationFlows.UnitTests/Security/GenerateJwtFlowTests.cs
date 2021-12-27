@@ -16,7 +16,7 @@ namespace Todo.ApplicationFlows.Security
     using Services.Security;
 
     /// <summary>
-    /// Contains unit tests targeting <seealso cref="GenerateJwtFlow"/> class.
+    /// Contains unit tests targeting <see cref="GenerateJwtFlow"/> class.
     /// </summary>
     [TestFixture]
     public class GenerateJwtFlowTests
