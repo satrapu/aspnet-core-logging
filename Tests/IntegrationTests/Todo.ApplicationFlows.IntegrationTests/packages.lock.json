@@ -796,6 +796,62 @@
         "resolved": "5.0.0",
         "contentHash": "c5JVjuVAm4f7E9Vj+v09Z9s2ZsqFDjBpcsyS3M9xRo0bEdm/LVZSzLxxNvfvAwRiiE8nwe1h2G4OwiwlzFKXlA=="
       },
+      "OpenTelemetry": {
+        "type": "Transitive",
+        "resolved": "1.2.0-rc1",
+        "contentHash": "j4e3VLaNtcSSKhWj5caqSO8f3gaO2dTqMlJ44I+LXuECDrkBWVdJaozCpNfkOOhKKURGvj6RUkOmhcE/ZX5C9g==",
+        "dependencies": {
+          "Microsoft.Extensions.Logging": "2.1.0",
+          "Microsoft.Extensions.Logging.Configuration": "2.1.0",
+          "OpenTelemetry.Api": "1.2.0-rc1",
+          "System.Collections.Immutable": "1.4.0",
+          "System.Reflection.Emit.Lightweight": "4.7.0"
+        }
+      },
+      "OpenTelemetry.Api": {
+        "type": "Transitive",
+        "resolved": "1.2.0-rc1",
+        "contentHash": "/zDRz4Fic1kR1DWgtdpzskcWGhKmRwIJU3mIz8mlV16ognt34h54BmAOAvqJ5I5qvF1uG53uZXM5Jd56jaizBg==",
+        "dependencies": {
+          "System.Diagnostics.DiagnosticSource": "6.0.0",
+          "System.Reflection.Emit.Lightweight": "4.7.0"
+        }
+      },
+      "OpenTelemetry.Contrib.Instrumentation.EntityFrameworkCore": {
+        "type": "Transitive",
+        "resolved": "1.0.0-beta2",
+        "contentHash": "legTYmOM+bEQ+uXmMi5VgyEZWWXRkp7zJDZ2lbA10d+aN5Qykk150H8PuS3hrCvmho8bn/JZFDmiJjrzaDE0DA==",
+        "dependencies": {
+          "OpenTelemetry.Api": "1.0.1"
+        }
+      },
+      "OpenTelemetry.Exporter.Jaeger": {
+        "type": "Transitive",
+        "resolved": "1.2.0-rc1",
+        "contentHash": "40OoO6Y20n+nVfNxGpjwP6/EAIQnlfre2GawjRLIigSKQfYz5dTJ+tV4a/76HkRX+dx7BgnrlblAaMl3nRQavg==",
+        "dependencies": {
+          "OpenTelemetry": "1.2.0-rc1",
+          "System.Threading.Tasks.Extensions": "4.5.3"
+        }
+      },
+      "OpenTelemetry.Extensions.Hosting": {
+        "type": "Transitive",
+        "resolved": "1.0.0-rc8",
+        "contentHash": "jr7Do29OapqvsHdyLC92RT2W8gyowUgQ2ly8Eq+GPe9E1qD5xxI2DzXtp1qJXpHlLwpNGcfM3xqCezsoMVT4Jg==",
+        "dependencies": {
+          "Microsoft.Extensions.Hosting.Abstractions": "2.1.0",
+          "OpenTelemetry": "1.2.0-beta1"
+        }
+      },
+      "OpenTelemetry.Instrumentation.AspNetCore": {
+        "type": "Transitive",
+        "resolved": "1.0.0-rc8",
+        "contentHash": "rqkA2/+tfgoqp+Wdy/Fb0tm2QvsfY5xdANzw2mum/QMSIJOSmXBSi0rwiy2hz4yJBWaPSMhlD11o0v1nFb+d+w==",
+        "dependencies": {
+          "Microsoft.AspNetCore.Http.Features": "[2.1.1, 6.0.0)",
+          "OpenTelemetry": "1.2.0-beta1"
+        }
+      },
       "runtime.native.System": {
         "type": "Transitive",
         "resolved": "4.3.0",
@@ -1331,14 +1387,8 @@
       },
       "System.Reflection.Emit.Lightweight": {
         "type": "Transitive",
-        "resolved": "4.3.0",
-        "contentHash": "oadVHGSMsTmZsAF864QYN1t1QzZjIcuKU3l2S9cZOwDdDueNTrqq1yRj7koFfIGEnKpt6NjpL3rOzRhs4ryOgA==",
-        "dependencies": {
-          "System.Reflection": "4.3.0",
-          "System.Reflection.Emit.ILGeneration": "4.3.0",
-          "System.Reflection.Primitives": "4.3.0",
-          "System.Runtime": "4.3.0"
-        }
+        "resolved": "4.7.0",
+        "contentHash": "a4OLB4IITxAXJeV74MDx49Oq2+PsF6Sml54XAFv+2RyWwtDBcabzoxiiJRhdhx+gaohLh4hEGCLQyBozXoQPqA=="
       },
       "System.Reflection.Extensions": {
         "type": "Transitive",
@@ -1569,13 +1619,8 @@
       },
       "System.Threading.Tasks.Extensions": {
         "type": "Transitive",
-        "resolved": "4.3.0",
-        "contentHash": "npvJkVKl5rKXrtl1Kkm6OhOUaYGEiF9wFbppFRWSMoApKzt2PiPHT2Bb8a5sAWxprvdOAtvaARS9QYMznEUtug==",
-        "dependencies": {
-          "System.Collections": "4.3.0",
-          "System.Runtime": "4.3.0",
-          "System.Threading.Tasks": "4.3.0"
-        }
+        "resolved": "4.5.3",
+        "contentHash": "+MvhNtcvIbqmhANyKu91jQnvIRVSTiaOiFNfKWwXGHG48YAb4I/TyH8spsySiPYla7gKal5ZnF3teJqZAximyQ=="
       },
       "System.Threading.Tasks.Parallel": {
         "type": "Transitive",
@@ -1697,6 +1742,11 @@
           "Microsoft.AspNetCore.Authentication.JwtBearer": "6.0.1",
           "MiniProfiler.AspNetCore.Mvc": "4.2.22",
           "MiniProfiler.EntityFrameworkCore": "4.2.22",
+          "OpenTelemetry": "1.2.0-rc1",
+          "OpenTelemetry.Contrib.Instrumentation.EntityFrameworkCore": "1.0.0-beta2",
+          "OpenTelemetry.Exporter.Jaeger": "1.2.0-rc1",
+          "OpenTelemetry.Extensions.Hosting": "1.0.0-rc8",
+          "OpenTelemetry.Instrumentation.AspNetCore": "1.0.0-rc8",
           "Todo.ApplicationFlows": "1.0.0",
           "Todo.Logging": "1.0.0"
         }
