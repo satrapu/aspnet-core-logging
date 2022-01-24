@@ -1,281 +1,281 @@
 namespace Todo.WebApi
 {
-	using System;
-	using System.Diagnostics.CodeAnalysis;
-	using System.Security.Claims;
-	using System.Text;
-	using System.Threading.Tasks;
+    using System;
+    using System.Diagnostics.CodeAnalysis;
+    using System.Security.Claims;
+    using System.Text;
+    using System.Threading.Tasks;
 
-	using Authorization;
+    using Authorization;
 
-	using Commons.ApplicationEvents;
+    using Commons.ApplicationEvents;
 
-	using ExceptionHandling;
+    using ExceptionHandling;
 
-	using global::OpenTelemetry.Resources;
-	using global::OpenTelemetry.Trace;
+    using global::OpenTelemetry.Resources;
+    using global::OpenTelemetry.Trace;
 
-	using Logging.ApplicationInsights;
-	using Logging.Http;
-	using Logging.Serilog;
+    using Logging.ApplicationInsights;
+    using Logging.Http;
+    using Logging.Serilog;
 
-	using Microsoft.AspNetCore.Authentication.JwtBearer;
-	using Microsoft.AspNetCore.Authorization;
-	using Microsoft.AspNetCore.Builder;
-	using Microsoft.AspNetCore.Hosting;
-	using Microsoft.AspNetCore.Http;
-	using Microsoft.AspNetCore.Mvc;
-	using Microsoft.Extensions.Configuration;
-	using Microsoft.Extensions.DependencyInjection;
-	using Microsoft.Extensions.Hosting;
-	using Microsoft.Extensions.Logging;
-	using Microsoft.IdentityModel.Logging;
-	using Microsoft.IdentityModel.Tokens;
+    using Microsoft.AspNetCore.Authentication.JwtBearer;
+    using Microsoft.AspNetCore.Authorization;
+    using Microsoft.AspNetCore.Builder;
+    using Microsoft.AspNetCore.Hosting;
+    using Microsoft.AspNetCore.Http;
+    using Microsoft.AspNetCore.Mvc;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
+    using Microsoft.Extensions.Hosting;
+    using Microsoft.Extensions.Logging;
+    using Microsoft.IdentityModel.Logging;
+    using Microsoft.IdentityModel.Tokens;
 
-	using Models;
+    using Models;
 
-	using Profiling;
+    using Profiling;
 
-	using Todo.WebApi.OpenTelemetry;
+    using Todo.WebApi.OpenTelemetry;
 
-	using ILogger = Microsoft.Extensions.Logging.ILogger;
+    using ILogger = Microsoft.Extensions.Logging.ILogger;
 
-	/// <summary>
-	/// Starts this ASP.NET Core application.
-	/// </summary>
-	[ExcludeFromCodeCoverage]
-	public class Startup
-	{
-		private const string ApplicationName = "Todo ASP.NET Core Web API";
+    /// <summary>
+    /// Starts this ASP.NET Core application.
+    /// </summary>
+    [ExcludeFromCodeCoverage]
+    public class Startup
+    {
+        private const string ApplicationName = "Todo ASP.NET Core Web API";
 
-		private IConfiguration Configuration { get; }
+        private IConfiguration Configuration { get; }
 
-		private IWebHostEnvironment WebHostEnvironment { get; }
+        private IWebHostEnvironment WebHostEnvironment { get; }
 
-		/// <summary>
-		/// Creates a new instance of the <see cref="Startup"/> class.
-		/// </summary>
-		/// <param name="configuration">The configuration to be used for setting up this application.</param>
-		/// <param name="webHostEnvironment">The web host environment running this application.</param>
-		public Startup(IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
-		{
-			Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-			WebHostEnvironment = webHostEnvironment ?? throw new ArgumentNullException(nameof(webHostEnvironment));
-		}
+        /// <summary>
+        /// Creates a new instance of the <see cref="Startup"/> class.
+        /// </summary>
+        /// <param name="configuration">The configuration to be used for setting up this application.</param>
+        /// <param name="webHostEnvironment">The web host environment running this application.</param>
+        public Startup(IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
+        {
+            Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            WebHostEnvironment = webHostEnvironment ?? throw new ArgumentNullException(nameof(webHostEnvironment));
+        }
 
-		/// <summary>
-		/// This method gets called by the runtime; use it to add services to the container.
-		/// </summary>
-		/// <param name="services"></param>
-		public void ConfigureServices(IServiceCollection services)
-		{
-			ConfigureExceptionHandling(services);
-			ConfigureLogging(services);
-			ConfigureOpenTelemetry(services);
-			ConfigureProfiling(services);
-			ConfigureSecurity(services);
-			ConfigureWebApi(services);
-		}
+        /// <summary>
+        /// This method gets called by the runtime; use it to add services to the container.
+        /// </summary>
+        /// <param name="services"></param>
+        public void ConfigureServices(IServiceCollection services)
+        {
+            ConfigureExceptionHandling(services);
+            ConfigureLogging(services);
+            ConfigureOpenTelemetry(services);
+            ConfigureProfiling(services);
+            ConfigureSecurity(services);
+            ConfigureWebApi(services);
+        }
 
-		/// <summary>
-		/// This method gets called by the runtime; use it to configure the ASP.NET Core request processing pipeline.
-		/// </summary>
-		/// <param name="applicationBuilder">Configures ASP.NET Core request processing pipeline.</param>
-		/// <param name="hostApplicationLifetime">Notifies about application events.</param>
-		/// <param name="serviceProvider">Fetches services from the DI container.</param>
-		/// <param name="logger">Logs messages generated by this method.</param>
-		// ReSharper disable once UnusedMember.Global
-		public void Configure(IApplicationBuilder applicationBuilder, IHostApplicationLifetime hostApplicationLifetime,
-			IServiceProvider serviceProvider, ILogger<Startup> logger)
-		{
-			logger.LogInformation("Configuring ASP.NET Core request processing pipeline ...");
+        /// <summary>
+        /// This method gets called by the runtime; use it to configure the ASP.NET Core request processing pipeline.
+        /// </summary>
+        /// <param name="applicationBuilder">Configures ASP.NET Core request processing pipeline.</param>
+        /// <param name="hostApplicationLifetime">Notifies about application events.</param>
+        /// <param name="serviceProvider">Fetches services from the DI container.</param>
+        /// <param name="logger">Logs messages generated by this method.</param>
+        // ReSharper disable once UnusedMember.Global
+        public void Configure(IApplicationBuilder applicationBuilder, IHostApplicationLifetime hostApplicationLifetime,
+            IServiceProvider serviceProvider, ILogger<Startup> logger)
+        {
+            logger.LogInformation("Configuring ASP.NET Core request processing pipeline ...");
 
-			applicationBuilder
-				.UseConversationId()
-				.UseHttpLogging(Configuration)
-				.UseExceptionHandler(new ExceptionHandlerOptions
-				{
-					ExceptionHandler = CustomExceptionHandler.HandleException,
-					AllowStatusCode404Response = true
-				})
-				.UseMiniProfiler(Configuration)
-				.UseHttpsRedirection()
-				.UseRouting()
-				.UseAuthentication()
-				.UseAuthorization()
-				.UseEndpoints(endpoints => { endpoints.MapControllers(); });
+            applicationBuilder
+                .UseConversationId()
+                .UseHttpLogging(Configuration)
+                .UseExceptionHandler(new ExceptionHandlerOptions
+                {
+                    ExceptionHandler = CustomExceptionHandler.HandleException,
+                    AllowStatusCode404Response = true
+                })
+                .UseMiniProfiler(Configuration)
+                .UseHttpsRedirection()
+                .UseRouting()
+                .UseAuthentication()
+                .UseAuthorization()
+                .UseEndpoints(endpoints => { endpoints.MapControllers(); });
 
-			IApplicationStartedEventNotifier applicationStartedEventNotifier =
-				serviceProvider.GetRequiredService<IApplicationStartedEventNotifier>();
+            IApplicationStartedEventNotifier applicationStartedEventNotifier =
+                serviceProvider.GetRequiredService<IApplicationStartedEventNotifier>();
 
-			hostApplicationLifetime.ApplicationStarted.Register(() =>
-				OnApplicationStarted(applicationStartedEventNotifier, logger));
+            hostApplicationLifetime.ApplicationStarted.Register(() =>
+                OnApplicationStarted(applicationStartedEventNotifier, logger));
 
-			hostApplicationLifetime.ApplicationStopping.Register(() => OnApplicationStopping(logger));
-			hostApplicationLifetime.ApplicationStopped.Register(() => OnApplicationStopped(logger));
-		}
+            hostApplicationLifetime.ApplicationStopping.Register(() => OnApplicationStopping(logger));
+            hostApplicationLifetime.ApplicationStopped.Register(() => OnApplicationStopped(logger));
+        }
 
-		private void ConfigureLogging(IServiceCollection services)
-		{
-			services
-				.ActivateApplicationInsights(Configuration)
-				.ActivateSerilog(Configuration);
-		}
+        private void ConfigureLogging(IServiceCollection services)
+        {
+            services
+                .ActivateApplicationInsights(Configuration)
+                .ActivateSerilog(Configuration);
+        }
 
-		private void ConfigureOpenTelemetry(IServiceCollection services)
-		{
-			OpenTelemetryOptions openTelemetryOptions = new OpenTelemetryOptions();
-			Configuration.Bind("OpenTelemetry", openTelemetryOptions);
+        private void ConfigureOpenTelemetry(IServiceCollection services)
+        {
+            OpenTelemetryOptions openTelemetryOptions = new OpenTelemetryOptions();
+            Configuration.Bind("OpenTelemetry", openTelemetryOptions);
 
-			services
-				.AddOpenTelemetryTracing(builder =>
-				{
-					builder
-						.SetResourceBuilder(ResourceBuilder
-							.CreateDefault()
-							.AddService($"{WebHostEnvironment.ApplicationName}::{WebHostEnvironment.EnvironmentName}"))
-						.AddAspNetCoreInstrumentation()
-						.AddEntityFrameworkCoreInstrumentation(options =>
-						{
-							options.SetDbStatementForText = true;
-						})
-						.AddJaegerExporter(options =>
-						{
-							options.AgentHost = openTelemetryOptions.Exporters.Jaeger.AgentHost;
-							options.AgentPort = openTelemetryOptions.Exporters.Jaeger.AgentPort;
-						});
-				});
-		}
+            services
+                .AddOpenTelemetryTracing(builder =>
+                {
+                    builder
+                        .SetResourceBuilder(ResourceBuilder
+                            .CreateDefault()
+                            .AddService($"{WebHostEnvironment.ApplicationName}::{WebHostEnvironment.EnvironmentName}"))
+                        .AddAspNetCoreInstrumentation()
+                        .AddEntityFrameworkCoreInstrumentation(options =>
+                        {
+                            options.SetDbStatementForText = true;
+                        })
+                        .AddJaegerExporter(options =>
+                        {
+                            options.AgentHost = openTelemetryOptions.Exporters.Jaeger.AgentHost;
+                            options.AgentPort = openTelemetryOptions.Exporters.Jaeger.AgentPort;
+                        });
+                });
+        }
 
-		private void ConfigureSecurity(IServiceCollection services)
-		{
-			// Display personally identifiable information only during development
-			IdentityModelEventSource.ShowPII = WebHostEnvironment.IsDevelopment();
+        private void ConfigureSecurity(IServiceCollection services)
+        {
+            // Display personally identifiable information only during development
+            IdentityModelEventSource.ShowPII = WebHostEnvironment.IsDevelopment();
 
-			// Configure authentication & authorization using JSON web tokens
-			IConfigurationSection generateJwtOptions = Configuration.GetSection("GenerateJwt");
+            // Configure authentication & authorization using JSON web tokens
+            IConfigurationSection generateJwtOptions = Configuration.GetSection("GenerateJwt");
 
-			// ReSharper disable once SettingNotFoundInConfiguration
-			string tokenIssuer = generateJwtOptions.GetValue<string>("Issuer");
+            // ReSharper disable once SettingNotFoundInConfiguration
+            string tokenIssuer = generateJwtOptions.GetValue<string>("Issuer");
 
-			// ReSharper disable once SettingNotFoundInConfiguration
-			string tokenAudience = generateJwtOptions.GetValue<string>("Audience");
+            // ReSharper disable once SettingNotFoundInConfiguration
+            string tokenAudience = generateJwtOptions.GetValue<string>("Audience");
 
-			services
-				.AddAuthentication(options =>
-				{
-					options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-					options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-				})
-				.AddJwtBearer(options =>
-				{
-					options.TokenValidationParameters = new TokenValidationParameters
-					{
-						ValidateIssuerSigningKey = true,
-						IssuerSigningKey =
-							new SymmetricSecurityKey(
-								// ReSharper disable once SettingNotFoundInConfiguration
-								Encoding.UTF8.GetBytes(generateJwtOptions.GetValue<string>("Secret"))),
-						ValidateIssuer = true,
-						ValidIssuer = tokenIssuer,
-						ValidateAudience = true,
-						ValidAudience = tokenAudience,
-						ValidateLifetime = true,
-						ClockSkew = TimeSpan.Zero,
-							// Ensure the User.Identity.Name is set to the user identifier and not to the user name.
-							NameClaimType = ClaimTypes.NameIdentifier
-					};
+            services
+                .AddAuthentication(options =>
+                {
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey =
+                            new SymmetricSecurityKey(
+                                // ReSharper disable once SettingNotFoundInConfiguration
+                                Encoding.UTF8.GetBytes(generateJwtOptions.GetValue<string>("Secret"))),
+                        ValidateIssuer = true,
+                        ValidIssuer = tokenIssuer,
+                        ValidateAudience = true,
+                        ValidAudience = tokenAudience,
+                        ValidateLifetime = true,
+                        ClockSkew = TimeSpan.Zero,
+                        // Ensure the User.Identity.Name is set to the user identifier and not to the user name.
+                        NameClaimType = ClaimTypes.NameIdentifier
+                    };
 
-					options.Events = new JwtBearerEvents
-					{
-						OnAuthenticationFailed = context =>
-						{
-							if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
-							{
-									// Add a custom HTTP header to the response in case the application detected that the
-									// current request is accompanied by an expired security token.
-									context.Response.Headers.Add("Token-Expired", "true");
-							}
+                    options.Events = new JwtBearerEvents
+                    {
+                        OnAuthenticationFailed = context =>
+                        {
+                            if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
+                            {
+                                // Add a custom HTTP header to the response in case the application detected that the
+                                // current request is accompanied by an expired security token.
+                                context.Response.Headers.Add("Token-Expired", "true");
+                            }
 
-							return Task.CompletedTask;
-						}
-					};
-				});
+                            return Task.CompletedTask;
+                        }
+                    };
+                });
 
-			services.AddAuthorization(options =>
-			{
-				options.AddPolicy(Policies.TodoItems.GetTodoItems,
-					policy => policy.Requirements.Add(new HasScopeRequirement("get:todo", tokenIssuer)));
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(Policies.TodoItems.GetTodoItems,
+                    policy => policy.Requirements.Add(new HasScopeRequirement("get:todo", tokenIssuer)));
 
-				options.AddPolicy(Policies.TodoItems.CreateTodoItem,
-					policy => policy.Requirements.Add(new HasScopeRequirement("create:todo", tokenIssuer)));
+                options.AddPolicy(Policies.TodoItems.CreateTodoItem,
+                    policy => policy.Requirements.Add(new HasScopeRequirement("create:todo", tokenIssuer)));
 
-				options.AddPolicy(Policies.TodoItems.UpdateTodoItem,
-					policy => policy.Requirements.Add(new HasScopeRequirement("update:todo", tokenIssuer)));
+                options.AddPolicy(Policies.TodoItems.UpdateTodoItem,
+                    policy => policy.Requirements.Add(new HasScopeRequirement("update:todo", tokenIssuer)));
 
-				options.AddPolicy(Policies.TodoItems.DeleteTodoItem,
-					policy => policy.Requirements.Add(new HasScopeRequirement("delete:todo", tokenIssuer)));
-			});
+                options.AddPolicy(Policies.TodoItems.DeleteTodoItem,
+                    policy => policy.Requirements.Add(new HasScopeRequirement("delete:todo", tokenIssuer)));
+            });
 
-			services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
+            services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
 
-			// Configure options used for customizing generating JWT tokens.
-			// Options pattern: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-5.0.
-			services.Configure<GenerateJwtOptions>(generateJwtOptions);
-		}
+            // Configure options used for customizing generating JWT tokens.
+            // Options pattern: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-5.0.
+            services.Configure<GenerateJwtOptions>(generateJwtOptions);
+        }
 
-		private void ConfigureProfiling(IServiceCollection services)
-		{
-			services.ActivateMiniProfiler(Configuration);
-		}
+        private void ConfigureProfiling(IServiceCollection services)
+        {
+            services.ActivateMiniProfiler(Configuration);
+        }
 
-		private static void ConfigureWebApi(IServiceCollection services)
-		{
-			// Configure ASP.NET Web API services.
-			services
-				.AddControllers()
-				.ConfigureApiBehaviorOptions(options =>
-				{
-					options.InvalidModelStateResponseFactory = context =>
-					{
-						var validationProblemDetails = new ValidationProblemDetails(context.ModelState)
-						{
-							Title = "One or more model validation errors have occurred",
-							Status = StatusCodes.Status422UnprocessableEntity,
-							Detail = "See the errors property for more details",
-							Instance = context.HttpContext.Request.Path,
-							Extensions = { { "TraceId", context.HttpContext.TraceIdentifier } }
-						};
+        private static void ConfigureWebApi(IServiceCollection services)
+        {
+            // Configure ASP.NET Web API services.
+            services
+                .AddControllers()
+                .ConfigureApiBehaviorOptions(options =>
+                {
+                    options.InvalidModelStateResponseFactory = context =>
+                    {
+                        var validationProblemDetails = new ValidationProblemDetails(context.ModelState)
+                        {
+                            Title = "One or more model validation errors have occurred",
+                            Status = StatusCodes.Status422UnprocessableEntity,
+                            Detail = "See the errors property for more details",
+                            Instance = context.HttpContext.Request.Path,
+                            Extensions = { { "TraceId", context.HttpContext.TraceIdentifier } }
+                        };
 
-						return new UnprocessableEntityObjectResult(validationProblemDetails)
-						{
-							ContentTypes = { "application/problem+json" }
-						};
-					};
-				});
-		}
+                        return new UnprocessableEntityObjectResult(validationProblemDetails)
+                        {
+                            ContentTypes = { "application/problem+json" }
+                        };
+                    };
+                });
+        }
 
-		private void ConfigureExceptionHandling(IServiceCollection services)
-		{
-			services.Configure<ExceptionHandlingOptions>(Configuration.GetSection("ExceptionHandling"));
-		}
+        private void ConfigureExceptionHandling(IServiceCollection services)
+        {
+            services.Configure<ExceptionHandlingOptions>(Configuration.GetSection("ExceptionHandling"));
+        }
 
-		private static void OnApplicationStarted(IApplicationStartedEventNotifier applicationStartedEventNotifier,
-			ILogger logger)
-		{
-			applicationStartedEventNotifier.Notify();
+        private static void OnApplicationStarted(IApplicationStartedEventNotifier applicationStartedEventNotifier,
+            ILogger logger)
+        {
+            applicationStartedEventNotifier.Notify();
 
-			logger.LogInformation("{ApplicationName} application has started", ApplicationName);
-		}
+            logger.LogInformation("{ApplicationName} application has started", ApplicationName);
+        }
 
-		private static void OnApplicationStopping(ILogger logger)
-		{
-			logger.LogInformation("{ApplicationName} application is stopping ...", ApplicationName);
-		}
+        private static void OnApplicationStopping(ILogger logger)
+        {
+            logger.LogInformation("{ApplicationName} application is stopping ...", ApplicationName);
+        }
 
-		private static void OnApplicationStopped(ILogger logger)
-		{
-			logger.LogInformation("{ApplicationName} application has stopped", ApplicationName);
-		}
-	}
+        private static void OnApplicationStopped(ILogger logger)
+        {
+            logger.LogInformation("{ApplicationName} application has stopped", ApplicationName);
+        }
+    }
 }
