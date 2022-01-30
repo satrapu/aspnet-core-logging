@@ -137,7 +137,8 @@ namespace Todo.WebApi
                         .AddAspNetCoreInstrumentation()
                         .AddEntityFrameworkCoreInstrumentation(options =>
                         {
-                            options.SetDbStatementForText = true;
+                            options.SetDbStatementForText =
+                                openTelemetryOptions.Instrumentation.EntityFrameworkCore.SetDbStatementForText;
                         })
                         .AddJaegerExporter(options =>
                         {

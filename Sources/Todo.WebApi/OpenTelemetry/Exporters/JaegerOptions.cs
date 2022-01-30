@@ -1,4 +1,4 @@
-namespace Todo.WebApi.OpenTelemetry
+namespace Todo.WebApi.OpenTelemetry.Exporters
 {
     public class JaegerOptions
     {
