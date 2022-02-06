@@ -4,9 +4,9 @@
     "net6.0": {
       "SonarAnalyzer.CSharp": {
         "type": "Direct",
-        "requested": "[8.34.0.42011, )",
-        "resolved": "8.34.0.42011",
-        "contentHash": "OSWlrOapKdaFrzJPe7zPG5yXcL50n5kkcu3TmDTOvQnGWA5mJgvEOt/tR8qWo6xsTuL02MQvXvGo1oNE6A2n4g=="
+        "requested": "[8.35.0.42613, )",
+        "resolved": "8.35.0.42613",
+        "contentHash": "bSEpHYZXrSOXJVMr6ozINn0sO5WT9ShmOUZJsJN2CCgyzUhPUZd0wnp59cm9zUiBA28B7yESPo61nbX5trICYw=="
       },
       "System.IdentityModel.Tokens.Jwt": {
         "type": "Direct",
@@ -191,21 +191,21 @@
       },
       "Npgsql": {
         "type": "Transitive",
-        "resolved": "6.0.2",
-        "contentHash": "j/BJY/1lqtu5ssfGEi9D+qJ/3OMrK8ZdicsW4SldV49CahRVXVHldj636ucVcEqJPNDI0h+/PWJD7oHsQ/cFAQ==",
+        "resolved": "6.0.3",
+        "contentHash": "yt/3XFRhHsJ01a4+qHM9+0mtitQ3DY2wJLyGP9vtvZa1cB1nSAw762GJGdSX3Bbc7wZKzeo4dc4drD3yvQe7gA==",
         "dependencies": {
           "System.Runtime.CompilerServices.Unsafe": "6.0.0"
         }
       },
       "Npgsql.EntityFrameworkCore.PostgreSQL": {
         "type": "Transitive",
-        "resolved": "6.0.2",
-        "contentHash": "2snTLONAs26dKdtInX4CAorkE//eDMOAVifh2EXZ/REzq5typb7MkENIix3Ma6ycukmAzCUw+br2AFdXmkmxbw==",
+        "resolved": "6.0.3",
+        "contentHash": "4FJ4ww7EdMKlg0Bdug783V5+OVTczu7HF1ra7FOWin/3w1v/EplVGXUQlW/4JPVloe6nnsnvmfzKCY4JiHspHw==",
         "dependencies": {
           "Microsoft.EntityFrameworkCore": "6.0.1",
           "Microsoft.EntityFrameworkCore.Abstractions": "6.0.1",
           "Microsoft.EntityFrameworkCore.Relational": "6.0.1",
-          "Npgsql": "6.0.2"
+          "Npgsql": "6.0.3"
         }
       },
       "System.Collections.Immutable": {
@@ -246,7 +246,7 @@
         "type": "Project",
         "dependencies": {
           "Microsoft.Extensions.Configuration.Binder": "6.0.0",
-          "Npgsql.EntityFrameworkCore.PostgreSQL": "6.0.2",
+          "Npgsql.EntityFrameworkCore.PostgreSQL": "6.0.3",
           "Todo.Commons": "1.0.0"
         }
       }
