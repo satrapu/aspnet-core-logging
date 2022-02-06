@@ -6,18 +6,8 @@ namespace Todo.WebApi
     using System.Text;
     using System.Threading.Tasks;
 
-    using Authorization;
-
-    using Commons.ApplicationEvents;
-
-    using ExceptionHandling;
-
     using global::OpenTelemetry.Resources;
     using global::OpenTelemetry.Trace;
-
-    using Logging.ApplicationInsights;
-    using Logging.Http;
-    using Logging.Serilog;
 
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Authorization;
@@ -32,10 +22,14 @@ namespace Todo.WebApi
     using Microsoft.IdentityModel.Logging;
     using Microsoft.IdentityModel.Tokens;
 
-    using Models;
-
-    using Profiling;
-
+    using Todo.Commons.ApplicationEvents;
+    using Todo.Logging.ApplicationInsights;
+    using Todo.Logging.Http;
+    using Todo.Logging.Serilog;
+    using Todo.Profiling;
+    using Todo.WebApi.Authorization;
+    using Todo.WebApi.ExceptionHandling;
+    using Todo.WebApi.Models;
     using Todo.WebApi.OpenTelemetry;
 
     using ILogger = Microsoft.Extensions.Logging.ILogger;
@@ -46,10 +40,7 @@ namespace Todo.WebApi
     [ExcludeFromCodeCoverage]
     public class Startup
     {
-        private const string ApplicationName = "Todo ASP.NET Core Web API";
-
         private IConfiguration Configuration { get; }
-
         private IWebHostEnvironment WebHostEnvironment { get; }
 
         /// <summary>
@@ -113,6 +104,8 @@ namespace Todo.WebApi
 
             hostApplicationLifetime.ApplicationStopping.Register(() => OnApplicationStopping(logger));
             hostApplicationLifetime.ApplicationStopped.Register(() => OnApplicationStopped(logger));
+
+            logger.LogInformation("ASP.NET Core request processing pipeline has been configured");
         }
 
         private void ConfigureLogging(IServiceCollection services)
@@ -131,9 +124,10 @@ namespace Todo.WebApi
                 .AddOpenTelemetryTracing(builder =>
                 {
                     builder
-                        .SetResourceBuilder(ResourceBuilder
-                            .CreateDefault()
-                            .AddService($"{WebHostEnvironment.ApplicationName}::{WebHostEnvironment.EnvironmentName}"))
+                        .SetResourceBuilder(
+                            ResourceBuilder
+                                .CreateDefault()
+                                .AddService($"{WebHostEnvironment.ApplicationName}::{WebHostEnvironment.EnvironmentName}"))
                         .AddAspNetCoreInstrumentation()
                         .AddEntityFrameworkCoreInstrumentation(options =>
                         {
@@ -144,6 +138,10 @@ namespace Todo.WebApi
                         {
                             options.AgentHost = openTelemetryOptions.Exporters.Jaeger.AgentHost;
                             options.AgentPort = openTelemetryOptions.Exporters.Jaeger.AgentPort;
+                        })
+                        .AddOtlpExporter(options =>
+                        {
+                            options.Endpoint = openTelemetryOptions.Exporters.Otpl.Endpoint;
                         });
                 });
         }
@@ -261,22 +259,28 @@ namespace Todo.WebApi
             services.Configure<ExceptionHandlingOptions>(Configuration.GetSection("ExceptionHandling"));
         }
 
-        private static void OnApplicationStarted(IApplicationStartedEventNotifier applicationStartedEventNotifier,
+        private void OnApplicationStarted(IApplicationStartedEventNotifier applicationStartedEventNotifier,
             ILogger logger)
         {
+            logger.LogInformation("About to notify the registered application started event listeners ...");
+
             applicationStartedEventNotifier.Notify();
 
-            logger.LogInformation("{ApplicationName} application has started", ApplicationName);
+            logger.LogInformation("The registered application started event listeners have been notified");
+            logger.LogInformation("Application [{ApplicationName}] has started on environment [{EnvironmentName}]",
+                WebHostEnvironment.ApplicationName, WebHostEnvironment.EnvironmentName);
         }
 
-        private static void OnApplicationStopping(ILogger logger)
+        private void OnApplicationStopping(ILogger logger)
         {
-            logger.LogInformation("{ApplicationName} application is stopping ...", ApplicationName);
+            logger.LogInformation("Application [{ApplicationName}] is stopping on environment [{EnvironmentName}] ...",
+                WebHostEnvironment.ApplicationName, WebHostEnvironment.EnvironmentName);
         }
 
-        private static void OnApplicationStopped(ILogger logger)
+        private void OnApplicationStopped(ILogger logger)
         {
-            logger.LogInformation("{ApplicationName} application has stopped", ApplicationName);
+            logger.LogInformation("Application [{ApplicationName}] has stopped on environment [{EnvironmentName}]",
+                WebHostEnvironment.ApplicationName, WebHostEnvironment.EnvironmentName);
         }
     }
 }

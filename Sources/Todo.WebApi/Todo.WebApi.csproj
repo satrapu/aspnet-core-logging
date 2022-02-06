@@ -6,6 +6,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Todo.ApplicationFlows\Todo.ApplicationFlows.csproj" />
+        <ProjectReference Include="..\Todo.Commons\Todo.Commons.csproj" />
         <ProjectReference Include="..\Todo.Logging\Todo.Logging.csproj" />
     </ItemGroup>
 
@@ -17,6 +18,7 @@
         <PackageReference Include="OpenTelemetry" />
         <PackageReference Include="OpenTelemetry.Contrib.Instrumentation.EntityFrameworkCore" />
         <PackageReference Include="OpenTelemetry.Exporter.Jaeger" />
+        <PackageReference Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" />
         <PackageReference Include="OpenTelemetry.Extensions.Hosting" />
         <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" />
     </ItemGroup>
