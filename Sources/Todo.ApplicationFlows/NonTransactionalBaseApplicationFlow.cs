@@ -57,7 +57,7 @@ namespace Todo.ApplicationFlows
                 using Activity flowActivity =
                     ActivitySources.TodoActivitySource
                         .StartActivity(flowName, ActivityKind.Server)
-                        .SetTag(nameof(flowInitiator), flowInitiator.GetNameOrDefault());
+                        ?.SetTag(nameof(flowInitiator), flowInitiator.GetNameOrDefault());
 
                 bool isSuccess = false;
                 Stopwatch stopwatch = Stopwatch.StartNew();
