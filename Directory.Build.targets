@@ -37,6 +37,7 @@
         <PackageReference Update="NunitXml.TestLogger" Version="3.0.117"/>
         <PackageReference Update="OpenTelemetry" Version="1.2.0-rc1" />
         <PackageReference Update="OpenTelemetry.Contrib.Instrumentation.EntityFrameworkCore" Version="1.0.0-beta2" />
+        <PackageReference Update="OpenTelemetry.Contrib.Preview" Version="1.0.0-beta2" />
         <PackageReference Update="OpenTelemetry.Exporter.Jaeger" Version="1.2.0-rc1" />
         <PackageReference Update="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.1.0" />
         <PackageReference Update="OpenTelemetry.Extensions.Hosting" Version="1.0.0-rc8" />

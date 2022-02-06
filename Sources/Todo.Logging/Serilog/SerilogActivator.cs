@@ -5,13 +5,13 @@ namespace Todo.Logging.Serilog
     using System.IO;
     using System.Linq;
 
-    using Commons.Constants;
-
     using global::Serilog;
 
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
+
+    using Todo.Commons.Constants;
 
     /// <summary>
     /// Contains extension methods used for integration Serilog with this application.
@@ -44,6 +44,15 @@ namespace Todo.Logging.Serilog
 
                 loggingBuilder
                     .ClearProviders()
+                    // Ensure events produces by ILogger will be exported by Open Telemetry to Jaeger.
+                    // See more here: https://github.com/open-telemetry/opentelemetry-dotnet/issues/1739.
+                    .AddOpenTelemetry(options =>
+                    {
+                        options.AttachLogsToActivityEvent();
+                        options.IncludeScopes = true;
+                        options.IncludeFormattedMessage = true;
+                        options.ParseStateValues = true;
+                    })
                     .AddSerilog(new LoggerConfiguration()
                         .ReadFrom.Configuration(configuration)
                         .CreateLogger(), dispose: true);

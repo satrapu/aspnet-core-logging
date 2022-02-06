@@ -879,6 +879,14 @@
           "OpenTelemetry.Api": "1.0.1"
         }
       },
+      "OpenTelemetry.Contrib.Preview": {
+        "type": "Transitive",
+        "resolved": "1.0.0-beta2",
+        "contentHash": "febtaMVJAMZ2+EHntqvMXvcsMEkA5F5FXKwODz9LM0UjJ5gfNTqjY36YTddPASEZBn0a6YLRqovRW1QnMJ46NQ==",
+        "dependencies": {
+          "OpenTelemetry": "1.1.0-beta3"
+        }
+      },
       "OpenTelemetry.Exporter.Jaeger": {
         "type": "Transitive",
         "resolved": "1.2.0-rc1",
@@ -1777,6 +1785,8 @@
         "type": "Project",
         "dependencies": {
           "Microsoft.ApplicationInsights.AspNetCore": "2.20.0",
+          "OpenTelemetry": "1.2.0-rc1",
+          "OpenTelemetry.Contrib.Preview": "1.0.0-beta2",
           "Serilog.AspNetCore": "4.1.0",
           "Serilog.Enrichers.Thread": "3.1.0",
           "Serilog.Sinks.ApplicationInsights": "3.1.0",
