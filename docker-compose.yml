@@ -55,7 +55,7 @@ services:
       
   jaeger:
     container_name: jaeger
-    image: jaegertracing/all-in-one:1.30
+    image: jaegertracing/all-in-one:1.31
     restart: unless-stopped
     ports:
       # Open Telemetry Protocol port where OpenTelemetry data will be pushed
@@ -73,6 +73,7 @@ services:
       - "5778:5778"
       # jaeger-collector port #1
       - "14268:14268"
+      # jaeger-collector port #2
       # admin port 
       # server health check is available via "/" endpoint (i.e., http://localhost:14269/)
       # server metrics are available via "/metrics" endpoint (i.e., http://localhost:14269/metrics)
@@ -93,7 +94,7 @@ services:
 
   pgadmin:
     container_name: pgadmin-ui
-    image: dpage/pgadmin4:5.2
+    image: dpage/pgadmin4:6.4
     restart: unless-stopped
     volumes:
       - pgadmin_data:/var/lib/pgadmin
@@ -110,7 +111,7 @@ services:
     
   seq:
     container_name: seq
-    image: datalust/seq:2021.2
+    image: datalust/seq:2021.4
     restart: unless-stopped
     volumes:
       - seq_data:/data
