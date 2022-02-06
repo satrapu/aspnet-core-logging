@@ -138,10 +138,6 @@ namespace Todo.WebApi
                         {
                             options.AgentHost = openTelemetryOptions.Exporters.Jaeger.AgentHost;
                             options.AgentPort = openTelemetryOptions.Exporters.Jaeger.AgentPort;
-                        })
-                        .AddOtlpExporter(options =>
-                        {
-                            options.Endpoint = openTelemetryOptions.Exporters.Otpl.Endpoint;
                         });
                 });
         }
