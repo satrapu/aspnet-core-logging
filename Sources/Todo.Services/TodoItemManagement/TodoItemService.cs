@@ -3,8 +3,10 @@ namespace Todo.Services.TodoItemManagement
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
+    using System.Diagnostics;
     using System.Linq;
     using System.Linq.Expressions;
+    using System.Runtime.CompilerServices;
     using System.Security.Principal;
     using System.Threading.Tasks;
 
@@ -15,6 +17,8 @@ namespace Todo.Services.TodoItemManagement
     using Persistence.Entities;
 
     using Security;
+
+    using Todo.Commons;
 
     /// <summary>
     /// An <see cref="ITodoItemService"/> implementation which persists data using Entity Framework Core.
@@ -28,6 +32,7 @@ namespace Todo.Services.TodoItemManagement
         private const string SortByLastUpdatedOn = nameof(TodoItem.LastUpdatedOn);
         private const string SortByName = nameof(TodoItem.Name);
         private static readonly Expression<Func<TodoItem, object>> DefaultKeySelector = todoItem => todoItem.Id;
+        private static readonly string TypeFullName = typeof(TodoItemService).FullName;
 
         /// <summary>
         /// Creates a new instance of the <see cref="TodoItemService"/> class.
@@ -43,6 +48,8 @@ namespace Todo.Services.TodoItemManagement
 
         public Task<IList<TodoItemInfo>> GetByQueryAsync(TodoItemQuery todoItemQuery)
         {
+            using Activity activity = ActivitySources.TodoActivitySource.StartActivity(CreateActivityName());
+
             Validator.ValidateObject(todoItemQuery, new ValidationContext(todoItemQuery), validateAllProperties: true);
 
             return InternalGetByQueryAsync(todoItemQuery);
@@ -50,6 +57,8 @@ namespace Todo.Services.TodoItemManagement
 
         public Task<long> AddAsync(NewTodoItemInfo newTodoItemInfo)
         {
+            using Activity activity = ActivitySources.TodoActivitySource.StartActivity(CreateActivityName());
+
             Validator.ValidateObject(newTodoItemInfo, new ValidationContext(newTodoItemInfo),
                 validateAllProperties: true);
 
@@ -58,6 +67,8 @@ namespace Todo.Services.TodoItemManagement
 
         public Task UpdateAsync(UpdateTodoItemInfo updateTodoItemInfo)
         {
+            using Activity activity = ActivitySources.TodoActivitySource.StartActivity(CreateActivityName());
+
             Validator.ValidateObject(updateTodoItemInfo, new ValidationContext(updateTodoItemInfo),
                 validateAllProperties: true);
 
@@ -66,6 +77,8 @@ namespace Todo.Services.TodoItemManagement
 
         public Task DeleteAsync(DeleteTodoItemInfo deleteTodoItemInfo)
         {
+            using Activity activity = ActivitySources.TodoActivitySource.StartActivity(CreateActivityName());
+
             if (deleteTodoItemInfo == null)
             {
                 throw new ArgumentNullException(nameof(deleteTodoItemInfo));
@@ -75,6 +88,11 @@ namespace Todo.Services.TodoItemManagement
                 validateAllProperties: true);
 
             return InternalDeleteAsync(deleteTodoItemInfo);
+        }
+
+        private static string CreateActivityName([CallerMemberName] string callerMemberName = "")
+        {
+            return $"{TypeFullName}.{callerMemberName}";
         }
 
         private async Task<IList<TodoItemInfo>> InternalGetByQueryAsync(TodoItemQuery todoItemQuery)
@@ -117,8 +135,8 @@ namespace Todo.Services.TodoItemManagement
             await todoDbContext.TodoItems.AddAsync(newTodoItem);
             await todoDbContext.SaveChangesAsync();
 
-            logger.LogInformation("Item with id {TodoItemId} has been added by user [{User}]"
-                , newTodoItem.Id, newTodoItem.CreatedBy);
+            logger.LogInformation("Item with id {TodoItemId} has been added by user [{User}]",
+                newTodoItem.Id, newTodoItem.CreatedBy);
 
             return newTodoItem.Id;
         }
@@ -141,8 +159,8 @@ namespace Todo.Services.TodoItemManagement
             todoDbContext.TodoItems.Update(existingTodoItem);
             await todoDbContext.SaveChangesAsync();
 
-            logger.LogInformation("Item with id {TodoItemId} has been updated by user [{User}]"
-                , existingTodoItem.Id, existingTodoItem.LastUpdatedBy);
+            logger.LogInformation("Item with id {TodoItemId} has been updated by user [{User}]",
+                existingTodoItem.Id, existingTodoItem.LastUpdatedBy);
         }
 
         private async Task InternalDeleteAsync(DeleteTodoItemInfo deleteTodoItemInfo)

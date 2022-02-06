@@ -10,6 +10,7 @@ namespace Todo.ApplicationFlows
 
     using Microsoft.Extensions.Logging;
 
+    using Todo.Commons;
     using Todo.Services.Security;
 
     /// <summary>
@@ -53,6 +54,11 @@ namespace Todo.ApplicationFlows
                 [Logging.ApplicationFlowName] = flowName
             }))
             {
+                using Activity flowActivity =
+                    ActivitySources.TodoActivitySource
+                        .StartActivity(flowName, ActivityKind.Server)
+                        .SetTag(nameof(flowInitiator), flowInitiator.GetNameOrDefault());
+
                 bool isSuccess = false;
                 Stopwatch stopwatch = Stopwatch.StartNew();
                 string flowInitiatorName = flowInitiator.GetNameOrDefault();
