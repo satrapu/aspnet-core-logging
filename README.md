@@ -228,4 +228,4 @@ In order to inspect application log events generated via [Serilog](https://seril
 
 In order to inspect application traces, navigate to [http://localhost:16686/search](http://localhost:16686/search), which will open [Jaeger](https://www.jaegertracing.io/) UI.  
 To see Jaeger metrics, navigate to [http://localhost:14269/metrics](http://localhost:14269/metrics).  
-To see Jaeger health, navigate to [http://localhost:14269/](http://localhost:14269/).
+To see Jaeger health status, navigate to [http://localhost:14269/](http://localhost:14269/).
