@@ -16,17 +16,17 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
         </PackageReference>
 
-        <PackageReference Update="EntityFrameworkCoreMock.Moq" Version="2.3.0"/>
-        <PackageReference Update="FluentAssertions" Version="6.4.0"/>
+        <PackageReference Update="EntityFrameworkCoreMock.Moq" Version="2.4.0"/>
+        <PackageReference Update="FluentAssertions" Version="6.5.1"/>
         <PackageReference Update="Microsoft.ApplicationInsights.AspNetCore" Version="2.20.0"/>
         <PackageReference Update="Microsoft.AspNet.WebApi.Client" Version="5.2.7"/>
-        <PackageReference Update="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.1"/>
-        <PackageReference Update="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.1"/>
-        <PackageReference Update="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.1"/>
+        <PackageReference Update="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.2"/>
+        <PackageReference Update="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.2"/>
+        <PackageReference Update="Microsoft.EntityFrameworkCore.InMemory" Version="6.0.2"/>
         <PackageReference Update="Microsoft.Extensions.Configuration.Binder" Version="6.0.0"/>
         <PackageReference Update="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.0" />
         <PackageReference Update="Microsoft.Extensions.Logging.Abstractions" Version="6.0.0"/>
-        <PackageReference Update="Microsoft.NET.Test.Sdk" Version="17.0.0"/>
+        <PackageReference Update="Microsoft.NET.Test.Sdk" Version="17.1.0"/>
         <PackageReference Update="Moq" Version="4.16.1"/>
         <PackageReference Update="Newtonsoft.Json" Version="13.0.1" />
         <PackageReference Update="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.3"/>
@@ -40,7 +40,7 @@
         <PackageReference Update="OpenTelemetry.Exporter.Jaeger" Version="1.2.0-rc1" />
         <PackageReference Update="OpenTelemetry.Extensions.Hosting" Version="1.0.0-rc8" />
         <PackageReference Update="OpenTelemetry.Instrumentation.AspNetCore" Version="1.0.0-rc8" />
-        <PackageReference Update="Serilog.AspNetCore" Version="4.1.0"/>
+        <PackageReference Update="Serilog.AspNetCore" Version="5.0.0"/>
         <PackageReference Update="Serilog.Enrichers.Thread" Version="3.1.0"/>
         <PackageReference Update="Serilog.Sinks.ApplicationInsights" Version="3.1.0"/>
         <PackageReference Update="Serilog.Sinks.Seq" Version="5.1.1"/>
@@ -54,6 +54,6 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
 
-        <PackageReference Update="System.IdentityModel.Tokens.Jwt" Version="6.15.1"/>
+        <PackageReference Update="System.IdentityModel.Tokens.Jwt" Version="6.16.0"/>
     </ItemGroup>
 </Project>
