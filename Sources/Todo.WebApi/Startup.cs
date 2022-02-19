@@ -1,6 +1,7 @@
 namespace Todo.WebApi
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Security.Claims;
     using System.Text;
@@ -26,7 +27,6 @@ namespace Todo.WebApi
     using Todo.Logging.ApplicationInsights;
     using Todo.Logging.Http;
     using Todo.Logging.Serilog;
-    using Todo.Profiling;
     using Todo.WebApi.Authorization;
     using Todo.WebApi.ExceptionHandling;
     using Todo.WebApi.Models;
@@ -63,7 +63,6 @@ namespace Todo.WebApi
             ConfigureExceptionHandling(services);
             ConfigureLogging(services);
             ConfigureOpenTelemetry(services);
-            ConfigureProfiling(services);
             ConfigureSecurity(services);
             ConfigureWebApi(services);
         }
@@ -89,7 +88,6 @@ namespace Todo.WebApi
                     ExceptionHandler = CustomExceptionHandler.HandleException,
                     AllowStatusCode404Response = true
                 })
-                .UseMiniProfiler(Configuration)
                 .UseHttpsRedirection()
                 .UseRouting()
                 .UseAuthentication()
@@ -127,7 +125,18 @@ namespace Todo.WebApi
                         .SetResourceBuilder(
                             ResourceBuilder
                                 .CreateDefault()
-                                .AddService($"{WebHostEnvironment.ApplicationName}::{WebHostEnvironment.EnvironmentName}"))
+                                .AddService(WebHostEnvironment.ApplicationName)
+                                .AddAttributes(new Dictionary<string, object>
+                                {
+                                    { "service.instance.attributes.custom.EnvironmentName", WebHostEnvironment.EnvironmentName },
+                                    { "service.instance.attributes.custom.ContentRootPath", WebHostEnvironment.ContentRootPath },
+                                    { "service.instance.attributes.custom.WebRootPath", WebHostEnvironment.WebRootPath ?? "<null>" },
+                                    { "service.instance.attributes.custom.OperationSystem", Environment.OSVersion.ToString() },
+                                    { "service.instance.attributes.custom.MachineName", Environment.MachineName },
+                                    { "service.instance.attributes.custom.ProcessorCount", Environment.ProcessorCount },
+                                    { "service.instance.attributes.custom.DotNetVersion", Environment.Version.ToString() }
+
+                                }))
                         .AddAspNetCoreInstrumentation()
                         .AddEntityFrameworkCoreInstrumentation(options =>
                         {
@@ -217,11 +226,6 @@ namespace Todo.WebApi
             // Configure options used for customizing generating JWT tokens.
             // Options pattern: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-5.0.
             services.Configure<GenerateJwtOptions>(generateJwtOptions);
-        }
-
-        private void ConfigureProfiling(IServiceCollection services)
-        {
-            services.ActivateMiniProfiler(Configuration);
         }
 
         private static void ConfigureWebApi(IServiceCollection services)

@@ -2,7 +2,7 @@
 
 ## Description
 
-This repo shows ASP.NET Core 6.x logging in action; it also serves as a learning, experimenting and teaching path for .NET, Azure Pipelines and other technologies & tools.
+This repository shows ASP.NET Core 6.x logging in action; it also serves as a learning, experimenting and teaching path for .NET, Azure Pipelines and other technologies & tools.
 
 :exclamation: Currently this web API uses JSON web tokens (JWT) for authentication & authorization purposes, but momentarily the mechanism used for generating these tokens has been __greatly__ simplified to the point of being actually naive as my focus is set on other topics; on the other hand, I do intend on providing a more realistic implementation in a not so far away future.
 
@@ -220,14 +220,10 @@ dotnet ef database drop --startup-project ./Sources/Todo.WebApi --project ./Sour
 Ensure the `MigrateDatabase` configuration property is set to `true`.
 See more about applying EF Core migrations at runtime [here](https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/applying?tabs=dotnet-core-cli#apply-migrations-at-runtime).
 
-### Inspect MiniProfiler results
-
-If you enable [MiniProfiler](https://miniprofiler.com/) by setting the configuration property `MiniProfiler:Enable` to `true`, you can navigate to the following MiniProfiler URLs:
-
-- List all requests: [https://localhost:5001/miniprofiler/results-index](https://localhost:5001/miniprofiler/results-index)
-- Inspect current request: [https://localhost:5001/miniprofiler/results](https://localhost:5001/miniprofiler/results)
-- List all requests as JSON: [https://localhost:5001/miniprofiler/results-list](https://localhost:5001/miniprofiler/results-list)
-
 ### Inspect log events using Seq
 
 In order to inspect application log events generated via [Serilog](https://serilog.net/), navigate to [http://localhost:8888](http://localhost:8888), which will open [Seq](https://datalust.co/seq) UI.
+
+### Inspect traces using Jaeger
+
+In order to inspect application traces, navigate to [http://localhost:16686/search](http://localhost:16686/search), which will open [Jaeger](https://www.jaegertracing.io/) UI.
