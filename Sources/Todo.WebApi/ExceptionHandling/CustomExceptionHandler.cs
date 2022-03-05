@@ -12,10 +12,6 @@ namespace Todo.WebApi.ExceptionHandling
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
 
-    using Npgsql;
-
-    using Services.TodoItemManagement;
-
     /// <summary>
     /// Handles any exceptions occurring inside this application.
     /// <br/>
@@ -25,7 +21,7 @@ namespace Todo.WebApi.ExceptionHandling
     {
         private const string ErrorData = "errorData";
         private const string ErrorId = "errorId";
-        private const string ErrorKey = "errorKey";
+        private const string RootCauseKey = "rootCauseKey";
         private const string ProblemDetailContentType = "application/problem+json";
 
         /// <summary>
@@ -57,7 +53,7 @@ namespace Todo.WebApi.ExceptionHandling
                 "An unexpected error with id: {ErrorId} has been caught; see more details here: {@ProblemDetails}",
                 problemDetails.Extensions[ErrorId], problemDetails);
 
-            // satrapu April 30th, 2021: Do not send exception Data dictionary over the wire since it may contain
+            // @satrapu April 30th, 2021: Do not send exception Data dictionary over the wire since it may contain
             // sensitive data!
             problemDetails.Extensions.Remove(ErrorData);
 
@@ -73,52 +69,22 @@ namespace Todo.WebApi.ExceptionHandling
 
         private static ProblemDetails ConvertToProblemDetails(Exception exception, bool includeDetails)
         {
+            var exceptionMappingResult = ExceptionMappingResults.GetMappingResult(exception);
+
             var problemDetails = new ProblemDetails
             {
-                Status = (int) GetHttpStatusCode(exception),
+                Status = (int) exceptionMappingResult.HttpStatusCode,
                 Title = "An unexpected error occurred while trying to process the current request",
                 Detail = includeDetails ? exception?.ToString() : string.Empty,
                 Extensions =
                 {
                     {ErrorData, exception?.Data},
                     {ErrorId, Guid.NewGuid().ToString("N")},
-                    {ErrorKey, GetErrorKey(exception)}
+                    {RootCauseKey, exceptionMappingResult.RootCauseKey}
                 }
             };
 
             return problemDetails;
-        }
-
-        private static HttpStatusCode GetHttpStatusCode(Exception exception)
-        {
-            return exception switch
-            {
-                EntityNotFoundException _ => HttpStatusCode.NotFound,
-
-                // Return HTTP status code 503 in case calling the underlying database resulted in an exception.
-                // See more here: https://stackoverflow.com/q/1434315.
-                NpgsqlException _ => HttpStatusCode.ServiceUnavailable,
-
-                // Also return HTTP status code 503 in case the inner exception was thrown by a call made against the
-                // underlying database.
-                { InnerException: NpgsqlException _ } => HttpStatusCode.ServiceUnavailable,
-
-                // Fallback to HTTP status code 500.
-                _ => HttpStatusCode.InternalServerError
-            };
-        }
-
-        private static string GetErrorKey(Exception exception)
-        {
-            return exception switch
-            {
-                EntityNotFoundException _ => "entity-not-found",
-                NpgsqlException _ => "database-error",
-                { InnerException: NpgsqlException _ } => "database-error",
-
-                // Fallback value
-                _ => "internal-server-error"
-            };
         }
     }
 }
