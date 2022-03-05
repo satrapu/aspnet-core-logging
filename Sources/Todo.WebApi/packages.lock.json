@@ -73,6 +73,16 @@
           "OpenTelemetry": "1.2.0-beta1"
         }
       },
+      "Serilog.Enrichers.Span": {
+        "type": "Direct",
+        "requested": "[2.2.0, )",
+        "resolved": "2.2.0",
+        "contentHash": "e4H7Qt650857b5Zh8HqXqkr7DuAUd4zLouGnGoE67/RdEeQTnaipQw6O5TTC09h0dCdBuh3q+9+34HGY3fetIg==",
+        "dependencies": {
+          "Serilog": "2.8.0",
+          "System.Diagnostics.DiagnosticSource": "6.0.0"
+        }
+      },
       "SonarAnalyzer.CSharp": {
         "type": "Direct",
         "requested": "[8.35.0.42613, )",

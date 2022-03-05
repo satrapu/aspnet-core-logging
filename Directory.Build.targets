@@ -41,6 +41,7 @@
         <PackageReference Update="OpenTelemetry.Extensions.Hosting" Version="1.0.0-rc8" />
         <PackageReference Update="OpenTelemetry.Instrumentation.AspNetCore" Version="1.0.0-rc8" />
         <PackageReference Update="Serilog.AspNetCore" Version="5.0.0"/>
+        <PackageReference Update="Serilog.Enrichers.Span" Version="2.2.0" />
         <PackageReference Update="Serilog.Enrichers.Thread" Version="3.1.0"/>
         <PackageReference Update="Serilog.Sinks.ApplicationInsights" Version="3.1.0"/>
         <PackageReference Update="Serilog.Sinks.Seq" Version="5.1.1"/>

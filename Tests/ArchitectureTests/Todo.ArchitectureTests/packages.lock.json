@@ -703,6 +703,15 @@
           "Serilog.Sinks.File": "5.0.0"
         }
       },
+      "Serilog.Enrichers.Span": {
+        "type": "Transitive",
+        "resolved": "2.2.0",
+        "contentHash": "e4H7Qt650857b5Zh8HqXqkr7DuAUd4zLouGnGoE67/RdEeQTnaipQw6O5TTC09h0dCdBuh3q+9+34HGY3fetIg==",
+        "dependencies": {
+          "Serilog": "2.8.0",
+          "System.Diagnostics.DiagnosticSource": "6.0.0"
+        }
+      },
       "Serilog.Enrichers.Thread": {
         "type": "Transitive",
         "resolved": "3.1.0",
@@ -1201,6 +1210,7 @@
           "OpenTelemetry.Exporter.Jaeger": "1.2.0-rc1",
           "OpenTelemetry.Extensions.Hosting": "1.0.0-rc8",
           "OpenTelemetry.Instrumentation.AspNetCore": "1.0.0-rc8",
+          "Serilog.Enrichers.Span": "2.2.0",
           "Todo.ApplicationFlows": "1.0.0",
           "Todo.Commons": "1.0.0",
           "Todo.Logging": "1.0.0"
