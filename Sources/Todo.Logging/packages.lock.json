@@ -60,6 +60,16 @@
           "Serilog.Sinks.File": "5.0.0"
         }
       },
+      "Serilog.Enrichers.Span": {
+        "type": "Direct",
+        "requested": "[2.2.0, )",
+        "resolved": "2.2.0",
+        "contentHash": "e4H7Qt650857b5Zh8HqXqkr7DuAUd4zLouGnGoE67/RdEeQTnaipQw6O5TTC09h0dCdBuh3q+9+34HGY3fetIg==",
+        "dependencies": {
+          "Serilog": "2.8.0",
+          "System.Diagnostics.DiagnosticSource": "6.0.0"
+        }
+      },
       "Serilog.Enrichers.Thread": {
         "type": "Direct",
         "requested": "[3.1.0, )",

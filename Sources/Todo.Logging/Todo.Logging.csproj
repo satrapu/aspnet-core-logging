@@ -13,6 +13,7 @@
         <PackageReference Include="OpenTelemetry" />
         <PackageReference Include="OpenTelemetry.Contrib.Preview" />
         <PackageReference Include="Serilog.AspNetCore" />
+        <PackageReference Include="Serilog.Enrichers.Span" />
         <PackageReference Include="Serilog.Enrichers.Thread" />
         <PackageReference Include="Serilog.Sinks.ApplicationInsights" />
         <PackageReference Include="Serilog.Sinks.Seq" />

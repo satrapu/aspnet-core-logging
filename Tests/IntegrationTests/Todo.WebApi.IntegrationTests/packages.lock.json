@@ -1346,6 +1346,7 @@
           "OpenTelemetry": "1.2.0-rc1",
           "OpenTelemetry.Contrib.Preview": "1.0.0-beta2",
           "Serilog.AspNetCore": "5.0.0",
+          "Serilog.Enrichers.Span": "2.2.0",
           "Serilog.Enrichers.Thread": "3.1.0",
           "Serilog.Sinks.ApplicationInsights": "3.1.0",
           "Serilog.Sinks.Seq": "5.1.1",
@@ -1377,7 +1378,6 @@
           "OpenTelemetry.Exporter.Jaeger": "1.2.0-rc1",
           "OpenTelemetry.Extensions.Hosting": "1.0.0-rc8",
           "OpenTelemetry.Instrumentation.AspNetCore": "1.0.0-rc8",
-          "Serilog.Enrichers.Span": "2.2.0",
           "Todo.ApplicationFlows": "1.0.0",
           "Todo.Commons": "1.0.0",
           "Todo.Logging": "1.0.0"
