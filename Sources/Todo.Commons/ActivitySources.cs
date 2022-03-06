@@ -12,9 +12,9 @@ namespace Todo.Commons
             var activityListener = new ActivityListener
             {
                 ShouldListenTo = _ => true,
-                SampleUsingParentId = (ref ActivityCreationOptions<string> activityOptions)
+                SampleUsingParentId = (ref ActivityCreationOptions<string> _)
                     => ActivitySamplingResult.AllDataAndRecorded,
-                Sample = (ref ActivityCreationOptions<ActivityContext> activityOptions)
+                Sample = (ref ActivityCreationOptions<ActivityContext> _)
                     => ActivitySamplingResult.AllDataAndRecorded,
             };
 
