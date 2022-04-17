@@ -54,14 +54,14 @@ namespace Todo.ApplicationFlows
                 [Logging.ApplicationFlowName] = flowName
             }))
             {
+                string flowInitiatorName = flowInitiator.GetNameOrDefault();
+
                 using Activity flowActivity =
                     ActivitySources.TodoActivitySource
                         .StartActivity(flowName, ActivityKind.Server)
-                        ?.SetTag(nameof(flowInitiator), flowInitiator.GetNameOrDefault());
+                        ?.SetTag(nameof(flowInitiator), flowInitiatorName);
 
                 bool isSuccess = false;
-                Stopwatch stopwatch = Stopwatch.StartNew();
-                string flowInitiatorName = flowInitiator.GetNameOrDefault();
 
                 try
                 {
@@ -76,14 +76,14 @@ namespace Todo.ApplicationFlows
                 }
                 finally
                 {
-                    stopwatch.Stop();
+                    flowActivity?.Stop();
 
                     logger.LogInformation(
                         "User [{FlowInitiator}] has finished executing application flow [{ApplicationFlowName}] "
                         + "with the outcome: [{ApplicationFlowOutcome}]; "
                         + "time taken: [{ApplicationFlowDurationAsTimeSpan}] ({ApplicationFlowDurationInMillis}ms)",
-                        flowInitiatorName, flowName, isSuccess ? "success" : "failure", stopwatch.Elapsed,
-                        stopwatch.ElapsedMilliseconds);
+                        flowInitiatorName, flowName, isSuccess ? "success" : "failure", flowActivity?.Duration,
+                        flowActivity?.Duration.TotalMilliseconds);
                 }
             }
         }
