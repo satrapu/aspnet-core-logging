@@ -151,8 +151,8 @@
       },
       "Microsoft.AspNetCore.Authentication.JwtBearer": {
         "type": "Transitive",
-        "resolved": "6.0.3",
-        "contentHash": "yXadCTYfe0AhgVZxLhG4ltra1BhteDumot2YRtQLOpJIVIPzanNsbFjeXomXiWWiU8qWNrK++gGYox3DaJBThg==",
+        "resolved": "6.0.4",
+        "contentHash": "joDS3+lD1i9qcdFLWP4D316t3bHpezmTNOzbMIf9ZcRPX4QTuiUutZcQn/kZplf3BiLHqwUChZXxPjCAMKaKAQ==",
         "dependencies": {
           "Microsoft.IdentityModel.Protocols.OpenIdConnect": "6.10.0"
         }
@@ -257,12 +257,12 @@
       },
       "Microsoft.EntityFrameworkCore": {
         "type": "Transitive",
-        "resolved": "6.0.1",
-        "contentHash": "UmZBVaRbOgtbYkp4x8W9j8HBd7ywzPRPj5StSiqFt/nsH6nOf1eQmHFfjIRb70cxsuC0NbkFBAAoUHFRCscCKA==",
+        "resolved": "6.0.4",
+        "contentHash": "gTh3SJsF5WNjEmG32kYc3U4tjeTIv55QOrwHAJcF/xtrIVMteDHMArGC35N0dw86WFY0v8yFkKYKOIOln4jkfQ==",
         "dependencies": {
-          "Microsoft.EntityFrameworkCore.Abstractions": "6.0.1",
-          "Microsoft.EntityFrameworkCore.Analyzers": "6.0.1",
-          "Microsoft.Extensions.Caching.Memory": "6.0.0",
+          "Microsoft.EntityFrameworkCore.Abstractions": "6.0.4",
+          "Microsoft.EntityFrameworkCore.Analyzers": "6.0.4",
+          "Microsoft.Extensions.Caching.Memory": "6.0.1",
           "Microsoft.Extensions.DependencyInjection": "6.0.0",
           "Microsoft.Extensions.Logging": "6.0.0",
           "System.Collections.Immutable": "6.0.0",
@@ -271,20 +271,20 @@
       },
       "Microsoft.EntityFrameworkCore.Abstractions": {
         "type": "Transitive",
-        "resolved": "6.0.1",
-        "contentHash": "JM55+h9Ln9MZAFikvmgrmDoIt4Zz9ZWZpNrmyi9QTVuJMzQQOEnJkISKp5Ebvpno6Jt00Gkrfmvu8K5mFPO+dA=="
+        "resolved": "6.0.4",
+        "contentHash": "jycTQF0FUJp10cGWBmtsyFhQNeISU9CltDRKCaNiX4QRSEFzgRgaFN4vAFK0T+G5etmXugyddijE4NWCGtgznQ=="
       },
       "Microsoft.EntityFrameworkCore.Analyzers": {
         "type": "Transitive",
-        "resolved": "6.0.1",
-        "contentHash": "fp8VTLv1up7EGAa9Daf+IErpq63hiKtWeApoxgnkMjURdjkbVcwaA4AozwHjEqVVQugGqwroHes4HVp24cDDAw=="
+        "resolved": "6.0.4",
+        "contentHash": "t12WodVyGGP2CuLo7R1qwcawHY5zlg+GiQzvkceZpsjcFJVyTFFBFDPg1isBtzurLzWsl+G3z5fVXeic90mPxg=="
       },
       "Microsoft.EntityFrameworkCore.Relational": {
         "type": "Transitive",
-        "resolved": "6.0.1",
-        "contentHash": "abaCEEeeB0xlMYDD+m9kmhQh5aipJ5s3UbyQVBfMaZeCiZHXST0eWuJRX63E3e7K/mju5WEHiybV/hizng7q/w==",
+        "resolved": "6.0.4",
+        "contentHash": "E867NbEXYRTElBF5ff+1AN5Awa1jkORy/Rrm0ueibaTAV5uw89LsLoH6yTe+b9urZTWMHtLfGd1RDdNjk8+KzA==",
         "dependencies": {
-          "Microsoft.EntityFrameworkCore": "6.0.1",
+          "Microsoft.EntityFrameworkCore": "6.0.4",
           "Microsoft.Extensions.Configuration.Abstractions": "6.0.0"
         }
       },
@@ -298,8 +298,8 @@
       },
       "Microsoft.Extensions.Caching.Memory": {
         "type": "Transitive",
-        "resolved": "6.0.0",
-        "contentHash": "Ve3BlCzhAlVp5IgO3+8dacAhZk1A0GlIlFNkAcfR2TfAibLKWIt5DhVJZfu4YtW+XZ89OjYf/agMcgjDtPxdGA==",
+        "resolved": "6.0.1",
+        "contentHash": "B4y+Cev05eMcjf1na0v9gza6GUtahXbtY1JCypIgx3B4Ea/KAgsWyXEmW4q6zMbmTMtKzmPVk09rvFJirvMwTg==",
         "dependencies": {
           "Microsoft.Extensions.Caching.Abstractions": "6.0.0",
           "Microsoft.Extensions.DependencyInjection.Abstractions": "6.0.0",
@@ -483,16 +483,16 @@
       },
       "Microsoft.IdentityModel.JsonWebTokens": {
         "type": "Transitive",
-        "resolved": "6.16.0",
-        "contentHash": "FJtXVXvjoza64VPFOPBxqnhe0yyQ5B/7A09+RpTXIzowr5+A4xcX42patsLrNGmFUvXZAHhS2u/6ojTzhYatpg==",
+        "resolved": "6.17.0",
+        "contentHash": "I3cSVE185qF3a222/iQIdmBFhrhZBtz7wZ1RUUbMuHC1un79XCI7vggbWdmbqIttFcUoeziemadO6t+3FLjcSA==",
         "dependencies": {
-          "Microsoft.IdentityModel.Tokens": "6.16.0"
+          "Microsoft.IdentityModel.Tokens": "6.17.0"
         }
       },
       "Microsoft.IdentityModel.Logging": {
         "type": "Transitive",
-        "resolved": "6.16.0",
-        "contentHash": "Fuo5SpYUpFRw90hBM3PDA1uQsrHmbIaxvwkldJcfi0O51gz/qjSFMe8136NFRoKA3NxZZScpz/47oFkRU2WA/A=="
+        "resolved": "6.17.0",
+        "contentHash": "Ix6/CMLDoo939NDf1ARDuGK6YERY7pAX9WYbfwb4gZqx7r52unMFIykJk+zlEBX7jjtbDz/0uzikQFvheV9KsQ=="
       },
       "Microsoft.IdentityModel.Protocols": {
         "type": "Transitive",
@@ -514,11 +514,11 @@
       },
       "Microsoft.IdentityModel.Tokens": {
         "type": "Transitive",
-        "resolved": "6.16.0",
-        "contentHash": "dL7r4bdRbDG0RmyYGw9cpO/pA3GVaxV+lI1ConYuQuRiAxd1ONFlxHue1o8wR8+lEB972cekzfj45WSNaq3+xA==",
+        "resolved": "6.17.0",
+        "contentHash": "mhOe+d9BQg5U45TkTCyXAFOjl7RvwaFj6v9qo8b+WFolkuGsfjSFfQ+WI9D3ho9sD/fK75gvL4JptmjLzyUPkw==",
         "dependencies": {
           "Microsoft.CSharp": "4.5.0",
-          "Microsoft.IdentityModel.Logging": "6.16.0",
+          "Microsoft.IdentityModel.Logging": "6.17.0",
           "System.Security.Cryptography.Cng": "4.5.0"
         }
       },
@@ -596,21 +596,21 @@
       },
       "Npgsql": {
         "type": "Transitive",
-        "resolved": "6.0.3",
-        "contentHash": "yt/3XFRhHsJ01a4+qHM9+0mtitQ3DY2wJLyGP9vtvZa1cB1nSAw762GJGdSX3Bbc7wZKzeo4dc4drD3yvQe7gA==",
+        "resolved": "6.0.4",
+        "contentHash": "SJMlOmFHr32oOzVXeHmarGaBKkhi0wHVN/rzuu2tUSJ4Qx2AkHCpr9R/DhLWwDiklqgzFU++9wkFyGJxbx/zzg==",
         "dependencies": {
           "System.Runtime.CompilerServices.Unsafe": "6.0.0"
         }
       },
       "Npgsql.EntityFrameworkCore.PostgreSQL": {
         "type": "Transitive",
-        "resolved": "6.0.3",
-        "contentHash": "4FJ4ww7EdMKlg0Bdug783V5+OVTczu7HF1ra7FOWin/3w1v/EplVGXUQlW/4JPVloe6nnsnvmfzKCY4JiHspHw==",
+        "resolved": "6.0.4",
+        "contentHash": "fzgRmBd3nAFvKt/L70sJfFWAdobtwDEeOzOzruJq9og97O8/5B96inQOAgOpYyaUjPYpS4ZS5/bxm3vnOJ0+pQ==",
         "dependencies": {
-          "Microsoft.EntityFrameworkCore": "6.0.1",
-          "Microsoft.EntityFrameworkCore.Abstractions": "6.0.1",
-          "Microsoft.EntityFrameworkCore.Relational": "6.0.1",
-          "Npgsql": "6.0.3"
+          "Microsoft.EntityFrameworkCore": "6.0.4",
+          "Microsoft.EntityFrameworkCore.Abstractions": "6.0.4",
+          "Microsoft.EntityFrameworkCore.Relational": "6.0.4",
+          "Npgsql": "6.0.4"
         }
       },
       "NuGet.Frameworks": {
@@ -620,20 +620,20 @@
       },
       "OpenTelemetry": {
         "type": "Transitive",
-        "resolved": "1.2.0-rc4",
-        "contentHash": "pq+aqYrKWS6Tl51I2rDu2bNRiU1k3ypz5b9CpRKmcBNMgsEJ4sYl6JJ4kGnhs/c1r4wkBd70zwbARbStrpEZXw==",
+        "resolved": "1.2.0",
+        "contentHash": "GZshoTI5XWrFvkEia8ynA8OL6HPVdLAfgbNBzkSS+lYhYrjVNNHbi+He8KzsoNA++JlB/yEAQOtKbrAipliCRQ==",
         "dependencies": {
           "Microsoft.Extensions.Logging": "2.1.0",
           "Microsoft.Extensions.Logging.Configuration": "2.1.0",
-          "OpenTelemetry.Api": "1.2.0-rc4",
+          "OpenTelemetry.Api": "1.2.0",
           "System.Collections.Immutable": "1.4.0",
           "System.Reflection.Emit.Lightweight": "4.7.0"
         }
       },
       "OpenTelemetry.Api": {
         "type": "Transitive",
-        "resolved": "1.2.0-rc4",
-        "contentHash": "J3aB+o6SlgBRSRJwtfYX3GsCN2GlLfNmsM0HGLZk41GWe/GOD+EL3dFOXd6sFtupGVWGmTC0iO29jfIORwO6Ww==",
+        "resolved": "1.2.0",
+        "contentHash": "4nWeCbXiOBlejEZXMzoX1HO1aOxv/pN8JpxkibfBIDfLEObj0NWw9LQFT8lnh7ZfZM46RV0vMDVWGNIJN4HG8g==",
         "dependencies": {
           "System.Diagnostics.DiagnosticSource": "6.0.0",
           "System.Reflection.Emit.Lightweight": "4.7.0"
@@ -657,10 +657,10 @@
       },
       "OpenTelemetry.Exporter.Jaeger": {
         "type": "Transitive",
-        "resolved": "1.2.0-rc4",
-        "contentHash": "MhvkK0P5q/pYWXdbnlFNOtAPVqGUAfCknC1wF+3eqg/oZmu/rVaVUNxpSW1RHSaM2JRks2oeycQuMxIaXW9tqA==",
+        "resolved": "1.2.0",
+        "contentHash": "SKsZxDUUGL5nl5Lb76zVeGBdfo10JJkKVmgzCs1YGItkht7H28DRvIM3jRjcPnwNBOjtQhBbXbLIWGOeUfm2Ng==",
         "dependencies": {
-          "OpenTelemetry": "1.2.0-rc4",
+          "OpenTelemetry": "1.2.0",
           "System.Threading.Tasks.Extensions": "4.5.3"
         }
       },
@@ -932,11 +932,11 @@
       },
       "System.IdentityModel.Tokens.Jwt": {
         "type": "Transitive",
-        "resolved": "6.16.0",
-        "contentHash": "QnZUawkmLkzEhwgvlqcm2YNAoRgz27zVY+2LzMBMWMcfFhl2Sv8aavZOeuFMofmYJsST9h7BilOn7MzFSUMihQ==",
+        "resolved": "6.17.0",
+        "contentHash": "G3rY4WLr54Mo+97+AEq0ANpiKvW7E8Qu5bKWfVMa7rkyJtvrOxUqp/OLqrGw/6JDbD5GlxnAtFKukGteUuB0rQ==",
         "dependencies": {
-          "Microsoft.IdentityModel.JsonWebTokens": "6.16.0",
-          "Microsoft.IdentityModel.Tokens": "6.16.0"
+          "Microsoft.IdentityModel.JsonWebTokens": "6.17.0",
+          "Microsoft.IdentityModel.Tokens": "6.17.0"
         }
       },
       "System.IO": {
@@ -1175,10 +1175,10 @@
         "type": "Project",
         "dependencies": {
           "Microsoft.ApplicationInsights.AspNetCore": "2.20.0",
-          "OpenTelemetry": "1.2.0-rc4",
+          "OpenTelemetry": "1.2.0",
           "OpenTelemetry.Contrib.Instrumentation.EntityFrameworkCore": "1.0.0-beta2",
           "OpenTelemetry.Contrib.Preview": "1.0.0-beta2",
-          "OpenTelemetry.Exporter.Jaeger": "1.2.0-rc4",
+          "OpenTelemetry.Exporter.Jaeger": "1.2.0",
           "OpenTelemetry.Extensions.Hosting": "1.0.0-rc9.1",
           "OpenTelemetry.Instrumentation.AspNetCore": "1.0.0-rc9.1",
           "Serilog.AspNetCore": "5.0.0",
@@ -1193,14 +1193,14 @@
         "type": "Project",
         "dependencies": {
           "Microsoft.Extensions.Configuration.Binder": "6.0.0",
-          "Npgsql.EntityFrameworkCore.PostgreSQL": "6.0.3",
+          "Npgsql.EntityFrameworkCore.PostgreSQL": "6.0.4",
           "Todo.Commons": "1.0.0"
         }
       },
       "todo.services": {
         "type": "Project",
         "dependencies": {
-          "System.IdentityModel.Tokens.Jwt": "6.16.0",
+          "System.IdentityModel.Tokens.Jwt": "6.17.0",
           "Todo.Persistence": "1.0.0"
         }
       },
@@ -1208,7 +1208,7 @@
         "type": "Project",
         "dependencies": {
           "Autofac.Extensions.DependencyInjection": "7.2.0",
-          "Microsoft.AspNetCore.Authentication.JwtBearer": "6.0.3",
+          "Microsoft.AspNetCore.Authentication.JwtBearer": "6.0.4",
           "Todo.ApplicationFlows": "1.0.0",
           "Todo.Commons": "1.0.0",
           "Todo.Logging": "1.0.0"
