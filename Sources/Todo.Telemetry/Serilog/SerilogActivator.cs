@@ -27,7 +27,7 @@ namespace Todo.Telemetry.Serilog
         /// <returns>The given <paramref name="services"/> instance.</returns>
         /// <exception cref="ArgumentNullException">Thrown when either <paramref name="services"/>
         /// or <paramref name="configuration"/> is null.</exception>
-        public static IServiceCollection AddSerilog(this IServiceCollection services, IConfiguration configuration)                                            
+        public static IServiceCollection AddSerilog(this IServiceCollection services, IConfiguration configuration)
         {
             ArgumentNullException.ThrowIfNull(services);
             ArgumentNullException.ThrowIfNull(configuration);
