@@ -5,10 +5,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <None Include="Todo.Telemetry.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
         <ProjectReference Include="..\Todo.ApplicationFlows\Todo.ApplicationFlows.csproj" />
         <ProjectReference Include="..\Todo.Commons\Todo.Commons.csproj" />
         <ProjectReference Include="..\Todo.Telemetry\Todo.Telemetry.csproj" />
