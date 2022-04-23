@@ -9,17 +9,6 @@ namespace Todo.Commons
 
         static ActivitySources()
         {
-            var activityListener = new ActivityListener
-            {
-                ShouldListenTo = _ => true,
-                SampleUsingParentId = (ref ActivityCreationOptions<string> _)
-                    => ActivitySamplingResult.AllDataAndRecorded,
-                Sample = (ref ActivityCreationOptions<ActivityContext> _)
-                    => ActivitySamplingResult.AllDataAndRecorded,
-            };
-
-            ActivitySource.AddActivityListener(activityListener);
-
             string applicationInformationalVersion =
                 Assembly
                     .GetEntryAssembly()
