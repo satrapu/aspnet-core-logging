@@ -10,7 +10,7 @@ namespace Todo.Telemetry.ApplicationInsights
     using Todo.Telemetry.ApplicationInsights.Configuration;
 
     /// <summary>
-    /// Contains extension methods used for integration Azure Application Insights with this application.
+    /// Contains extension methods used for integrating Azure Application Insights with this application.
     /// </summary>
     public static class ApplicationInsightsActivator
     {

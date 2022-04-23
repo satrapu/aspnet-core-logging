@@ -15,19 +15,19 @@ namespace Todo.Telemetry.Serilog
     using Todo.Telemetry.OpenTelemetry;
 
     /// <summary>
-    /// Contains extension methods used for integration Serilog with this application.
+    /// Contains extension methods used for integrating Serilog with this application.
     /// </summary>
     public static class SerilogActivator
     {
         /// <summary>
-        /// Adds Serilog logging provider to the current <paramref name="services"/> instance.
+        /// Adds Serilog logging provider to the given <paramref name="services"/> instance.
         /// </summary>
         /// <param name="services">The application services collection.</param>
         /// <param name="configuration">The application configuration.</param>
         /// <returns>The given <paramref name="services"/> instance.</returns>
         /// <exception cref="ArgumentNullException">Thrown when either <paramref name="services"/>
         /// or <paramref name="configuration"/> is null.</exception>
-        public static IServiceCollection AddSerilog(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddSerilog(this IServiceCollection services, IConfiguration configuration)                                            
         {
             ArgumentNullException.ThrowIfNull(services);
             ArgumentNullException.ThrowIfNull(configuration);
