@@ -1427,13 +1427,6 @@
           "System.Xml.ReaderWriter": "4.3.0"
         }
       },
-      "todo.applicationflows": {
-        "type": "Project",
-        "dependencies": {
-          "Todo.Commons": "1.0.0",
-          "Todo.Services": "1.0.0"
-        }
-      },
       "todo.commons": {
         "type": "Project",
         "dependencies": {
@@ -1473,18 +1466,6 @@
           "Serilog.Sinks.ApplicationInsights": "3.1.0",
           "Serilog.Sinks.Seq": "5.1.1",
           "Todo.Services": "1.0.0"
-        }
-      },
-      "todo.telemetry.unittests": {
-        "type": "Project",
-        "dependencies": {
-          "FluentAssertions": "6.6.0",
-          "Microsoft.NET.Test.Sdk": "17.1.0",
-          "Moq": "4.17.2",
-          "NUnit": "3.13.3",
-          "NUnit3TestAdapter": "4.2.1",
-          "NunitXml.TestLogger": "3.0.117",
-          "Todo.Telemetry": "1.0.0"
         }
       }
     }

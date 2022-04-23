@@ -14,7 +14,7 @@ namespace Todo.WebApi
     using Serilog.Core;
 
     using Todo.ApplicationFlows.DependencyInjection;
-    using Todo.Logging.DependencyInjection;
+    using Todo.Telemetry.DependencyInjection;
 
     /// <summary>
     /// Runs an application used for managing user todo items (aka user tasks).
@@ -79,7 +79,7 @@ namespace Todo.WebApi
                         // https://github.com/dotnet/aspnetcore/issues/14907#issuecomment-850407104.
 
                         containerBuilder
-                            .RegisterModule(new LoggingModule
+                            .RegisterModule(new TelemetryModule
                             {
                                 EnableHttpLogging =
                                     hostBuilderContext

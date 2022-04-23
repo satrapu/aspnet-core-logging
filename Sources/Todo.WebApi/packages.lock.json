@@ -1083,7 +1083,22 @@
           "Microsoft.Extensions.Logging.Abstractions": "6.0.1"
         }
       },
-      "todo.logging": {
+      "todo.persistence": {
+        "type": "Project",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration.Binder": "6.0.0",
+          "Npgsql.EntityFrameworkCore.PostgreSQL": "6.0.4",
+          "Todo.Commons": "1.0.0"
+        }
+      },
+      "todo.services": {
+        "type": "Project",
+        "dependencies": {
+          "System.IdentityModel.Tokens.Jwt": "6.17.0",
+          "Todo.Persistence": "1.0.0"
+        }
+      },
+      "todo.telemetry": {
         "type": "Project",
         "dependencies": {
           "Microsoft.ApplicationInsights.AspNetCore": "2.20.0",
@@ -1099,21 +1114,6 @@
           "Serilog.Sinks.ApplicationInsights": "3.1.0",
           "Serilog.Sinks.Seq": "5.1.1",
           "Todo.Services": "1.0.0"
-        }
-      },
-      "todo.persistence": {
-        "type": "Project",
-        "dependencies": {
-          "Microsoft.Extensions.Configuration.Binder": "6.0.0",
-          "Npgsql.EntityFrameworkCore.PostgreSQL": "6.0.4",
-          "Todo.Commons": "1.0.0"
-        }
-      },
-      "todo.services": {
-        "type": "Project",
-        "dependencies": {
-          "System.IdentityModel.Tokens.Jwt": "6.17.0",
-          "Todo.Persistence": "1.0.0"
         }
       }
     }

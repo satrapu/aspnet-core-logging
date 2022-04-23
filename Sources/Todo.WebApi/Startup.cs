@@ -20,10 +20,10 @@ namespace Todo.WebApi
     using Microsoft.IdentityModel.Tokens;
 
     using Todo.Commons.ApplicationEvents;
-    using Todo.Logging.ApplicationInsights;
-    using Todo.Logging.Http;
-    using Todo.Logging.OpenTelemetry;
-    using Todo.Logging.Serilog;
+    using Todo.Telemetry.ApplicationInsights;
+    using Todo.Telemetry.Http;
+    using Todo.Telemetry.OpenTelemetry;
+    using Todo.Telemetry.Serilog;
     using Todo.WebApi.Authorization;
     using Todo.WebApi.ExceptionHandling;
     using Todo.WebApi.ExceptionHandling.Configuration;

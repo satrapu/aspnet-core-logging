@@ -1163,7 +1163,22 @@
           "Microsoft.Extensions.Logging.Abstractions": "6.0.1"
         }
       },
-      "todo.logging": {
+      "todo.persistence": {
+        "type": "Project",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration.Binder": "6.0.0",
+          "Npgsql.EntityFrameworkCore.PostgreSQL": "6.0.4",
+          "Todo.Commons": "1.0.0"
+        }
+      },
+      "todo.services": {
+        "type": "Project",
+        "dependencies": {
+          "System.IdentityModel.Tokens.Jwt": "6.17.0",
+          "Todo.Persistence": "1.0.0"
+        }
+      },
+      "todo.telemetry": {
         "type": "Project",
         "dependencies": {
           "Microsoft.ApplicationInsights.AspNetCore": "2.20.0",
@@ -1181,21 +1196,6 @@
           "Todo.Services": "1.0.0"
         }
       },
-      "todo.persistence": {
-        "type": "Project",
-        "dependencies": {
-          "Microsoft.Extensions.Configuration.Binder": "6.0.0",
-          "Npgsql.EntityFrameworkCore.PostgreSQL": "6.0.4",
-          "Todo.Commons": "1.0.0"
-        }
-      },
-      "todo.services": {
-        "type": "Project",
-        "dependencies": {
-          "System.IdentityModel.Tokens.Jwt": "6.17.0",
-          "Todo.Persistence": "1.0.0"
-        }
-      },
       "todo.webapi": {
         "type": "Project",
         "dependencies": {
@@ -1203,7 +1203,7 @@
           "Microsoft.AspNetCore.Authentication.JwtBearer": "6.0.4",
           "Todo.ApplicationFlows": "1.0.0",
           "Todo.Commons": "1.0.0",
-          "Todo.Logging": "1.0.0"
+          "Todo.Telemetry": "1.0.0"
         }
       }
     }
