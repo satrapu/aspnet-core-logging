@@ -1,4 +1,4 @@
-namespace Todo.WebApi.ExceptionHandling
+namespace Todo.WebApi.ExceptionHandling.Configuration
 {
     using Microsoft.AspNetCore.Mvc;
 

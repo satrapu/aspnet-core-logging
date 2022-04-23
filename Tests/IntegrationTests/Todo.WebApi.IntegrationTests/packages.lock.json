@@ -1343,7 +1343,11 @@
         "dependencies": {
           "Microsoft.ApplicationInsights.AspNetCore": "2.20.0",
           "OpenTelemetry": "1.2.0-rc4",
+          "OpenTelemetry.Contrib.Instrumentation.EntityFrameworkCore": "1.0.0-beta2",
           "OpenTelemetry.Contrib.Preview": "1.0.0-beta2",
+          "OpenTelemetry.Exporter.Jaeger": "1.2.0-rc4",
+          "OpenTelemetry.Extensions.Hosting": "1.0.0-rc9.1",
+          "OpenTelemetry.Instrumentation.AspNetCore": "1.0.0-rc9.1",
           "Serilog.AspNetCore": "5.0.0",
           "Serilog.Enrichers.Span": "2.3.0",
           "Serilog.Enrichers.Thread": "3.1.0",
@@ -1372,11 +1376,6 @@
         "dependencies": {
           "Autofac.Extensions.DependencyInjection": "7.2.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "6.0.3",
-          "OpenTelemetry": "1.2.0-rc4",
-          "OpenTelemetry.Contrib.Instrumentation.EntityFrameworkCore": "1.0.0-beta2",
-          "OpenTelemetry.Exporter.Jaeger": "1.2.0-rc4",
-          "OpenTelemetry.Extensions.Hosting": "1.0.0-rc9.1",
-          "OpenTelemetry.Instrumentation.AspNetCore": "1.0.0-rc9.1",
           "Todo.ApplicationFlows": "1.0.0",
           "Todo.Commons": "1.0.0",
           "Todo.Logging": "1.0.0"

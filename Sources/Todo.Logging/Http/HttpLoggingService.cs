@@ -15,9 +15,8 @@ namespace Todo.Logging.Http
     public class HttpLoggingService : IHttpContextLoggingHandler, IHttpObjectConverter
     {
         private const int BufferSize = 1000;
-
-        private static readonly string[] textBasedHeaderNames = { "Accept", "Content-Type" };
-        private static readonly string[] textBasedHeaderValues = { "application/json", "application/xml", "text/" };
+        private static readonly string[] TextBasedHeaderNames = { "Accept", "Content-Type" };
+        private static readonly string[] TextBasedHeaderValues = { "application/json", "application/xml", "text/" };
         private const string AcceptableRequestUrlPrefix = "/api/";
         private readonly ILogger logger;
 
@@ -32,24 +31,22 @@ namespace Todo.Logging.Http
 
         public bool ShouldLog(HttpContext httpContext)
         {
-            if (httpContext == null)
-            {
-                throw new ArgumentNullException(nameof(httpContext));
-            }
+            ArgumentNullException.ThrowIfNull(httpContext);
 
             if (logger.IsEnabled(LogLevel.Debug))
             {
-                // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
-                logger.LogDebug($"Checking whether the HTTP context {httpContext.TraceIdentifier} should be logged or not ...");
+                logger.LogDebug("Checking whether the HTTP context {HttpContextTraceIdentifier} should be logged or not ...",
+                    httpContext?.TraceIdentifier);
             }
 
-            bool result = IsTextBased(httpContext.Request);
-            string willBeLoggedOutcome = result ? string.Empty : " NOT";
+            bool result = IsTextBased(httpContext?.Request);
 
             if (logger.IsEnabled(LogLevel.Debug))
             {
-                // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
-                logger.LogDebug($"HTTP context {httpContext.TraceIdentifier} will{willBeLoggedOutcome} be logged");
+                string willBeLoggedOutcome = result ? string.Empty : " NOT";
+
+                logger.LogDebug("HTTP context {HttpContextTraceIdentifier} will{WillBeLoggedOutcome} be logged",
+                     httpContext?.TraceIdentifier, willBeLoggedOutcome);
             }
 
             return result;
@@ -57,20 +54,14 @@ namespace Todo.Logging.Http
 
         public Task<string> ToLogMessageAsync(HttpRequest httpRequest)
         {
-            if (httpRequest == null)
-            {
-                throw new ArgumentNullException(nameof(httpRequest));
-            }
+            ArgumentNullException.ThrowIfNull(httpRequest);
 
             return InternalToLogMessageAsync(httpRequest);
         }
 
         public Task<string> ToLogMessageAsync(HttpResponse httpResponse)
         {
-            if (httpResponse == null)
-            {
-                throw new ArgumentNullException(nameof(httpResponse));
-            }
+            ArgumentNullException.ThrowIfNull(httpResponse);
 
             return InternalToLogMessageAsync(httpResponse);
         }
@@ -79,8 +70,8 @@ namespace Todo.Logging.Http
         {
             if (logger.IsEnabled(LogLevel.Debug))
             {
-                // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
-                logger.LogDebug($"Converting HTTP request {httpRequest.HttpContext.TraceIdentifier} ...");
+                logger.LogDebug("Converting HTTP request {HttpContextTraceIdentifier} ...",
+                    httpRequest.HttpContext.TraceIdentifier);
             }
 
             var stringBuilder = new StringBuilder(BufferSize);
@@ -107,8 +98,8 @@ namespace Todo.Logging.Http
         {
             if (logger.IsEnabled(LogLevel.Debug))
             {
-                // ReSharper disable once TemplateIsNotCompileTimeConstantProblem
-                logger.LogDebug($"Converting HTTP response {httpResponse.HttpContext.TraceIdentifier} ...");
+                logger.LogDebug("Converting HTTP response {HttpContextTraceIdentifier} ...",
+                    httpResponse.HttpContext.TraceIdentifier);
             }
 
             var stringBuilder = new StringBuilder(BufferSize);
@@ -133,14 +124,15 @@ namespace Todo.Logging.Http
 
         private static bool IsTextBased(HttpRequest httpRequest)
         {
-            return textBasedHeaderNames.Any(headerName => IsTextBased(httpRequest, headerName))
+            return TextBasedHeaderNames.Any(headerName => IsTextBased(httpRequest, headerName))
                 || httpRequest.Path.ToUriComponent().StartsWith(AcceptableRequestUrlPrefix);
         }
 
         private static bool IsTextBased(HttpRequest httpRequest, string headerName)
         {
             return httpRequest.Headers.TryGetValue(headerName, out var headerValues)
-                && textBasedHeaderValues.Any(acceptedHeaderValue => headerValues.Any(headerValue => headerValue.StartsWith(acceptedHeaderValue)));
+                && TextBasedHeaderValues.Any(acceptedHeaderValue
+                    => headerValues.Any(headerValue => headerValue.StartsWith(acceptedHeaderValue)));
         }
     }
 }

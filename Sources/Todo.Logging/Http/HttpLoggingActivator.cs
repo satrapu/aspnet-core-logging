@@ -6,7 +6,7 @@ namespace Todo.Logging.Http
     using Microsoft.Extensions.Configuration;
 
     /// <summary>
-    ///
+    /// Contains extension methods used for enabling HTTP logging for this application.
     /// </summary>
     public static class HttpLoggingActivator
     {

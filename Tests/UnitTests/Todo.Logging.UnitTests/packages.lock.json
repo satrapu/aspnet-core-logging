@@ -623,12 +623,46 @@
           "System.Reflection.Emit.Lightweight": "4.7.0"
         }
       },
+      "OpenTelemetry.Contrib.Instrumentation.EntityFrameworkCore": {
+        "type": "Transitive",
+        "resolved": "1.0.0-beta2",
+        "contentHash": "legTYmOM+bEQ+uXmMi5VgyEZWWXRkp7zJDZ2lbA10d+aN5Qykk150H8PuS3hrCvmho8bn/JZFDmiJjrzaDE0DA==",
+        "dependencies": {
+          "OpenTelemetry.Api": "1.0.1"
+        }
+      },
       "OpenTelemetry.Contrib.Preview": {
         "type": "Transitive",
         "resolved": "1.0.0-beta2",
         "contentHash": "febtaMVJAMZ2+EHntqvMXvcsMEkA5F5FXKwODz9LM0UjJ5gfNTqjY36YTddPASEZBn0a6YLRqovRW1QnMJ46NQ==",
         "dependencies": {
           "OpenTelemetry": "1.1.0-beta3"
+        }
+      },
+      "OpenTelemetry.Exporter.Jaeger": {
+        "type": "Transitive",
+        "resolved": "1.2.0-rc4",
+        "contentHash": "MhvkK0P5q/pYWXdbnlFNOtAPVqGUAfCknC1wF+3eqg/oZmu/rVaVUNxpSW1RHSaM2JRks2oeycQuMxIaXW9tqA==",
+        "dependencies": {
+          "OpenTelemetry": "1.2.0-rc4",
+          "System.Threading.Tasks.Extensions": "4.5.3"
+        }
+      },
+      "OpenTelemetry.Extensions.Hosting": {
+        "type": "Transitive",
+        "resolved": "1.0.0-rc9.1",
+        "contentHash": "AlodOzqLW+/FOB0fdlhVfk7r6/wkNFgVr/eitugdPE9IEI3WU1PT8VYDPVE2M+Xyof8+k2pjvQKn6IejrybYUQ==",
+        "dependencies": {
+          "Microsoft.Extensions.Hosting.Abstractions": "2.1.0",
+          "OpenTelemetry": "1.2.0-rc4"
+        }
+      },
+      "OpenTelemetry.Instrumentation.AspNetCore": {
+        "type": "Transitive",
+        "resolved": "1.0.0-rc9.1",
+        "contentHash": "//6Qy9iMjpA9JiGmX9xx2GQUB/WL3Fr4Z21naWdTQuhpc+4uLOxQDWCD1rfDZHi6S8S4HluatNZISZ4Mow+YNg==",
+        "dependencies": {
+          "OpenTelemetry": "1.2.0-rc4"
         }
       },
       "runtime.native.System": {
@@ -1406,7 +1440,11 @@
         "dependencies": {
           "Microsoft.ApplicationInsights.AspNetCore": "2.20.0",
           "OpenTelemetry": "1.2.0-rc4",
+          "OpenTelemetry.Contrib.Instrumentation.EntityFrameworkCore": "1.0.0-beta2",
           "OpenTelemetry.Contrib.Preview": "1.0.0-beta2",
+          "OpenTelemetry.Exporter.Jaeger": "1.2.0-rc4",
+          "OpenTelemetry.Extensions.Hosting": "1.0.0-rc9.1",
+          "OpenTelemetry.Instrumentation.AspNetCore": "1.0.0-rc9.1",
           "Serilog.AspNetCore": "5.0.0",
           "Serilog.Enrichers.Span": "2.3.0",
           "Serilog.Enrichers.Thread": "3.1.0",

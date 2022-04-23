@@ -1,14 +1,10 @@
 namespace Todo.WebApi
 {
     using System;
-    using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Security.Claims;
     using System.Text;
     using System.Threading.Tasks;
-
-    using global::OpenTelemetry.Resources;
-    using global::OpenTelemetry.Trace;
 
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Authorization;
@@ -26,11 +22,12 @@ namespace Todo.WebApi
     using Todo.Commons.ApplicationEvents;
     using Todo.Logging.ApplicationInsights;
     using Todo.Logging.Http;
+    using Todo.Logging.OpenTelemetry;
     using Todo.Logging.Serilog;
     using Todo.WebApi.Authorization;
     using Todo.WebApi.ExceptionHandling;
+    using Todo.WebApi.ExceptionHandling.Configuration;
     using Todo.WebApi.Models;
-    using Todo.WebApi.OpenTelemetry;
 
     using ILogger = Microsoft.Extensions.Logging.ILogger;
 
@@ -40,8 +37,8 @@ namespace Todo.WebApi
     [ExcludeFromCodeCoverage]
     public class Startup
     {
-        private IConfiguration Configuration { get; }
-        private IWebHostEnvironment WebHostEnvironment { get; }
+        private readonly IConfiguration configuration;
+        private readonly IWebHostEnvironment webHostEnvironment;
 
         /// <summary>
         /// Creates a new instance of the <see cref="Startup"/> class.
@@ -50,8 +47,8 @@ namespace Todo.WebApi
         /// <param name="webHostEnvironment">The web host environment running this application.</param>
         public Startup(IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
         {
-            Configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-            WebHostEnvironment = webHostEnvironment ?? throw new ArgumentNullException(nameof(webHostEnvironment));
+            this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
+            this.webHostEnvironment = webHostEnvironment ?? throw new ArgumentNullException(nameof(webHostEnvironment));
         }
 
         /// <summary>
@@ -61,8 +58,7 @@ namespace Todo.WebApi
         public void ConfigureServices(IServiceCollection services)
         {
             ConfigureExceptionHandling(services);
-            ConfigureLogging(services);
-            ConfigureOpenTelemetry(services);
+            ConfigureTelemetry(services);
             ConfigureSecurity(services);
             ConfigureWebApi(services);
         }
@@ -82,7 +78,7 @@ namespace Todo.WebApi
 
             applicationBuilder
                 .UseConversationId()
-                .UseHttpLogging(Configuration)
+                .UseHttpLogging(configuration)
                 .UseExceptionHandler(new ExceptionHandlerOptions
                 {
                     ExceptionHandler = CustomExceptionHandler.HandleException,
@@ -106,58 +102,21 @@ namespace Todo.WebApi
             logger.LogInformation("ASP.NET Core request processing pipeline has been configured");
         }
 
-        private void ConfigureLogging(IServiceCollection services)
+        private void ConfigureTelemetry(IServiceCollection services)
         {
             services
-                .ActivateApplicationInsights(Configuration)
-                .ActivateSerilog(Configuration);
-        }
-
-        private void ConfigureOpenTelemetry(IServiceCollection services)
-        {
-            OpenTelemetryOptions openTelemetryOptions = new OpenTelemetryOptions();
-            Configuration.Bind("OpenTelemetry", openTelemetryOptions);
-
-            services
-                .AddOpenTelemetryTracing(builder =>
-                {
-                    builder
-                        .SetResourceBuilder(
-                            ResourceBuilder
-                                .CreateDefault()
-                                .AddService(WebHostEnvironment.ApplicationName)
-                                .AddAttributes(new Dictionary<string, object>
-                                {
-                                    { "service.instance.attributes.custom.EnvironmentName", WebHostEnvironment.EnvironmentName },
-                                    { "service.instance.attributes.custom.ContentRootPath", WebHostEnvironment.ContentRootPath },
-                                    { "service.instance.attributes.custom.WebRootPath", WebHostEnvironment.WebRootPath ?? "<null>" },
-                                    { "service.instance.attributes.custom.OperationSystem", Environment.OSVersion.ToString() },
-                                    { "service.instance.attributes.custom.MachineName", Environment.MachineName },
-                                    { "service.instance.attributes.custom.ProcessorCount", Environment.ProcessorCount },
-                                    { "service.instance.attributes.custom.DotNetVersion", Environment.Version.ToString() }
-
-                                }))
-                        .AddAspNetCoreInstrumentation()
-                        .AddEntityFrameworkCoreInstrumentation(options =>
-                        {
-                            options.SetDbStatementForText =
-                                openTelemetryOptions.Instrumentation.EntityFrameworkCore.SetDbStatementForText;
-                        })
-                        .AddJaegerExporter(options =>
-                        {
-                            options.AgentHost = openTelemetryOptions.Exporters.Jaeger.AgentHost;
-                            options.AgentPort = openTelemetryOptions.Exporters.Jaeger.AgentPort;
-                        });
-                });
+                .AddApplicationInsights(configuration)
+                .AddOpenTelemetry(configuration, webHostEnvironment)
+                .AddSerilog(configuration);
         }
 
         private void ConfigureSecurity(IServiceCollection services)
         {
             // Display personally identifiable information only during development
-            IdentityModelEventSource.ShowPII = WebHostEnvironment.IsDevelopment();
+            IdentityModelEventSource.ShowPII = webHostEnvironment.IsDevelopment();
 
             // Configure authentication & authorization using JSON web tokens
-            IConfigurationSection generateJwtOptions = Configuration.GetSection("GenerateJwt");
+            IConfigurationSection generateJwtOptions = configuration.GetSection("GenerateJwt");
 
             // ReSharper disable once SettingNotFoundInConfiguration
             string tokenIssuer = generateJwtOptions.GetValue<string>("Issuer");
@@ -256,7 +215,7 @@ namespace Todo.WebApi
 
         private void ConfigureExceptionHandling(IServiceCollection services)
         {
-            services.Configure<ExceptionHandlingOptions>(Configuration.GetSection("ExceptionHandling"));
+            services.Configure<ExceptionHandlingOptions>(configuration.GetSection("ExceptionHandling"));
         }
 
         private void OnApplicationStarted(IApplicationStartedEventNotifier applicationStartedEventNotifier,
@@ -268,19 +227,19 @@ namespace Todo.WebApi
 
             logger.LogInformation("The registered application started event listeners have been notified");
             logger.LogInformation("Application [{ApplicationName}] has started on environment [{EnvironmentName}]",
-                WebHostEnvironment.ApplicationName, WebHostEnvironment.EnvironmentName);
+                webHostEnvironment.ApplicationName, webHostEnvironment.EnvironmentName);
         }
 
         private void OnApplicationStopping(ILogger logger)
         {
             logger.LogInformation("Application [{ApplicationName}] is stopping on environment [{EnvironmentName}] ...",
-                WebHostEnvironment.ApplicationName, WebHostEnvironment.EnvironmentName);
+                webHostEnvironment.ApplicationName, webHostEnvironment.EnvironmentName);
         }
 
         private void OnApplicationStopped(ILogger logger)
         {
             logger.LogInformation("Application [{ApplicationName}] has stopped on environment [{EnvironmentName}]",
-                WebHostEnvironment.ApplicationName, WebHostEnvironment.EnvironmentName);
+                webHostEnvironment.ApplicationName, webHostEnvironment.EnvironmentName);
         }
     }
 }

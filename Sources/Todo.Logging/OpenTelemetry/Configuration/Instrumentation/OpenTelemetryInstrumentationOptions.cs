@@ -1,4 +1,4 @@
-namespace Todo.WebApi.OpenTelemetry.Instrumentation
+namespace Todo.Logging.OpenTelemetry.Configuration.Instrumentation
 {
     public class OpenTelemetryInstrumentationOptions
     {

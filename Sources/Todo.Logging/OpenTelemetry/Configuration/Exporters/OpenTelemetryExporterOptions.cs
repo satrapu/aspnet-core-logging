@@ -1,4 +1,4 @@
-namespace Todo.WebApi.OpenTelemetry.Exporters
+namespace Todo.Logging.OpenTelemetry.Configuration.Exporters
 {
     public class OpenTelemetryExporterOptions
     {

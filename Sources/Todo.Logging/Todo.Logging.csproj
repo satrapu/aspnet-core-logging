@@ -11,7 +11,11 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
         <PackageReference Include="OpenTelemetry" />
+        <PackageReference Include="OpenTelemetry.Contrib.Instrumentation.EntityFrameworkCore" />
         <PackageReference Include="OpenTelemetry.Contrib.Preview" />
+        <PackageReference Include="OpenTelemetry.Exporter.Jaeger" />
+        <PackageReference Include="OpenTelemetry.Extensions.Hosting" />
+        <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" />
         <PackageReference Include="Serilog.AspNetCore" />
         <PackageReference Include="Serilog.Enrichers.Span" />
         <PackageReference Include="Serilog.Enrichers.Thread" />

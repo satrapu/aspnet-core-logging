@@ -12,6 +12,8 @@ namespace Todo.WebApi.ExceptionHandling
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
 
+    using Todo.WebApi.ExceptionHandling.Configuration;
+
     /// <summary>
     /// Handles any exceptions occurring inside this application.
     /// <br/>
@@ -33,9 +35,10 @@ namespace Todo.WebApi.ExceptionHandling
             IServiceProvider serviceProvider = httpContext.RequestServices;
             IOptions<ExceptionHandlingOptions> exceptionHandlingOptions =
                 serviceProvider.GetRequiredService<IOptions<ExceptionHandlingOptions>>();
-
             ILogger logger =
-                serviceProvider.GetRequiredService<ILoggerFactory>().CreateLogger(nameof(CustomExceptionHandler));
+                serviceProvider
+                    .GetRequiredService<ILoggerFactory>()
+                    .CreateLogger(nameof(CustomExceptionHandler));
 
             // Try and retrieve the error from the ExceptionHandler middleware
             IExceptionHandlerFeature exceptionHandlerFeature = httpContext.Features.Get<IExceptionHandlerFeature>();

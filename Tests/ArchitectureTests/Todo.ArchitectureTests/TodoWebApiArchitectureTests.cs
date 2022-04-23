@@ -1,4 +1,4 @@
-namespace Todo
+namespace Todo.ArchitectureTests
 {
     using System;
     using System.Diagnostics.CodeAnalysis;

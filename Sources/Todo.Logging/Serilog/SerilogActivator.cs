@@ -12,6 +12,7 @@ namespace Todo.Logging.Serilog
     using Microsoft.Extensions.Logging;
 
     using Todo.Commons.Constants;
+    using Todo.Logging.OpenTelemetry;
 
     /// <summary>
     /// Contains extension methods used for integration Serilog with this application.
@@ -26,36 +27,23 @@ namespace Todo.Logging.Serilog
         /// <returns>The given <paramref name="services"/> instance.</returns>
         /// <exception cref="ArgumentNullException">Thrown when either <paramref name="services"/>
         /// or <paramref name="configuration"/> is null.</exception>
-        public static IServiceCollection ActivateSerilog(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddSerilog(this IServiceCollection services, IConfiguration configuration)
         {
-            if (services == null)
-            {
-                throw new ArgumentNullException(nameof(services));
-            }
-
-            if (configuration == null)
-            {
-                throw new ArgumentNullException(nameof(configuration));
-            }
+            ArgumentNullException.ThrowIfNull(services);
+            ArgumentNullException.ThrowIfNull(configuration);
 
             services.AddLogging(loggingBuilder =>
             {
-                SetFileSinkDestinationFolder(configuration);
+                if (IsFileSinkConfigured(configuration))
+                {
+                    SetFileSinkDestinationFolder();
+                }
 
                 loggingBuilder
-                    .ClearProviders()
-                    // Ensure events produces by ILogger will be exported by Open Telemetry to Jaeger.
-                    // See more here: https://github.com/open-telemetry/opentelemetry-dotnet/issues/1739.
-                    .AddOpenTelemetry(options =>
-                    {
-                        options.AttachLogsToActivityEvent();
-                        options.IncludeScopes = true;
-                        options.IncludeFormattedMessage = true;
-                        options.ParseStateValues = true;
-                    })
-                    .AddSerilog(new LoggerConfiguration()
-                        .ReadFrom.Configuration(configuration)
-                        .CreateLogger(), dispose: true);
+                     .ClearProviders()
+                     .AddOpenTelemetry(configuration)
+                     .AddSerilog(new LoggerConfiguration().ReadFrom.Configuration(configuration)
+                         .CreateLogger(), dispose: true);
             });
 
             return services;
@@ -66,7 +54,7 @@ namespace Todo.Logging.Serilog
         /// </summary>
         /// <param name="configuration">The <see cref="IConfiguration"/> instance to check.</param>
         /// <returns>True, if a Serilog file sink has been configured; false, otherwise.</returns>
-        public static bool IsFileSinkConfigured(IConfiguration configuration)
+        internal static bool IsFileSinkConfigured(IConfiguration configuration)
         {
             // ReSharper disable once SettingNotFoundInConfiguration
             IEnumerable<KeyValuePair<string, string>> configuredSerilogSinks =
@@ -78,13 +66,8 @@ namespace Todo.Logging.Serilog
             return isSerilogFileSinkConfigured;
         }
 
-        private static void SetFileSinkDestinationFolder(IConfiguration configuration)
+        private static void SetFileSinkDestinationFolder()
         {
-            if (!IsFileSinkConfigured(configuration))
-            {
-                return;
-            }
-
             const string logsHomeEnvironmentVariableName = Logging.LogsHomeEnvironmentVariable;
             string logsHomeDirectoryPath = Environment.GetEnvironmentVariable(logsHomeEnvironmentVariableName);
 

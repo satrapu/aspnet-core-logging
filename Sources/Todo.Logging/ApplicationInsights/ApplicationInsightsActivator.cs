@@ -7,6 +7,8 @@ namespace Todo.Logging.ApplicationInsights
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
 
+    using Todo.Logging.ApplicationInsights.Configuration;
+
     /// <summary>
     /// Contains extension methods used for integration Azure Application Insights with this application.
     /// </summary>
@@ -20,18 +22,11 @@ namespace Todo.Logging.ApplicationInsights
         /// <returns>The given <paramref name="services"/> instance.</returns>
         /// <exception cref="ArgumentNullException">Thrown when either <paramref name="services"/>
         /// or <paramref name="configuration"/> is null.</exception>
-        public static IServiceCollection ActivateApplicationInsights(this IServiceCollection services,
+        public static IServiceCollection AddApplicationInsights(this IServiceCollection services,
             IConfiguration configuration)
         {
-            if (services == null)
-            {
-                throw new ArgumentNullException(nameof(services));
-            }
-
-            if (configuration == null)
-            {
-                throw new ArgumentNullException(nameof(configuration));
-            }
+            ArgumentNullException.ThrowIfNull(services);
+            ArgumentNullException.ThrowIfNull(configuration);
 
             // ReSharper disable once SettingNotFoundInConfiguration
             IEnumerable<KeyValuePair<string, string>> configuredSerilogSinks =

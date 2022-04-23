@@ -13,11 +13,6 @@
     <ItemGroup>
         <PackageReference Include="Autofac.Extensions.DependencyInjection" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
-        <PackageReference Include="OpenTelemetry" />
-        <PackageReference Include="OpenTelemetry.Contrib.Instrumentation.EntityFrameworkCore" />
-        <PackageReference Include="OpenTelemetry.Exporter.Jaeger" />
-        <PackageReference Include="OpenTelemetry.Extensions.Hosting" />
-        <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" />
     </ItemGroup>
 
 </Project>

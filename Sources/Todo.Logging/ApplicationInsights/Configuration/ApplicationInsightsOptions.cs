@@ -1,4 +1,4 @@
-namespace Todo.Logging.ApplicationInsights
+namespace Todo.Logging.ApplicationInsights.Configuration
 {
     using System.Diagnostics.CodeAnalysis;
 

@@ -6,14 +6,15 @@ namespace Todo.WebApi
     using Autofac;
     using Autofac.Extensions.DependencyInjection;
 
-    using DependencyInjection;
-
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Hosting;
 
     using Serilog;
     using Serilog.Core;
+
+    using Todo.ApplicationFlows.DependencyInjection;
+    using Todo.Logging.DependencyInjection;
 
     /// <summary>
     /// Runs an application used for managing user todo items (aka user tasks).
@@ -22,6 +23,7 @@ namespace Todo.WebApi
     [ExcludeFromCodeCoverage]
     public static class Program
     {
+        private const string HttpLoggingEnabledConfigurationLookupKey = "HttpLogging:Enabled";
         private static readonly Logger Logger = new LoggerConfiguration()
             .Enrich.FromLogContext()
             .WriteTo.Console()
@@ -80,7 +82,9 @@ namespace Todo.WebApi
                             .RegisterModule(new LoggingModule
                             {
                                 EnableHttpLogging =
-                                    hostBuilderContext.Configuration.GetValue<bool>("HttpLogging:Enabled")
+                                    hostBuilderContext
+                                        .Configuration
+                                        .GetValue<bool>(HttpLoggingEnabledConfigurationLookupKey)
                             })
                             .RegisterModule(new ApplicationFlowsModule
                             {

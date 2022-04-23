@@ -1,4 +1,4 @@
-namespace Todo.DependencyInjection
+namespace Todo.Logging.DependencyInjection
 {
     using Autofac;
 
