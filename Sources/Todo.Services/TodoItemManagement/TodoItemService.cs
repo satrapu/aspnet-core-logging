@@ -50,6 +50,8 @@ namespace Todo.Services.TodoItemManagement
         {
             using Activity activity = ActivitySources.TodoActivitySource.StartActivity(CreateActivityName());
 
+            ArgumentNullException.ThrowIfNull(todoItemQuery);
+
             Validator.ValidateObject(todoItemQuery, new ValidationContext(todoItemQuery), validateAllProperties: true);
 
             return InternalGetByQueryAsync(todoItemQuery);
@@ -58,6 +60,8 @@ namespace Todo.Services.TodoItemManagement
         public Task<long> AddAsync(NewTodoItemInfo newTodoItemInfo)
         {
             using Activity activity = ActivitySources.TodoActivitySource.StartActivity(CreateActivityName());
+
+            ArgumentNullException.ThrowIfNull(newTodoItemInfo);
 
             Validator.ValidateObject(newTodoItemInfo, new ValidationContext(newTodoItemInfo),
                 validateAllProperties: true);
@@ -69,6 +73,8 @@ namespace Todo.Services.TodoItemManagement
         {
             using Activity activity = ActivitySources.TodoActivitySource.StartActivity(CreateActivityName());
 
+            ArgumentNullException.ThrowIfNull(updateTodoItemInfo);
+
             Validator.ValidateObject(updateTodoItemInfo, new ValidationContext(updateTodoItemInfo),
                 validateAllProperties: true);
 
@@ -79,10 +85,7 @@ namespace Todo.Services.TodoItemManagement
         {
             using Activity activity = ActivitySources.TodoActivitySource.StartActivity(CreateActivityName());
 
-            if (deleteTodoItemInfo == null)
-            {
-                throw new ArgumentNullException(nameof(deleteTodoItemInfo));
-            }
+            ArgumentNullException.ThrowIfNull(deleteTodoItemInfo);
 
             Validator.ValidateObject(deleteTodoItemInfo, new ValidationContext(deleteTodoItemInfo),
                 validateAllProperties: true);
