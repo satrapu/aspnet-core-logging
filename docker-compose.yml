@@ -58,19 +58,15 @@ services:
     image: jaegertracing/all-in-one:1.33
     restart: unless-stopped
     ports:
-      # Open Telemetry Protocol port where OpenTelemetry data will be pushed
-      # See more here: https://rehansaeed.com/exporting-open-telemetry-data-to-jaeger/#open-telemetry-protocol-otlp.
-      - "4317:55680"
       # The ports used by various Jaeger services and their meaning are taken from here: https://github.com/jaegertracing/jaeger/blob/main/crossdock/jaeger-docker-compose.yml
       # and here: https://www.jaegertracing.io/docs/next-release/deployment/.
-      # jaeger-agent port (serve configs, sampling strategies)
-      - "5778:5778"
+      # jaeger-agent port
+      - "6831:6831/udp"
       # jaeger-collector port
       # server health check is available via "/" endpoint (i.e., http://localhost:14269/)
       # server metrics are available via "/metrics" endpoint (i.e., http://localhost:14269/metrics)
       - "14269:14269"
-      # jaeger-collector GRPC server port
-      - "14250:14250"
+
       # jaeger-query port
       # dashboard is available via "/" endpoint (i.e., http://localhost:16686/)
       - "16686:16686"
