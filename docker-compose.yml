@@ -81,7 +81,7 @@ services:
 
   pgadmin:
     container_name: pgadmin-ui
-    image: dpage/pgadmin4:6.4
+    image: dpage/pgadmin4:6.8
     restart: unless-stopped
     volumes:
       - pgadmin_data:/var/lib/pgadmin
@@ -98,7 +98,7 @@ services:
     
   seq:
     container_name: seq
-    image: datalust/seq:2021.4
+    image: datalust/seq:2022.1
     restart: unless-stopped
     volumes:
       - seq_data:/data
