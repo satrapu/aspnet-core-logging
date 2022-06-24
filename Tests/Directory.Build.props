@@ -10,7 +10,7 @@
         <IsPackable>false</IsPackable>
         <IsTestProject>true</IsTestProject>
         <SonarQubeTestProject>true</SonarQubeTestProject>
-        <CodeAnalysisRuleSet>..\..\..\.sonarlint\aspnet-core-loggingcsharp.ruleset</CodeAnalysisRuleSet>
+        <CodeAnalysisRuleSet>..\..\..\.sonarlint\aspnet-core-loggingCSharp.ruleset</CodeAnalysisRuleSet>
     </PropertyGroup>
 
     <ItemGroup>
