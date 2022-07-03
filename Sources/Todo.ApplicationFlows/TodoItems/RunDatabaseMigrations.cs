@@ -18,7 +18,7 @@ namespace Todo.ApplicationFlows.TodoItems
     {
         private const string FlowName = "Events/ApplicationStarted/RunDatabaseMigrations";
 
-        private static readonly IPrincipal Principal =
+        private static readonly IPrincipal principal =
             new GenericPrincipal(new GenericIdentity("run-database-migrations"), Array.Empty<string>());
 
         private readonly TodoDbContext todoDbContext;
@@ -44,7 +44,7 @@ namespace Todo.ApplicationFlows.TodoItems
         /// </summary>
         public void OnApplicationStarted()
         {
-            SimpleApplicationFlow.Execute(FlowName, InternalRunDatabaseMigrations, Principal, logger);
+            SimpleApplicationFlow.Execute(FlowName, InternalRunDatabaseMigrations, principal, logger);
         }
 
         private void InternalRunDatabaseMigrations()
