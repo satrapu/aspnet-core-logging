@@ -30,10 +30,10 @@ namespace Todo.Telemetry.ApplicationInsights
 
             // ReSharper disable once SettingNotFoundInConfiguration
             IEnumerable<KeyValuePair<string, string>> configuredSerilogSinks =
-                configuration.GetSection("Serilog:Using").AsEnumerable();
+                configuration.GetSection(SerilogConstants.SectionNames.Using).AsEnumerable();
 
             bool isSerilogApplicationInsightsSinkConfigured =
-                configuredSerilogSinks.Any(sink => "Serilog.Sinks.ApplicationInsights".Equals(sink.Value));
+                configuredSerilogSinks.Any(sink => SerilogConstants.SinkShortNames.ApplicationInsights.Equals(sink.Value));
 
             if (isSerilogApplicationInsightsSinkConfigured)
             {

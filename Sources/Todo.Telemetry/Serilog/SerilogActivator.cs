@@ -58,10 +58,10 @@ namespace Todo.Telemetry.Serilog
         {
             // ReSharper disable once SettingNotFoundInConfiguration
             IEnumerable<KeyValuePair<string, string>> configuredSerilogSinks =
-                configuration.GetSection("Serilog:Using").AsEnumerable();
+                configuration.GetSection(SerilogConstants.SectionNames.Using).AsEnumerable();
 
             bool isSerilogFileSinkConfigured =
-                configuredSerilogSinks.Any(sink => "Serilog.Sinks.File".Equals(sink.Value));
+                configuredSerilogSinks.Any(sink => SerilogConstants.SinkShortNames.File.Equals(sink.Value));
 
             return isSerilogFileSinkConfigured;
         }
