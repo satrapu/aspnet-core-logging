@@ -377,7 +377,7 @@ dotnet_naming_rule.private_static_fields_rule.symbols = private_static_fields_sy
 
 dotnet_naming_rule.private_static_readonly_rule.import_to_resharper = as_predefined
 dotnet_naming_rule.private_static_readonly_rule.severity = error
-dotnet_naming_rule.private_static_readonly_rule.style = upper_camel_case_style
+dotnet_naming_rule.private_static_readonly_rule.style = lower_camel_case_style
 dotnet_naming_rule.private_static_readonly_rule.symbols = private_static_readonly_symbols
 
 dotnet_naming_rule.property_rule.import_to_resharper = as_predefined
