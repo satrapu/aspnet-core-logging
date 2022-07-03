@@ -14,6 +14,8 @@ namespace Todo.WebApi.Controllers
 
     using NUnit.Framework;
 
+    using Todo.Commons.Constants;
+
     /// <summary>
     /// Contains integration tests targeting <see cref="ConfigurationController" /> class.
     /// </summary>
@@ -57,14 +59,14 @@ namespace Todo.WebApi.Controllers
 
         private static IEnumerable<object[]> GetConfigurationEndpointContext()
         {
-            yield return new object[] { Environments.Development, false, HttpStatusCode.Forbidden };
-            yield return new object[] { Environments.Development, true, HttpStatusCode.OK };
-            yield return new object[] { "IntegrationTests", true, HttpStatusCode.Forbidden };
-            yield return new object[] { "IntegrationTests", false, HttpStatusCode.Forbidden };
-            yield return new object[] { "DemoInAzure", true, HttpStatusCode.Forbidden };
-            yield return new object[] { "DemoInAzure", false, HttpStatusCode.Forbidden };
-            yield return new object[] { Environments.Production, true, HttpStatusCode.Forbidden };
-            yield return new object[] { Environments.Production, false, HttpStatusCode.Forbidden };
+            yield return new object[] { EnvironmentNames.Development, false, HttpStatusCode.Forbidden };
+            yield return new object[] { EnvironmentNames.Development, true, HttpStatusCode.OK };
+            yield return new object[] { EnvironmentNames.IntegrationTests, true, HttpStatusCode.Forbidden };
+            yield return new object[] { EnvironmentNames.IntegrationTests, false, HttpStatusCode.Forbidden };
+            yield return new object[] { EnvironmentNames.DemoInAzure, true, HttpStatusCode.Forbidden };
+            yield return new object[] { EnvironmentNames.DemoInAzure, false, HttpStatusCode.Forbidden };
+            yield return new object[] { EnvironmentNames.Production, true, HttpStatusCode.Forbidden };
+            yield return new object[] { EnvironmentNames.Production, false, HttpStatusCode.Forbidden };
         }
     }
 }
