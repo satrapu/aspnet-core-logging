@@ -8,6 +8,7 @@ namespace Todo.Telemetry.ApplicationInsights
     using Microsoft.Extensions.DependencyInjection;
 
     using Todo.Telemetry.ApplicationInsights.Configuration;
+    using Todo.Telemetry.Serilog;
 
     /// <summary>
     /// Contains extension methods used for integrating Azure Application Insights with this application.
