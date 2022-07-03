@@ -1,4 +1,4 @@
-namespace Todo.DependencyInjection
+namespace Todo.ApplicationFlows.DependencyInjection
 {
     using ApplicationFlows;
     using ApplicationFlows.Security;
@@ -10,12 +10,15 @@ namespace Todo.DependencyInjection
 
     using Todo.ApplicationFlows.ApplicationEvents;
     using Todo.Commons.ApplicationEvents;
+    using Todo.Services.DependencyInjection;
 
     /// <summary>
     /// Configures application flow related services used by this application.
     /// </summary>
     public class ApplicationFlowsModule : Module
     {
+        private const string ApplicationFlowsConfigurationSectionName = "ApplicationFlows";
+
         /// <summary>
         /// Gets or sets the name of the environment where this application runs.
         /// </summary>
@@ -33,10 +36,9 @@ namespace Todo.DependencyInjection
                 EnvironmentName = EnvironmentName
             });
 
-            // ReSharper disable once SettingNotFoundInConfiguration
             builder
                 .Register(componentContext =>
-                    ApplicationConfiguration.GetSection("ApplicationFlows").Get<ApplicationFlowOptions>())
+                ApplicationConfiguration.GetSection(ApplicationFlowsConfigurationSectionName).Get<ApplicationFlowOptions>())
                 .SingleInstance();
 
             builder

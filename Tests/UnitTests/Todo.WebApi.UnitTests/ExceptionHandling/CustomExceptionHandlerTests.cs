@@ -25,6 +25,8 @@ namespace Todo.WebApi.ExceptionHandling
 
     using Services.TodoItemManagement;
 
+    using Todo.WebApi.ExceptionHandling.Configuration;
+
     /// <summary>
     /// Contains unit tests targeting <see cref="CustomExceptionHandler"/> class.
     /// </summary>

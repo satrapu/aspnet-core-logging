@@ -1,4 +1,4 @@
-namespace Todo.DependencyInjection
+namespace Todo.Services.DependencyInjection
 {
     using Autofac;
 
@@ -6,6 +6,8 @@ namespace Todo.DependencyInjection
 
     using Services.Security;
     using Services.TodoItemManagement;
+
+    using Todo.Persistence.DependencyInjection;
 
     /// <summary>
     /// Configures business related services used by this application.

@@ -12,7 +12,7 @@
         <!--
           Sets up property "Language version" found in Visual Studio project -> Properties -> Build -> Advanced.
         -->
-        <LangVersion>8.0</LangVersion>
+        <LangVersion>10.0</LangVersion>
 
         <!--
             Fix issue: "error NU1403: Package content hash validation failed for ..." occurring when restoring NuGet

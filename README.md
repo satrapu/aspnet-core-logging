@@ -2,7 +2,7 @@
 
 ## Description
 
-This repo shows ASP.NET Core 6.x logging in action; it also serves as a learning, experimenting and teaching path for .NET, Azure Pipelines and other technologies & tools.
+This repository shows ASP.NET Core 6.x logging in action; it also serves as a learning, experimenting and teaching path for .NET, Azure Pipelines and other technologies & tools.
 
 :exclamation: Currently this web API uses JSON web tokens (JWT) for authentication & authorization purposes, but momentarily the mechanism used for generating these tokens has been __greatly__ simplified to the point of being actually naive as my focus is set on other topics; on the other hand, I do intend on providing a more realistic implementation in a not so far away future.
 
@@ -26,7 +26,7 @@ This project has several posts associated with it:
 
 | Provider                                  | Badge                                                                                                                                                                                                                  |
 | ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [Codacy](https://www.codacy.com/)         | [![Codacy Badge](https://api.codacy.com/project/badge/Grade/001d9d7bbf43459aae186c7d8cd49858)](https://www.codacy.com/app/satrapu/aspnet-core-logging)                                                                 |
+| [Codacy](https://www.codacy.com/)         | [![Codacy Badge](https://api.codacy.com/project/badge/Grade/001d9d7bbf43459aae186c7d8cd49858)](https://www.codacy.com/gh/satrapu/aspnet-core-logging)                                                                 |
 | [FOSSA](https://fossa.com/)               | [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fsatrapu%2Faspnet-core-logging.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fsatrapu%2Faspnet-core-logging?ref=badge_shield) |
 | [SonarCloud](https://sonarcloud.io/about) | [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=aspnet-core-logging&metric=ncloc)](https://sonarcloud.io/dashboard?id=aspnet-core-logging) <br/> [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=aspnet-core-logging&metric=coverage)](https://sonarcloud.io/dashboard?id=aspnet-core-logging) <br/> [![SonarCloud Status](https://sonarcloud.io/api/project_badges/measure?project=aspnet-core-logging&metric=alert_status)](https://sonarcloud.io/dashboard?id=aspnet-core-logging) |
 
@@ -220,14 +220,12 @@ dotnet ef database drop --startup-project ./Sources/Todo.WebApi --project ./Sour
 Ensure the `MigrateDatabase` configuration property is set to `true`.
 See more about applying EF Core migrations at runtime [here](https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/applying?tabs=dotnet-core-cli#apply-migrations-at-runtime).
 
-### Inspect MiniProfiler results
-
-If you enable [MiniProfiler](https://miniprofiler.com/) by setting the configuration property `MiniProfiler:Enable` to `true`, you can navigate to the following MiniProfiler URLs:
-
-- List all requests: [https://localhost:5001/miniprofiler/results-index](https://localhost:5001/miniprofiler/results-index)
-- Inspect current request: [https://localhost:5001/miniprofiler/results](https://localhost:5001/miniprofiler/results)
-- List all requests as JSON: [https://localhost:5001/miniprofiler/results-list](https://localhost:5001/miniprofiler/results-list)
-
 ### Inspect log events using Seq
 
 In order to inspect application log events generated via [Serilog](https://serilog.net/), navigate to [http://localhost:8888](http://localhost:8888), which will open [Seq](https://datalust.co/seq) UI.
+
+### Inspect traces using Jaeger
+
+In order to inspect application traces, navigate to [http://localhost:16686/search](http://localhost:16686/search), which will open [Jaeger](https://www.jaegertracing.io/) UI.  
+To see Jaeger metrics, navigate to [http://localhost:14269/metrics](http://localhost:14269/metrics).  
+To see Jaeger health status, navigate to [http://localhost:14269/](http://localhost:14269/).

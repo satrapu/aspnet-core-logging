@@ -6,14 +6,15 @@ namespace Todo.WebApi
     using Autofac;
     using Autofac.Extensions.DependencyInjection;
 
-    using DependencyInjection;
-
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Hosting;
 
     using Serilog;
     using Serilog.Core;
+
+    using Todo.ApplicationFlows.DependencyInjection;
+    using Todo.Telemetry.DependencyInjection;
 
     /// <summary>
     /// Runs an application used for managing user todo items (aka user tasks).
@@ -22,7 +23,8 @@ namespace Todo.WebApi
     [ExcludeFromCodeCoverage]
     public static class Program
     {
-        private static readonly Logger Logger = new LoggerConfiguration()
+        private const string HttpLoggingEnabledConfigurationLookupKey = "HttpLogging:Enabled";
+        private static readonly Logger logger = new LoggerConfiguration()
             .Enrich.FromLogContext()
             .WriteTo.Console()
             .CreateLogger();
@@ -39,19 +41,19 @@ namespace Todo.WebApi
             }
             catch (Exception exception)
             {
-                Logger.Fatal(exception, "Application failed to start");
+                logger.Fatal(exception, "Application failed to start");
 
                 throw;
             }
             finally
             {
-                Logger.Dispose();
+                logger.Dispose();
             }
         }
 
         private static IHostBuilder CreateHostBuilder(string[] args)
         {
-            Logger.Information("Configuring the host builder needed to run the application ...");
+            logger.Information("Configuring the host builder needed to run the application ...");
 
             IHostBuilder hostBuilder =
                 Host.CreateDefaultBuilder(args)
@@ -77,10 +79,12 @@ namespace Todo.WebApi
                         // https://github.com/dotnet/aspnetcore/issues/14907#issuecomment-850407104.
 
                         containerBuilder
-                            .RegisterModule(new LoggingModule
+                            .RegisterModule(new TelemetryModule
                             {
                                 EnableHttpLogging =
-                                    hostBuilderContext.Configuration.GetValue<bool>("HttpLogging:Enabled")
+                                    hostBuilderContext
+                                        .Configuration
+                                        .GetValue<bool>(HttpLoggingEnabledConfigurationLookupKey)
                             })
                             .RegisterModule(new ApplicationFlowsModule
                             {
@@ -107,7 +111,7 @@ namespace Todo.WebApi
                         localHostBuilder.UseStartup<Startup>();
                     });
 
-            Logger.Information("The host builder needed to run the application has been configured");
+            logger.Information("The host builder needed to run the application has been configured");
 
             return hostBuilder;
         }

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.28922.388
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{398FFE78-1C6A-4CC2-AB9F-220B7F1CDAE3}"
 	ProjectSection(SolutionItems) = preProject
@@ -32,6 +32,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Doc", "Doc", "{F7456678-4E89-4E99-91C4-33D0CB0D6908}"
 	ProjectSection(SolutionItems) = preProject
+		CODE_OF_CONDUCT.md = CODE_OF_CONDUCT.md
 		LICENSE = LICENSE
 		README.md = README.md
 	EndProjectSection
@@ -103,16 +104,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Run", "Run", "{2760AF02-37D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Todo.Commons", "Sources\Todo.Commons\Todo.Commons.csproj", "{6935CABF-0DBD-4315-AB8B-DE92A4D81B00}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Todo.Logging", "Sources\Todo.Logging\Todo.Logging.csproj", "{06A85419-4798-4043-90FA-062F34345AE5}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Todo.Logging.UnitTests", "Tests\UnitTests\Todo.Logging.UnitTests\Todo.Logging.UnitTests.csproj", "{B197FF86-D267-484B-98E2-08577EFBF4D9}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "aspnet-core-logging", "aspnet-core-logging", "{EA22758E-FC4F-45E3-B278-6E9AC413634F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CSharp", "CSharp", "{B7EE20EF-C064-4C84-95A1-9A53D8FAC213}"
 	ProjectSection(SolutionItems) = preProject
 		.sonarlint\aspnet-core-logging\CSharp\SonarLint.xml = .sonarlint\aspnet-core-logging\CSharp\SonarLint.xml
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Todo.Telemetry", "Sources\Todo.Telemetry\Todo.Telemetry.csproj", "{99951538-3314-45EC-A5CE-B3D2E06329A5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Todo.Telemetry.UnitTests", "Tests\UnitTests\Todo.Telemetry.UnitTests\Todo.Telemetry.UnitTests.csproj", "{786AAED2-C350-4575-92A8-7BEF82889CD6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -172,14 +173,14 @@ Global
 		{6935CABF-0DBD-4315-AB8B-DE92A4D81B00}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6935CABF-0DBD-4315-AB8B-DE92A4D81B00}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6935CABF-0DBD-4315-AB8B-DE92A4D81B00}.Release|Any CPU.Build.0 = Release|Any CPU
-		{06A85419-4798-4043-90FA-062F34345AE5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{06A85419-4798-4043-90FA-062F34345AE5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{06A85419-4798-4043-90FA-062F34345AE5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{06A85419-4798-4043-90FA-062F34345AE5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B197FF86-D267-484B-98E2-08577EFBF4D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B197FF86-D267-484B-98E2-08577EFBF4D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B197FF86-D267-484B-98E2-08577EFBF4D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B197FF86-D267-484B-98E2-08577EFBF4D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99951538-3314-45EC-A5CE-B3D2E06329A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99951538-3314-45EC-A5CE-B3D2E06329A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99951538-3314-45EC-A5CE-B3D2E06329A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99951538-3314-45EC-A5CE-B3D2E06329A5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{786AAED2-C350-4575-92A8-7BEF82889CD6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{786AAED2-C350-4575-92A8-7BEF82889CD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{786AAED2-C350-4575-92A8-7BEF82889CD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{786AAED2-C350-4575-92A8-7BEF82889CD6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -204,10 +205,10 @@ Global
 		{851D8B4A-A6C9-469E-8633-E6679738DA72} = {398FFE78-1C6A-4CC2-AB9F-220B7F1CDAE3}
 		{74414D41-EEF5-4217-9B47-52B19342A987} = {D084DD17-3480-4A70-8296-92FB55BAD433}
 		{6935CABF-0DBD-4315-AB8B-DE92A4D81B00} = {ED7A5363-C21A-4D47-A2A5-67DEB1E0DDE3}
-		{06A85419-4798-4043-90FA-062F34345AE5} = {ED7A5363-C21A-4D47-A2A5-67DEB1E0DDE3}
-		{B197FF86-D267-484B-98E2-08577EFBF4D9} = {D084DD17-3480-4A70-8296-92FB55BAD433}
 		{EA22758E-FC4F-45E3-B278-6E9AC413634F} = {9F40326A-D20A-40DE-A0D9-6D06EB4C71C5}
 		{B7EE20EF-C064-4C84-95A1-9A53D8FAC213} = {EA22758E-FC4F-45E3-B278-6E9AC413634F}
+		{99951538-3314-45EC-A5CE-B3D2E06329A5} = {ED7A5363-C21A-4D47-A2A5-67DEB1E0DDE3}
+		{786AAED2-C350-4575-92A8-7BEF82889CD6} = {D084DD17-3480-4A70-8296-92FB55BAD433}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {74318BEF-DB50-4852-A16D-E2FB8671BE7F}

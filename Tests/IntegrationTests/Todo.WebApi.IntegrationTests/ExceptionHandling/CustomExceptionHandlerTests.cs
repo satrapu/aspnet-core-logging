@@ -100,7 +100,7 @@ namespace Todo.WebApi.ExceptionHandling
                 // ReSharper disable once PossibleNullReferenceException
                 problemDetails.Extensions.Should().NotBeNull("problem details must contain extra info");
                 problemDetails.Extensions.Should().NotContainKey("errorData", "error data must not be present");
-                problemDetails.Extensions.Should().ContainKey("errorKey", "error key must be present");
+                problemDetails.Extensions.Should().ContainKey("rootCauseKey", "root cause key must be present");
                 problemDetails.Extensions.Should().ContainKey("errorId", "error id must be present");
 
                 Guid.TryParse(problemDetails.Extensions["errorId"].ToString(), out Guid _)

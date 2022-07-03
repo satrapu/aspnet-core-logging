@@ -14,6 +14,8 @@ namespace Todo.WebApi.Controllers
 
     using NUnit.Framework;
 
+    using Todo.Commons.Constants;
+
     /// <summary>
     /// Contains integration tests targeting <see cref="ConfigurationController" /> class.
     /// </summary>
@@ -21,7 +23,7 @@ namespace Todo.WebApi.Controllers
     public class ConfigurationControllerTests
     {
         [Test]
-        [TestCaseSource(nameof(ConfigurationEndpointContext))]
+        [TestCaseSource(nameof(GetConfigurationEndpointContext))]
         public async Task GetConfigurationDebugView_WhenCalled_MustBehaveAsExpected(string environment,
             bool isDebugViewEnabled, HttpStatusCode expectedStatusCode)
         {
@@ -55,16 +57,16 @@ namespace Todo.WebApi.Controllers
                 "because configuration endpoint is available only in certain conditions");
         }
 
-        private static readonly object[] ConfigurationEndpointContext =
+        private static IEnumerable<object[]> GetConfigurationEndpointContext()
         {
-            new object[] {Environments.Development, false, HttpStatusCode.Forbidden},
-            new object[] {Environments.Development, true, HttpStatusCode.OK},
-            new object[] {"IntegrationTests", true, HttpStatusCode.Forbidden},
-            new object[] {"IntegrationTests", false, HttpStatusCode.Forbidden},
-            new object[] {"DemoInAzure", true, HttpStatusCode.Forbidden},
-            new object[] {"DemoInAzure", false, HttpStatusCode.Forbidden},
-            new object[] {Environments.Production, true, HttpStatusCode.Forbidden},
-            new object[] {Environments.Production, false, HttpStatusCode.Forbidden}
-        };
+            yield return new object[] { EnvironmentNames.Development, false, HttpStatusCode.Forbidden };
+            yield return new object[] { EnvironmentNames.Development, true, HttpStatusCode.OK };
+            yield return new object[] { EnvironmentNames.IntegrationTests, true, HttpStatusCode.Forbidden };
+            yield return new object[] { EnvironmentNames.IntegrationTests, false, HttpStatusCode.Forbidden };
+            yield return new object[] { EnvironmentNames.DemoInAzure, true, HttpStatusCode.Forbidden };
+            yield return new object[] { EnvironmentNames.DemoInAzure, false, HttpStatusCode.Forbidden };
+            yield return new object[] { EnvironmentNames.Production, true, HttpStatusCode.Forbidden };
+            yield return new object[] { EnvironmentNames.Production, false, HttpStatusCode.Forbidden };
+        }
     }
 }
