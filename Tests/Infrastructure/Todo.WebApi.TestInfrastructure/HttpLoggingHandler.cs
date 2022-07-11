@@ -1,5 +1,6 @@
 namespace Todo.WebApi.TestInfrastructure
 {
+    using System.Diagnostics.CodeAnalysis;
     using System.Net.Http;
     using System.Net.Http.Headers;
     using System.Text;
@@ -28,6 +29,8 @@ namespace Todo.WebApi.TestInfrastructure
         /// <param name="request">The HTTP request to process.</param>
         /// <param name="cancellationToken">The token used for canceling processing the given HTTP request.</param>
         /// <returns>The HTTP response received from the server.</returns>
+        [SuppressMessage("Usage", "CA2254:Template should be a static expression",
+           Justification = "This method logs dynamic data")]
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
             CancellationToken cancellationToken)
         {
