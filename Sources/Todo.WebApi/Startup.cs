@@ -107,6 +107,7 @@ namespace Todo.WebApi
         private void ConfigureTelemetry(IServiceCollection services)
         {
             services
+                .AddLogging(loggingBuilder => loggingBuilder.ClearProviders())
                 .AddSerilog(configuration)
                 .AddApplicationInsights(configuration)
                 .AddOpenTelemetry(configuration, webHostEnvironment);
