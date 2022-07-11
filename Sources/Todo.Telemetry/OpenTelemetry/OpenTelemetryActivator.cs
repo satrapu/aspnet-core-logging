@@ -49,7 +49,7 @@ namespace Todo.Telemetry.OpenTelemetry
                 services
                     .AddLogging(loggingBuilder =>
                     {
-                        loggingBuilder.AddOpenTelemetry(configuration);
+                        loggingBuilder.AddOpenTelemetry(openTelemetryOptions);
                     })
                     .AddOpenTelemetryTracing(traceProviderBuilder =>
                     {
@@ -90,21 +90,14 @@ namespace Todo.Telemetry.OpenTelemetry
         /// Adds log events to OpenTelemery.
         /// </summary>
         /// <param name="loggingBuilder">The application logging builder.</param>
-        /// <param name="configuration">The application configuration.</param>
+        /// <param name="openTelemetryOptions">The options needed to configure OpenTelemetry integration.</param>
         /// <returns>The given <paramref name="loggingBuilder"/> instance.</returns>
         /// <exception cref="ArgumentNullException">Thrown when either <paramref name="loggingBuilder"/>
         /// or <paramref name="configuration"/> is null.</exception>
-        public static ILoggingBuilder AddOpenTelemetry(this ILoggingBuilder loggingBuilder, IConfiguration configuration)
+        private static ILoggingBuilder AddOpenTelemetry(this ILoggingBuilder loggingBuilder, OpenTelemetryOptions openTelemetryOptions)
         {
             ArgumentNullException.ThrowIfNull(loggingBuilder);
-            ArgumentNullException.ThrowIfNull(configuration);
-
-            OpenTelemetryOptions openTelemetryOptions = configuration.GetOpenTelemetryOptions();
-
-            if (openTelemetryOptions.Enabled is false)
-            {
-                return loggingBuilder;
-            }
+            ArgumentNullException.ThrowIfNull(openTelemetryOptions);
 
             return loggingBuilder.AddOpenTelemetry(options =>
             {

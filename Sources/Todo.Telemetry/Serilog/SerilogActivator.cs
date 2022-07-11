@@ -11,7 +11,6 @@ namespace Todo.Telemetry.Serilog
 
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
-    using Microsoft.Extensions.Logging;
 
     /// <summary>
     /// Contains extension methods used for integrating Serilog with this application.
@@ -38,10 +37,8 @@ namespace Todo.Telemetry.Serilog
                     SetFileSinkDestinationFolder();
                 }
 
-                loggingBuilder
-                     .ClearProviders()
-                     .AddSerilog(new LoggerConfiguration().ReadFrom.Configuration(configuration)
-                         .CreateLogger(), dispose: true);
+                var serilogLogger = new LoggerConfiguration().ReadFrom.Configuration(configuration).CreateLogger();
+                loggingBuilder.AddSerilog(logger: serilogLogger, dispose: true);
             });
 
             return services;
@@ -54,7 +51,6 @@ namespace Todo.Telemetry.Serilog
         /// <returns>True, if a Serilog file sink has been configured; false, otherwise.</returns>
         internal static bool IsFileSinkConfigured(IConfiguration configuration)
         {
-            // ReSharper disable once SettingNotFoundInConfiguration
             IEnumerable<KeyValuePair<string, string>> configuredSerilogSinks =
                 configuration.GetSection(SerilogConstants.SectionNames.Using).AsEnumerable();
 
@@ -62,6 +58,17 @@ namespace Todo.Telemetry.Serilog
                 configuredSerilogSinks.Any(sink => SerilogConstants.SinkShortNames.File.Equals(sink.Value));
 
             return isSerilogFileSinkConfigured;
+        }
+
+        internal static bool IsApplicationInsightsSinkConfigured(IConfiguration configuration)
+        {
+            IEnumerable<KeyValuePair<string, string>> configuredSerilogSinks =
+                configuration.GetSection(SerilogConstants.SectionNames.Using).AsEnumerable();
+
+            bool isSerilogApplicationInsightsSinkConfigured =
+                configuredSerilogSinks.Any(sink => SerilogConstants.SinkShortNames.ApplicationInsights.Equals(sink.Value));
+
+            return isSerilogApplicationInsightsSinkConfigured;
         }
 
         private static void SetFileSinkDestinationFolder()
