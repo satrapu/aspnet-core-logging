@@ -5,14 +5,13 @@ namespace Todo.Telemetry.Serilog
     using System.IO;
     using System.Linq;
 
+    using Commons.Constants;
+
     using global::Serilog;
 
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
-
-    using Todo.Commons.Constants;
-    using Todo.Telemetry.OpenTelemetry;
 
     /// <summary>
     /// Contains extension methods used for integrating Serilog with this application.
@@ -41,7 +40,6 @@ namespace Todo.Telemetry.Serilog
 
                 loggingBuilder
                      .ClearProviders()
-                     .AddOpenTelemetry(configuration)
                      .AddSerilog(new LoggerConfiguration().ReadFrom.Configuration(configuration)
                          .CreateLogger(), dispose: true);
             });
