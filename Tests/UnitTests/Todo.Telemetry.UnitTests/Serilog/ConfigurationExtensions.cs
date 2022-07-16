@@ -1,9 +1,9 @@
 namespace Todo.Telemetry.Serilog
 {
-    using Microsoft.Extensions.Configuration;
-
     using System.IO;
     using System.Text;
+
+    using Microsoft.Extensions.Configuration;
 
     internal static class ConfigurationExtensions
     {
