@@ -9,7 +9,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
         <PackageReference Include="OpenTelemetry" />
         <PackageReference Include="OpenTelemetry.Contrib.Instrumentation.EntityFrameworkCore" />
         <PackageReference Include="OpenTelemetry.Contrib.Preview" />

@@ -24,14 +24,14 @@ namespace Todo.WebApi.Controllers
     {
         [Test]
         [TestCaseSource(nameof(GetConfigurationEndpointContext))]
-        public async Task GetConfigurationDebugView_WhenCalled_MustBehaveAsExpected(string environment,
+        public async Task GetConfigurationDebugView_WhenCalled_MustBehaveAsExpected(string environmentName,
             bool isDebugViewEnabled, HttpStatusCode expectedStatusCode)
         {
             // Arrange
             using var webApplicationFactory = new WebApplicationFactory<Startup>()
                 .WithWebHostBuilder(webHostBuilder =>
                 {
-                    webHostBuilder.UseEnvironment(environment);
+                    webHostBuilder.UseEnvironment(environmentName);
 
                     webHostBuilder.ConfigureAppConfiguration((_, configurationBuilder) =>
                     {

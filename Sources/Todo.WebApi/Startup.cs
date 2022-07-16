@@ -28,7 +28,6 @@ namespace Todo.WebApi
 
     using Models;
 
-    using Telemetry.ApplicationInsights;
     using Telemetry.Http;
     using Telemetry.OpenTelemetry;
     using Telemetry.Serilog;
@@ -109,7 +108,6 @@ namespace Todo.WebApi
             services
                 .AddLogging(loggingBuilder => loggingBuilder.ClearProviders())
                 .AddSerilog(configuration)
-                .AddApplicationInsights(configuration)
                 .AddOpenTelemetry(configuration, webHostEnvironment);
         }
 
