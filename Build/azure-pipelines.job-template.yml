@@ -223,7 +223,7 @@ jobs:
       )
     inputs:
       testResultsFormat: 'NUnit'
-      testResultsFiles: '**/ArchitectureTests/**/TestResults/*'
+      testResultsFiles: '$(Build.SourcesDirectory)/Tests/ArchitectureTests/**/TestResults/TestResults.xml'
       mergeTestResults: True
       buildConfiguration: ${{ parameters.build.configuration }}
       publishRunAttachments: True
@@ -278,7 +278,7 @@ jobs:
       )
     inputs:
       testResultsFormat: 'NUnit'
-      testResultsFiles: '**/UnitTests/**/TestResults/*'
+      testResultsFiles: '$(Build.SourcesDirectory)/Tests/UnitTests/**/TestResults/TestResults.xml'
       mergeTestResults: True
       buildConfiguration: ${{ parameters.build.configuration }}
       publishRunAttachments: True
@@ -417,7 +417,7 @@ jobs:
       )
     inputs:
       testResultsFormat: 'NUnit'
-      testResultsFiles: '**/IntegrationTests/**/TestResults/*'
+      testResultsFiles: '$(Build.SourcesDirectory)/Tests/IntegrationTests/**/TestResults/TestResults.xml'
       mergeTestResults: True
       buildConfiguration: ${{ parameters.build.configuration }}
       publishRunAttachments: True
