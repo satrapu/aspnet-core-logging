@@ -113,9 +113,9 @@ jobs:
       projectVersion: 'build.id.$(Build.BuildId)'
       extraProperties: |
         sonar.sourceEncoding=UTF-8
-        sonar.cs.nunit.reportsPaths=**/TestResults/*.*
-        sonar.cs.opencover.reportsPaths=**/coverage.opencover.xml
-        sonar.coverage.exclusions=**/Tests/**,**/Sources/Todo.Persistence/Migrations/**
+        sonar.cs.nunit.reportsPaths=$(Build.SourcesDirectory)/Tests/**/TestResults/*.*
+        sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/Tests/**/coverage.opencover.xml
+        sonar.coverage.exclusions=$(Build.SourcesDirectory)/Tests/**,$(Build.SourcesDirectory)/Sources/Todo.Persistence/Migrations/**
 
   # Cache NuGet packages to avoid having to restore them during each build.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/release/caching?view=azure-devops#netnuget
