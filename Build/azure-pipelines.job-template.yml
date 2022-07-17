@@ -534,8 +534,8 @@ jobs:
       and
       (
           eq(${{ parameters.sonar.enabled }}, True)
-        , eq(${{ parameters.publishPipelineArtifacts }}, True)
         , eq(${{ parameters.sonar.createDumpFile }}, True)
+        , eq(${{ parameters.publishPipelineArtifacts }}, True)
       )
     inputs:
       artifact: 'sonar-dump-file'
