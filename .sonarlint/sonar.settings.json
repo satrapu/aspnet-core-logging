@@ -1,0 +1,9 @@
+{
+    "sonar.exclusions": [
+    ],
+    "sonar.global.exclusions": [
+        "**/build-wrapper-dump.json"
+    ],
+    "sonar.inclusions": [
+    ]
+}

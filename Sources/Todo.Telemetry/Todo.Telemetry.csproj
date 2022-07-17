@@ -5,11 +5,16 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+            <_Parameter1>Todo.Telemetry.UnitTests</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
+
+    <ItemGroup>
         <ProjectReference Include="..\Todo.Services\Todo.Services.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" />
         <PackageReference Include="OpenTelemetry" />
         <PackageReference Include="OpenTelemetry.Contrib.Instrumentation.EntityFrameworkCore" />
         <PackageReference Include="OpenTelemetry.Contrib.Preview" />

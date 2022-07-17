@@ -1,6 +1,7 @@
 namespace Todo.Telemetry.Http
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Threading.Tasks;
 
@@ -68,6 +69,8 @@ namespace Todo.Telemetry.Http
         /// </summary>
         /// <param name="httpContext">The <see cref="HttpContext"/> object to be logged.</param>
         /// <returns></returns>
+        [SuppressMessage("Usage", "CA2254:Template should be a static expression",
+            Justification = "This method logs HTTP request/response pair which is dynamic")]
         private async Task Log(HttpContext httpContext)
         {
             // Ensure the current HTTP request is seekable and thus can be read and reset many times, including for

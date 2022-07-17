@@ -6,6 +6,13 @@ namespace Todo.WebApi
     using System.Text;
     using System.Threading.Tasks;
 
+    using Authorization;
+
+    using Commons.ApplicationEvents;
+
+    using ExceptionHandling;
+    using ExceptionHandling.Configuration;
+
     using Microsoft.AspNetCore.Authentication.JwtBearer;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Builder;
@@ -19,17 +26,11 @@ namespace Todo.WebApi
     using Microsoft.IdentityModel.Logging;
     using Microsoft.IdentityModel.Tokens;
 
-    using Todo.Commons.ApplicationEvents;
-    using Todo.Telemetry.ApplicationInsights;
-    using Todo.Telemetry.Http;
-    using Todo.Telemetry.OpenTelemetry;
-    using Todo.Telemetry.Serilog;
-    using Todo.WebApi.Authorization;
-    using Todo.WebApi.ExceptionHandling;
-    using Todo.WebApi.ExceptionHandling.Configuration;
-    using Todo.WebApi.Models;
+    using Models;
 
-    using ILogger = Microsoft.Extensions.Logging.ILogger;
+    using Telemetry.Http;
+    using Telemetry.OpenTelemetry;
+    using Telemetry.Serilog;
 
     /// <summary>
     /// Starts this ASP.NET Core application.
@@ -105,9 +106,9 @@ namespace Todo.WebApi
         private void ConfigureTelemetry(IServiceCollection services)
         {
             services
-                .AddApplicationInsights(configuration)
-                .AddOpenTelemetry(configuration, webHostEnvironment)
-                .AddSerilog(configuration);
+                .AddLogging(loggingBuilder => loggingBuilder.ClearProviders())
+                .AddSerilog(configuration)
+                .AddOpenTelemetry(configuration, webHostEnvironment);
         }
 
         private void ConfigureSecurity(IServiceCollection services)
