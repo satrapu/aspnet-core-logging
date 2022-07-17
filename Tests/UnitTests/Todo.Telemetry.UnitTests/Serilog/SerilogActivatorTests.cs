@@ -25,26 +25,9 @@ namespace Todo.Telemetry.Serilog
             actualReturnValue.Should().Be(expectedReturnValue);
         }
 
-        [Test]
-        [TestCaseSource(nameof(GetApplicationInsightsSinkConfigurations))]
-        public void IsApplicationInsightsSinkConfigured_WhenConfigurationIsValid_MustReturnExpectedValue(IConfiguration configuration, bool expectedReturnValue)
-        {
-            // Arrange & Act
-            bool actualReturnValue = SerilogActivator.IsApplicationInsightsSinkConfigured(configuration);
-
-            // Assert
-            actualReturnValue.Should().Be(expectedReturnValue);
-        }
-
         private static IEnumerable<object[]> GetFileSinkConfigurations()
         {
             yield return new object[] { FileSinkJsonFragment.ToConfiguration(), true };
-            yield return new object[] { ConsoleSinkJsonFragment.ToConfiguration(), false };
-        }
-
-        private static IEnumerable<object[]> GetApplicationInsightsSinkConfigurations()
-        {
-            yield return new object[] { ApplicationInsightsSinkJsonFragment.ToConfiguration(), true };
             yield return new object[] { ConsoleSinkJsonFragment.ToConfiguration(), false };
         }
 
@@ -94,30 +77,6 @@ namespace Todo.Telemetry.Serilog
 				        ""Args"": {
 					        ""theme"": ""Serilog.Sinks.SystemConsole.Themes.AnsiConsoleTheme::Code, Serilog.Sinks.Console"",
 					        ""outputTemplate"": ""{SourceContext}{NewLine}{Message:lj}{NewLine}{Properties}{NewLine{Exception}""
-				        }
-			        }
-		        ]
-	        }
-        }";
-
-        private static readonly string ApplicationInsightsSinkJsonFragment = @"
-        {
-	        ""Serilog"": {
-		        ""LevelSwitches"": {
-			        ""$controlSwitch"": ""Information""
-		        },
-		        ""MinimumLevel"": {
-			        ""ControlledBy"": ""$controlSwitch""
-		        },
-		        ""Using"": [
-			        ""Serilog.Sinks.ApplicationInsights""
-		        ],
-		        ""WriteTo"": [
-			        {
-				        ""Name"": ""ApplicationInsights"",
-				        ""Args"": {
-					        ""connectionString"": ""InstrumentationKey=00000000-0000-0000-0000-000000000000;"",
-					        ""telemetryConverter"": ""Serilog.Sinks.ApplicationInsights.TelemetryConverters.TraceTelemetryConverter, Serilog.Sinks.ApplicationInsights""
 				        }
 			        }
 		        ]

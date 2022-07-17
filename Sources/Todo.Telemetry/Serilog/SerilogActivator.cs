@@ -60,17 +60,6 @@ namespace Todo.Telemetry.Serilog
             return isSerilogFileSinkConfigured;
         }
 
-        internal static bool IsApplicationInsightsSinkConfigured(IConfiguration configuration)
-        {
-            IEnumerable<KeyValuePair<string, string>> configuredSerilogSinks =
-                configuration.GetSection(SerilogConstants.SectionNames.Using).AsEnumerable();
-
-            bool isSerilogApplicationInsightsSinkConfigured =
-                configuredSerilogSinks.Any(sink => SerilogConstants.SinkShortNames.ApplicationInsights.Equals(sink.Value));
-
-            return isSerilogApplicationInsightsSinkConfigured;
-        }
-
         private static void SetFileSinkDestinationFolder()
         {
             const string logsHomeEnvironmentVariableName = Logging.LogsHomeEnvironmentVariable;
