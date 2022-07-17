@@ -6,15 +6,13 @@ parameters:
   build:
     configuration: 'Release'
   installDotNetSdk: True
-  # Since currently downloading an archive containing a cache of restored
+  # @satrapu September 3rd, 2020: Since currently downloading an archive containing a cache of restored
   # NuGet packages takes considerably more time than just doing a restore
   # with each build, this feature has been turned off.
   cacheRestoredNuGetPackages: False
   sonar:
     enabled: False
-    verbose: 'true'
     sourceEncoding: 'UTF-8'
-    exclusions: '**/obj/**,**/*.dll,$(Pipeline.Workspace)/.nuget/**'
     runAnalysisTimeoutInMinutes: 5
     publishPollingTimeoutSeconds: 300
     buildBreaker:
@@ -119,15 +117,10 @@ jobs:
       # See all analysis parameters here: https://docs.sonarqube.org/latest/analysis/analysis-parameters/.
       extraProperties: |
         sonar.sourceEncoding=${{ parameters.sonar.sourceEncoding }}
-        sonar.verbose=${{ parameters.sonar.verbose }}
-        sonar.exclusions=${{ parameters.sonar.exclusions }}
         sonar.cs.nunit.reportsPaths=$(Build.SourcesDirectory)/Tests/**/TestResults/TestResults.xml
         sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/Tests/**/coverage.opencover.xml
         sonar.coverage.exclusions=$(Build.SourcesDirectory)/Tests/**,$(Build.SourcesDirectory)/Sources/Todo.Persistence/Migrations/**
         sonar.analysis.buildNumber=$(Build.BuildId)
-        sonar.analysis.pipeline=$(Build.BuildId)
-        sonar.analysis.sha1=$(System.PullRequest.SourceCommitId)
-        sonar.analysis.prNumber=$(System.PullRequest.PullRequestNumber)
         sonar.analysis.repository=$(Build.Repository.ID)
         sonar.scanner.dumpToFile=$(Build.SourcesDirectory)/.sonar-dump.txt
 
