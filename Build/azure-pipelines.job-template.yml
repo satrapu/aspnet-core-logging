@@ -129,7 +129,7 @@ jobs:
         sonar.analysis.sha1=$(System.PullRequest.SourceCommitId)
         sonar.analysis.prNumber=$(System.PullRequest.PullRequestNumber)
         sonar.analysis.repository=$(Build.Repository.ID)
-        sonar.scanner.dumpToFile=$(Build.SourcesDirectory)/CodeQuality/.sonar-dump.txt
+        sonar.scanner.dumpToFile=$(Build.SourcesDirectory)/.sonar-dump.txt
 
   # Cache NuGet packages to avoid having to restore them during each build.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/release/caching?view=azure-devops#netnuget
@@ -544,7 +544,7 @@ jobs:
       )
     inputs:
       artifact: 'sonar-dump-file'
-      path: '$(Build.SourcesDirectory)/CodeQuality/.sonar-dump.txt'
+      path: '$(Build.SourcesDirectory)/.sonar-dump.txt'
 
   # Publish Sonar analysis results to the remote server.
   - task: SonarCloudPublish@1
