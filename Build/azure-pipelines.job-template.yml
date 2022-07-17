@@ -13,7 +13,7 @@ parameters:
   sonar:
     enabled: False
     sourceEncoding: 'UTF-8'
-    createDumpFile: False
+    publishDumpFile: False
     runAnalysisTimeoutInMinutes: 5
     publishPollingTimeoutSeconds: 300
     buildBreaker:
@@ -534,7 +534,7 @@ jobs:
       and
       (
           eq(${{ parameters.sonar.enabled }}, True)
-        , eq(${{ parameters.sonar.createDumpFile }}, True)
+        , eq(${{ parameters.sonar.publishDumpFile }}, True)
         , eq(${{ parameters.publishPipelineArtifacts }}, True)
       )
     inputs:
