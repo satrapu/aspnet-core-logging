@@ -35,10 +35,7 @@ namespace Todo.Persistence
         public async Task GivenTheCurrentMigrations_WhenRunningThemInBothDirections_DatabaseIsCorrectlyMigrated()
         {
             // Arrange
-            string databaseName =
-                $"it--{nameof(GivenTheCurrentMigrations_WhenRunningThemInBothDirections_DatabaseIsCorrectlyMigrated)}";
-
-            DbContextOptions<TodoDbContext> dbContextOptions = GetDbContextOptions(databaseName);
+            DbContextOptions<TodoDbContext> dbContextOptions = GetDbContextOptions(databaseName: "db-migrations-have-run-successfully");
             await using TodoDbContext todoDbContext = new TodoDbContext(dbContextOptions);
             bool isMigrationSuccessful;
 
@@ -76,10 +73,7 @@ namespace Todo.Persistence
         public async Task SaveChanges_WhenModifyingSameEntityUsingTwoConcurrentTransactions_ThrowsException()
         {
             // Arrange
-            string databaseName =
-                $"it--{nameof(SaveChanges_WhenModifyingSameEntityUsingTwoConcurrentTransactions_ThrowsException)}";
-
-            DbContextOptions<TodoDbContext> dbContextOptions = GetDbContextOptions(databaseName);
+            DbContextOptions<TodoDbContext> dbContextOptions = GetDbContextOptions(databaseName: "use-concurrent-transactions");
 
             await using TodoDbContext firstTodoDbContext = new TodoDbContext(dbContextOptions);
             IMigrator databaseMigrator = firstTodoDbContext.GetInfrastructure().GetRequiredService<IMigrator>();
@@ -158,7 +152,7 @@ namespace Todo.Persistence
 
             var connectionStringBuilder = new NpgsqlConnectionStringBuilder(testConnectionString)
             {
-                Database = $"it--{databaseName}"
+                Database = databaseName
             };
 
             DbContextOptions<TodoDbContext> dbContextOptions = new DbContextOptionsBuilder<TodoDbContext>()
