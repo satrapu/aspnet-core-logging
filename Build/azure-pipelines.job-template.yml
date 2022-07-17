@@ -534,7 +534,7 @@ jobs:
       and
       (
           eq(${{ parameters.sonar.enabled }}, True)
-        , eq(${{ parameters.sonar.publishDumpFile }}, True)
+        #, eq(${{ parameters.sonar.publishDumpFile }}, True)
         , eq(${{ parameters.publishPipelineArtifacts }}, True)
       )
     inputs:
