@@ -129,6 +129,7 @@ jobs:
         sonar.analysis.sha1=$(System.PullRequest.SourceCommitId)
         sonar.analysis.prNumber=$(System.PullRequest.PullRequestNumber)
         sonar.analysis.repository=$(Build.Repository.ID)
+        sonar.scanner.dumpToFile=$(Build.SourcesDirectory)/CodeQuality/.sonar-dump.txt
 
   # Cache NuGet packages to avoid having to restore them during each build.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/release/caching?view=azure-devops#netnuget
@@ -530,6 +531,20 @@ jobs:
       )
     inputs:
       timeoutInMinutes: ${{ parameters.sonar.runAnalysisTimeoutInMinutes }}
+
+  # Publish Sonar dump file.
+  - task: PublishPipelineArtifact@1
+    name: 'publish_sonar_dump_file'
+    displayName: 'Publish Sonar dump file'
+    condition: |
+      and
+      (
+          eq(${{ parameters.sonar.enabled }}, True)
+        , eq(${{ parameters.publishPipelineArtifacts }}, True)
+      )
+    inputs:
+      artifact: 'sonar-dump-file'
+      path: '$(Build.SourcesDirectory)/CodeQuality/.sonar-dump.txt'
 
   # Publish Sonar analysis results to the remote server.
   - task: SonarCloudPublish@1
