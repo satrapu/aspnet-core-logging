@@ -14,7 +14,7 @@ parameters:
     enabled: False
     verbose: 'true'
     sourceEncoding: 'UTF-8'
-    exclusions: '**/obj/**,**/*.dll'
+    exclusions: '**/obj/**,**/*.dll,$(Pipeline.Workspace)/.nuget/**'
     runAnalysisTimeoutInMinutes: 5
     publishPollingTimeoutSeconds: 300
     buildBreaker:
