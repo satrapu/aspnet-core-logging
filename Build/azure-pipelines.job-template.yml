@@ -369,6 +369,8 @@ jobs:
         Database=${{ parameters.integrationTests.databaseName }};
         Username=${{ parameters.integrationTests.databaseUsername }};
         Password=${{ parameters.integrationTests.databasePassword }};
+        Enlist=false;
+        SSL Mode=Prefer;
       GENERATEJWT__SECRET: $(IntegrationTests.GenerateJwt.Secret)
 
   - powershell: echo "##vso[task.setvariable variable=integrationTestsOutcome]success"
