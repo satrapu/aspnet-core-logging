@@ -97,7 +97,7 @@ jobs:
       databaseName: '$(IntegrationTests.Database.Todo.Name)'
       databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
       databasePassword: '$(IntegrationTests.Database.Todo.Password)'
-      databaseDockerImage: 'postgres:12-alpine'
+      databaseDockerImage: 'exivity/postgres:14.0-linux'
       composeProjectName: 'integration-test-prerequisites'
 
 # @satrapu June 20th, 2021: Due to the volatile nature of the Docker Desktop for Mac installation experience,
@@ -134,5 +134,5 @@ jobs:
       databaseName: '$(IntegrationTests.Database.Todo.Name)'
       databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
       databasePassword: '$(IntegrationTests.Database.Todo.Password)'
-      databaseDockerImage: 'stellirin/postgres-windows:12'
+      databaseDockerImage: 'exivity/postgres:14.0-windows'
       composeProjectName: 'integration-test-prerequisites'

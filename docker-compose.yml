@@ -3,7 +3,7 @@ version: '3.8'
 services:
   aspnet-core-logging-dev:
     container_name: aspnet-core-logging-dev-db
-    image: postgres:12-alpine
+    image: exivity/postgres:14.0-linux
     restart: unless-stopped
     healthcheck:
       test: >
@@ -29,7 +29,7 @@ services:
 
   aspnet-core-logging-it:
     container_name: aspnet-core-logging-it-db
-    image: postgres:12-alpine
+    image: exivity/postgres:14.0-linux
     restart: unless-stopped
     healthcheck:
       test: >
@@ -55,8 +55,10 @@ services:
       
   jaeger:
     container_name: jaeger
-    image: jaegertracing/all-in-one:1.35
+    image: jaegertracing/all-in-one:1.37
     restart: unless-stopped
+    volumes:
+      - jaeger_data:/tmp
     ports:
       # The ports used by various Jaeger services and their meaning are taken from here: https://github.com/jaegertracing/jaeger/blob/main/crossdock/jaeger-docker-compose.yml
       # and here: https://www.jaegertracing.io/docs/next-release/deployment/.
@@ -76,7 +78,7 @@ services:
 
   pgadmin:
     container_name: pgadmin-ui
-    image: dpage/pgadmin4:6.11
+    image: dpage/pgadmin4:6.12
     restart: unless-stopped
     volumes:
       - pgadmin_data:/var/lib/pgadmin
@@ -111,6 +113,8 @@ volumes:
   aspnet-core-logging-dev_data:
     external: true
   aspnet-core-logging-it_data:
+    external: true
+  jaeger_data:
     external: true
   pgadmin_data:
     external: true
