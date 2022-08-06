@@ -125,9 +125,7 @@ jobs:
       name: 'windows'
       displayName: 'Run on Windows'
     pool:
-      # @satrapu July 17th, 2022: Unable to update to 'windows-2022' as the PostgreSQL Docker image used for running on a Windows-based agent is not compatible
-      # with Windows Server 2022; more specifically, the error message says: "The container operating system does not match the host operating system".
-      vmImage: 'windows-2019'
+      vmImage: 'windows-2022'
     runDotNetFormatTool: True
     integrationTests:
       databaseHost: 'localhost'
