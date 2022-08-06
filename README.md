@@ -54,6 +54,12 @@ docker volume create --name=aspnet-core-logging-dev_data
 docker volume create --name=aspnet-core-logging-it_data
 ```
 
+- Volume used by Jaeger tool
+
+```bash
+docker volume create --name=jaeger_data
+```
+
 - Volume used by pgAdmin tool
 
 ```bash
