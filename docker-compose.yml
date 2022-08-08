@@ -23,9 +23,9 @@ services:
     networks: 
       - local_postgresql
     environment:
-      - POSTGRES_USER=${DB_DEV_POSTGRES_USER}
-      - POSTGRES_PASSWORD=${DB_DEV_POSTGRES_PASSWORD}
-      - POSTGRES_DB=aspnet-core-logging-dev
+      - PGUSER=${DB_DEV_POSTGRES_USER}
+      - PGPASSWORD=${DB_DEV_POSTGRES_PASSWORD}
+      - PGDATABASE=aspnet-core-logging-dev
 
   aspnet-core-logging-it:
     container_name: aspnet-core-logging-it-db
@@ -49,9 +49,9 @@ services:
     networks: 
       - local_postgresql
     environment:
-      - POSTGRES_USER=${DB_IT_POSTGRES_USER}
-      - POSTGRES_PASSWORD=${DB_IT_POSTGRES_PASSWORD}
-      - POSTGRES_DB=aspnet-core-logging-it
+      - PGUSER=${DB_IT_POSTGRES_USER}
+      - PGPASSWORD=${DB_IT_POSTGRES_PASSWORD}
+      - PGDATABASE=aspnet-core-logging-it
       
   jaeger:
     container_name: jaeger
