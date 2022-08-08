@@ -6,8 +6,6 @@ version: "3.7"
 services:
   db4it:
     image: "${db_docker_image}"
-    volumes:
-      - ./pg_hba.conf:/var/lib/postgresql/data/pg_hba.conf
     healthcheck:
       test: >
         pg_isready \
@@ -25,5 +23,7 @@ services:
       POSTGRES_DB: "${db_name}"
       POSTGRES_USER: "${db_username}"
       POSTGRES_PASSWORD: "${db_password}"
+      POSTGRES_HOST_AUTH_METHOD: "scram-sha-256"
+      POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256"
     ports:
       - 5432
