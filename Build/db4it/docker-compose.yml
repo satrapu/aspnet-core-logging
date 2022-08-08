@@ -6,8 +6,6 @@ version: "3.7"
 services:
   db4it:
     image: "${db_docker_image}"
-    volumes:
-      - ./pg_hba.conf:${pg_hba_dot_conf_file_path}
     healthcheck:
       test: >
         pg_isready \
