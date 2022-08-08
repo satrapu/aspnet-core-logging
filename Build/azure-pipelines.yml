@@ -98,6 +98,7 @@ jobs:
       databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
       databasePassword: '$(IntegrationTests.Database.Todo.Password)'
       databaseDockerImage: 'exivity/postgres:14.0-linux'
+      databasePgHbaConfFilePath: '/var/lib/postgresql/data/pg_hba.conf'
       composeProjectName: 'integration-test-prerequisites'
 
 # @satrapu June 20th, 2021: Due to the volatile nature of the Docker Desktop for Mac installation experience,
@@ -133,4 +134,5 @@ jobs:
       databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
       databasePassword: '$(IntegrationTests.Database.Todo.Password)'
       databaseDockerImage: 'exivity/postgres:14.0-windows'
+      databasePgHbaConfFilePath: 'C:\pgsql\data\pg_hba.conf'
       composeProjectName: 'integration-test-prerequisites'

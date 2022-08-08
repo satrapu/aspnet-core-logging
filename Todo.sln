@@ -81,6 +81,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "db4it", "db4it", "{851D8B4A-A6C9-469E-8633-E6679738DA72}"
 	ProjectSection(SolutionItems) = preProject
 		Build\db4it\docker-compose.yml = Build\db4it\docker-compose.yml
+		Build\db4it\pg_hba.conf = Build\db4it\pg_hba.conf
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CodeStyle", "CodeStyle", "{3FCA9560-CE93-4B1F-9DE3-21461427E995}"
