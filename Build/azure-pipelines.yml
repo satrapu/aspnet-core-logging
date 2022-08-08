@@ -98,7 +98,6 @@ jobs:
       databaseHost: 'localhost'
       databaseName: '$(IntegrationTests.Database.Todo.Name)'
       databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
-      databasePassword: '$(IntegrationTests.Database.Todo.Password)'
       databaseDockerImage: 'exivity/postgres:14.0-linux'
       composeProjectName: 'integration-test-prerequisites'
 
@@ -117,8 +116,7 @@ jobs:
 #      databaseHost: 'localhost'
 #      databaseName: '$(IntegrationTests.Database.Todo.Name)'
 #      databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
-#      databasePassword: '$(IntegrationTests.Database.Todo.Password)'
-#      databaseDockerImage: 'postgres:12-alpine'
+#      databaseDockerImage: 'exivity/postgres:14.0-linux'
 #      composeProjectName: 'integration-test-prerequisites'
 
 - template: './azure-pipelines.job-template.yml'
@@ -133,6 +131,5 @@ jobs:
       databaseHost: 'localhost'
       databaseName: '$(IntegrationTests.Database.Todo.Name)'
       databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
-      databasePassword: '$(IntegrationTests.Database.Todo.Password)'
       databaseDockerImage: 'exivity/postgres:14.0-windows'
       composeProjectName: 'integration-test-prerequisites'
