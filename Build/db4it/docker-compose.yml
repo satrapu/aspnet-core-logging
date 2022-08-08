@@ -7,7 +7,7 @@ services:
   db4it:
     image: "${db_docker_image}"
     volumes:
-      - ./pg_hba.conf:/pgsql/data/pg_hba.conf
+      - ./pg_hba.conf:C:/pgsql/data/pg_hba.conf
     healthcheck:
       test: >
         pg_isready \
