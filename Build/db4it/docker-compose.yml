@@ -23,7 +23,6 @@ services:
       POSTGRES_DB: "${db_name}"
       POSTGRES_USER: "${db_username}"
       POSTGRES_PASSWORD: "${db_password}"
-      POSTGRES_HOST_AUTH_METHOD: "scram-sha-256"
-      POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256"
+      POSTGRES_HOST_AUTH_METHOD: "password"
     ports:
       - 5432
