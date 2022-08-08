@@ -326,7 +326,6 @@ jobs:
            'db_docker_image'='${{ parameters.integrationTests.databaseDockerImage }}'; `
            'db_name'='${{ parameters.integrationTests.databaseName }}'; `
            'db_username'='${{ parameters.integrationTests.databaseUsername }}'; `
-           'db_password'='${{ parameters.integrationTests.databasePassword }}'; `
          }
       # Docker Compose commands write to standard error stream, thus tricking Azure DevOps
       # into thinking this PowerShell script has failed, which isn't the case.
@@ -368,9 +367,6 @@ jobs:
         Port=$(compose.project.${{ parameters.integrationTests.composeProjectName }}.service.db4it.port.5432);
         Database=${{ parameters.integrationTests.databaseName }};
         Username=${{ parameters.integrationTests.databaseUsername }};
-        Password=${{ parameters.integrationTests.databasePassword }};
-        Enlist=false;
-        SSL Mode=Prefer;
       GENERATEJWT__SECRET: $(IntegrationTests.GenerateJwt.Secret)
 
   - powershell: echo "##vso[task.setvariable variable=integrationTestsOutcome]success"
