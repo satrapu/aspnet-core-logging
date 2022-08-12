@@ -304,7 +304,7 @@ jobs:
         , eq(variables['unitTestsOutcome'], 'success')
       )
 
-  # Run a PowerShell script to start compose services needed when running integration tests.
+   # Run a PowerShell script to start compose services needed when running integration tests.
   - task: PowerShell@2
     name: 'start_compose_services_used_by_integration_tests'
     displayName: 'Start compose services used by integration tests'
@@ -326,6 +326,7 @@ jobs:
            'db_docker_image'='${{ parameters.integrationTests.databaseDockerImage }}'; `
            'db_name'='${{ parameters.integrationTests.databaseName }}'; `
            'db_username'='${{ parameters.integrationTests.databaseUsername }}'; `
+           'db_password'='${{ parameters.integrationTests.databasePassword }}'; `
          }
       # Docker Compose commands write to standard error stream, thus tricking Azure DevOps
       # into thinking this PowerShell script has failed, which isn't the case.
@@ -367,6 +368,8 @@ jobs:
         Port=$(compose.project.${{ parameters.integrationTests.composeProjectName }}.service.db4it.port.5432);
         Database=${{ parameters.integrationTests.databaseName }};
         Username=${{ parameters.integrationTests.databaseUsername }};
+        Password=${{ parameters.integrationTests.databasePassword }};
+        Enlist=false;
       GENERATEJWT__SECRET: $(IntegrationTests.GenerateJwt.Secret)
 
   - powershell: echo "##vso[task.setvariable variable=integrationTestsOutcome]success"

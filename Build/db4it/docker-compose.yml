@@ -22,6 +22,6 @@ services:
     environment:
       PGDATABASE: "${db_name}"
       PGUSER: "${db_username}"
-      POSTGRES_HOST_AUTH_METHOD: "trust"
+      PGPASSWORD: "${db_password}"
     ports:
       - 5432

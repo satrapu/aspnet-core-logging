@@ -69,9 +69,7 @@ variables:
 
   # Represents the user used for accessing the database to be targeted by integration tests
   - name: 'IntegrationTests.Database.Todo.Username'
-    # @satrapu August 8th, 2022: Use 'postgres' since it's already been added to the pg_hba.conf file used for building both Linux and Windows container images.
-    # See this file here: https://github.com/exivity/docker/blob/master/postgres/pg_hba.conf.
-    value: 'postgres'
+    value: 'satrapu'
 
 # Define multiple jobs, one per supported operating system (Linux, macOS and Windows).
 # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/phases?view=azure-devops&tabs=yaml
@@ -98,6 +96,7 @@ jobs:
       databaseHost: 'localhost'
       databaseName: '$(IntegrationTests.Database.Todo.Name)'
       databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
+      databasePassword: '$(IntegrationTests.Database.Todo.Password)'
       databaseDockerImage: 'exivity/postgres:14.0-linux'
       composeProjectName: 'integration-test-prerequisites'
 
@@ -116,6 +115,7 @@ jobs:
 #      databaseHost: 'localhost'
 #      databaseName: '$(IntegrationTests.Database.Todo.Name)'
 #      databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
+#      databasePassword: '$(IntegrationTests.Database.Todo.Password)'
 #      databaseDockerImage: 'exivity/postgres:14.0-linux'
 #      composeProjectName: 'integration-test-prerequisites'
 
@@ -131,5 +131,6 @@ jobs:
       databaseHost: 'localhost'
       databaseName: '$(IntegrationTests.Database.Todo.Name)'
       databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
+      databasePassword: '$(IntegrationTests.Database.Todo.Password)'
       databaseDockerImage: 'exivity/postgres:14.0-windows'
       composeProjectName: 'integration-test-prerequisites'
