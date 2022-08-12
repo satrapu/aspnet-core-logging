@@ -69,7 +69,10 @@ variables:
 
   # Represents the user used for accessing the database to be targeted by integration tests
   - name: 'IntegrationTests.Database.Todo.Username'
-    value: 'satrapu'
+    # @satrapu August 12th, 2022: Use 'postgres' user since it's already been added to the pg_hba.conf file used for
+    # building both Linux and Windows container images.
+    # See this file here: https://github.com/exivity/docker/blob/master/postgres/pg_hba.conf.
+    value: 'postgres'
 
 # Define multiple jobs, one per supported operating system (Linux, macOS and Windows).
 # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/phases?view=azure-devops&tabs=yaml
