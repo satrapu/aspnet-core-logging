@@ -304,7 +304,7 @@ jobs:
         , eq(variables['unitTestsOutcome'], 'success')
       )
 
-   # Run a PowerShell script to start compose services needed when running integration tests.
+  # Run a PowerShell script to start compose services needed when running integration tests.
   - task: PowerShell@2
     name: 'start_compose_services_used_by_integration_tests'
     displayName: 'Start compose services used by integration tests'
