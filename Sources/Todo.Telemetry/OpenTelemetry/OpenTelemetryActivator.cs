@@ -67,7 +67,6 @@ namespace Todo.Telemetry.OpenTelemetry
                                             { "service.instance.attributes.custom.MachineName", Environment.MachineName },
                                             { "service.instance.attributes.custom.ProcessorCount", Environment.ProcessorCount },
                                             { "service.instance.attributes.custom.DotNetVersion", Environment.Version.ToString() }
-
                                     }))
                             .AddAspNetCoreInstrumentation()
                             .AddEntityFrameworkCoreInstrumentation(options =>
