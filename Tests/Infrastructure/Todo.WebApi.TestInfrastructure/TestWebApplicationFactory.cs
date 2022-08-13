@@ -121,6 +121,7 @@ namespace Todo.WebApi.TestInfrastructure
                     new KeyValuePair<string, string>(ConnectionStringKey, connectionStringBuilder.ConnectionString)
                 }
             };
+            Console.WriteLine($"Connection string is: [${connectionStringBuilder.ConnectionString}]");
 
             IConfiguration enhancedConfiguration = new ConfigurationBuilder()
                 .AddConfiguration(configuration)
