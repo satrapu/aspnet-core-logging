@@ -37,6 +37,10 @@ namespace Todo.Persistence
             // Arrange
             DbContextOptions<TodoDbContext> dbContextOptions = GetDbContextOptions(databaseName: "db-migrations-have-run-successfully");
             await using TodoDbContext todoDbContext = new TodoDbContext(dbContextOptions);
+
+            string connectionString = todoDbContext.Database.GetConnectionString();
+            Console.WriteLine($"Connection string is: [{connectionString}]");
+
             bool isMigrationSuccessful;
 
             try
