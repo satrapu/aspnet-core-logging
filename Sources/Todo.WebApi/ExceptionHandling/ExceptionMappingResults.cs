@@ -2,6 +2,7 @@ namespace Todo.WebApi.ExceptionHandling
 {
     using System;
     using System.Net;
+    using System.Transactions;
 
     using Npgsql;
 
@@ -39,6 +40,8 @@ namespace Todo.WebApi.ExceptionHandling
                 // Also return HTTP status code 503 in case the inner exception was thrown by a call made against the
                 // underlying database.
                 { InnerException: NpgsqlException _ } => DatabaseError,
+
+                TransactionException _ => DatabaseError,
 
                 // Fall-back to HTTP status code 500.
                 _ => GenericError,
