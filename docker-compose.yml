@@ -57,8 +57,6 @@ services:
     container_name: jaeger
     image: jaegertracing/all-in-one:1.37
     restart: unless-stopped
-    volumes:
-      - jaeger_data:/tmp
     ports:
       # The ports used by various Jaeger services and their meaning are taken from here: https://github.com/jaegertracing/jaeger/blob/main/crossdock/jaeger-docker-compose.yml
       # and here: https://www.jaegertracing.io/docs/next-release/deployment/.
@@ -113,8 +111,6 @@ volumes:
   aspnet-core-logging-dev_data:
     external: true
   aspnet-core-logging-it_data:
-    external: true
-  jaeger_data:
     external: true
   pgadmin_data:
     external: true
