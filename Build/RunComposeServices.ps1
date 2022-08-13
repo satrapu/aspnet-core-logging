@@ -44,7 +44,6 @@ if ($EnvironmentVariables -ne $null)
 {
     $EnvironmentVariables.GetEnumerator() | ForEach-Object {
         [System.Environment]::SetEnvironmentVariable($_.Key, $_.Value, 'Process')
-        Write-Output "Environment variable has been set --> `"$($_.Key)`"=`"$($_.Value)`""
     }
 }
 
