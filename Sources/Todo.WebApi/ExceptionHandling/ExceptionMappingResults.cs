@@ -13,13 +13,13 @@ namespace Todo.WebApi.ExceptionHandling
     /// </summary>
     public static class ExceptionMappingResults
     {
-        private static readonly ExceptionMappingResult EntityNotFound =
+        public static readonly ExceptionMappingResult EntityNotFound =
             new(HttpStatusCode.NotFound, "entity-not-found");
 
-        private static readonly ExceptionMappingResult DatabaseError =
+        public static readonly ExceptionMappingResult DatabaseError =
             new(HttpStatusCode.ServiceUnavailable, "database-error");
 
-        private static readonly ExceptionMappingResult GenericError =
+        public static readonly ExceptionMappingResult GenericError =
             new(HttpStatusCode.InternalServerError, "internal-server-error");
 
         /// <summary>
