@@ -68,6 +68,14 @@ variables:
   - name: 'IntegrationTests.Database.Todo.Name'
     value: 'todo-db4it'
 
+  # Represents the Docker image to use when running the database to be targeted by the integration tests.
+  - name: 'IntegrationTests.Database.DockerImage.Name'
+    value: 'satrapu/postgresql'
+
+  # Represents the prefix of the Docker image tag to use when running the database to be targeted by the integration tests.
+  - name: 'IntegrationTests.Database.DockerImage.TagPrefix'
+    value: '14.0'
+
 # Define multiple jobs, one per supported operating system (Linux, macOS and Windows).
 # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/phases?view=azure-devops&tabs=yaml
 #
@@ -94,7 +102,7 @@ jobs:
       databaseName: '$(IntegrationTests.Database.Todo.Name)'
       databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
       databasePassword: '$(IntegrationTests.Database.Todo.Password)'
-      databaseDockerImage: 'exivity/postgres:14.0-linux'
+      databaseDockerImage: '$(IntegrationTests.Database.DockerImage.Name):$(IntegrationTests.Database.DockerImage.TagPrefix)-linux'
       composeProjectName: 'integration-test-prerequisites'
 
 # @satrapu June 20th, 2021: Due to the volatile nature of the Docker Desktop for Mac installation experience,
@@ -113,7 +121,7 @@ jobs:
 #      databaseName: '$(IntegrationTests.Database.Todo.Name)'
 #      databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
 #      databasePassword: '$(IntegrationTests.Database.Todo.Password)'
-#      databaseDockerImage: 'exivity/postgres:14.0-linux'
+#      databaseDockerImage: '$(IntegrationTests.Database.DockerImage.Name):$(IntegrationTests.Database.DockerImage.TagPrefix)-linux'
 #      composeProjectName: 'integration-test-prerequisites'
 
 - template: './azure-pipelines.job-template.yml'
@@ -129,5 +137,5 @@ jobs:
       databaseName: '$(IntegrationTests.Database.Todo.Name)'
       databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
       databasePassword: '$(IntegrationTests.Database.Todo.Password)'
-      databaseDockerImage: 'exivity/postgres:14.0-windows'
+      databaseDockerImage: '$(IntegrationTests.Database.DockerImage.Name):$(IntegrationTests.Database.DockerImage.TagPrefix)-windows'
       composeProjectName: 'integration-test-prerequisites'
