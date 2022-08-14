@@ -42,7 +42,7 @@ variables:
 
   # Load group containing variables applicable to integration tests.
   # This group contains the user name and password to be used when accessing the dockerized database targeted by the integration tests.
-  # The user name is stored as a secret under the name "IntegrationTests.Database.Todo.UserName".
+  # The user name is stored as a secret under the name "IntegrationTests.Database.Todo.Username".
   # The password is stored as a secret under the name "IntegrationTests.Database.Todo.Password".
   # See more about secret variables here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&tabs=yaml%2Cbatch#secret-variables.
   - group: 'IntegrationTests'
