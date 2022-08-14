@@ -36,11 +36,11 @@ namespace Todo.WebApi.ExceptionHandling
             return new List<object[]>
             {
                 new object[]{ null, ExceptionMappingResults.GenericError },
+                new object[]{ new Exception("Hard-coded exception"), ExceptionMappingResults.GenericError },
                 new object[]{ new EntityNotFoundException(typeof(TodoItem), "test-entity-key"), ExceptionMappingResults.EntityNotFound },
                 new object[]{ new NpgsqlException(), ExceptionMappingResults.DatabaseError },
                 new object[]{ new Exception("Hard-coded exception with a cause", new NpgsqlException()), ExceptionMappingResults.DatabaseError },
-                new object[]{ new TransactionException("Hard-coded exception"), ExceptionMappingResults.DatabaseError },
-                new object[]{ new Exception("Hard-coded exception"), ExceptionMappingResults.GenericError }
+                new object[]{ new TransactionException("Hard-coded exception"), ExceptionMappingResults.DatabaseError }
             };
         }
     }
