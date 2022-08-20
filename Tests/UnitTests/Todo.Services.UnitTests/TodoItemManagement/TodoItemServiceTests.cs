@@ -298,7 +298,46 @@ namespace Todo.Services.TodoItemManagement
                         NamePattern = "%",
                         PageIndex = 1,
                         PageSize = 100,
+                        SortBy = null,
+                        IsSortAscending = null
+                    }
+                },
+                new object[]
+                {
+                    new TodoItemQuery
+                    {
+                        Id = long.MaxValue,
+                        IsComplete = true,
+                        NamePattern = "%",
+                        PageIndex = 1,
+                        PageSize = 100,
                         SortBy = nameof(TodoItem.Id),
+                        IsSortAscending = true
+                    }
+                },
+                new object[]
+                {
+                    new TodoItemQuery
+                    {
+                        Id = long.MaxValue,
+                        IsComplete = true,
+                        NamePattern = "%",
+                        PageIndex = 1,
+                        PageSize = 100,
+                        SortBy = nameof(TodoItem.Id),
+                        IsSortAscending = false
+                    }
+                },
+                new object[]
+                {
+                    new TodoItemQuery
+                    {
+                        Id = long.MaxValue,
+                        IsComplete = true,
+                        NamePattern = "%",
+                        PageIndex = 1,
+                        PageSize = 100,
+                        SortBy = nameof(TodoItem.CreatedOn),
                         IsSortAscending = true
                     }
                 },
@@ -325,6 +364,32 @@ namespace Todo.Services.TodoItemManagement
                         PageIndex = 1,
                         PageSize = 100,
                         SortBy = nameof(TodoItem.LastUpdatedOn),
+                        IsSortAscending = true
+                    }
+                },
+                 new object[]
+                {
+                    new TodoItemQuery
+                    {
+                        Id = long.MaxValue,
+                        IsComplete = true,
+                        NamePattern = "%",
+                        PageIndex = 1,
+                        PageSize = 100,
+                        SortBy = nameof(TodoItem.LastUpdatedOn),
+                        IsSortAscending = false
+                    }
+                },
+                new object[]
+                {
+                    new TodoItemQuery
+                    {
+                        Id = long.MaxValue,
+                        IsComplete = true,
+                        NamePattern = "%",
+                        PageIndex = 1,
+                        PageSize = 100,
+                        SortBy = nameof(TodoItem.Name),
                         IsSortAscending = true
                     }
                 },
