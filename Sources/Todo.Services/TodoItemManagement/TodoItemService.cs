@@ -279,8 +279,8 @@ namespace Todo.Services.TodoItemManagement
 
         private static IQueryable<TodoItem> PaginateItems(IQueryable<TodoItem> todoItems, TodoItemQuery todoItemQuery)
         {
-            int pageIndex = todoItemQuery.PageIndex ?? TodoItemQuery.DefaultPageIndex;
-            int pageSize = todoItemQuery.PageSize ?? TodoItemQuery.DefaultPageSize;
+            int pageIndex = todoItemQuery.PageIndex.Value;
+            int pageSize = todoItemQuery.PageSize.Value;
 
             IQueryable<TodoItem> result = todoItems.Skip(pageIndex * pageSize).Take(pageSize);
             return result;

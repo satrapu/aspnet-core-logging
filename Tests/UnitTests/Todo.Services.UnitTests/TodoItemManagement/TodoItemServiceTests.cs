@@ -311,6 +311,45 @@ namespace Todo.Services.TodoItemManagement
                         NamePattern = "%",
                         PageIndex = 1,
                         PageSize = 100,
+                        SortBy = "PropertyWhichDoesNotExist",
+                        IsSortAscending = true
+                    }
+                },
+                new object[]
+                {
+                    new TodoItemQuery
+                    {
+                        Id = long.MaxValue,
+                        IsComplete = true,
+                        NamePattern = "%",
+                        PageIndex = 1,
+                        PageSize = 100,
+                        SortBy = "PropertyWhichDoesNotExist",
+                        IsSortAscending = false
+                    }
+                },
+                new object[]
+                {
+                    new TodoItemQuery
+                    {
+                        Id = long.MaxValue,
+                        IsComplete = true,
+                        NamePattern = "%",
+                        PageIndex = 1,
+                        PageSize = 100,
+                        SortBy = "PropertyWhichDoesNotExist",
+                        IsSortAscending = false
+                    }
+                },
+                new object[]
+                {
+                    new TodoItemQuery
+                    {
+                        Id = long.MaxValue,
+                        IsComplete = true,
+                        NamePattern = "%",
+                        PageIndex = 1,
+                        PageSize = 100,
                         SortBy = nameof(TodoItem.Id),
                         IsSortAscending = true
                     }
