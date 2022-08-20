@@ -76,6 +76,9 @@ variables:
   - name: 'IntegrationTests.Database.DockerImage.TagPrefix'
     value: '14.0'
 
+  - name: SolutionFileName
+    value: 'Todo.WebApi.sln'
+
 # Define multiple jobs, one per supported operating system (Linux, macOS and Windows).
 # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/phases?view=azure-devops&tabs=yaml
 #
