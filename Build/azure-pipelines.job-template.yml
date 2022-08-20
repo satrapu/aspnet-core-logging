@@ -63,10 +63,11 @@ jobs:
     AllTestsOutcome: 'failure'
   steps:
   # Customize the way this job checkouts the current Git branch.
-  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=azure-devops&tabs=schema%2Cparameter-schema#checkout.
+  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/steps-checkout?view=azure-pipelines.
   - checkout: self
+    name: 'checkout_source_code'
+    displayName: 'Checkout source code'
     clean: False
-    fetchDepth: 1
     lfs: False
     submodules: False
     persistCredentials: False
