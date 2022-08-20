@@ -5,7 +5,7 @@ namespace Todo.Commons
 
     public static class ActivitySources
     {
-        private const string ActivitySourceName = "Todo";
+        private const string ActivitySourceName = "Todo.WebApi";
 
         static ActivitySources()
         {

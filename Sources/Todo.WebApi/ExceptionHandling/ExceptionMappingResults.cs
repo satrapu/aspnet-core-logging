@@ -2,6 +2,7 @@ namespace Todo.WebApi.ExceptionHandling
 {
     using System;
     using System.Net;
+    using System.Transactions;
 
     using Npgsql;
 
@@ -12,13 +13,13 @@ namespace Todo.WebApi.ExceptionHandling
     /// </summary>
     public static class ExceptionMappingResults
     {
-        private static readonly ExceptionMappingResult EntityNotFound =
+        public static readonly ExceptionMappingResult EntityNotFound =
             new(HttpStatusCode.NotFound, "entity-not-found");
 
-        private static readonly ExceptionMappingResult DatabaseError =
+        public static readonly ExceptionMappingResult DatabaseError =
             new(HttpStatusCode.ServiceUnavailable, "database-error");
 
-        private static readonly ExceptionMappingResult GenericError =
+        public static readonly ExceptionMappingResult GenericError =
             new(HttpStatusCode.InternalServerError, "internal-server-error");
 
         /// <summary>
@@ -39,6 +40,8 @@ namespace Todo.WebApi.ExceptionHandling
                 // Also return HTTP status code 503 in case the inner exception was thrown by a call made against the
                 // underlying database.
                 { InnerException: NpgsqlException _ } => DatabaseError,
+
+                TransactionException _ => DatabaseError,
 
                 // Fall-back to HTTP status code 500.
                 _ => GenericError,

@@ -57,16 +57,17 @@ jobs:
     # See more here: https://docs.microsoft.com/en-us/nuget/reference/cli-reference/cli-ref-environment-variables.
     NUGET_XMLDOC_MODE: 'skip'
 
-    architectureTestsOutcome: 'failure'
-    unitTestsOutcome: 'failure'
-    integrationTestsOutcome: 'failure'
-    allTestsOutcome: 'failure'
+    ArchitectureTestsOutcome: 'failure'
+    UnitTestsOutcome: 'failure'
+    IntegrationTestsOutcome: 'failure'
+    AllTestsOutcome: 'failure'
   steps:
   # Customize the way this job checkouts the current Git branch.
-  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=azure-devops&tabs=schema%2Cparameter-schema#checkout.
+  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/steps-checkout?view=azure-pipelines.
   - checkout: self
+    name: 'checkout_source_code'
+    displayName: 'Checkout source code'
     clean: False
-    fetchDepth: 1
     lfs: False
     submodules: False
     persistCredentials: False
@@ -141,9 +142,9 @@ jobs:
   # See more about this command here: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-restore?source=docs.
   #
   # The command used for generating the lock files is:
-  # dotnet restore ./Todo.sln --configfile ./nuget.config --use-lock-file --lock-file-path packages.lock.json
+  # dotnet restore ./$(SolutionFileName) --configfile ./nuget.config --use-lock-file --lock-file-path packages.lock.json
   - script: >-
-      dotnet restore $(Build.SourcesDirectory)/Todo.sln
+      dotnet restore $(Build.SourcesDirectory)/$(SolutionFileName)
       --configfile $(Build.SourcesDirectory)/nuget.config
       --locked-mode
     name: 'restore_nuget_packages'
@@ -153,7 +154,7 @@ jobs:
   # Compile source code using 'dotnet build' command.
   # See more about this command here: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-build.
   - script: >-
-      dotnet build $(Build.SourcesDirectory)/Todo.sln
+      dotnet build $(Build.SourcesDirectory)/$(SolutionFileName)
       --configuration ${{ parameters.build.configuration }}
       --no-restore
     name: 'build_sources'
@@ -175,7 +176,7 @@ jobs:
       --check
       --verbosity diagnostic
       --report $(Build.SourcesDirectory)/.dotnet-format-report.json
-      $(Build.SourcesDirectory)/Todo.sln
+      $(Build.SourcesDirectory)/$(SolutionFileName)
     name: 'run_dotnet_format'
     displayName: 'Enforce code style & formatting rules'
     condition: eq(${{ parameters.runDotNetFormatTool }}, True)
@@ -197,7 +198,7 @@ jobs:
 
   # Run architecture tests
   - script: >-
-      dotnet test $(Build.SourcesDirectory)/Todo.sln
+      dotnet test $(Build.SourcesDirectory)/$(SolutionFileName)
       --no-build
       --no-restore
       --configuration ${{ parameters.build.configuration }}
@@ -208,9 +209,9 @@ jobs:
     displayName: 'Run architecture tests'
     condition: eq(${{ parameters.runTests }}, True)
 
-  - powershell: echo "##vso[task.setvariable variable=architectureTestsOutcome]success"
+  - powershell: echo "##vso[task.setvariable variable=ArchitectureTestsOutcome]success"
     name: 'set_architecture_tests_outcome_variable'
-    displayName: 'Set architectureTestsOutcome variable'
+    displayName: 'Set ArchitectureTestsOutcome variable'
     condition: |
       and
       (
@@ -240,7 +241,7 @@ jobs:
   # Decorate the AssemblyInfo.cs found inside each unit test related project with:
   #     [assembly: NUnit.Framework.Category("UnitTests")]
   - script: >-
-      dotnet test $(Build.SourcesDirectory)/Todo.sln
+      dotnet test $(Build.SourcesDirectory)/$(SolutionFileName)
       --no-build
       --no-restore
       --configuration ${{ parameters.build.configuration }}
@@ -257,18 +258,18 @@ jobs:
       and
       (
           eq(${{ parameters.runTests }}, True)
-        , eq(variables['architectureTestsOutcome'], 'success')
+        , eq(variables['ArchitectureTestsOutcome'], 'success')
       )
 
-  - powershell: echo "##vso[task.setvariable variable=unitTestsOutcome]success"
+  - powershell: echo "##vso[task.setvariable variable=UnitTestsOutcome]success"
     name: 'set_unit_tests_outcome_variable'
-    displayName: 'Set unitTestsOutcome variable'
+    displayName: 'Set UnitTestsOutcome variable'
     condition: |
       and
       (
           succeeded()
         , eq(${{ parameters.runTests }}, True)
-        , eq(variables['architectureTestsOutcome'], 'success')
+        , eq(variables['ArchitectureTestsOutcome'], 'success')
       )
 
   # Publish unit test results.
@@ -280,7 +281,7 @@ jobs:
       and
       (
           eq(${{ parameters.runTests }}, True)
-        , eq(variables['architectureTestsOutcome'], 'success')
+        , eq(variables['ArchitectureTestsOutcome'], 'success')
       )
     inputs:
       testResultsFormat: 'NUnit'
@@ -301,7 +302,7 @@ jobs:
       (
           eq(variables['Agent.OS'], 'Darwin')
         , eq(${{ parameters.runTests }}, True)
-        , eq(variables['unitTestsOutcome'], 'success')
+        , eq(variables['UnitTestsOutcome'], 'success')
       )
 
   # Run a PowerShell script to start compose services needed when running integration tests.
@@ -313,7 +314,7 @@ jobs:
       (
           succeeded()
         , eq(${{ parameters.runTests }}, True)
-        , eq(variables['unitTestsOutcome'], 'success')
+        , eq(variables['UnitTestsOutcome'], 'success')
       )
     inputs:
       targetType: 'filePath'
@@ -342,7 +343,7 @@ jobs:
   # Decorate the AssemblyInfo.cs found inside each integration test related project with:
   #     [assembly: NUnit.Framework.Category("IntegrationTests")]
   - script: >-
-      dotnet test $(Build.SourcesDirectory)/Todo.sln
+      dotnet test $(Build.SourcesDirectory)/$(SolutionFileName)
       --no-build
       --no-restore
       --configuration ${{ parameters.build.configuration }}
@@ -360,7 +361,7 @@ jobs:
       (
           succeeded()
         , eq(${{ parameters.runTests }}, True)
-        , eq(variables['unitTestsOutcome'], 'success')
+        , eq(variables['UnitTestsOutcome'], 'success')
       )
     env:
       CONNECTIONSTRINGS__TODOFORINTEGRATIONTESTS: >-
@@ -371,15 +372,15 @@ jobs:
         Password=${{ parameters.integrationTests.databasePassword }};
       GENERATEJWT__SECRET: $(IntegrationTests.GenerateJwt.Secret)
 
-  - powershell: echo "##vso[task.setvariable variable=integrationTestsOutcome]success"
+  - powershell: echo "##vso[task.setvariable variable=IntegrationTestsOutcome]success"
     name: 'set_integration_tests_outcome_variable'
-    displayName: 'Set integrationTestsOutcome variable'
+    displayName: 'Set IntegrationTestsOutcome variable'
     condition: |
       and
       (
           succeeded()
         , eq(${{ parameters.runTests }}, True)
-        , eq(variables['unitTestsOutcome'], 'success')
+        , eq(variables['UnitTestsOutcome'], 'success')
       )
 
   # Run a PowerShell script to export the logs of the Docker Compose service
@@ -392,7 +393,7 @@ jobs:
       (
           eq(${{ parameters.publishPipelineArtifacts }}, True)
         , eq(${{ parameters.runTests }}, True)
-        , eq(variables['unitTestsOutcome'], 'success')
+        , eq(variables['UnitTestsOutcome'], 'success')
       )
     inputs:
       targetType: 'filePath'
@@ -419,7 +420,7 @@ jobs:
       (
           eq(${{ parameters.publishPipelineArtifacts }}, True)
         , eq(${{ parameters.runTests }}, True)
-        , eq(variables['unitTestsOutcome'], 'success')
+        , eq(variables['UnitTestsOutcome'], 'success')
       )
     inputs:
       testResultsFormat: 'NUnit'
@@ -428,16 +429,16 @@ jobs:
       buildConfiguration: ${{ parameters.build.configuration }}
       publishRunAttachments: True
 
-  - powershell: echo "##vso[task.setvariable variable=allTestsOutcome]success"
+  - powershell: echo "##vso[task.setvariable variable=AllTestsOutcome]success"
     name: 'set_all_tests_outcome_variable'
-    displayName: 'Set allTestsOutcome variable'
+    displayName: 'Set AllTestsOutcome variable'
     condition: |
       and
       (
           eq(${{ parameters.runTests }}, True)
-        , eq(variables['architectureTestsOutcome'], 'success')
-        , eq(variables['unitTestsOutcome'], 'success')
-        , eq(variables['integrationTestsOutcome'], 'success')
+        , eq(variables['ArchitectureTestsOutcome'], 'success')
+        , eq(variables['UnitTestsOutcome'], 'success')
+        , eq(variables['IntegrationTestsOutcome'], 'success')
       )
 
   # Install reportgenerator tool to be able to generate code coverage related reports using 'dotnet tool install' command.
@@ -452,7 +453,7 @@ jobs:
       and
       (
           eq(${{ parameters.runTests }}, True)
-        , eq(variables['allTestsOutcome'], 'success')
+        , eq(variables['AllTestsOutcome'], 'success')
       )
 
   # Generate code coverage report:
@@ -473,7 +474,7 @@ jobs:
       and
       (
           eq(${{ parameters.runTests }}, True)
-        , eq(variables['allTestsOutcome'], 'success')
+        , eq(variables['AllTestsOutcome'], 'success')
       )
 
   # Publish code coverage report.
@@ -485,7 +486,7 @@ jobs:
       and
       (
           eq(${{ parameters.runTests }}, True)
-        , eq(variables['allTestsOutcome'], 'success')
+        , eq(variables['AllTestsOutcome'], 'success')
       )
     inputs:
       codeCoverageTool: 'Cobertura'
@@ -519,7 +520,7 @@ jobs:
       and
       (
           eq(${{ parameters.sonar.enabled }}, True)
-        , eq(variables['allTestsOutcome'], 'success')
+        , eq(variables['AllTestsOutcome'], 'success')
       )
     inputs:
       timeoutInMinutes: ${{ parameters.sonar.runAnalysisTimeoutInMinutes }}
@@ -532,7 +533,7 @@ jobs:
       and
       (
           eq(${{ parameters.sonar.enabled }}, True)
-        , eq(variables['allTestsOutcome'], 'success')
+        , eq(variables['AllTestsOutcome'], 'success')
       )
     inputs:
       pollingTimeoutSeconds: ${{ parameters.sonar.publishPollingTimeoutSeconds }}
@@ -548,7 +549,7 @@ jobs:
       (
           eq(${{ parameters.sonar.enabled }}, True)
         , eq(${{ parameters.sonar.buildBreaker.enabled }}, True)
-        , eq(variables['allTestsOutcome'], 'success')
+        , eq(variables['AllTestsOutcome'], 'success')
         , eq(variables['Build.Reason'], 'PullRequest')
       )
     inputs:
@@ -569,7 +570,7 @@ jobs:
       (
           eq(${{ parameters.sonar.enabled }}, True)
         , eq(${{ parameters.sonar.buildBreaker.enabled }}, True)
-        , eq(variables['allTestsOutcome'], 'success')
+        , eq(variables['AllTestsOutcome'], 'success')
         , ne(variables['Build.Reason'], 'PullRequest')
       )
     inputs:
@@ -589,7 +590,7 @@ jobs:
       (
           eq(${{ parameters.sonar.enabled }}, True)
         , eq(${{ parameters.sonar.buildBreaker.enabled }}, True)
-        , eq(variables['allTestsOutcome'], 'success')
+        , eq(variables['AllTestsOutcome'], 'success')
       )
     inputs:
       targetType: 'inline'
@@ -612,7 +613,7 @@ jobs:
       (
           eq(${{ parameters.sonar.enabled }}, True)
         , eq(${{ parameters.sonar.buildBreaker.enabled }}, True)
-        , eq(variables['allTestsOutcome'], 'success')
+        , eq(variables['AllTestsOutcome'], 'success')
       )
     inputs:
       targetType: 'filePath'

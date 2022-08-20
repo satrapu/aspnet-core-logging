@@ -31,7 +31,7 @@ namespace Todo.Services.TodoItemManagement
         private const string SortById = nameof(TodoItem.Id);
         private const string SortByLastUpdatedOn = nameof(TodoItem.LastUpdatedOn);
         private const string SortByName = nameof(TodoItem.Name);
-        private static readonly Expression<Func<TodoItem, object>> defaultKeySelector = todoItem => todoItem.Id;
+        private static readonly Expression<Func<TodoItem, object>> DefaultKeySelector = todoItem => todoItem.Id;
         private static readonly string TypeFullName = typeof(TodoItemService).FullName;
 
         /// <summary>
@@ -235,7 +235,7 @@ namespace Todo.Services.TodoItemManagement
         {
             if (string.IsNullOrWhiteSpace(sortByProperty))
             {
-                return defaultKeySelector;
+                return DefaultKeySelector;
             }
 
             if (SortByCreatedOn.Equals(sortByProperty, StringComparison.InvariantCultureIgnoreCase))
@@ -258,7 +258,7 @@ namespace Todo.Services.TodoItemManagement
                 return todoItem => todoItem.Name;
             }
 
-            return defaultKeySelector;
+            return DefaultKeySelector;
         }
 
         private static IQueryable<TodoItemInfo> ProjectItems(IQueryable<TodoItem> todoItems)
@@ -279,8 +279,8 @@ namespace Todo.Services.TodoItemManagement
 
         private static IQueryable<TodoItem> PaginateItems(IQueryable<TodoItem> todoItems, TodoItemQuery todoItemQuery)
         {
-            int pageIndex = todoItemQuery.PageIndex ?? TodoItemQuery.DefaultPageIndex;
-            int pageSize = todoItemQuery.PageSize ?? TodoItemQuery.DefaultPageSize;
+            int pageIndex = todoItemQuery.PageIndex.Value;
+            int pageSize = todoItemQuery.PageSize.Value;
 
             IQueryable<TodoItem> result = todoItems.Skip(pageIndex * pageSize).Take(pageSize);
             return result;

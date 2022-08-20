@@ -55,12 +55,7 @@ namespace Todo.ApplicationFlows
             }))
             {
                 string flowInitiatorName = flowInitiator.GetNameOrDefault();
-
-                using Activity flowActivity =
-                    ActivitySources.TodoActivitySource
-                        .StartActivity(flowName, ActivityKind.Server)
-                        ?.SetTag(nameof(flowInitiator), flowInitiatorName);
-
+                using Activity flowActivity = ActivitySources.TodoActivitySource.StartActivity(flowName, ActivityKind.Internal);
                 bool isSuccess = false;
 
                 try

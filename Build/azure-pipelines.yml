@@ -41,8 +41,9 @@ variables:
   - group: 'SonarQube'
 
   # Load group containing variables applicable to integration tests.
-  # This group contains the password to be used when accessing the dockerized database targeted by the integration tests.
-  # This password is stored as a secret under the name "IntegrationTests.Database.Todo.Password".
+  # This group contains the user name and password to be used when accessing the dockerized database targeted by the integration tests.
+  # The user name is stored as a secret under the name "IntegrationTests.Database.Todo.Username".
+  # The password is stored as a secret under the name "IntegrationTests.Database.Todo.Password".
   # See more about secret variables here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&tabs=yaml%2Cbatch#secret-variables.
   - group: 'IntegrationTests'
 
@@ -67,9 +68,16 @@ variables:
   - name: 'IntegrationTests.Database.Todo.Name'
     value: 'todo-db4it'
 
-  # Represents the user used for accessing the database to be targeted by integration tests
-  - name: 'IntegrationTests.Database.Todo.Username'
-    value: 'satrapu'
+  # Represents the Docker image to use when running the database to be targeted by the integration tests.
+  - name: 'IntegrationTests.Database.DockerImage.Name'
+    value: 'satrapu/postgresql'
+
+  # Represents the prefix of the Docker image tag to use when running the database to be targeted by the integration tests.
+  - name: 'IntegrationTests.Database.DockerImage.TagPrefix'
+    value: '14.0'
+
+  - name: SolutionFileName
+    value: 'Todo.WebApi.sln'
 
 # Define multiple jobs, one per supported operating system (Linux, macOS and Windows).
 # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/phases?view=azure-devops&tabs=yaml
@@ -97,7 +105,7 @@ jobs:
       databaseName: '$(IntegrationTests.Database.Todo.Name)'
       databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
       databasePassword: '$(IntegrationTests.Database.Todo.Password)'
-      databaseDockerImage: 'postgres:12-alpine'
+      databaseDockerImage: '$(IntegrationTests.Database.DockerImage.Name):$(IntegrationTests.Database.DockerImage.TagPrefix)-linux'
       composeProjectName: 'integration-test-prerequisites'
 
 # @satrapu June 20th, 2021: Due to the volatile nature of the Docker Desktop for Mac installation experience,
@@ -116,7 +124,7 @@ jobs:
 #      databaseName: '$(IntegrationTests.Database.Todo.Name)'
 #      databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
 #      databasePassword: '$(IntegrationTests.Database.Todo.Password)'
-#      databaseDockerImage: 'postgres:12-alpine'
+#      databaseDockerImage: '$(IntegrationTests.Database.DockerImage.Name):$(IntegrationTests.Database.DockerImage.TagPrefix)-linux'
 #      composeProjectName: 'integration-test-prerequisites'
 
 - template: './azure-pipelines.job-template.yml'
@@ -125,14 +133,12 @@ jobs:
       name: 'windows'
       displayName: 'Run on Windows'
     pool:
-      # @satrapu July 17th, 2022: Unable to update to 'windows-2022' as the PostgreSQL Docker image used for running on a Windows-based agent is not compatible
-      # with Windows Server 2022; more specifically, the error message says: "The container operating system does not match the host operating system".
-      vmImage: 'windows-2019'
+      vmImage: 'windows-2022'
     runDotNetFormatTool: True
     integrationTests:
       databaseHost: 'localhost'
       databaseName: '$(IntegrationTests.Database.Todo.Name)'
       databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
       databasePassword: '$(IntegrationTests.Database.Todo.Password)'
-      databaseDockerImage: 'stellirin/postgres-windows:12'
+      databaseDockerImage: '$(IntegrationTests.Database.DockerImage.Name):$(IntegrationTests.Database.DockerImage.TagPrefix)-windows'
       composeProjectName: 'integration-test-prerequisites'
