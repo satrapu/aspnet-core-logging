@@ -26,8 +26,7 @@ namespace Todo.Services.TodoItemManagement
     [TestFixture]
     public class TodoItemServiceTests
     {
-        private DbContextOptions<TodoDbContext> DummyOptions { get; } =
-            new DbContextOptionsBuilder<TodoDbContext>().Options;
+        private DbContextOptions<TodoDbContext> DummyOptions { get; } = new DbContextOptionsBuilder<TodoDbContext>().Options;
 
         /// <summary>
         /// Tests <see cref="TodoItemService"/> constructor.
@@ -68,8 +67,7 @@ namespace Todo.Services.TodoItemManagement
 
             // Assert
             createTodoItemServiceAction
-                .Should().Throw<ArgumentNullException>(
-                    $"must not create {nameof(TodoItemService)} with a null {nameof(TodoDbContext)}")
+                .Should().Throw<ArgumentNullException>($"must not create {nameof(TodoItemService)} with a null {nameof(TodoDbContext)}")
                 .And.ParamName.Should().Be(nameof(todoDbContext), "the EF Core context is null");
         }
 
@@ -92,8 +90,7 @@ namespace Todo.Services.TodoItemManagement
 
             // Assert
             createTodoItemServiceAction
-                .Should().Throw<ArgumentNullException>(
-                    $"must not create {nameof(TodoItemService)} with a null {nameof(ILogger<TodoItemService>)}")
+                .Should().Throw<ArgumentNullException>($"must not create {nameof(TodoItemService)} with a null {nameof(ILogger<TodoItemService>)}")
                 .And.ParamName.Should().Be(nameof(logger), "the logger is null");
         }
 
@@ -111,12 +108,10 @@ namespace Todo.Services.TodoItemManagement
 
             // Act
             // ReSharper disable once ExpressionIsAlwaysNull
-            Func<Task<IList<TodoItemInfo>>> getByQueryAsyncCall =
-                async () => await todoItemService.GetByQueryAsync(todoItemQuery);
+            Func<Task<IList<TodoItemInfo>>> getByQueryAsyncCall = async () => await todoItemService.GetByQueryAsync(todoItemQuery);
 
             // Assert
-            await getByQueryAsyncCall.Should().ThrowExactlyAsync<ArgumentNullException>(
-                "service cannot fetch data using a null query");
+            await getByQueryAsyncCall.Should().ThrowExactlyAsync<ArgumentNullException>("service cannot fetch data using a null query");
         }
 
         /// <summary>
@@ -127,12 +122,6 @@ namespace Todo.Services.TodoItemManagement
         public async Task GetByQueryAsync_UsingValidQuery_MustSucceed(TodoItemQuery todoItemQuery)
         {
             // Arrange
-            var inMemoryDatabase =
-                new DbContextOptionsBuilder<TodoDbContext>()
-                    .UseInMemoryDatabase($"db--{Guid.NewGuid():N}")
-                    .EnableDetailedErrors()
-                    .EnableSensitiveDataLogging();
-
             var mockLogger = new Mock<ILogger<TodoItemService>>();
 
             var owner = new Mock<IPrincipal>();
@@ -140,11 +129,11 @@ namespace Todo.Services.TodoItemManagement
 
             todoItemQuery.Owner = owner.Object;
 
-            var todoItemService = new TodoItemService(new TodoDbContext(inMemoryDatabase.Options), mockLogger.Object);
+            DbContextOptionsBuilder<TodoDbContext> dbContextOptionsBuilder = GetInMemoryDbContextOptionsBuilder();
+            var todoItemService = new TodoItemService(new TodoDbContext(dbContextOptionsBuilder.Options), mockLogger.Object);
 
             // Act
-            Func<Task<IList<TodoItemInfo>>> getByQueryAsyncCall =
-                async () => await todoItemService.GetByQueryAsync(todoItemQuery);
+            Func<Task<IList<TodoItemInfo>>> getByQueryAsyncCall = async () => await todoItemService.GetByQueryAsync(todoItemQuery);
 
             // Assert
             await getByQueryAsyncCall.Should().NotThrowAsync("query is valid");
@@ -167,9 +156,7 @@ namespace Todo.Services.TodoItemManagement
             Func<Task<long>> addAsyncCall = async () => await todoItemService.AddAsync(newTodoItemInfo);
 
             // Assert
-            await addAsyncCall
-                .Should()
-                .ThrowExactlyAsync<ArgumentNullException>("service cannot add data using a null item");
+            await addAsyncCall.Should().ThrowExactlyAsync<ArgumentNullException>("service cannot add data using a null item");
         }
 
         /// <summary>
@@ -189,8 +176,7 @@ namespace Todo.Services.TodoItemManagement
             Func<Task> updateAsyncCall = async () => await todoItemService.UpdateAsync(updateTodoItemInfo);
 
             // Assert
-            await updateAsyncCall.Should().ThrowExactlyAsync<ArgumentNullException>(
-                "service cannot update data using a null item");
+            await updateAsyncCall.Should().ThrowExactlyAsync<ArgumentNullException>("service cannot update data using a null item");
         }
 
         /// <summary>
@@ -200,12 +186,6 @@ namespace Todo.Services.TodoItemManagement
         public async Task UpdateAsync_UsingNonexistentEntityKey_MustThrowException()
         {
             // Arrange
-            var inMemoryDatabase =
-                new DbContextOptionsBuilder<TodoDbContext>()
-                    .UseInMemoryDatabase($"db--{Guid.NewGuid():N}")
-                    .EnableDetailedErrors()
-                    .EnableSensitiveDataLogging();
-
             var mockLogger = new Mock<ILogger<TodoItemService>>();
 
             var owner = new Mock<IPrincipal>();
@@ -219,14 +199,14 @@ namespace Todo.Services.TodoItemManagement
                 Owner = owner.Object
             };
 
-            var todoItemService = new TodoItemService(new TodoDbContext(inMemoryDatabase.Options), mockLogger.Object);
+            DbContextOptionsBuilder<TodoDbContext> dbContextOptionsBuilder = GetInMemoryDbContextOptionsBuilder();
+            var todoItemService = new TodoItemService(new TodoDbContext(dbContextOptionsBuilder.Options), mockLogger.Object);
 
             // Act
             Func<Task> updateAsyncCall = async () => await todoItemService.UpdateAsync(updateTodoItemInfo);
 
             // Assert
-            await updateAsyncCall.Should().ThrowExactlyAsync<EntityNotFoundException>(
-                "service cannot update data using nonexistent entity key");
+            await updateAsyncCall.Should().ThrowExactlyAsync<EntityNotFoundException>("service cannot update data using nonexistent entity key");
         }
 
         /// <summary>
@@ -258,12 +238,6 @@ namespace Todo.Services.TodoItemManagement
         public async Task DeleteAsync_UsingNonexistentEntityKey_MustThrowException()
         {
             // Arrange
-            var inMemoryDatabase =
-                new DbContextOptionsBuilder<TodoDbContext>()
-                    .UseInMemoryDatabase($"db--{Guid.NewGuid():N}")
-                    .EnableDetailedErrors()
-                    .EnableSensitiveDataLogging();
-
             var mockLogger = new Mock<ILogger<TodoItemService>>();
 
             var owner = new Mock<IPrincipal>();
@@ -275,14 +249,25 @@ namespace Todo.Services.TodoItemManagement
                 Owner = owner.Object
             };
 
-            var todoItemService = new TodoItemService(new TodoDbContext(inMemoryDatabase.Options), mockLogger.Object);
+            DbContextOptionsBuilder<TodoDbContext> dbContextOptionsBuilder = GetInMemoryDbContextOptionsBuilder();
+            var todoItemService = new TodoItemService(new TodoDbContext(dbContextOptionsBuilder.Options), mockLogger.Object);
 
             // Act
             Func<Task> deleteAsyncCall = async () => await todoItemService.DeleteAsync(deleteTodoItemInfo);
 
             // Assert
-            await deleteAsyncCall.Should().ThrowExactlyAsync<EntityNotFoundException>(
-                 "service cannot delete data using nonexistent entity key");
+            await deleteAsyncCall.Should().ThrowExactlyAsync<EntityNotFoundException>("service cannot delete data using nonexistent entity key");
+        }
+
+        private static DbContextOptionsBuilder<TodoDbContext> GetInMemoryDbContextOptionsBuilder()
+        {
+            string databaseName = $"db--{Guid.NewGuid():N}";
+
+            return
+                new DbContextOptionsBuilder<TodoDbContext>()
+                    .UseInMemoryDatabase(databaseName)
+                    .EnableDetailedErrors()
+                    .EnableSensitiveDataLogging();
         }
 
         private static IEnumerable<object[]> GetTodoItemQuery()
