@@ -492,7 +492,6 @@ jobs:
       codeCoverageTool: 'Cobertura'
       pathToSources: '$(Build.SourcesDirectory)/Sources'
       summaryFileLocation: '$(Build.SourcesDirectory)/Tests/.CodeCoverageReport/Cobertura.xml'
-      reportDirectory: '$(Build.SourcesDirectory)/Tests/.CodeCoverageReport'
 
   # Publish test related artifacts.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/artifacts/pipeline-artifacts?view=azure-devops&tabs=yaml#publish-a-pipeline-artifact.
