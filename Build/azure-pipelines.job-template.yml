@@ -120,12 +120,9 @@ jobs:
       #   - https://docs.sonarqube.org/latest/project-administration/narrowing-the-focus/
       extraProperties: |
         sonar.sourceEncoding=${{ parameters.sonar.sourceEncoding }}
-        sonar.projectBaseDir=$(Build.SourcesDirectory)
-        sonar.sources=./Sources/
-        sonar.tests=./Tests/
-        sonar.cs.nunit.reportsPaths=./Tests/**/TestResults/TestResults.xml
-        sonar.cs.opencover.reportsPaths=./Tests/**/coverage.opencover.xml
-        sonar.coverage.exclusions=./Tests/**,./Sources/Todo.Persistence/Entities/**,./Sources/Todo.Persistence/Migrations/**
+        sonar.cs.nunit.reportsPaths=$(Build.SourcesDirectory)/Tests/**/TestResults/TestResults.xml
+        sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/Tests/**/coverage.opencover.xml
+        sonar.coverage.exclusions=$(Build.SourcesDirectory)/Sources/Todo.Persistence/Entities/**,$(Build.SourcesDirectory)/Sources/Todo.Persistence/Migrations/**,$(Build.SourcesDirectory)/Tests/**
         sonar.analysis.buildNumber=$(Build.BuildId)
         sonar.analysis.pipeline=$(Build.BuildId)
 
