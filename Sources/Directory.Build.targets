@@ -5,7 +5,7 @@
         Ensure projects which are not test related will *not* use a code coverage related NuGet package.
     -->
     <ItemGroup>
-        <PackageReference Remove="coverlet.msbuild"/>
+        <PackageReference Remove="coverlet.collector"/>
     </ItemGroup>
 
 </Project>

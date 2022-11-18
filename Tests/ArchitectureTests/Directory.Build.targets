@@ -6,7 +6,7 @@
         related NuGet package.
     -->
     <ItemGroup>
-        <PackageReference Remove="coverlet.msbuild"/>
+        <PackageReference Remove="coverlet.collector"/>
     </ItemGroup>
 
 </Project>
