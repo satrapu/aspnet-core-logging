@@ -118,9 +118,9 @@ jobs:
       # See all analysis parameters here: https://docs.sonarqube.org/latest/analysis/analysis-parameters/.
       extraProperties: |
         sonar.sourceEncoding=${{ parameters.sonar.sourceEncoding }}
-        sonar.cs.nunit.reportsPaths=$(Build.SourcesDirectory)/Tests/**/TestResults/TestResults.xml
-        sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/Tests/**/coverage.opencover.xml
-        sonar.coverage.exclusions=$(Build.SourcesDirectory)/Tests/**,$(Build.SourcesDirectory)/Sources/Todo.Persistence/Migrations/**
+        #sonar.cs.nunit.reportsPaths=$(Build.SourcesDirectory)/Tests/**/TestResults/TestResults.xml
+        #sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/Tests/**/coverage.opencover.xml
+        #sonar.coverage.exclusions=$(Build.SourcesDirectory)/Tests/**,$(Build.SourcesDirectory)/Sources/Todo.Persistence/Migrations/**
         sonar.analysis.buildNumber=$(Build.BuildId)
         sonar.analysis.repository=$(Build.Repository.ID)
 
