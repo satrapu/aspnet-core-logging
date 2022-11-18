@@ -115,14 +115,19 @@ jobs:
       # See more here: https://docs.sonarqube.org/latest/project-administration/new-code-period/.
       projectVersion: 'build.id.$(Build.BuildId)'
       # Provide more configuration for Sonar - based on this example: https://github.com/SonarSource/sonar-dotnet/blob/master/azure-pipelines.yml.
-      # See all analysis parameters here: https://docs.sonarqube.org/latest/analysis/analysis-parameters/.
+      # Check the various analysis parameters here:
+      #   - https://docs.sonarqube.org/latest/analysis/analysis-parameters/
+      #   - https://docs.sonarqube.org/latest/project-administration/narrowing-the-focus/
       extraProperties: |
         sonar.sourceEncoding=${{ parameters.sonar.sourceEncoding }}
-        sonar.cs.nunit.reportsPaths=$(Build.SourcesDirectory)/Tests/**/TestResults/TestResults.xml
-        sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/Tests/**/coverage.opencover.xml
-        sonar.coverage.exclusions=$(Build.SourcesDirectory)/Tests/**,$(Build.SourcesDirectory)/Sources/Todo.Persistence/Entities/**,$(Build.SourcesDirectory)/Sources/Todo.Persistence/Migrations/**
+        sonar.projectBaseDir=$(Build.SourcesDirectory)
+        sonar.sources=./Sources/
+        sonar.tests=./Tests/
+        sonar.cs.nunit.reportsPaths=./Tests/**/TestResults/TestResults.xml
+        sonar.cs.opencover.reportsPaths=./Tests/**/coverage.opencover.xml
+        sonar.coverage.exclusions=./Tests/**,./Sources/Todo.Persistence/Entities/**,./Sources/Todo.Persistence/Migrations/**
         sonar.analysis.buildNumber=$(Build.BuildId)
-        sonar.analysis.repository=$(Build.Repository.ID)
+        sonar.analysis.pipeline=$(Build.BuildId)
 
   # Cache NuGet packages to avoid having to restore them during each build.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/release/caching?view=azure-devops#netnuget
