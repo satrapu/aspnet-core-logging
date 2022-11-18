@@ -12,6 +12,7 @@ parameters:
   cacheRestoredNuGetPackages: False
   sonar:
     enabled: False
+    verbose: 'true'
     sourceEncoding: 'UTF-8'
     runAnalysisTimeoutInMinutes: 5
     publishPollingTimeoutSeconds: 300
@@ -117,12 +118,14 @@ jobs:
       # Provide more configuration for Sonar - based on this example: https://github.com/SonarSource/sonar-dotnet/blob/master/azure-pipelines.yml.
       # Check the various analysis parameters here:
       #   - https://docs.sonarqube.org/latest/analysis/analysis-parameters/
+      #   - https://docs.sonarcloud.io/advanced-setup/analysis-scope/
       #   - https://docs.sonarqube.org/latest/project-administration/narrowing-the-focus/
       extraProperties: |
+        sonar.verbose=${{ parameters.sonar.verbose }}
         sonar.sourceEncoding=${{ parameters.sonar.sourceEncoding }}
         sonar.cs.nunit.reportsPaths=$(Build.SourcesDirectory)/Tests/**/TestResults/TestResults.xml
         sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/Tests/**/coverage.opencover.xml
-        sonar.coverage.exclusions=$(Build.SourcesDirectory)/Sources/Todo.Persistence/Entities/**,$(Build.SourcesDirectory)/Sources/Todo.Persistence/Migrations/**,$(Build.SourcesDirectory)/Tests/**
+        sonar.coverage.exclusions=Sources/Todo.Persistence/Entities/**,Sources/Todo.Persistence/Migrations/**,/Tests/**
         sonar.analysis.buildNumber=$(Build.BuildId)
         sonar.analysis.pipeline=$(Build.BuildId)
 
