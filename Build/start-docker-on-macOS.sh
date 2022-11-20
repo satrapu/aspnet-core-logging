@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# Install Docker Desktop for Mac via brew tool.
-# This script is based on: https://github.com/docker/for-mac/issues/2359#issuecomment-991942550.
+# Install Docker Desktop for Mac via its native command line support.
+# This script is based on:https://docs.docker.com/desktop/install/mac-install/#install-from-the-command-line.
 
 # Fail script in case of unset variables - see more here:
 # http://web.archive.org/web/20110314180918/http://www.davidpashley.com/articles/writing-robust-shell-scripts.html#id2577541.
@@ -11,20 +11,21 @@ set -o nounset
 # http://web.archive.org/web/20110314180918/http://www.davidpashley.com/articles/writing-robust-shell-scripts.html#id2577574.
 set -o errexit
 
-echo 'Installing Docker Desktop for Mac ...'
+echo 'Downloading Docker Desktop for Mac installation file ...'
 start=$SECONDS
-
-brew install --cask docker
-docker_app_path=$(brew list --cask docker | grep '==> App' -A1 | tail -n 1 | awk '{ print $1 }')
-docker_app_path="${docker_app_path/#\~/$HOME}"
-
-sudo "$docker_app_path"/Contents/MacOS/Docker --unattended --install-privileged-components
-open -a "$docker_app_path" --args --unattended --accept-license
-while ! "$docker_app_path"/Contents/Resources/bin/docker info &>/dev/null; do sleep 1; done
-
+curl -L 'https://desktop.docker.com/mac/main/amd64/Docker.dmg'
 end=$SECONDS
 duration=$(( end - start ))
-echo "Docker Desktop for Mac has been installed & started after $duration seconds"
+echo "File has been downloaded in $duration seconds"
+
+echo 'Installing Docker Desktop for Mac ...'
+start=$SECONDS
+sudo hdiutil attach Docker.dmg
+sudo /Volumes/Docker/Docker.app/Contents/MacOS/install --user=runner --accept-license
+sudo hdiutil detach /Volumes/Docker
+end=$SECONDS
+duration=$(( end - start ))
+echo "Docker Desktop for Mac has been installed in $duration seconds"
 
 docker --version
 docker compose --version
