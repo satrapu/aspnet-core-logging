@@ -13,10 +13,10 @@ set -o errexit
 
 echo 'Downloading Docker Desktop for Mac installation file ...'
 start=$SECONDS
-curl -L 'https://desktop.docker.com/mac/main/amd64/Docker.dmg'
+curl -O -L https://desktop.docker.com/mac/main/amd64/Docker.dmg
 end=$SECONDS
 duration=$(( end - start ))
-echo "File has been downloaded in $duration seconds"
+echo "Installation file has been downloaded in $duration seconds"
 
 echo 'Installing Docker Desktop for Mac ...'
 start=$SECONDS
