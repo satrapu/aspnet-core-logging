@@ -35,24 +35,31 @@ echo "Docker Desktop for Mac has been installed in $duration seconds"
 echo 'Starting Docker service ...'
 start=$SECONDS
 
-retries=0
+waitTimeInSeconds=5
 maxRetries=30
+retries=0
 
-while ! docker info 2>/dev/null ; do
-    sleep 5s
-    ((retries=retries+1))
+while [[ ${retries} -lt ${maxRetries} ]]; do
+    sleep $waitTimeInSeconds
 
-    if [[ ${retries} -gt ${maxRetries} ]]; then
-        >&2 echo 'Docker service failed to enter running state during the expected time'
-        exit 1
+    echo 'Checking whether Docker service has started ...'
+    docker info || true
+
+    if [[ "$?" -eq 0 ]]; then
+        break
     fi;
-
-    echo 'Waiting for Docker service to enter running state ...'
+    
+    ((retries=retries+1))
 done
+
+if [[ ${retries} -gt ${maxRetries} ]]; then
+    >&2 echo 'ERROR: Docker service failed to start during the expected time'
+    exit 1
+fi;
 
 end=$SECONDS
 duration=$(( end - start ))
-echo "Docker service has started after $duration seconds"
+echo "OK: Docker service has started after $duration seconds"
 
 echo 'Displaying Docker & Docker Compose versions ...'
 docker version
