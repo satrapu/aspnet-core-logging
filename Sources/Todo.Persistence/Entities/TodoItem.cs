@@ -51,13 +51,11 @@ namespace Todo.Persistence.Entities
         public DateTime? LastUpdatedOn { get; set; }
 
         /// <summary>
-        /// The identity (transaction ID) of the inserting transaction for this row version.
-        /// See more here: https://www.postgresql.org/docs/12/ddl-system-columns.html
-        /// and here: https://www.npgsql.org/efcore/modeling/concurrency.html.
+        /// Gets or sets the version of this entity used for optimistic concurrency purposes.
+        /// <br/>
+        /// See more here: https://www.npgsql.org/efcore/modeling/concurrency.html?tabs=data-annotations.
         /// </summary>
-        // ReSharper disable once InconsistentNaming
-        // ReSharper disable once UnusedMember.Global
-        public uint xmin { get; set; }
+        public uint Version { get; set; }
 
         /// <summary>
         /// Creates a new instance of the <see cref="TodoItem"/> class.
@@ -85,7 +83,7 @@ namespace Todo.Persistence.Entities
                    $"{nameof(CreatedOn)}: {CreatedOn:u}, " +
                    $"{nameof(LastUpdatedBy)}: {LastUpdatedBy}, " +
                    $"{nameof(LastUpdatedOn)}: {LastUpdatedOn?.ToString("u")}, " +
-                   $"{nameof(xmin)}(concurrency token): {xmin}]";
+                   $"{nameof(Version)}(concurrency token): {Version}]";
         }
     }
 }

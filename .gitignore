@@ -23,6 +23,7 @@ Todo.sln.DotSettings.user
 # Code coverage
 /Tests/**/.CodeCoverageResults/
 /Tests/**/coverage.opencover.xml
+/Tests/**/coverage.json
 
 # SonarQube scanner artifacts
 .sonarqube/

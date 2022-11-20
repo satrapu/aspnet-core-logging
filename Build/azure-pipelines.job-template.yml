@@ -12,6 +12,7 @@ parameters:
   cacheRestoredNuGetPackages: False
   sonar:
     enabled: False
+    verbose: 'true'
     sourceEncoding: 'UTF-8'
     runAnalysisTimeoutInMinutes: 5
     publishPollingTimeoutSeconds: 300
@@ -115,14 +116,18 @@ jobs:
       # See more here: https://docs.sonarqube.org/latest/project-administration/new-code-period/.
       projectVersion: 'build.id.$(Build.BuildId)'
       # Provide more configuration for Sonar - based on this example: https://github.com/SonarSource/sonar-dotnet/blob/master/azure-pipelines.yml.
-      # See all analysis parameters here: https://docs.sonarqube.org/latest/analysis/analysis-parameters/.
+      # Check the various analysis parameters here:
+      #   - https://docs.sonarqube.org/latest/analysis/analysis-parameters/
+      #   - https://docs.sonarcloud.io/advanced-setup/analysis-scope/
+      #   - https://docs.sonarqube.org/latest/project-administration/narrowing-the-focus/
       extraProperties: |
+        sonar.verbose=${{ parameters.sonar.verbose }}
         sonar.sourceEncoding=${{ parameters.sonar.sourceEncoding }}
         sonar.cs.nunit.reportsPaths=$(Build.SourcesDirectory)/Tests/**/TestResults/TestResults.xml
         sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/Tests/**/coverage.opencover.xml
-        sonar.coverage.exclusions=$(Build.SourcesDirectory)/Tests/**,$(Build.SourcesDirectory)/Sources/Todo.Persistence/Migrations/**
+        sonar.coverage.exclusions=Sources/Todo.Persistence/Entities/**,Sources/Todo.Persistence/Migrations/**,/Tests/**
         sonar.analysis.buildNumber=$(Build.BuildId)
-        sonar.analysis.repository=$(Build.Repository.ID)
+        sonar.analysis.pipeline=$(Build.BuildId)
 
   # Cache NuGet packages to avoid having to restore them during each build.
   # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/release/caching?view=azure-devops#netnuget
@@ -248,10 +253,7 @@ jobs:
       --test-adapter-path "."
       --logger "nunit"
       --filter "TestCategory=UnitTests"
-      /p:CollectCoverage=True
-      /p:CoverletOutputFormat=opencover
-      /p:Include="[Todo.*]*"
-      /p:Exclude=\"[Todo.*.*Tests]*,[Todo.WebApi.TestInfrastructure]*,[Todo.Persistence]*.Migrations.*\"
+      --settings $(Build.SourcesDirectory)/Tests/tests.runsettings
     name: 'run_unit_tests'
     displayName: 'Run unit tests'
     condition: |
@@ -350,10 +352,7 @@ jobs:
       --test-adapter-path "."
       --logger "nunit"
       --filter "TestCategory=IntegrationTests"
-      /p:CollectCoverage=True
-      /p:CoverletOutputFormat=opencover
-      /p:Include="[Todo.*]*"
-      /p:Exclude=\"[Todo.*.*Tests]*,[Todo.WebApi.TestInfrastructure]*,[Todo.Persistence]*.Migrations.*\"
+      --settings $(Build.SourcesDirectory)/Tests/tests.runsettings
     name: 'run_integration_tests'
     displayName: 'Run integration tests'
     condition: |
