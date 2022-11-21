@@ -1,14 +1,10 @@
 #!/bin/bash
 
-# Install Docker Desktop for Mac via its native command line support.
-# This script is based on:https://docs.docker.com/desktop/install/mac-install/#install-from-the-command-line.
+# Install Docker Desktop for Mac via CLI commands.
+# This script is based on: https://docs.docker.com/desktop/install/mac-install/#install-from-the-command-line.
 
-# Fail scripts in case a command fails - see more here:
-# http://web.archive.org/web/20110314180918/http://www.davidpashley.com/articles/writing-robust-shell-scripts.html#id2577574.
+# Fail script in case a command fails or in case of unset variables - see more here: https://www.davidpashley.com/articles/writing-robust-shell-scripts/.
 set -o errexit
-
-# Fail script in case of unset variables - see more here:
-# http://web.archive.org/web/20110314180918/http://www.davidpashley.com/articles/writing-robust-shell-scripts.html#id2577541.
 set -o nounset
 
 # echo 'Listing all users ...'
@@ -42,22 +38,19 @@ retries=0
 echo 'Starting Docker service ...'
 start=$SECONDS
 
-while [[ ${retries} -lt ${maxRetries} ]]; do
+while [ ${retries} -lt ${maxRetries} ]
+do
     sleep $waitTimeInSeconds
-
     echo 'Checking whether Docker service has started ...'
 
-    if ! docker info then
-        ((retries=retries+1))
-    else
-        break
-    fi
+    if ! docker info; then retries=$(( $retries + 1 )); else break; fi
 done
 
-if [[ ${retries} -gt ${maxRetries} ]]; then
+if [[ ${retries} -gt ${maxRetries} ]]
+then
     >&2 echo 'ERROR: Docker service failed to start during the expected time'
     exit 1
-fi;
+fi
 
 end=$SECONDS
 duration=$(( end - start ))
