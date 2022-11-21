@@ -3,17 +3,20 @@
 # Install Docker Desktop for Mac via its native command line support.
 # This script is based on:https://docs.docker.com/desktop/install/mac-install/#install-from-the-command-line.
 
-# Fail script in case of unset variables - see more here:
-# http://web.archive.org/web/20110314180918/http://www.davidpashley.com/articles/writing-robust-shell-scripts.html#id2577541.
-set -o nounset
-
 # Fail scripts in case a command fails - see more here:
 # http://web.archive.org/web/20110314180918/http://www.davidpashley.com/articles/writing-robust-shell-scripts.html#id2577574.
 set -o errexit
 
-echo 'Listing all users ...'
-ls /Users
-echo 'Users have been listed'
+# Fail script in case of unset variables - see more here:
+# http://web.archive.org/web/20110314180918/http://www.davidpashley.com/articles/writing-robust-shell-scripts.html#id2577541.
+set -o nounset
+
+# echo 'Listing all users ...'
+# ls /Users
+# echo 'Users have been listed'
+
+# Unset all Docker related environment variables, as stated here: https://docs.docker.com/desktop/troubleshoot/workarounds/#unset-docker_host.
+unset ${!DOCKER_*}
 
 echo 'Downloading Docker Desktop for Mac installation file ...'
 start=$SECONDS
@@ -43,13 +46,12 @@ while [[ ${retries} -lt ${maxRetries} ]]; do
     sleep $waitTimeInSeconds
 
     echo 'Checking whether Docker service has started ...'
-    docker info || true > /dev/null 2>&1
 
-    if [[ "$?" -eq 0 ]]; then
+    if ! docker info then
+        ((retries=retries+1))
+    else
         break
-    fi;
-    
-    ((retries=retries+1))
+    fi
 done
 
 if [[ ${retries} -gt ${maxRetries} ]]; then
