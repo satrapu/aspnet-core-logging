@@ -32,18 +32,18 @@ end=$SECONDS
 duration=$(( end - start ))
 echo "Docker Desktop for Mac has been installed in $duration seconds"
 
-echo 'Starting Docker service ...'
-start=$SECONDS
-
 waitTimeInSeconds=5
 maxRetries=30
 retries=0
+
+echo 'Starting Docker service ...'
+start=$SECONDS
 
 while [[ ${retries} -lt ${maxRetries} ]]; do
     sleep $waitTimeInSeconds
 
     echo 'Checking whether Docker service has started ...'
-    docker info || true
+    docker info || true > /dev/null 2>&1
 
     if [[ "$?" -eq 0 ]]; then
         break
