@@ -23,5 +23,5 @@ echo 'Container runtime has been started'
 
 echo 'Checking Docker and Docker Compose installations ...'
 docker info
-docker-compose info
+docker-compose version
 echo 'All good :)'
