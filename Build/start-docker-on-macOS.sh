@@ -56,6 +56,12 @@ echo "Docker Desktop for Mac has been installed in $duration seconds"
 #duration=$(( end - start ))
 #echo "OK: Docker service has started after $duration seconds"
 
+echo 'Checking Docker service status ...'
+sudo service docker status
+
+echo 'Starting Docker service ...'
+sudo service docker start
+
 echo 'Displaying Docker & Docker Compose versions ...'
 docker version
 docker compose version
