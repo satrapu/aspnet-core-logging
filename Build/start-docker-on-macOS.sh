@@ -6,9 +6,9 @@
 set -o errexit
 set -o nounset
 
-echo 'Installing Docker ...'
+echo 'Installing Docker client ...'
 brew install docker
-echo 'Docker has been installed'
+echo 'Docker client has been installed'
 
 echo 'Installing Docker Compose ...'
 # Check for the right Docker Compose version here: https://github.com/docker/compose/releases.
@@ -23,5 +23,5 @@ echo 'Container runtime has been started'
 
 echo 'Checking Docker and Docker Compose installations ...'
 docker info
-docker compose info
+docker-compose info
 echo 'All good :)'
