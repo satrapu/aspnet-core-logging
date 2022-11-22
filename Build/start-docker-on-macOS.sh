@@ -7,11 +7,7 @@ set -o errexit
 set -o nounset
 
 echo 'Installing Docker ...'
-brew install docker
+brew install --cask docker
 docker info
-echo 'Docker has been installed'
-
-echo 'Installing Docker Compose ...'
-brew install docker-compose
 docker compose info
-echo 'Docker Compose has been installed'
+echo 'Docker has been installed'
