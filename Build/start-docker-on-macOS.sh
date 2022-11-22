@@ -13,7 +13,7 @@ echo 'Docker client has been installed'
 echo 'Installing Docker Compose ...'
 # Check for the right Docker Compose version here: https://github.com/docker/compose/releases.
 dockerComposeVersion='2.12.2'
-sudo curl -L https://github.com/docker/compose/releases/download/v$dockerComposeVersion/docker-compose-darwin-aarch64 -o /usr/local/bin/docker-compose
+sudo curl -L https://github.com/docker/compose/releases/download/v$dockerComposeVersion/docker-compose-darwin-x86_64 -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 echo 'Docker Compose has been installed'
 
