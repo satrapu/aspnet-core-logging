@@ -108,24 +108,20 @@ jobs:
       databaseDockerImage: '$(IntegrationTests.Database.DockerImage.Name):$(IntegrationTests.Database.DockerImage.TagPrefix)-linux'
       composeProjectName: 'integration-test-prerequisites'
 
-# @satrapu June 20th, 2021: Due to the volatile nature of the Docker Desktop for Mac installation experience,
-# I will temporarily disable running builds on macOS-based agents.
-# I will enable it as soon as there is a way of installing it in an unattended way.
-# See more here: https://github.com/docker/roadmap/issues/80#issuecomment-862521647.
-#- template: './azure-pipelines.job-template.yml'
-#  parameters:
-#    job:
-#      name: 'macOS'
-#      displayName: 'Run on macOS'
-#    pool:
-#      vmImage: 'macOS-12'
-#    integrationTests:
-#      databaseHost: 'localhost'
-#      databaseName: '$(IntegrationTests.Database.Todo.Name)'
-#      databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
-#      databasePassword: '$(IntegrationTests.Database.Todo.Password)'
-#      databaseDockerImage: '$(IntegrationTests.Database.DockerImage.Name):$(IntegrationTests.Database.DockerImage.TagPrefix)-linux'
-#      composeProjectName: 'integration-test-prerequisites'
+- template: './azure-pipelines.job-template.yml'
+  parameters:
+    job:
+      name: 'macOS'
+      displayName: 'Run on macOS'
+    pool:
+      vmImage: 'macOS-12'
+    integrationTests:
+      databaseHost: 'localhost'
+      databaseName: '$(IntegrationTests.Database.Todo.Name)'
+      databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
+      databasePassword: '$(IntegrationTests.Database.Todo.Password)'
+      databaseDockerImage: '$(IntegrationTests.Database.DockerImage.Name):$(IntegrationTests.Database.DockerImage.TagPrefix)-linux'
+      composeProjectName: 'integration-test-prerequisites'
 
 - template: './azure-pipelines.job-template.yml'
   parameters:

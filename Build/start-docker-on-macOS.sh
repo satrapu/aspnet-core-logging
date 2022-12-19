@@ -1,66 +1,27 @@
 #!/bin/bash
 
-# Based on: http://web.archive.org/web/20201012054023if_/https://github.com/microsoft/azure-pipelines-image-generation/issues/738#issuecomment-522301481.
-# The original GitHub issue link is no longer available, thus I had to resort to the Wayback Machine URL!
+# Install Docker on macOS via CLI commands.
 
-# Fail script in case of unset variables - see more here:
-# http://web.archive.org/web/20110314180918/http://www.davidpashley.com/articles/writing-robust-shell-scripts.html#id2577541.
+# Fail script in case a command fails or in case of unset variables - see more here: https://www.davidpashley.com/articles/writing-robust-shell-scripts/.
+set -o errexit
 set -o nounset
 
-# Fail scripts in case a command fails - see more here:
-# http://web.archive.org/web/20110314180918/http://www.davidpashley.com/articles/writing-robust-shell-scripts.html#id2577574.
-set -o errexit
+echo 'Installing Docker client ...'
+brew install docker
+echo 'Docker client has been installed'
 
-# Install Docker Desktop for Mac via brew tool
-echo 'Downloading and then running docker brew formula ...'
-start=$SECONDS
+echo 'Installing Docker Compose ...'
+# Check for the right Docker Compose version here: https://github.com/docker/compose/releases.
+dockerComposeVersion='2.12.2'
+sudo curl -L https://github.com/docker/compose/releases/download/v$dockerComposeVersion/docker-compose-darwin-x86_64 -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+echo 'Docker Compose has been installed'
 
-# The brew formula below will install Docker Desktop for Mac, v2.0.0.3,31259.
-dockerInstallationScriptName='docker.rb'
-dockerInstallationScriptUrl="https://raw.githubusercontent.com/Homebrew/homebrew-cask/8ce4e89d10716666743b28c5a46cd54af59a9cc2/Casks/$dockerInstallationScriptName"
-curl -L  $dockerInstallationScriptUrl > $dockerInstallationScriptName && brew install $dockerInstallationScriptName
+echo 'Starting container runtime ...'
+colima start
+echo 'Container runtime has been started'
 
-end=$SECONDS
-duration=$(( end - start ))
-echo "Docker brew formula has been downloaded & run in $duration seconds"
-
-echo 'Installing Docker Desktop for Mac ...'
-start=$SECONDS
-sudo /Applications/Docker.app/Contents/MacOS/Docker --quit-after-install --unattended
-/Applications/Docker.app/Contents/MacOS/Docker --unattended &
-
-end=$SECONDS
-duration=$(( end - start ))
-echo "Docker Desktop for Mac has been installed in $duration seconds"
-
-echo 'Starting Docker service ...'
-start=$SECONDS
-
-retries=0
-maxRetries=30
-
-while ! docker info 2>/dev/null ; do
-    sleep 5s
-    ((retries=retries+1))
-
-    if pgrep -xq -- 'Docker'; then
-        echo 'Docker service is still booting'
-    else
-        echo 'Docker service is no longer running, need to restart it'
-        /Applications/Docker.app/Contents/MacOS/Docker --unattended &
-    fi
-
-    if [[ ${retries} -gt ${maxRetries} ]]; then
-        >&2 echo 'Docker service failed to enter running state during the expected time'
-        exit 1
-    fi;
-
-    echo 'Waiting for Docker service to enter running state ...'
-done
-
-end=$SECONDS
-duration=$(( end - start ))
-echo "Docker service has started after $duration seconds"
-
-docker --version
-docker-compose --version
+echo 'Checking Docker and Docker Compose installations ...'
+docker info
+docker-compose version
+echo 'All good :)'

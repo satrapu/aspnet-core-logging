@@ -19,7 +19,7 @@ This project has several posts associated with it:
 | Build Server                                                                    | Operating System | Status                                                                                                                                                                                                                                                          |
 | ------------------------------------------------------------------------------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/) | Linux            | [![Build Status](https://dev.azure.com/satrapu/aspnet-core-logging/_apis/build/status/ci-pipeline?branchName=master&jobName=Run%20on%20Linux)](https://dev.azure.com/satrapu/aspnet-core-logging/_build/latest?definitionId=2&branchName=master)                |
-| [Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/) | macOs            | Temporarily disabled due to this GitHub issue: [Unattended install of Docker Desktop (Windows and macOS)](https://github.com/docker/roadmap/issues/80).                                                                                                            |
+| [Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/) | macOs            | [![Build Status](https://dev.azure.com/satrapu/aspnet-core-logging/_apis/build/status/ci-pipeline?branchName=master&jobName=Run%20on%20macOS)](https://dev.azure.com/satrapu/aspnet-core-logging/_build/latest?definitionId=2&branchName=master)                |
 | [Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/) | Windows          | [![Build Status](https://dev.azure.com/satrapu/aspnet-core-logging/_apis/build/status/ci-pipeline?branchName=master&jobName=Run%20on%20Windows)](https://dev.azure.com/satrapu/aspnet-core-logging/_build/latest?definitionId=2&branchName=master)              |
 
 ## Code quality
@@ -102,26 +102,26 @@ This folder contains a `docker-compose.yml` file describing the aforementioned c
 
 ```bash
 # The -d flag instructs Docker Compose to run services in the background
-docker-compose up -d
+docker compose up -d
 ```
 
 ##### Stop compose services
 
 ```bash
-docker-compose stop
+docker compose stop
 ```
 
 ##### Start compose services
 
 ```bash
-docker-compose start
+docker compose start
 ```
 
 ##### Display compose service log
 
 ```bash
 # The -f flag instructs Docker Compose to display and follow the log entries of the 'pgadmin' service
-docker-compose logs -f pgadmin
+docker compose logs -f pgadmin
 ```
 
 ##### Destroy compose services
@@ -129,12 +129,12 @@ docker-compose logs -f pgadmin
 The command below will **not** delete the Docker volumes!
 
 ```bash
-docker-compose down
+docker compose down
 ```
 
 ### Setup pgAdmin
 
-Once the services have been started using `docker-compose up` command, pgAdmin UI is ready to be used.
+Once the services have been started using `docker compose up` command, pgAdmin UI is ready to be used.
 
 #### Open pgAdmin UI
 
