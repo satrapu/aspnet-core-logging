@@ -102,8 +102,7 @@ namespace Todo.Telemetry.OpenTelemetry
             {
                 if (openTelemetryOptions.AttachLogsToActivity)
                 {
-                    // Ensure events produces by ILogger will be exported by Open Telemetry to Jaeger.
-                    // See more here: https://github.com/open-telemetry/opentelemetry-dotnet/issues/1739.
+                    // Ensure events produces by ILogger will be exported by Open Telemetry to the configured exporter back-end (i.e., Jaeger).
                     options.AttachLogsToActivityEvent();
                 }
 
