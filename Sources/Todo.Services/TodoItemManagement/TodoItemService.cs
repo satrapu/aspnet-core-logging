@@ -8,6 +8,7 @@ namespace Todo.Services.TodoItemManagement
     using System.Linq.Expressions;
     using System.Runtime.CompilerServices;
     using System.Security.Principal;
+    using System.Text.Json;
     using System.Threading.Tasks;
 
     using Microsoft.EntityFrameworkCore;
@@ -50,16 +51,21 @@ namespace Todo.Services.TodoItemManagement
         {
             using Activity activity = ActivitySources.TodoActivitySource.StartActivity(CreateActivityName());
 
+            activity.AddEvent(new ActivityEvent("Validate input - BEGIN"));
             ArgumentNullException.ThrowIfNull(todoItemQuery);
-
             Validator.ValidateObject(todoItemQuery, new ValidationContext(todoItemQuery), validateAllProperties: true);
+            activity.AddEvent(new ActivityEvent("Validate input - END"));
 
-            return InternalGetByQueryAsync(todoItemQuery);
+            activity.AddEvent(new ActivityEvent("Fetch data - BEGIN"));
+            Task<IList<TodoItemInfo>> result = InternalGetByQueryAsync(todoItemQuery);
+            activity.AddEvent(new ActivityEvent("Fetch data - END"));
+
+            return result;
         }
 
         public Task<long> AddAsync(NewTodoItemInfo newTodoItemInfo)
         {
-            using Activity activity = ActivitySources.TodoActivitySource.StartActivity(CreateActivityName());
+            using Activity _ = ActivitySources.TodoActivitySource.StartActivity(CreateActivityName());
 
             ArgumentNullException.ThrowIfNull(newTodoItemInfo);
 
@@ -71,7 +77,7 @@ namespace Todo.Services.TodoItemManagement
 
         public Task UpdateAsync(UpdateTodoItemInfo updateTodoItemInfo)
         {
-            using Activity activity = ActivitySources.TodoActivitySource.StartActivity(CreateActivityName());
+            using Activity _ = ActivitySources.TodoActivitySource.StartActivity(CreateActivityName());
 
             ArgumentNullException.ThrowIfNull(updateTodoItemInfo);
 
@@ -83,7 +89,7 @@ namespace Todo.Services.TodoItemManagement
 
         public Task DeleteAsync(DeleteTodoItemInfo deleteTodoItemInfo)
         {
-            using Activity activity = ActivitySources.TodoActivitySource.StartActivity(CreateActivityName());
+            using Activity _ = ActivitySources.TodoActivitySource.StartActivity(CreateActivityName());
 
             ArgumentNullException.ThrowIfNull(deleteTodoItemInfo);
 
@@ -100,6 +106,7 @@ namespace Todo.Services.TodoItemManagement
 
         private async Task<IList<TodoItemInfo>> InternalGetByQueryAsync(TodoItemQuery todoItemQuery)
         {
+            using Activity activity = ActivitySources.TodoActivitySource.StartActivity(CreateActivityName());
             logger.LogInformation("About to fetch items using query {@TodoItemQuery} ...", todoItemQuery);
 
             IQueryable<TodoItem> todoItems = FilterItems(todoItemQuery)
@@ -109,6 +116,7 @@ namespace Todo.Services.TodoItemManagement
                 // Read more about no tracking queries here:
                 // https://docs.microsoft.com/en-us/ef/core/querying/tracking#no-tracking-queries
                 .AsNoTracking();
+
             todoItems = SortItems(todoItems, todoItemQuery);
             todoItems = PaginateItems(todoItems, todoItemQuery);
             IQueryable<TodoItemInfo> todoItemInfos = ProjectItems(todoItems);
@@ -119,6 +127,12 @@ namespace Todo.Services.TodoItemManagement
             if (logger.IsEnabled(LogLevel.Debug))
             {
                 logger.LogDebug("{@TodoItemInfoList}", result);
+            }
+
+            if (activity is not null && activity.IsAllDataRequested)
+            {
+                activity.AddEvent(new ActivityEvent(name: "Data has been fetched",
+                    tags: new ActivityTagsCollection { new KeyValuePair<string, object>("data", JsonSerializer.Serialize(result)) }));
             }
 
             return result;
@@ -194,6 +208,8 @@ namespace Todo.Services.TodoItemManagement
 
         private IQueryable<TodoItem> FilterItems(TodoItemQuery todoItemQuery)
         {
+            using Activity _ = ActivitySources.TodoActivitySource.StartActivity(CreateActivityName());
+
             IQueryable<TodoItem> todoItems =
                 todoDbContext.TodoItems.Where(todoItem => todoItem.CreatedBy == todoItemQuery.Owner.GetName());
 
@@ -217,6 +233,10 @@ namespace Todo.Services.TodoItemManagement
 
         private static IQueryable<TodoItem> SortItems(IQueryable<TodoItem> todoItems, TodoItemQuery todoItemQuery)
         {
+            using Activity activity = ActivitySources.TodoActivitySource.StartActivity(CreateActivityName());
+            activity?.Tags.Append(new KeyValuePair<string, string>(nameof(todoItemQuery.SortBy), todoItemQuery.SortBy));
+            activity?.Tags.Append(new KeyValuePair<string, string>(nameof(todoItemQuery.IsSortAscending), todoItemQuery.IsSortAscending?.ToString()));
+
             Expression<Func<TodoItem, object>> keySelector = GetKeySelectorBy(todoItemQuery.SortBy);
 
             if (todoItemQuery.IsSortAscending.HasValue && !todoItemQuery.IsSortAscending.Value)
@@ -263,6 +283,8 @@ namespace Todo.Services.TodoItemManagement
 
         private static IQueryable<TodoItemInfo> ProjectItems(IQueryable<TodoItem> todoItems)
         {
+            using Activity _ = ActivitySources.TodoActivitySource.StartActivity(CreateActivityName());
+
             IQueryable<TodoItemInfo> result = todoItems.Select(todoItem =>
                 new TodoItemInfo
                 {
@@ -279,6 +301,10 @@ namespace Todo.Services.TodoItemManagement
 
         private static IQueryable<TodoItem> PaginateItems(IQueryable<TodoItem> todoItems, TodoItemQuery todoItemQuery)
         {
+            using Activity activity = ActivitySources.TodoActivitySource.StartActivity(CreateActivityName());
+            activity?.Tags.Append(new KeyValuePair<string, string>(nameof(todoItemQuery.PageIndex), todoItemQuery.PageIndex?.ToString()));
+            activity?.Tags.Append(new KeyValuePair<string, string>(nameof(todoItemQuery.PageSize), todoItemQuery.PageSize?.ToString()));
+
             int pageIndex = todoItemQuery.PageIndex.Value;
             int pageSize = todoItemQuery.PageSize.Value;
 
