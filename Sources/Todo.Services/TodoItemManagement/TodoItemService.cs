@@ -51,14 +51,14 @@ namespace Todo.Services.TodoItemManagement
         {
             using Activity activity = ActivitySources.TodoActivitySource.StartActivity(CreateActivityName());
 
-            activity.AddEvent(new ActivityEvent("Validate input - BEGIN"));
+            activity?.AddEvent(new ActivityEvent("Validate input - BEGIN"));
             ArgumentNullException.ThrowIfNull(todoItemQuery);
             Validator.ValidateObject(todoItemQuery, new ValidationContext(todoItemQuery), validateAllProperties: true);
-            activity.AddEvent(new ActivityEvent("Validate input - END"));
+            activity?.AddEvent(new ActivityEvent("Validate input - END"));
 
-            activity.AddEvent(new ActivityEvent("Fetch data - BEGIN"));
+            activity?.AddEvent(new ActivityEvent("Fetch data - BEGIN"));
             Task<IList<TodoItemInfo>> result = InternalGetByQueryAsync(todoItemQuery);
-            activity.AddEvent(new ActivityEvent("Fetch data - END"));
+            activity?.AddEvent(new ActivityEvent("Fetch data - END"));
 
             return result;
         }
