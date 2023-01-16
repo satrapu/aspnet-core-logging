@@ -2,7 +2,6 @@ namespace Todo.WebApi.TestInfrastructure
 {
     using System;
     using System.Collections.Generic;
-    using System.Diagnostics;
     using System.Net.Http;
     using System.Text;
     using System.Threading.Tasks;
@@ -43,16 +42,6 @@ namespace Todo.WebApi.TestInfrastructure
         public TestWebApplicationFactory(string applicationName)
         {
             this.applicationName = applicationName;
-
-            using ActivityListener activityListener = new()
-            {
-                ShouldListenTo = _ => true,
-                Sample = (ref ActivityCreationOptions<ActivityContext> _) => ActivitySamplingResult.None,
-                ActivityStarted = activity => { },
-                ActivityStopped = activity => { },
-            };
-
-            ActivitySource.AddActivityListener(activityListener);
         }
 
         public async Task<HttpClient> CreateHttpClientWithJwtAsync()
