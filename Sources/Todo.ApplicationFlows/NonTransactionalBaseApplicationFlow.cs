@@ -71,8 +71,6 @@ namespace Todo.ApplicationFlows
                 }
                 finally
                 {
-                    flowActivity?.Stop();
-
                     logger.LogInformation(
                         "User [{FlowInitiator}] has finished executing application flow [{ApplicationFlowName}] "
                         + "with the outcome: [{ApplicationFlowOutcome}]; "
