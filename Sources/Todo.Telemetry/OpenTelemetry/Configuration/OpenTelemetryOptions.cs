@@ -1,6 +1,7 @@
 namespace Todo.Telemetry.OpenTelemetry.Configuration
 {
     using Exporters;
+
     using Instrumentation;
 
     public class OpenTelemetryOptions

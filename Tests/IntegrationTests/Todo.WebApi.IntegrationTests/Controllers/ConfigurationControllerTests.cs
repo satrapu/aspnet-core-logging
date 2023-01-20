@@ -5,6 +5,8 @@ namespace Todo.WebApi.Controllers
     using System.Net.Http;
     using System.Threading.Tasks;
 
+    using Commons.Constants;
+
     using FluentAssertions;
 
     using Microsoft.AspNetCore.Hosting;
@@ -13,8 +15,6 @@ namespace Todo.WebApi.Controllers
     using Microsoft.Extensions.Hosting;
 
     using NUnit.Framework;
-
-    using Commons.Constants;
 
     /// <summary>
     /// Contains integration tests targeting <see cref="ConfigurationController" /> class.

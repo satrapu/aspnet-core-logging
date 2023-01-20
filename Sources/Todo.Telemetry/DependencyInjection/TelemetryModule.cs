@@ -5,6 +5,7 @@ namespace Todo.Telemetry.DependencyInjection
     using Commons.ApplicationEvents;
 
     using Http;
+
     using Serilog;
 
     /// <summary>

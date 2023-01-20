@@ -5,9 +5,10 @@ namespace Todo.Services.DependencyInjection
     using Commons.Constants;
 
     using Security;
-    using TodoItemManagement;
 
     using Todo.Persistence.DependencyInjection;
+
+    using TodoItemManagement;
 
     /// <summary>
     /// Configures business related services used by this application.

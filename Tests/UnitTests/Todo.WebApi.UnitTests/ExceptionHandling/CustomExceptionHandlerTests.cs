@@ -5,6 +5,8 @@ namespace Todo.WebApi.ExceptionHandling
     using System.IO;
     using System.Threading.Tasks;
 
+    using Configuration;
+
     using FluentAssertions;
 
     using Microsoft.AspNetCore.Diagnostics;
@@ -24,8 +26,6 @@ namespace Todo.WebApi.ExceptionHandling
     using Persistence.Entities;
 
     using Services.TodoItemManagement;
-
-    using Configuration;
 
     /// <summary>
     /// Contains unit tests targeting <see cref="CustomExceptionHandler"/> class.

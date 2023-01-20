@@ -3,6 +3,8 @@ namespace Todo.WebApi
     using System;
     using System.Diagnostics.CodeAnalysis;
 
+    using ApplicationFlows.DependencyInjection;
+
     using Autofac;
     using Autofac.Extensions.DependencyInjection;
 
@@ -13,7 +15,6 @@ namespace Todo.WebApi
     using Serilog;
     using Serilog.Core;
 
-    using ApplicationFlows.DependencyInjection;
     using Telemetry.DependencyInjection;
 
     /// <summary>

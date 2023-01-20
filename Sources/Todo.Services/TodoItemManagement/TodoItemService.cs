@@ -11,6 +11,8 @@ namespace Todo.Services.TodoItemManagement
     using System.Text.Json;
     using System.Threading.Tasks;
 
+    using Commons;
+
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Logging;
 
@@ -18,8 +20,6 @@ namespace Todo.Services.TodoItemManagement
     using Persistence.Entities;
 
     using Security;
-
-    using Commons;
 
     /// <summary>
     /// An <see cref="ITodoItemService"/> implementation which persists data using Entity Framework Core.

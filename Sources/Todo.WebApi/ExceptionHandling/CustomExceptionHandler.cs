@@ -5,14 +5,14 @@ namespace Todo.WebApi.ExceptionHandling
     using System.Text.Json;
     using System.Threading.Tasks;
 
+    using Configuration;
+
     using Microsoft.AspNetCore.Diagnostics;
     using Microsoft.AspNetCore.Http;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
-
-    using Configuration;
 
     /// <summary>
     /// Handles any exceptions occurring inside this application.

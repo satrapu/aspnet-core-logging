@@ -6,11 +6,11 @@ namespace Todo.ApplicationFlows
     using System.Security.Principal;
     using System.Threading.Tasks;
 
+    using Commons;
     using Commons.Constants;
 
     using Microsoft.Extensions.Logging;
 
-    using Commons;
     using Todo.Services.Security;
 
     /// <summary>

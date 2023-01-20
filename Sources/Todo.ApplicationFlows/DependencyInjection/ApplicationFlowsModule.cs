@@ -1,16 +1,19 @@
 namespace Todo.ApplicationFlows.DependencyInjection
 {
+    using ApplicationEvents;
+
     using ApplicationFlows;
-    using Security;
-    using TodoItems;
 
     using Autofac;
 
     using Microsoft.Extensions.Configuration;
 
-    using ApplicationEvents;
+    using Security;
+
     using Todo.Commons.ApplicationEvents;
     using Todo.Services.DependencyInjection;
+
+    using TodoItems;
 
     /// <summary>
     /// Configures application flow related services used by this application.
