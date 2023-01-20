@@ -13,8 +13,8 @@ namespace Todo.WebApi
     using Serilog;
     using Serilog.Core;
 
-    using Todo.ApplicationFlows.DependencyInjection;
-    using Todo.Telemetry.DependencyInjection;
+    using ApplicationFlows.DependencyInjection;
+    using Telemetry.DependencyInjection;
 
     /// <summary>
     /// Runs an application used for managing user todo items (aka user tasks).

@@ -4,8 +4,8 @@ namespace Todo.Services.DependencyInjection
 
     using Commons.Constants;
 
-    using Services.Security;
-    using Services.TodoItemManagement;
+    using Security;
+    using TodoItemManagement;
 
     using Todo.Persistence.DependencyInjection;
 

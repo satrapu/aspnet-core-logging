@@ -9,7 +9,7 @@ namespace Todo.ApplicationFlows.TodoItems
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
 
-    using Todo.Persistence;
+    using Persistence;
 
     /// <summary>
     /// Runs database migrations during application started event.

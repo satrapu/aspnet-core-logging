@@ -19,7 +19,7 @@ namespace Todo.Services.TodoItemManagement
 
     using Security;
 
-    using Todo.Commons;
+    using Commons;
 
     /// <summary>
     /// An <see cref="ITodoItemService"/> implementation which persists data using Entity Framework Core.

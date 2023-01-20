@@ -10,7 +10,7 @@ namespace Todo.ApplicationFlows
 
     using Microsoft.Extensions.Logging;
 
-    using Todo.Commons;
+    using Commons;
     using Todo.Services.Security;
 
     /// <summary>

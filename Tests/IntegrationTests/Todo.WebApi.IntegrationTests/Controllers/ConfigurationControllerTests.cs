@@ -14,7 +14,7 @@ namespace Todo.WebApi.Controllers
 
     using NUnit.Framework;
 
-    using Todo.Commons.Constants;
+    using Commons.Constants;
 
     /// <summary>
     /// Contains integration tests targeting <see cref="ConfigurationController" /> class.

@@ -12,7 +12,7 @@ namespace Todo.WebApi.ExceptionHandling
     using Microsoft.Extensions.Logging;
     using Microsoft.Extensions.Options;
 
-    using Todo.WebApi.ExceptionHandling.Configuration;
+    using Configuration;
 
     /// <summary>
     /// Handles any exceptions occurring inside this application.

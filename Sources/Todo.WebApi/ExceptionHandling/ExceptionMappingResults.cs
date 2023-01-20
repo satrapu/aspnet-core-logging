@@ -6,7 +6,7 @@ namespace Todo.WebApi.ExceptionHandling
 
     using Npgsql;
 
-    using Todo.Services.TodoItemManagement;
+    using Services.TodoItemManagement;
 
     /// <summary>
     /// Maps <see cref="Exception"/> instances to <see cref="ExceptionMappingResult"/> instances.

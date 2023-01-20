@@ -4,8 +4,8 @@ namespace Todo.Telemetry.DependencyInjection
 
     using Commons.ApplicationEvents;
 
-    using Telemetry.Http;
-    using Telemetry.Serilog;
+    using Http;
+    using Serilog;
 
     /// <summary>
     /// Configures telemetry related services used by this application.
