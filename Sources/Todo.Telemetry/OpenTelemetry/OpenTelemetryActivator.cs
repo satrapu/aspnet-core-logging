@@ -65,7 +65,7 @@ namespace Todo.Telemetry.OpenTelemetry
                                             { "service.instance.attributes.custom.WebRootPath", webHostEnvironment.WebRootPath ?? "<null>" },
                                             { "service.instance.attributes.custom.OperationSystem", Environment.OSVersion.ToString() },
                                             { "service.instance.attributes.custom.MachineName", Environment.MachineName },
-                                            { "service.instance.attributes.custom.ProcessorCount", Environment.ProcessorCount },
+                                            { "service.instance.attributes.custom.ProcessorCount", Environment.ProcessorCount.ToString() },
                                             { "service.instance.attributes.custom.DotNetVersion", Environment.Version.ToString() }
                                     }))
                             .AddAspNetCoreInstrumentation()
@@ -86,13 +86,13 @@ namespace Todo.Telemetry.OpenTelemetry
         }
 
         /// <summary>
-        /// Adds log events to OpenTelemery.
+        /// Adds log events to OpenTelemetry.
         /// </summary>
         /// <param name="loggingBuilder">The application logging builder.</param>
         /// <param name="openTelemetryOptions">The options needed to configure OpenTelemetry integration.</param>
         /// <returns>The given <paramref name="loggingBuilder"/> instance.</returns>
         /// <exception cref="ArgumentNullException">Thrown when either <paramref name="loggingBuilder"/>
-        /// or <paramref name="configuration"/> is null.</exception>
+        /// or <paramref name="openTelemetryOptions"/> is null.</exception>
         private static ILoggingBuilder AddOpenTelemetry(this ILoggingBuilder loggingBuilder, OpenTelemetryOptions openTelemetryOptions)
         {
             ArgumentNullException.ThrowIfNull(loggingBuilder);
