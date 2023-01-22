@@ -31,7 +31,7 @@ namespace Todo.Telemetry.Serilog
             yield return new object[] { ConsoleSinkJsonFragment.ToConfiguration(), false };
         }
 
-        private static readonly string FileSinkJsonFragment = @"
+        private const string FileSinkJsonFragment = @"
         {
 	        ""Serilog"": {
 		        ""LevelSwitches"": {
@@ -59,7 +59,7 @@ namespace Todo.Telemetry.Serilog
 	        }
         }";
 
-        private static readonly string ConsoleSinkJsonFragment = @"
+        private const string ConsoleSinkJsonFragment = @"
         {
 	        ""Serilog"": {
 		        ""LevelSwitches"": {
