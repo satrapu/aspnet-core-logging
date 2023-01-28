@@ -134,7 +134,7 @@ namespace Todo.Services.TodoItemManagement
             if (activity is not null && activity.IsAllDataRequested)
             {
                 activity.AddEvent(new ActivityEvent(name: "Data has been fetched",
-                    tags: new ActivityTagsCollection { new KeyValuePair<string, object>("data", JsonSerializer.Serialize(result)) }));
+                    tags: new ActivityTagsCollection { new("data", JsonSerializer.Serialize(result)) }));
             }
 
             return result;

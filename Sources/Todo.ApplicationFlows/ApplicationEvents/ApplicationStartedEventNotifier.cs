@@ -17,7 +17,7 @@ namespace Todo.ApplicationFlows.ApplicationEvents
     {
         private const string FlowName = "Events/ApplicationStarted/NotifyListeners";
 
-        private static readonly IPrincipal principal =
+        private static readonly IPrincipal Principal =
             new GenericPrincipal(new GenericIdentity("application-started-event-notifier"), Array.Empty<string>());
 
         private readonly IEnumerable<IApplicationStartedEventListener> eventListeners;
@@ -37,7 +37,7 @@ namespace Todo.ApplicationFlows.ApplicationEvents
 
         public void Notify()
         {
-            SimpleApplicationFlow.Execute(FlowName, InternalNotify, principal, logger);
+            SimpleApplicationFlow.Execute(FlowName, InternalNotify, Principal, logger);
         }
 
         private void InternalNotify()
