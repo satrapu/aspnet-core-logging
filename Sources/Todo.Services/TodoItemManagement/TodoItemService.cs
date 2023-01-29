@@ -342,7 +342,7 @@ namespace Todo.Services.TodoItemManagement
         private static IQueryable<TodoItem> PaginateItems(IQueryable<TodoItem> todoItems, TodoItemQuery todoItemQuery)
         {
             using Activity activity = ActivitySources.TodoActivitySource.StartActivity(CreateActivityName());
-            
+
             int pageIndex = todoItemQuery.PageIndex ?? TodoItemQuery.DefaultPageIndex;
             int pageSize = todoItemQuery.PageSize ?? TodoItemQuery.DefaultPageSize;
 
