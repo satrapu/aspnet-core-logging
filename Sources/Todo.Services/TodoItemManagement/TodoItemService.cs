@@ -49,17 +49,12 @@ namespace Todo.Services.TodoItemManagement
 
         public Task<IList<TodoItemInfo>> GetByQueryAsync(TodoItemQuery todoItemQuery)
         {
-            using Activity activity = ActivitySources.TodoActivitySource.StartActivity(CreateActivityName());
+            using Activity _ = ActivitySources.TodoActivitySource.StartActivity(CreateActivityName());
 
-            activity?.AddEvent(new ActivityEvent("Validate input - BEGIN"));
             ArgumentNullException.ThrowIfNull(todoItemQuery);
             Validator.ValidateObject(todoItemQuery, new ValidationContext(todoItemQuery), validateAllProperties: true);
-            activity?.AddEvent(new ActivityEvent("Validate input - END"));
 
-            activity?.AddEvent(new ActivityEvent("Fetch data - BEGIN"));
             Task<IList<TodoItemInfo>> result = InternalGetByQueryAsync(todoItemQuery);
-            activity?.AddEvent(new ActivityEvent("Fetch data - END"));
-
             return result;
         }
 
@@ -68,11 +63,10 @@ namespace Todo.Services.TodoItemManagement
             using Activity _ = ActivitySources.TodoActivitySource.StartActivity(CreateActivityName());
 
             ArgumentNullException.ThrowIfNull(newTodoItemInfo);
+            Validator.ValidateObject(newTodoItemInfo, new ValidationContext(newTodoItemInfo), validateAllProperties: true);
 
-            Validator.ValidateObject(newTodoItemInfo, new ValidationContext(newTodoItemInfo),
-                validateAllProperties: true);
-
-            return InternalAddAsync(newTodoItemInfo);
+            Task<long> result = InternalAddAsync(newTodoItemInfo);
+            return result;
         }
 
         public Task UpdateAsync(UpdateTodoItemInfo updateTodoItemInfo)
@@ -80,11 +74,11 @@ namespace Todo.Services.TodoItemManagement
             using Activity _ = ActivitySources.TodoActivitySource.StartActivity(CreateActivityName());
 
             ArgumentNullException.ThrowIfNull(updateTodoItemInfo);
-
             Validator.ValidateObject(updateTodoItemInfo, new ValidationContext(updateTodoItemInfo),
                 validateAllProperties: true);
 
-            return InternalUpdateAsync(updateTodoItemInfo);
+            Task result = InternalUpdateAsync(updateTodoItemInfo);
+            return result;
         }
 
         public Task DeleteAsync(DeleteTodoItemInfo deleteTodoItemInfo)
@@ -92,11 +86,11 @@ namespace Todo.Services.TodoItemManagement
             using Activity _ = ActivitySources.TodoActivitySource.StartActivity(CreateActivityName());
 
             ArgumentNullException.ThrowIfNull(deleteTodoItemInfo);
-
             Validator.ValidateObject(deleteTodoItemInfo, new ValidationContext(deleteTodoItemInfo),
                 validateAllProperties: true);
 
-            return InternalDeleteAsync(deleteTodoItemInfo);
+            Task result = InternalDeleteAsync(deleteTodoItemInfo);
+            return result;
         }
 
         private static string CreateActivityName([CallerMemberName] string callerMemberName = "")
@@ -129,8 +123,9 @@ namespace Todo.Services.TodoItemManagement
                 logger.LogDebug("{@TodoItemInfoList}", result);
             }
 
-            // @satrapu January 15th, 2023: Read more about "Activity.IsAllDataRequested" property here:
-            // https://rehansaeed.com/deep-dive-into-open-telemetry-for-net/#isrecording.
+            // @satrapu January 15th, 2023: Read more about "Activity.IsAllDataRequested" property
+            // here: https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/trace/api.md#isrecording
+            // and here: https://rehansaeed.com/deep-dive-into-open-telemetry-for-net/#isrecording.
             if (activity is not null && activity.IsAllDataRequested)
             {
                 activity.AddEvent(new ActivityEvent(name: "Data has been fetched",
@@ -142,6 +137,7 @@ namespace Todo.Services.TodoItemManagement
 
         private async Task<long> InternalAddAsync(NewTodoItemInfo newTodoItemInfo)
         {
+            using Activity activity = ActivitySources.TodoActivitySource.StartActivity(CreateActivityName());
             logger.LogInformation("About to add item using context {@NewTodoItemInfo} ...", newTodoItemInfo);
 
             var newTodoItem = new TodoItem(newTodoItemInfo.Name, newTodoItemInfo.Owner.GetName());
@@ -157,11 +153,18 @@ namespace Todo.Services.TodoItemManagement
             logger.LogInformation("Item with id {TodoItemId} has been added by user [{User}]",
                 newTodoItem.Id, newTodoItem.CreatedBy);
 
+            if (activity is not null && activity.IsAllDataRequested)
+            {
+                activity.AddEvent(new ActivityEvent(name: "Data has been added",
+                    tags: new ActivityTagsCollection { new("data", JsonSerializer.Serialize(new { newTodoItem.Id, newTodoItem.CreatedBy })) }));
+            }
+
             return newTodoItem.Id;
         }
 
         private async Task InternalUpdateAsync(UpdateTodoItemInfo updateTodoItemInfo)
         {
+            using Activity activity = ActivitySources.TodoActivitySource.StartActivity(CreateActivityName());
             logger.LogInformation("About to update item using context {@UpdateTodoItemInfo} ...", updateTodoItemInfo);
 
             TodoItem existingTodoItem = await GetExistingTodoItem(updateTodoItemInfo.Id, updateTodoItemInfo.Owner);
@@ -180,10 +183,17 @@ namespace Todo.Services.TodoItemManagement
 
             logger.LogInformation("Item with id {TodoItemId} has been updated by user [{User}]",
                 existingTodoItem.Id, existingTodoItem.LastUpdatedBy);
+
+            if (activity is not null && activity.IsAllDataRequested)
+            {
+                activity.AddEvent(new ActivityEvent(name: "Data has been updated",
+                    tags: new ActivityTagsCollection { new("data", JsonSerializer.Serialize(new { existingTodoItem.Id, existingTodoItem.LastUpdatedBy })) }));
+            }
         }
 
         private async Task InternalDeleteAsync(DeleteTodoItemInfo deleteTodoItemInfo)
         {
+            using Activity activity = ActivitySources.TodoActivitySource.StartActivity(CreateActivityName());
             logger.LogInformation("About to delete item using context {@DeleteTodoItemInfo} ...", deleteTodoItemInfo);
 
             TodoItem existingTodoItem = await GetExistingTodoItem(deleteTodoItemInfo.Id, deleteTodoItemInfo.Owner);
@@ -193,6 +203,14 @@ namespace Todo.Services.TodoItemManagement
 
             logger.LogInformation("Item with id {TodoItemId} has been deleted by user [{User}]",
                 deleteTodoItemInfo.Id, deleteTodoItemInfo.Owner.GetName());
+
+            if (activity is not null && activity.IsAllDataRequested)
+            {
+                activity.AddEvent(new ActivityEvent(name: "Data has been deleted", tags: new ActivityTagsCollection
+                {
+                    new("data", JsonSerializer.Serialize(new { deleteTodoItemInfo.Id, DeletedBy = deleteTodoItemInfo.Owner.GetName() }))
+                }));
+            }
         }
 
         private async Task<TodoItem> GetExistingTodoItem(long? id, IPrincipal owner)
@@ -210,7 +228,7 @@ namespace Todo.Services.TodoItemManagement
 
         private IQueryable<TodoItem> FilterItems(TodoItemQuery todoItemQuery)
         {
-            using Activity _ = ActivitySources.TodoActivitySource.StartActivity(CreateActivityName());
+            using Activity activity = ActivitySources.TodoActivitySource.StartActivity(CreateActivityName());
 
             IQueryable<TodoItem> todoItems =
                 todoDbContext.TodoItems.Where(todoItem => todoItem.CreatedBy == todoItemQuery.Owner.GetName());
@@ -230,14 +248,20 @@ namespace Todo.Services.TodoItemManagement
                 todoItems = todoItems.Where(todoItem => todoItem.IsComplete == todoItemQuery.IsComplete.Value);
             }
 
+            if (activity is not null && activity.IsAllDataRequested)
+            {
+                activity.AddEvent(new ActivityEvent(name: "Data has been filtered", tags: new ActivityTagsCollection
+                {
+                    new("filter.info", JsonSerializer.Serialize(todoItemQuery))
+                }));
+            }
+
             return todoItems;
         }
 
         private static IQueryable<TodoItem> SortItems(IQueryable<TodoItem> todoItems, TodoItemQuery todoItemQuery)
         {
             using Activity activity = ActivitySources.TodoActivitySource.StartActivity(CreateActivityName());
-            activity?.Tags.Append(new KeyValuePair<string, string>(nameof(todoItemQuery.SortBy), todoItemQuery.SortBy));
-            activity?.Tags.Append(new KeyValuePair<string, string>(nameof(todoItemQuery.IsSortAscending), todoItemQuery.IsSortAscending?.ToString()));
 
             Expression<Func<TodoItem, object>> keySelector = GetKeySelectorBy(todoItemQuery.SortBy);
 
@@ -250,11 +274,25 @@ namespace Todo.Services.TodoItemManagement
                 todoItems = todoItems.OrderBy(keySelector);
             }
 
+            if (activity is not null && activity.IsAllDataRequested)
+            {
+                activity.AddEvent(new ActivityEvent(name: "Data has been sorted", tags: new ActivityTagsCollection
+                {
+                    new("sort.info", JsonSerializer.Serialize(new
+                    {
+                        todoItemQuery.SortBy,
+                        IsSortAscending = todoItemQuery.IsSortAscending?.ToString()
+                    }))
+                }));
+            }
+
             return todoItems;
         }
 
         private static Expression<Func<TodoItem, object>> GetKeySelectorBy(string sortByProperty)
         {
+            using Activity _ = ActivitySources.TodoActivitySource.StartActivity(CreateActivityName());
+
             if (string.IsNullOrWhiteSpace(sortByProperty))
             {
                 return DefaultKeySelector;
@@ -304,13 +342,20 @@ namespace Todo.Services.TodoItemManagement
         private static IQueryable<TodoItem> PaginateItems(IQueryable<TodoItem> todoItems, TodoItemQuery todoItemQuery)
         {
             using Activity activity = ActivitySources.TodoActivitySource.StartActivity(CreateActivityName());
-            activity?.Tags.Append(new KeyValuePair<string, string>(nameof(todoItemQuery.PageIndex), todoItemQuery.PageIndex?.ToString()));
-            activity?.Tags.Append(new KeyValuePair<string, string>(nameof(todoItemQuery.PageSize), todoItemQuery.PageSize?.ToString()));
-
-            int pageIndex = todoItemQuery.PageIndex.Value;
-            int pageSize = todoItemQuery.PageSize.Value;
+            
+            int pageIndex = todoItemQuery.PageIndex ?? TodoItemQuery.DefaultPageIndex;
+            int pageSize = todoItemQuery.PageSize ?? TodoItemQuery.DefaultPageSize;
 
             IQueryable<TodoItem> result = todoItems.Skip(pageIndex * pageSize).Take(pageSize);
+
+            if (activity is not null && activity.IsAllDataRequested)
+            {
+                activity.AddEvent(new ActivityEvent(name: "Data has been paginated", tags: new ActivityTagsCollection
+                {
+                    new("pagination.info", JsonSerializer.Serialize(new { PageIndex = pageIndex, PageSize = pageSize }))
+                }));
+            }
+
             return result;
         }
     }
