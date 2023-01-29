@@ -55,7 +55,7 @@ namespace Todo.ApplicationFlows
             }))
             {
                 string flowInitiatorName = flowInitiator.GetNameOrDefault();
-                using Activity flowActivity = ActivitySources.TodoActivitySource.StartActivity(flowName, ActivityKind.Internal);
+                using Activity flowActivity = ActivitySources.TodoActivitySource.StartActivity(flowName);
                 bool isSuccess = false;
 
                 try
@@ -71,6 +71,8 @@ namespace Todo.ApplicationFlows
                 }
                 finally
                 {
+                    flowActivity?.Stop();
+
                     logger.LogInformation(
                         "User [{FlowInitiator}] has finished executing application flow [{ApplicationFlowName}] "
                         + "with the outcome: [{ApplicationFlowOutcome}]; "
