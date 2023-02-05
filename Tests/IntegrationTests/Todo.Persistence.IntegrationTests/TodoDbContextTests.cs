@@ -83,7 +83,7 @@ namespace Todo.Persistence
             {
                 const string name = "ConcurrentlyAccessedTodoItem";
 
-                TodoItem todoItem = new (name, "it")
+                TodoItem todoItem = new(name, "it")
                 {
                     IsComplete = false,
                 };
