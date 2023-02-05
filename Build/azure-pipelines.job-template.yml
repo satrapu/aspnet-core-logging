@@ -38,8 +38,8 @@ jobs:
     clean: all
   variables:
     # Environment variable used when caching restored NuGet packages.
-    # See more about this variable here: https://docs.microsoft.com/en-us/nuget/reference/cli-reference/cli-ref-environment-variables.
-    # See more about caching NuGet packages here: https://docs.microsoft.com/en-us/azure/devops/pipelines/release/caching?view=azure-devops#netnuget.
+    # See more about this variable here: https://learn.microsoft.com/en-us/nuget/reference/cli-reference/cli-ref-environment-variables.
+    # See more about caching NuGet packages here: https://learn.microsoft.com/en-us/azure/devops/pipelines/release/caching?view=azure-devops#netnuget.
     NUGET_PACKAGES: '$(Pipeline.Workspace)/.nuget/packages'
 
     # Avoid caching NuGet packages each time a build runs on an Azure DevOps agent.
@@ -47,15 +47,15 @@ jobs:
     DOTNET_SKIP_FIRST_TIME_EXPERIENCE: '1'
 
     # Disable .NET SDK telemetry.
-    # See more here: https://docs.microsoft.com/en-us/dotnet/core/tools/telemetry#how-to-opt-out.
+    # See more here: https://learn.microsoft.com/en-us/dotnet/core/tools/telemetry#how-to-opt-out.
     DOTNET_CLI_TELEMETRY_OPTOUT: '1'
 
     # Disable Core CLR tracing.
-    # See more here: https://docs.microsoft.com/en-us/dotnet/core/dependency-loading/default-probing#how-do-i-debug-the-probing-properties-construction.
+    # See more here: https://learn.microsoft.com/en-us/dotnet/core/dependency-loading/default-probing#how-do-i-debug-the-probing-properties-construction.
     COREHOST_TRACE: '0'
 
     # Disable downloading XML documentation when restoring NuGet package.
-    # See more here: https://docs.microsoft.com/en-us/nuget/reference/cli-reference/cli-ref-environment-variables.
+    # See more here: https://learn.microsoft.com/en-us/nuget/reference/cli-reference/cli-ref-environment-variables.
     NUGET_XMLDOC_MODE: 'skip'
 
     ArchitectureTestsOutcome: 'failure'
@@ -64,7 +64,7 @@ jobs:
     AllTestsOutcome: 'failure'
   steps:
   # Customize the way this job checkouts the current Git branch.
-  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/steps-checkout?view=azure-pipelines.
+  # See more here: https://learn.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/steps-checkout?view=azure-pipelines.
   - checkout: self
     name: 'checkout_source_code'
     displayName: 'Checkout source code'
@@ -74,7 +74,7 @@ jobs:
     persistCredentials: False
 
   # Install specific .NET SDK version used for building the application.
-  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/tool/dotnet-core-tool-installer?view=azure-devops.
+  # See more here: https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/tool/dotnet-core-tool-installer?view=azure-devops.
   # Installing a specific .NET SDK version is needed to avoid installing a .NET global tool in a following task and
   # then have Azure DevOps complain that it cannot find it.
   # This issue is documented here: https://github.com/Microsoft/azure-pipelines-tasks/issues/8291.
@@ -130,8 +130,8 @@ jobs:
         sonar.analysis.pipeline=$(Build.BuildId)
 
   # Cache NuGet packages to avoid having to restore them during each build.
-  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/release/caching?view=azure-devops#netnuget
-  # and here: https://docs.microsoft.com/en-us/azure/devops/pipelines/release/caching?view=azure-devops#conditioning-on-cache-restoration.
+  # See more here: https://learn.microsoft.com/en-us/azure/devops/pipelines/release/caching?view=azure-devops#netnuget
+  # and here: https://learn.microsoft.com/en-us/azure/devops/pipelines/release/caching?view=azure-devops#conditioning-on-cache-restoration.
   - task: Cache@2
     name: 'cache_restored_nuget_packages'
     displayName: Cache restored NuGet packages
@@ -144,7 +144,7 @@ jobs:
       cacheHitVar: CacheRestoredForNuGetPackages
 
   # Restore NuGet packages using 'dotnet restore' command.
-  # See more about this command here: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-restore?source=docs.
+  # See more about this command here: https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-restore?source=docs.
   #
   # The command used for generating the lock files is:
   # dotnet restore ./$(SolutionFileName) --configfile ./nuget.config --use-lock-file --lock-file-path packages.lock.json
@@ -157,7 +157,7 @@ jobs:
     condition: ne(variables['CacheRestoredForNuGetPackages'], 'true')
 
   # Compile source code using 'dotnet build' command.
-  # See more about this command here: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-build.
+  # See more about this command here: https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-build.
   - script: >-
       dotnet build $(Build.SourcesDirectory)/$(SolutionFileName)
       --configuration ${{ parameters.build.configuration }}
@@ -241,8 +241,8 @@ jobs:
       publishRunAttachments: True
 
   # Run unit tests and collect code coverage metrics using 'dotnet test' command.
-  # See more about this command here: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-test.
-  # See more about running selective tests here: https://docs.microsoft.com/en-us/dotnet/core/testing/selective-unit-tests#nunit.
+  # See more about this command here: https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-test.
+  # See more about running selective tests here: https://learn.microsoft.com/en-us/dotnet/core/testing/selective-unit-tests#nunit.
   # Decorate the AssemblyInfo.cs found inside each unit test related project with:
   #     [assembly: NUnit.Framework.Category("UnitTests")]
   - script: >-
@@ -275,7 +275,7 @@ jobs:
       )
 
   # Publish unit test results.
-  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=azure-devops&tabs=yaml.
+  # See more here: https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/publish-test-results-v2?view=azure-pipelines&tabs=trx%2Ctrxattachments%2Cyaml.
   - task: PublishTestResults@2
     name: 'publish_unit_test_results'
     displayName: 'Publish unit test results'
@@ -341,7 +341,7 @@ jobs:
       workingDirectory: $(Build.SourcesDirectory)
 
   # Run integration tests and collect code coverage metrics using 'dotnet test' command.
-  # See more about this command here: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-test.
+  # See more about this command here: https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-test.
   # Decorate the AssemblyInfo.cs found inside each integration test related project with:
   #     [assembly: NUnit.Framework.Category("IntegrationTests")]
   - script: >-
@@ -410,7 +410,7 @@ jobs:
       workingDirectory: $(Build.SourcesDirectory)
 
   # Publish integration test results.
-  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-test-results?view=azure-devops&tabs=yaml.
+  # See more here: https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/publish-test-results-v2?view=azure-pipelines&tabs=trx%2Ctrxattachments%2Cyaml.
   - task: PublishTestResults@2
     name: 'publish_integration_test_results'
     displayName: 'Publish integration test results'
@@ -441,7 +441,7 @@ jobs:
       )
 
   # Install reportgenerator tool to be able to generate code coverage related reports using 'dotnet tool install' command.
-  # See more about this command here: https://docs.microsoft.com/en-us/dotnet/core/tools/dotnet-tool-install.
+  # See more about this command here: https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-tool-install.
   - script: >-
       dotnet tool install dotnet-reportgenerator-globaltool
       --tool-path $(Build.SourcesDirectory)/Tests/.ReportGenerator
@@ -477,7 +477,7 @@ jobs:
       )
 
   # Publish code coverage report.
-  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/test/publish-code-coverage-results?view=azure-devops.
+  # See more here: https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/publish-code-coverage-results-v1?view=azure-pipelines.
   - task: PublishCodeCoverageResults@1
     name: 'publish_code_coverage_report'
     displayName: 'Publish code coverage report'
@@ -493,10 +493,10 @@ jobs:
       summaryFileLocation: '$(Build.SourcesDirectory)/Tests/.CodeCoverageReport/Cobertura.xml'
 
   # Publish test related artifacts.
-  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/artifacts/pipeline-artifacts?view=azure-devops&tabs=yaml#publish-a-pipeline-artifact.
+  # See more here: https://learn.microsoft.com/en-us/azure/devops/pipelines/artifacts/pipeline-artifacts?view=azure-devops&tabs=yaml#publish-a-pipeline-artifact.
   #
   # This task will make use of the ~/Tests/.artifactignore file.
-  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/artifacts/pipeline-artifacts?view=azure-devops&tabs=yaml#using-artifactignore-files.
+  # See more here: https://learn.microsoft.com/en-us/azure/devops/pipelines/artifacts/pipeline-artifacts?view=azure-devops&tabs=yaml#using-artifactignore-files.
   - task: PublishPipelineArtifact@1
     name: 'publish_test_related_artifacts'
     displayName: 'Publish test related artifacts'
@@ -579,7 +579,7 @@ jobs:
 
   # Normalize Git branch name since Azure DevOps does not provide the expected one (e.g. 'master' or 'feature/my-feature-branch').
   # See more here: https://stackoverflow.com/questions/59956206/how-to-get-a-branch-name-with-a-slash-in-azure-devops
-  # and here: https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml#build-variables.
+  # and here: https://learn.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml#build-variables.
   - task: PowerShell@2
     name: 'normalize_current_git_branch_name'
     displayName: 'Normalize current Git branch name'
@@ -601,11 +601,11 @@ jobs:
         Write-Output "The normalized Git branch name is: $normalizedGitBranchName"
 
   # Run a PowerShell script to break the build in case Sonar quality gate has failed.
-  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/utility/powershell?view=azure-devops.
+  # See more here: https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/powershell-v2?view=azure-pipelines.
   - task: PowerShell@2
     name: 'sonar_build_breaker'
     displayName: 'Run Sonar build breaker'
-    # See more about conditions here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/conditions?view=azure-devops&tabs=yaml.
+    # See more about conditions here: https://learn.microsoft.com/en-us/azure/devops/pipelines/process/conditions?view=azure-devops&tabs=yaml%2Cstages.
     condition: |
       and
       (

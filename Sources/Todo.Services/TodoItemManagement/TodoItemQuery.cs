@@ -19,7 +19,7 @@ namespace Todo.Services.TodoItemManagement
         /// Gets or sets the pattern the name of the todo items must match to be fetched using this query.
         /// <br/>
         /// This pattern may contain wild-cards - see more here:
-        /// https://docs.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbfunctionsextensions.like?view=efcore-5.0.
+        /// https://learn.microsoft.com/en-us/dotnet/api/microsoft.entityframeworkcore.dbfunctionsextensions.like?view=efcore-7.0.
         /// </summary>
         public string NamePattern { get; set; }
 

@@ -96,16 +96,16 @@ namespace Todo.WebApi
 
                         // Ensure that when an error occurs during startup, host will exit.
                         // See more about capturing startup errors here:
-                        // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/web-host?view=aspnetcore-7.0#capture-startup-errors.
+                        // https://learn.microsoft.com/en-us/aspnet/core/fundamentals/host/web-host?view=aspnetcore-7.0#capture-startup-errors.
                         localHostBuilder.CaptureStartupErrors(false);
 
                         // Ensure the application captures detailed errors.
                         // See more about detailed errors here:
-                        // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/host/web-host?view=aspnetcore-7.0#detailed-errors.
+                        // https://learn.microsoft.com/en-us/aspnet/core/fundamentals/host/web-host?view=aspnetcore-7.0#detailed-errors.
                         localHostBuilder.UseSetting(WebHostDefaults.DetailedErrorsKey, bool.TrueString);
 
                         // See more about the Startup class here:
-                        // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/startup?view=aspnetcore-7.0.
+                        // https://learn.microsoft.com/en-us/aspnet/core/fundamentals/startup?view=aspnetcore-7.0.
                         localHostBuilder.UseStartup<Startup>();
                     });
 

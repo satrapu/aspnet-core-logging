@@ -47,7 +47,7 @@ namespace Todo.Persistence
                 // Act
                 await databaseMigrator.MigrateAsync();
                 // Revert migrations by using a special migration identifier.
-                // See more here: https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/dotnet#dotnet-ef-database-update.
+                // See more here: https://learn.microsoft.com/en-us/ef/core/cli/dotnet#dotnet-ef-database-updatee.
                 await databaseMigrator.MigrateAsync(BeforeFirstDatabaseMigration);
                 await databaseMigrator.MigrateAsync();
                 isMigrationSuccessful = true;
