@@ -21,9 +21,8 @@ namespace Todo.Telemetry.Serilog.Destructuring
             {
                 result = new StructureValue(new List<LogEventProperty>
                 {
-                    new LogEventProperty(nameof(newTodoItemInfo.Name), new ScalarValue(newTodoItemInfo.Name)),
-                    new LogEventProperty(nameof(newTodoItemInfo.Owner),
-                        new ScalarValue(newTodoItemInfo.Owner.GetNameOrDefault()))
+                    new(nameof(newTodoItemInfo.Name), new ScalarValue(newTodoItemInfo.Name)),
+                    new(nameof(newTodoItemInfo.Owner), new ScalarValue(newTodoItemInfo.Owner.GetNameOrDefault()))
                 });
 
                 return true;
