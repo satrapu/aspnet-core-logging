@@ -36,7 +36,7 @@ namespace Todo.WebApi.Controllers
         {
             this.generateJwtFlow = generateJwtFlow ?? throw new ArgumentNullException(nameof(generateJwtFlow));
 
-            // Options pattern: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-7.0.
+            // Options pattern: https://learn.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-7.0.
             generateJwtOptions = generateJwtOptionsMonitor.CurrentValue;
         }
 

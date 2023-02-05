@@ -181,7 +181,7 @@ namespace Todo.WebApi
             services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
 
             // Configure options used for customizing generating JWT tokens.
-            // Options pattern: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-7.0.
+            // Options pattern: https://learn.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-7.0.
             services.Configure<GenerateJwtOptions>(generateJwtOptions);
         }
 

@@ -174,7 +174,7 @@ The database will be started using the aforementioned Docker Compose commands, w
 
 #### Option 1: Manually run database migrations
 
-In order to create and update the local development database, you need to install EF Core CLI tools; the reference documentation can be found [here](https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/dotnet). I also recommend reading about database migrations [here](https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/?tabs=dotnet-core-cli).
+In order to create and update the local development database, you need to install EF Core CLI tools; the reference documentation can be found [here](https://learn.microsoft.com/en-us/ef/core/cli/dotnet). I also recommend reading about database migrations [here](https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations/?tabs=dotnet-core-cli).
 All of the commands below should be executed from the folder where you have checked-out this git repository.
 
 - Install dotnet-ef
@@ -218,7 +218,7 @@ dotnet ef database drop --startup-project ./Sources/Todo.WebApi --project ./Sour
 #### Option 2: Run database migrations at application startup
 
 Ensure the `MigrateDatabase` configuration property is set to `true`.
-See more about applying EF Core migrations at runtime [here](https://docs.microsoft.com/en-us/ef/core/managing-schemas/migrations/applying?tabs=dotnet-core-cli#apply-migrations-at-runtime).
+See more about applying EF Core migrations at runtime [here](https://learn.microsoft.com/en-us/ef/core/managing-schemas/migrations/applying?tabs=dotnet-core-cli#apply-migrations-at-runtime).
 
 ### Inspect log events using Seq
 

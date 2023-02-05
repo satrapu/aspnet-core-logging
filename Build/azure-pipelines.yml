@@ -1,14 +1,14 @@
 # Build ASP.NET Core project using Azure Pipelines.
-# See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/languages/dotnet-core?view=azure-devops.
-# YAML schema reference: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=azure-devops&tabs=schema.
+# See more here: https://learn.microsoft.com/en-us/azure/devops/pipelines/ecosystems/dotnet-core?view=azure-devops&tabs=dotnetfive.
+# YAML schema reference: https://learn.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/?view=azure-pipelines.
 
 # Specify build number format.
-# See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/run-number?view=azure-devops&tabs=yaml.
+# See more here: https://learn.microsoft.com/en-us/azure/devops/pipelines/process/run-number?view=azure-devops&tabs=yaml.
 name: '$(SourceBranchName)_$(Date:yyyyMMdd).$(Rev:rrr)'
 
 resources:
   repositories:
-  # See more about repositories here: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=azure-devops&tabs=schema%2Cparameter-schema#repository-resource.
+  # See more about repositories here: https://learn.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/resources-repositories-repository?view=azure-pipelines.
   - repository: 'aspnet_core_logging'
     type: 'github'
     name: 'satrapu/aspnet-core-logging'
@@ -17,7 +17,7 @@ resources:
     endpoint: 'satrapu'
 
 # Build multiple branches.
-# See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/repos/azure-repos-git?view=azure-devops&tabs=yaml.
+# See more here: https://learn.microsoft.com/en-us/azure/devops/pipelines/repos/azure-repos-git?view=azure-devops&tabs=yaml#branches.
 # Since satrapu is the only committer, batching should be turned off.
 trigger:
   batch: False
@@ -30,13 +30,13 @@ trigger:
       - LICENSE
       - README.md
 
-# See more about Azure Pipelines variables here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&tabs=yaml%2Cbatch.
+# See more about Azure Pipelines variables here: https://learn.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&tabs=yaml%2Cbatch.
 variables:
   # Load group containing variables applicable to all pipelines belonging to this project.
   - group: 'GlobalVariables'
 
   # Load SonarQube related variable group.
-  # See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/library/variable-groups?view=azure-devops&tabs=yaml#use-a-variable-group.
+  # See more here: https://learn.microsoft.com/en-us/azure/devops/pipelines/library/variable-groups?view=azure-devops&tabs=yaml#use-a-variable-group.
   # Be sure to link this group to this pipeline by selecting the latter -> Edit -> Variables -> Variable Groups!
   - group: 'SonarQube'
 
@@ -44,7 +44,7 @@ variables:
   # This group contains the user name and password to be used when accessing the dockerized database targeted by the integration tests.
   # The user name is stored as a secret under the name "IntegrationTests.Database.Todo.Username".
   # The password is stored as a secret under the name "IntegrationTests.Database.Todo.Password".
-  # See more about secret variables here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&tabs=yaml%2Cbatch#secret-variables.
+  # See more about secret variables here: https://learn.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&tabs=yaml%2Cbatch#secret-variables.
   - group: 'IntegrationTests'
 
   # Specifies the version of the .NET SDK to install and use when running this pipeline.
@@ -80,14 +80,14 @@ variables:
     value: 'Todo.WebApi.sln'
 
 # Define multiple jobs, one per supported operating system (Linux, macOS and Windows).
-# See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/phases?view=azure-devops&tabs=yaml
+# See more here: https://learn.microsoft.com/en-us/azure/devops/pipelines/process/phases?view=azure-devops&tabs=yaml
 #
 # The list of virtual machine images used for running these operating systems can be found here:
-# https://docs.microsoft.com/en-us/azure/devops/pipelines/agents/hosted?view=azure-devops&tabs=yaml#software.
+# https://learn.microsoft.com/en-us/azure/devops/pipelines/agents/hosted?view=azure-devops&tabs=yaml#software.
 #
 # Will use job templates, since all supported operating systems will run the same job.
-# See more here: https://docs.microsoft.com/en-us/azure/devops/pipelines/yaml-schema?view=azure-devops&tabs=schema%2Cparameter-schema#job-templates
-# and here: https://docs.microsoft.com/en-us/azure/devops/pipelines/process/templates?view=azure-devops.
+# See more here: https://learn.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/jobs-template?view=azure-pipelines
+# and here: https://learn.microsoft.com/en-us/azure/devops/pipelines/process/templates?view=azure-devops.
 jobs:
 - template: './azure-pipelines.job-template.yml'
   parameters:

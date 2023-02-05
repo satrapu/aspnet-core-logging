@@ -105,10 +105,10 @@ namespace Todo.Services.TodoItemManagement
 
             IQueryable<TodoItem> todoItems = FilterItems(todoItemQuery)
                 // Read more about query tags here:
-                // https://docs.microsoft.com/en-us/ef/core/querying/tags
+                // https://learn.microsoft.com/en-us/ef/core/querying/tags
                 .TagWith($"{nameof(TodoItemService)}#{nameof(GetByQueryAsync)}")
                 // Read more about no tracking queries here:
-                // https://docs.microsoft.com/en-us/ef/core/querying/tracking#no-tracking-queries
+                // https://learn.microsoft.com/en-us/ef/core/querying/tracking#no-tracking-queries
                 .AsNoTracking();
 
             todoItems = SortItems(todoItems, todoItemQuery);

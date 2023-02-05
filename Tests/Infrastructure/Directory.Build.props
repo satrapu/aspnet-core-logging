@@ -1,6 +1,6 @@
 <!--
-  Customize your build: https://docs.microsoft.com/en-us/visualstudio/msbuild/customize-your-build?view=vs-2017.
-  See more MSBuild properties here: https://docs.microsoft.com/en-us/visualstudio/msbuild/common-msbuild-project-properties?view=vs-2017.
+  Customize your build: https://learn.microsoft.com/en-us/visualstudio/msbuild/customize-your-build?view=vs-2022.
+  See more MSBuild properties here: https://learn.microsoft.com/en-us/visualstudio/msbuild/common-msbuild-project-properties?view=vs-2022.
 -->
 <Project>
 
