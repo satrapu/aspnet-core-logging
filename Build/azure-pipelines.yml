@@ -14,7 +14,7 @@ resources:
     name: 'satrapu/aspnet-core-logging'
     # The value of the "endpoint" element must match the service connection name
     # declared in Project Settings -> Service connections section of your Azure DevOps organization.
-    endpoint: 'satrapu'
+    endpoint: 'github'
 
 # Build multiple branches.
 # See more here: https://learn.microsoft.com/en-us/azure/devops/pipelines/repos/azure-repos-git?view=azure-devops&tabs=yaml#branches.
