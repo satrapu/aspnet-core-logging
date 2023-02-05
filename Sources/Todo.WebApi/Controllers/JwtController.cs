@@ -31,8 +31,7 @@ namespace Todo.WebApi.Controllers
         private readonly IGenerateJwtFlow generateJwtFlow;
         private readonly GenerateJwtOptions generateJwtOptions;
 
-        public JwtController(IGenerateJwtFlow generateJwtFlow,
-            IOptionsMonitor<GenerateJwtOptions> generateJwtOptionsMonitor)
+        public JwtController(IGenerateJwtFlow generateJwtFlow, IOptionsMonitor<GenerateJwtOptions> generateJwtOptionsMonitor)
         {
             this.generateJwtFlow = generateJwtFlow ?? throw new ArgumentNullException(nameof(generateJwtFlow));
 
