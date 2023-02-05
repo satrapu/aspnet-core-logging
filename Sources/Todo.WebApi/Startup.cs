@@ -91,12 +91,9 @@ namespace Todo.WebApi
                 .UseAuthorization()
                 .UseEndpoints(endpoints => { endpoints.MapControllers(); });
 
-            IApplicationStartedEventNotifier applicationStartedEventNotifier =
-                serviceProvider.GetRequiredService<IApplicationStartedEventNotifier>();
+            IApplicationStartedEventNotifier applicationStartedEventNotifier = serviceProvider.GetRequiredService<IApplicationStartedEventNotifier>();
 
-            hostApplicationLifetime.ApplicationStarted.Register(() =>
-                OnApplicationStarted(applicationStartedEventNotifier, logger));
-
+            hostApplicationLifetime.ApplicationStarted.Register(() => OnApplicationStarted(applicationStartedEventNotifier, logger));
             hostApplicationLifetime.ApplicationStopping.Register(() => OnApplicationStopping(logger));
             hostApplicationLifetime.ApplicationStopped.Register(() => OnApplicationStopped(logger));
 
@@ -184,7 +181,7 @@ namespace Todo.WebApi
             services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
 
             // Configure options used for customizing generating JWT tokens.
-            // Options pattern: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-5.0.
+            // Options pattern: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-7.0.
             services.Configure<GenerateJwtOptions>(generateJwtOptions);
         }
 
