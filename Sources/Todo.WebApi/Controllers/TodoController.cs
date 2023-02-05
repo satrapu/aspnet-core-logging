@@ -125,7 +125,7 @@ namespace Todo.WebApi.Controllers
 
         private static TodoItemModel MapFrom(TodoItemInfo todoItemInfo)
         {
-            TodoItemModel result = new TodoItemModel
+            TodoItemModel result = new()
             {
                 Id = todoItemInfo.Id,
                 IsComplete = todoItemInfo.IsComplete,

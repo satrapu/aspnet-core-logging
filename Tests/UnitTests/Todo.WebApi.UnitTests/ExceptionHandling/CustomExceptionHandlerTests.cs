@@ -39,44 +39,39 @@ namespace Todo.WebApi.ExceptionHandling
             bool includeDetails)
         {
             // Arrange
-            var dictionary = new Dictionary<string, string>
+            Dictionary<string, string> dictionary = new()
             {
                 {
                     "ExceptionHandling:IncludeDetails", includeDetails.ToString()
                 }
             };
 
-            var configuration =
-                new ConfigurationBuilder()
-                    .AddInMemoryCollection(dictionary)
-                    .Build();
-
-            var exceptionHandlerFeature = new Mock<IExceptionHandlerFeature>();
+            Mock<IExceptionHandlerFeature> exceptionHandlerFeature = new();
             exceptionHandlerFeature.SetupGet(x => x.Error).Returns(exception);
 
-            FeatureCollection featureCollection = new FeatureCollection();
+            FeatureCollection featureCollection = new();
             featureCollection.Set(exceptionHandlerFeature.Object);
 
-            var serviceCollection = new ServiceCollection();
-            // ReSharper disable once SettingNotFoundInConfiguration
+            IConfiguration configuration = new ConfigurationBuilder().AddInMemoryCollection(dictionary).Build();
+
+            ServiceCollection serviceCollection = new();
             serviceCollection.Configure<ExceptionHandlingOptions>(configuration.GetSection("ExceptionHandling"));
             serviceCollection.AddSingleton<ILoggerFactory, NullLoggerFactory>();
 
             IServiceProvider serviceProvider = serviceCollection.BuildServiceProvider();
 
-            using var memoryStream = new MemoryStream();
+            using MemoryStream memoryStream = new();
 
-            var httpResponse = new Mock<HttpResponse>();
+            Mock<HttpResponse> httpResponse = new();
             httpResponse.SetupGet(x => x.Body).Returns(memoryStream);
 
-            var httpContext = new Mock<HttpContext>();
+            Mock<HttpContext> httpContext = new();
             httpContext.SetupGet(x => x.RequestServices).Returns(serviceProvider);
             httpContext.SetupGet(x => x.Features).Returns(featureCollection);
             httpContext.SetupGet(x => x.Response).Returns(httpResponse.Object);
 
             // Act
-            Func<Task> handleExceptionCall =
-                async () => await CustomExceptionHandler.HandleException(httpContext.Object);
+            Func<Task> handleExceptionCall = async () => await CustomExceptionHandler.HandleException(httpContext.Object);
 
             // Assert
             await handleExceptionCall.Should().NotThrowAsync("there is no exception to handle");
