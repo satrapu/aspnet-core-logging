@@ -25,7 +25,7 @@ namespace Todo.WebApi.Controllers
     /// <summary>
     ///  Contains integration tests targeting <see cref="TodoController" /> class.
     ///  <br/>
-    ///  Based on: https://docs.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-2.1#aspnet-core-integration-tests.
+    ///  Based on: https://learn.microsoft.com/en-us/aspnet/core/test/integration-tests?view=aspnetcore-7.0#aspnet-core-integration-tests.
     ///  and: https://medium.com/@daniel.edwards_82928/using-webapplicationfactory-with-nunit-817a616e26f9.
     /// </summary>
     [TestFixture]
@@ -57,15 +57,15 @@ namespace Todo.WebApi.Controllers
             {
                 ShouldListenTo = _ => true,
                 Sample = (ref ActivityCreationOptions<ActivityContext> _) => ActivitySamplingResult.AllDataAndRecorded,
-                ActivityStarted = activity => { },
-                ActivityStopped = activity => { },
+                ActivityStarted = _ => { },
+                ActivityStopped = _ => { }
             };
 
             noOpActivityListener = new()
             {
                 ShouldListenTo = _ => false,
                 Sample = (ref ActivityCreationOptions<ActivityContext> _) => ActivitySamplingResult.None,
-                ActivityStarted = activity => { },
+                ActivityStarted = _ => { },
                 ActivityStopped = activity => { },
             };
 
