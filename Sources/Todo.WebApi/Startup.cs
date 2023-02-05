@@ -133,10 +133,7 @@ namespace Todo.WebApi
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuerSigningKey = true,
-                        IssuerSigningKey =
-                            new SymmetricSecurityKey(
-                                // ReSharper disable once SettingNotFoundInConfiguration
-                                Encoding.UTF8.GetBytes(generateJwtOptions.GetValue<string>("Secret"))),
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(generateJwtOptions.GetValue<string>("Secret"))),
                         ValidateIssuer = true,
                         ValidIssuer = tokenIssuer,
                         ValidateAudience = true,
@@ -181,8 +178,12 @@ namespace Todo.WebApi
             services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
 
             // Configure options used for customizing generating JWT tokens.
-            // Options pattern: https://learn.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-7.0.
-            services.Configure<GenerateJwtOptions>(generateJwtOptions);
+            // See more here: https://www.milanjovanovic.tech/blog/how-to-use-the-options-pattern-in-asp-net-core-7#setting-up-options-pattern-using-iconfigureoptions.
+            services
+                .ConfigureOptions<GenerateJwtOptionsSetup>()
+                .AddOptions<GenerateJwtOptions>()
+                .ValidateDataAnnotations()
+                .ValidateOnStart();
         }
 
         private static void ConfigureWebApi(IServiceCollection services)
