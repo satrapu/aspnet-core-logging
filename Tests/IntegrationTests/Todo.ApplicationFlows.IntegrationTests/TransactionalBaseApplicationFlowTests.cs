@@ -33,8 +33,7 @@ namespace Todo.ApplicationFlows
         [OneTimeSetUp]
         public void GivenAnApplicationFlowIsToBeExecuted()
         {
-            testWebApplicationFactory =
-                new TestWebApplicationFactory(MethodBase.GetCurrentMethod()?.DeclaringType?.Name);
+            testWebApplicationFactory = new TestWebApplicationFactory(MethodBase.GetCurrentMethod()?.DeclaringType?.Name);
         }
 
         [OneTimeTearDown]
@@ -73,19 +72,19 @@ namespace Todo.ApplicationFlows
             // This flow is expected to fail since the service is unable to persist invalid models
             async Task<object> FlowExpectedToThrowExceptionAsync()
             {
-                await localTodoItemService.AddAsync(new NewTodoItemInfo
+                await localTodoItemService.AddAsync(new()
                 {
                     Name = $"{namePrefix}--#1",
                     Owner = flowInitiator
                 });
 
-                await localTodoItemService.AddAsync(new NewTodoItemInfo
+                await localTodoItemService.AddAsync(new()
                 {
                     Name = $"{namePrefix}--#2",
                     Owner = flowInitiator
                 });
 
-                await localTodoItemService.AddAsync(new NewTodoItemInfo
+                await localTodoItemService.AddAsync(new()
                 {
                     Name = $"{namePrefix}--#3",
                     Owner = flowInitiator
@@ -153,21 +152,21 @@ namespace Todo.ApplicationFlows
 
             async Task<object> FlowExpectedToSucceedAsync()
             {
-                await localTodoItemService.AddAsync(new NewTodoItemInfo
+                await localTodoItemService.AddAsync(new()
                 {
                     Name = $"{namePrefix}--#1",
                     IsComplete = false,
                     Owner = flowInitiator
                 });
 
-                await localTodoItemService.AddAsync(new NewTodoItemInfo
+                await localTodoItemService.AddAsync(new()
                 {
                     Name = $"{namePrefix}--#2",
                     IsComplete = false,
                     Owner = flowInitiator
                 });
 
-                await localTodoItemService.AddAsync(new NewTodoItemInfo
+                await localTodoItemService.AddAsync(new()
                 {
                     Name = $"{namePrefix}--#3",
                     IsComplete = false,
@@ -232,14 +231,14 @@ namespace Todo.ApplicationFlows
 
             async Task<object> FlowExpectedToFailAsync()
             {
-                await localTodoItemService.AddAsync(new NewTodoItemInfo
+                await localTodoItemService.AddAsync(new()
                 {
                     Name = $"{namePrefix}--#1",
                     IsComplete = false,
                     Owner = flowInitiator
                 });
 
-                await localTodoItemService.AddAsync(new NewTodoItemInfo
+                await localTodoItemService.AddAsync(new()
                 {
                     Name = $"{namePrefix}--#2",
                     IsComplete = false,

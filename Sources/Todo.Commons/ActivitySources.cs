@@ -15,7 +15,7 @@ namespace Todo.Commons
                     .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
                     .InformationalVersion;
 
-            TodoActivitySource = new ActivitySource(name: ActivitySourceName, version: applicationInformationalVersion);
+            TodoActivitySource = new(name: ActivitySourceName, version: applicationInformationalVersion);
         }
 
         public static ActivitySource TodoActivitySource { get; }
