@@ -13,6 +13,9 @@ obj/
 mono_crash.mem.*
 Todo.sln.DotSettings.user
 
+# ReSharper artifacts
+*.sln.DotSettings.user
+
 # Application logs
 /**/Logs/
 

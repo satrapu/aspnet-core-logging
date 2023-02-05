@@ -9,7 +9,7 @@ namespace Todo.ApplicationFlows.TodoItems
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
 
-    using Todo.Persistence;
+    using Persistence;
 
     /// <summary>
     /// Runs database migrations during application started event.
@@ -18,7 +18,7 @@ namespace Todo.ApplicationFlows.TodoItems
     {
         private const string FlowName = "Events/ApplicationStarted/RunDatabaseMigrations";
 
-        private static readonly IPrincipal principal =
+        private static readonly IPrincipal Principal =
             new GenericPrincipal(new GenericIdentity("run-database-migrations"), Array.Empty<string>());
 
         private readonly TodoDbContext todoDbContext;
@@ -44,7 +44,7 @@ namespace Todo.ApplicationFlows.TodoItems
         /// </summary>
         public void OnApplicationStarted()
         {
-            SimpleApplicationFlow.Execute(FlowName, InternalRunDatabaseMigrations, principal, logger);
+            SimpleApplicationFlow.Execute(FlowName, InternalRunDatabaseMigrations, Principal, logger);
         }
 
         private void InternalRunDatabaseMigrations()

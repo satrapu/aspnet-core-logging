@@ -6,11 +6,11 @@ namespace Todo.ApplicationFlows
     using System.Security.Principal;
     using System.Threading.Tasks;
 
+    using Commons;
     using Commons.Constants;
 
     using Microsoft.Extensions.Logging;
 
-    using Todo.Commons;
     using Todo.Services.Security;
 
     /// <summary>
@@ -55,7 +55,7 @@ namespace Todo.ApplicationFlows
             }))
             {
                 string flowInitiatorName = flowInitiator.GetNameOrDefault();
-                using Activity flowActivity = ActivitySources.TodoActivitySource.StartActivity(flowName, ActivityKind.Internal);
+                using Activity flowActivity = ActivitySources.TodoActivitySource.StartActivity(flowName);
                 bool isSuccess = false;
 
                 try

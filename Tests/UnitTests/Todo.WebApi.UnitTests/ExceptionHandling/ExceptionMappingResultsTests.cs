@@ -10,9 +10,9 @@ namespace Todo.WebApi.ExceptionHandling
 
     using NUnit.Framework;
 
-    using Todo.Persistence.Entities;
+    using Persistence.Entities;
 
-    using Todo.Services.TodoItemManagement;
+    using Services.TodoItemManagement;
 
     /// <summary>
     /// Contains unit tests targeting <see cref="ExceptionMappingResults"/> class.

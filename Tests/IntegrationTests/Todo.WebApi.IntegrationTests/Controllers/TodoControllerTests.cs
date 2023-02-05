@@ -2,6 +2,7 @@ namespace Todo.WebApi.Controllers
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Linq;
     using System.Net;
     using System.Net.Http;
@@ -30,7 +31,6 @@ namespace Todo.WebApi.Controllers
     [TestFixture]
     public class TodoControllerTests
     {
-        private TestWebApplicationFactory webApplicationFactory;
         private const string BaseUrl = "api/todo";
         private const string BecauseCurrentRequestHasNoJwt = "the request does not contain a JSON web token";
         private const string BecauseAnEntityHasBeenCreated = "an entity has been created";
@@ -40,6 +40,10 @@ namespace Todo.WebApi.Controllers
         private const string BecauseEntityHasBeenPreviouslyCreated = "an entity has been previously created";
         private const string BecauseMustNotFindSomethingWhichDoesNotExist = "must not find something which does not exist";
 
+        private TestWebApplicationFactory webApplicationFactory;
+        private ActivityListener activityListener;
+        private ActivityListener noOpActivityListener;
+
         /// <summary>
         /// Ensures the appropriate <see cref="TestWebApplicationFactory"/> instance has been created before running
         /// any test method found in this class.
@@ -48,6 +52,25 @@ namespace Todo.WebApi.Controllers
         public void GivenAnHttpRequestIsToBePerformed()
         {
             webApplicationFactory = new TestWebApplicationFactory(MethodBase.GetCurrentMethod()?.DeclaringType?.Name);
+
+            activityListener = new()
+            {
+                ShouldListenTo = _ => true,
+                Sample = (ref ActivityCreationOptions<ActivityContext> _) => ActivitySamplingResult.AllDataAndRecorded,
+                ActivityStarted = activity => { },
+                ActivityStopped = activity => { },
+            };
+
+            noOpActivityListener = new()
+            {
+                ShouldListenTo = _ => false,
+                Sample = (ref ActivityCreationOptions<ActivityContext> _) => ActivitySamplingResult.None,
+                ActivityStarted = activity => { },
+                ActivityStopped = activity => { },
+            };
+
+            ActivitySource.AddActivityListener(activityListener);
+            ActivitySource.AddActivityListener(noOpActivityListener);
         }
 
         /// <summary>
