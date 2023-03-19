@@ -194,7 +194,7 @@ foreach ($ComposeService in $ComposeServices)
 
     foreach ($RawPortMapping in $RawPortMappings)
     {
-        if (($RawPortMapping -like '*-> ::*') -or ($RawPortMapping -like '*-> [::]*'))
+        if (($RawPortMapping -like '* -> ::*') -or ($RawPortMapping -like '* -> `[::`]*'))
         {
             # Skip processing mappings which do not follow the proper format (e.g. <IP_ADDRESS>:<HOST_PORT>).
             # I've found a weird port mapping, 5432/tcp -> :::49153, when pipeline was running on
