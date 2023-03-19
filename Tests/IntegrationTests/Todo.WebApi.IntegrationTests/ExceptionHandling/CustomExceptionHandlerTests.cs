@@ -19,6 +19,7 @@ namespace Todo.WebApi.ExceptionHandling
 
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Mvc.Testing;
     using Microsoft.Extensions.Configuration;
 
     using Models;
@@ -49,7 +50,7 @@ namespace Todo.WebApi.ExceptionHandling
                 Password = $"test-password--{Guid.NewGuid():N}",
             };
 
-            using var testWebApplicationFactory =
+            await using WebApplicationFactory<Startup> testWebApplicationFactory =
                 new TestWebApplicationFactory(MethodBase.GetCurrentMethod()?.DeclaringType?.Name)
                     .WithMockServices(containerBuilder =>
                     {
