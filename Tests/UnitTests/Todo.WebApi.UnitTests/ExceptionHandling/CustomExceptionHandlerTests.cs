@@ -39,12 +39,7 @@ namespace Todo.WebApi.ExceptionHandling
             bool includeDetails)
         {
             // Arrange
-            Dictionary<string, string> dictionary = new()
-            {
-                {
-                    "ExceptionHandling:IncludeDetails", includeDetails.ToString()
-                }
-            };
+            Dictionary<string, string> dictionary = new() { ["ExceptionHandling:IncludeDetails"] = includeDetails.ToString() };
 
             Mock<IExceptionHandlerFeature> exceptionHandlerFeature = new();
             exceptionHandlerFeature.SetupGet(x => x.Error).Returns(exception);
