@@ -42,7 +42,11 @@ namespace Todo.WebApi.Controllers
 
                             // Ensure database is not migrated while running tests found in this test class, no matter
                             // the environment specified in this method.
-                            new KeyValuePair<string, string>("MigrateDatabase", bool.FalseString)
+                            new KeyValuePair<string, string>("MigrateDatabase", bool.FalseString),
+
+                            // Ensure OpenTelemetry is not enabled while running tests found in this test class, no matter
+                            // the environment specified in this method.
+                            new KeyValuePair<string, string>("OpenTelemetry:Enabled", bool.FalseString)
                         });
                     });
                 });
