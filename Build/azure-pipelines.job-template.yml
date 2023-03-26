@@ -125,7 +125,7 @@ jobs:
         sonar.sourceEncoding=${{ parameters.sonar.sourceEncoding }}
         sonar.cs.nunit.reportsPaths=$(Build.SourcesDirectory)/Tests/**/TestResults/TestResults.xml
         sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/Tests/**/coverage.opencover.xml
-        sonar.coverage.exclusions=Sources/Todo.Persistence/Entities/**,Sources/Todo.Persistence/Migrations/**,/Tests/**
+        sonar.coverage.exclusions=Sources/Todo.Persistence/Entities/**,Sources/Todo.Persistence/Migrations/**,Sources/Todo.Telemetry.OpenTelemetry.OpenTelemetryActivator,/Tests/**
         sonar.analysis.buildNumber=$(Build.BuildId)
         sonar.analysis.pipeline=$(Build.BuildId)
 

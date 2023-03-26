@@ -2,6 +2,7 @@ namespace Todo.Telemetry.OpenTelemetry
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
 
     using Azure.Monitor.OpenTelemetry.Exporter;
 
@@ -20,6 +21,7 @@ namespace Todo.Telemetry.OpenTelemetry
     /// <summary>
     /// Contains extension methods used for integrating OpenTelemetry with this application.
     /// </summary>
+    [ExcludeFromCodeCoverage]
     public static class OpenTelemetryActivator
     {
         private const string OpenTelemetryConfigurationSectionName = "OpenTelemetry";
