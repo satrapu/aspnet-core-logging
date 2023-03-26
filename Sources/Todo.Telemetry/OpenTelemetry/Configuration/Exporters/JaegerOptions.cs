@@ -5,5 +5,7 @@ namespace Todo.Telemetry.OpenTelemetry.Configuration.Exporters
         public string AgentHost { get; set; }
 
         public int AgentPort { get; set; }
+
+        public bool Enabled { get; set; }
     }
 }

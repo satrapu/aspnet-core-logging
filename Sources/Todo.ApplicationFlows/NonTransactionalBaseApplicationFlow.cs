@@ -55,7 +55,7 @@ namespace Todo.ApplicationFlows
             }))
             {
                 string flowInitiatorName = flowInitiator.GetNameOrDefault();
-                using Activity flowActivity = ActivitySources.TodoActivitySource.StartActivity(flowName);
+                using Activity flowActivity = ActivitySources.TodoWebApi.StartActivity($"ApplicationFlow: {flowName}");
                 bool isSuccess = false;
 
                 try

@@ -5,7 +5,7 @@ namespace Todo.Commons
 
     public static class ActivitySources
     {
-        private const string ActivitySourceName = "Todo.WebApi";
+        private const string ActivitySourceName = "TodoWebApi";
 
         static ActivitySources()
         {
@@ -15,9 +15,9 @@ namespace Todo.Commons
                     .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
                     .InformationalVersion;
 
-            TodoActivitySource = new(name: ActivitySourceName, version: applicationInformationalVersion);
+            TodoWebApi = new(name: ActivitySourceName, version: applicationInformationalVersion);
         }
 
-        public static ActivitySource TodoActivitySource { get; }
+        public static ActivitySource TodoWebApi { get; }
     }
 }

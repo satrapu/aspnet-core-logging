@@ -6,6 +6,7 @@
     <ItemGroup>
         <PackageReference Update="Autofac" Version="7.0.0"/>
         <PackageReference Update="Autofac.Extensions.DependencyInjection" Version="8.0.0"/>
+        <PackageReference Update="Azure.Monitor.OpenTelemetry.Exporter" Version="1.0.0-beta.9"/>
 
         <!--
             Use 'Include' XML attribute instead of 'Update' since this reference will be added to all projects affected
@@ -13,7 +14,7 @@
         -->
         <PackageReference Include="coverlet.collector" Version="3.2.0">
             <PrivateAssets>all</PrivateAssets>
-           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
 
         <PackageReference Update="EntityFrameworkCoreMock.Moq" Version="2.4.0"/>

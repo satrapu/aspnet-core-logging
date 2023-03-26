@@ -2,6 +2,18 @@
   "version": 1,
   "dependencies": {
     "net7.0": {
+      "Azure.Monitor.OpenTelemetry.Exporter": {
+        "type": "Direct",
+        "requested": "[1.0.0-beta.9, )",
+        "resolved": "1.0.0-beta.9",
+        "contentHash": "VbLBmukksYb2ZulpkEc5MwmFq0AreeVwmvO7JMKUL46bGSxA9WrsMiwklvsa9WVGarajz+R9hwWq0s0MnfJo2w==",
+        "dependencies": {
+          "Azure.Core": "1.30.0",
+          "OpenTelemetry": "1.4.0",
+          "OpenTelemetry.Extensions.PersistentStorage": "1.0.0-beta.1",
+          "System.Text.Json": "4.7.2"
+        }
+      },
       "OpenTelemetry": {
         "type": "Direct",
         "requested": "[1.4.0, )",
@@ -131,6 +143,20 @@
           "System.Diagnostics.DiagnosticSource": "4.7.1"
         }
       },
+      "Azure.Core": {
+        "type": "Transitive",
+        "resolved": "1.30.0",
+        "contentHash": "w5Z2uTASP+EsnG4kqQsYtKTf41x1czIu1CgPuDQdHILxCk+IP2DiXazUcfTqr6kebi7S6ah927mrQx1nT/4bnw==",
+        "dependencies": {
+          "Microsoft.Bcl.AsyncInterfaces": "1.1.1",
+          "System.Diagnostics.DiagnosticSource": "4.6.0",
+          "System.Memory.Data": "1.0.2",
+          "System.Numerics.Vectors": "4.5.0",
+          "System.Text.Encodings.Web": "4.7.2",
+          "System.Text.Json": "4.7.2",
+          "System.Threading.Tasks.Extensions": "4.5.4"
+        }
+      },
       "Microsoft.ApplicationInsights": {
         "type": "Transitive",
         "resolved": "2.20.0",
@@ -138,6 +164,11 @@
         "dependencies": {
           "System.Diagnostics.DiagnosticSource": "5.0.0"
         }
+      },
+      "Microsoft.Bcl.AsyncInterfaces": {
+        "type": "Transitive",
+        "resolved": "1.1.1",
+        "contentHash": "yuvf07qFWFqtK3P/MRkEKLhn5r2UbSpVueRziSqj0yJQIKFwG1pq9mOayK3zE5qZCTs0CbrwL9M6R8VwqyGy2w=="
       },
       "Microsoft.CSharp": {
         "type": "Transitive",
@@ -380,6 +411,19 @@
           "OpenTelemetry.Api": "1.4.0"
         }
       },
+      "OpenTelemetry.Extensions.PersistentStorage": {
+        "type": "Transitive",
+        "resolved": "1.0.0-beta.1",
+        "contentHash": "IX7g24K1I+l513B8MB/DAJc2eD5Vf5c1M+mybR3872y0GSfDGoD+sq6qLXndY0rMmMY1+mFVDKMzWf8YQgqRUg==",
+        "dependencies": {
+          "OpenTelemetry.Extensions.PersistentStorage.Abstractions": "1.0.0-beta.1"
+        }
+      },
+      "OpenTelemetry.Extensions.PersistentStorage.Abstractions": {
+        "type": "Transitive",
+        "resolved": "1.0.0-beta.1",
+        "contentHash": "C31i427CzBtGVuTVdN7bFtmYZ1U9/7eHUx8S7Xwn7I3WdyygxotcTIIs9eHGMbaet85ljgNCYtX42nie1ahn2A=="
+      },
       "Serilog": {
         "type": "Transitive",
         "resolved": "2.12.0",
@@ -469,6 +513,20 @@
           "Microsoft.IdentityModel.JsonWebTokens": "6.27.0",
           "Microsoft.IdentityModel.Tokens": "6.27.0"
         }
+      },
+      "System.Memory.Data": {
+        "type": "Transitive",
+        "resolved": "1.0.2",
+        "contentHash": "JGkzeqgBsiZwKJZ1IxPNsDFZDhUvuEdX8L8BDC8N3KOj+6zMcNU28CNN59TpZE/VJYy9cP+5M+sbxtWJx3/xtw==",
+        "dependencies": {
+          "System.Text.Encodings.Web": "4.7.2",
+          "System.Text.Json": "4.6.0"
+        }
+      },
+      "System.Numerics.Vectors": {
+        "type": "Transitive",
+        "resolved": "4.5.0",
+        "contentHash": "QQTlPTl06J/iiDbJCiepZ4H//BVraReU4O4EoRw1U02H5TLUIT7xn3GnDp9AXPSlJUDyFs4uWjWafNX6WrAojQ=="
       },
       "System.Runtime": {
         "type": "Transitive",
