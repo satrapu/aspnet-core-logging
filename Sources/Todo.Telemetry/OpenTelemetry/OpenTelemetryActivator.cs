@@ -104,12 +104,12 @@ namespace Todo.Telemetry.OpenTelemetry
                     (
                         ResourceBuilder
                             .CreateDefault()
-                            .AddService(webHostEnvironment.ApplicationName)
+                            .AddService(ActivitySources.TodoWebApi.Name)
                             .AddAttributes(new Dictionary<string, object>
                             {
                                 { "service.instance.attributes.custom.EnvironmentName", webHostEnvironment.EnvironmentName },
                                 { "service.instance.attributes.custom.ContentRootPath", webHostEnvironment.ContentRootPath },
-                                { "service.instance.attributes.custom.WebRootPath", webHostEnvironment.WebRootPath },
+                                { "service.instance.attributes.custom.WebRootPath", webHostEnvironment.WebRootPath ?? "null" },
                                 { "service.instance.attributes.custom.OperationSystem", Environment.OSVersion.ToString() },
                                 { "service.instance.attributes.custom.MachineName", Environment.MachineName },
                                 { "service.instance.attributes.custom.ProcessorCount", Environment.ProcessorCount.ToString() },

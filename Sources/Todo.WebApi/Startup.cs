@@ -1,6 +1,7 @@
 namespace Todo.WebApi
 {
     using System;
+    using System.Diagnostics;
     using System.Diagnostics.CodeAnalysis;
     using System.Security.Claims;
     using System.Text;
@@ -8,6 +9,7 @@ namespace Todo.WebApi
 
     using Authorization;
 
+    using Commons;
     using Commons.ApplicationEvents;
 
     using ExceptionHandling;
@@ -226,18 +228,24 @@ namespace Todo.WebApi
             logger.LogInformation("The registered application started event listeners have been notified");
             logger.LogInformation("Application [{ApplicationName}] has started on environment [{EnvironmentName}]",
                 webHostEnvironment.ApplicationName, webHostEnvironment.EnvironmentName);
+
+            using Activity _ = ActivitySources.TodoWebApi.StartActivity("Application has started");
         }
 
         private void OnApplicationStopping(ILogger logger)
         {
             logger.LogInformation("Application [{ApplicationName}] is stopping on environment [{EnvironmentName}] ...",
                 webHostEnvironment.ApplicationName, webHostEnvironment.EnvironmentName);
+
+            using Activity _ = ActivitySources.TodoWebApi.StartActivity("Application is stopping");
         }
 
         private void OnApplicationStopped(ILogger logger)
         {
             logger.LogInformation("Application [{ApplicationName}] has stopped on environment [{EnvironmentName}]",
                 webHostEnvironment.ApplicationName, webHostEnvironment.EnvironmentName);
+
+            using Activity _ = ActivitySources.TodoWebApi.StartActivity("Application has stopped");
         }
     }
 }
