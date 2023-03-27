@@ -3,7 +3,7 @@ version: '3.8'
 services:
   aspnet-core-logging-dev:
     container_name: aspnet-core-logging-dev-db
-    image: satrapu/postgres:14.0-linux
+    image: satrapu/postgresql:15.1-linux
     restart: unless-stopped
     healthcheck:
       test: >
@@ -29,7 +29,7 @@ services:
 
   aspnet-core-logging-it:
     container_name: aspnet-core-logging-it-db
-    image: satrapu/postgres:14.0-linux
+    image: satrapu/postgresql:15.1-linux
     restart: unless-stopped
     healthcheck:
       test: >
