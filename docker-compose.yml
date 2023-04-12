@@ -3,7 +3,7 @@ version: '3.8'
 services:
   aspnet-core-logging-dev:
     container_name: aspnet-core-logging-dev-db
-    image: satrapu/postgres:14.0-linux
+    image: satrapu/postgresql:15.1-linux
     restart: unless-stopped
     healthcheck:
       test: >
@@ -23,13 +23,13 @@ services:
     networks: 
       - local_postgresql
     environment:
-      - PGUSER=${DB_DEV_POSTGRES_USER}
-      - PGPASSWORD=${DB_DEV_POSTGRES_PASSWORD}
-      - PGDATABASE=aspnet-core-logging-dev
+      - POSTGRES_USER=${DB_DEV_POSTGRES_USER}
+      - POSTGRES_PASSWORD=${DB_DEV_POSTGRES_PASSWORD}
+      - POSTGRES_DB=aspnet-core-logging-dev
 
   aspnet-core-logging-it:
     container_name: aspnet-core-logging-it-db
-    image: satrapu/postgres:14.0-linux
+    image: satrapu/postgresql:15.1-linux
     restart: unless-stopped
     healthcheck:
       test: >
@@ -49,13 +49,13 @@ services:
     networks: 
       - local_postgresql
     environment:
-      - PGUSER=${DB_IT_POSTGRES_USER}
-      - PGPASSWORD=${DB_IT_POSTGRES_PASSWORD}
-      - PGDATABASE=aspnet-core-logging-it
+      - POSTGRES_USER=${DB_IT_POSTGRES_USER}
+      - POSTGRES_PASSWORD=${DB_IT_POSTGRES_PASSWORD}
+      - POSTGRES_DB=aspnet-core-logging-it
       
   jaeger:
     container_name: jaeger
-    image: jaegertracing/all-in-one:1.41
+    image: jaegertracing/all-in-one:1.43
     restart: unless-stopped
     ports:
       # The ports used by various Jaeger services and their meaning are taken from here: https://github.com/jaegertracing/jaeger/blob/main/crossdock/jaeger-docker-compose.yml
@@ -76,7 +76,7 @@ services:
 
   pgadmin:
     container_name: pgadmin-ui
-    image: dpage/pgadmin4:6.12
+    image: dpage/pgadmin4:6.21
     restart: unless-stopped
     volumes:
       - pgadmin_data:/var/lib/pgadmin
@@ -93,7 +93,7 @@ services:
     
   seq:
     container_name: seq
-    image: datalust/seq:2022.1
+    image: datalust/seq:2023.1
     restart: unless-stopped
     volumes:
       - seq_data:/data

@@ -86,7 +86,7 @@ namespace Todo.WebApi.TestInfrastructure
             string environmentName = EnvironmentNames.IntegrationTests;
             builder.UseEnvironment(environmentName);
 
-            builder.ConfigureAppConfiguration((webHostBuilderContext, configurationBuilder) =>
+            builder.ConfigureAppConfiguration((_, configurationBuilder) =>
             {
                 IConfiguration configuration = CreateConfigurationForEnvironment(environmentName);
                 configurationBuilder.AddConfiguration(configuration);
@@ -118,14 +118,15 @@ namespace Todo.WebApi.TestInfrastructure
             {
                 InitialData = new List<KeyValuePair<string, string>>
                 {
-                    new KeyValuePair<string, string>(ConnectionStringKey, connectionStringBuilder.ConnectionString)
+                    new(ConnectionStringKey, connectionStringBuilder.ConnectionString)
                 }
             };
 
-            IConfiguration enhancedConfiguration = new ConfigurationBuilder()
-                .AddConfiguration(configuration)
-                .Add(memoryConfigurationSource)
-                .Build();
+            IConfiguration enhancedConfiguration =
+                new ConfigurationBuilder()
+                    .AddConfiguration(configuration)
+                    .Add(memoryConfigurationSource)
+                    .Build();
 
             return enhancedConfiguration;
         }

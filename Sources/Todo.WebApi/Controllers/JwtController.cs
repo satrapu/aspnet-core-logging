@@ -31,12 +31,11 @@ namespace Todo.WebApi.Controllers
         private readonly IGenerateJwtFlow generateJwtFlow;
         private readonly GenerateJwtOptions generateJwtOptions;
 
-        public JwtController(IGenerateJwtFlow generateJwtFlow,
-            IOptionsMonitor<GenerateJwtOptions> generateJwtOptionsMonitor)
+        public JwtController(IGenerateJwtFlow generateJwtFlow, IOptionsMonitor<GenerateJwtOptions> generateJwtOptionsMonitor)
         {
             this.generateJwtFlow = generateJwtFlow ?? throw new ArgumentNullException(nameof(generateJwtFlow));
 
-            // Options pattern: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-5.0.
+            // Options pattern: https://learn.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-7.0.
             generateJwtOptions = generateJwtOptionsMonitor.CurrentValue;
         }
 

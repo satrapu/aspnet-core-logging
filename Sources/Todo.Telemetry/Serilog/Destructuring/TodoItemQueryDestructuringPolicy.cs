@@ -21,16 +21,14 @@ namespace Todo.Telemetry.Serilog.Destructuring
             {
                 result = new StructureValue(new List<LogEventProperty>
                 {
-                    new LogEventProperty(nameof(todoItemQuery.Id), new ScalarValue(todoItemQuery.Id)),
-                    new LogEventProperty(nameof(todoItemQuery.NamePattern), new ScalarValue(todoItemQuery.NamePattern)),
-                    new LogEventProperty(nameof(todoItemQuery.IsComplete), new ScalarValue(todoItemQuery.IsComplete)),
-                    new LogEventProperty(nameof(todoItemQuery.Owner),
-                        new ScalarValue(todoItemQuery.Owner.GetNameOrDefault())),
-                    new LogEventProperty(nameof(todoItemQuery.PageIndex), new ScalarValue(todoItemQuery.PageIndex)),
-                    new LogEventProperty(nameof(todoItemQuery.PageSize), new ScalarValue(todoItemQuery.PageSize)),
-                    new LogEventProperty(nameof(todoItemQuery.SortBy), new ScalarValue(todoItemQuery.SortBy)),
-                    new LogEventProperty(nameof(todoItemQuery.IsSortAscending),
-                        new ScalarValue(todoItemQuery.IsSortAscending))
+                    new(nameof(todoItemQuery.Id), new ScalarValue(todoItemQuery.Id)),
+                    new(nameof(todoItemQuery.NamePattern), new ScalarValue(todoItemQuery.NamePattern)),
+                    new(nameof(todoItemQuery.IsComplete), new ScalarValue(todoItemQuery.IsComplete)),
+                    new(nameof(todoItemQuery.Owner),new ScalarValue(todoItemQuery.Owner.GetNameOrDefault())),
+                    new(nameof(todoItemQuery.PageIndex), new ScalarValue(todoItemQuery.PageIndex)),
+                    new(nameof(todoItemQuery.PageSize), new ScalarValue(todoItemQuery.PageSize)),
+                    new(nameof(todoItemQuery.SortBy), new ScalarValue(todoItemQuery.SortBy)),
+                    new(nameof(todoItemQuery.IsSortAscending), new ScalarValue(todoItemQuery.IsSortAscending))
                 });
 
                 return true;

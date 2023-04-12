@@ -26,11 +26,11 @@ namespace Todo.Services.Security
                 Audience = generateJwtInfo.Audience,
                 Issuer = generateJwtInfo.Issuer,
                 Expires = DateTime.UtcNow.AddMonths(6),
-                SigningCredentials = new SigningCredentials(signingKey, SecurityAlgorithms.HmacSha256Signature),
-                Subject = new ClaimsIdentity(new[]
+                SigningCredentials = new(signingKey, SecurityAlgorithms.HmacSha256Signature),
+                Subject = new ClaimsIdentity(new Claim[]
                 {
-                    new Claim(ClaimTypes.NameIdentifier, userNameAsBase64),
-                    new Claim("scope", string.Join(separator: ' ', generateJwtInfo.Scopes))
+                    new(ClaimTypes.NameIdentifier, userNameAsBase64),
+                    new("scope", string.Join(separator: ' ', generateJwtInfo.Scopes))
                 }),
             };
 

@@ -36,7 +36,7 @@ namespace Todo.Persistence
         {
             // Arrange
             DbContextOptions<TodoDbContext> dbContextOptions = GetDbContextOptions(databaseName: "db-migrations-have-run-successfully");
-            await using TodoDbContext todoDbContext = new TodoDbContext(dbContextOptions);
+            await using TodoDbContext todoDbContext = new(dbContextOptions);
             bool isMigrationSuccessful;
 
             try
@@ -47,7 +47,7 @@ namespace Todo.Persistence
                 // Act
                 await databaseMigrator.MigrateAsync();
                 // Revert migrations by using a special migration identifier.
-                // See more here: https://docs.microsoft.com/en-us/ef/core/miscellaneous/cli/dotnet#dotnet-ef-database-update.
+                // See more here: https://learn.microsoft.com/en-us/ef/core/cli/dotnet#dotnet-ef-database-update.
                 await databaseMigrator.MigrateAsync(BeforeFirstDatabaseMigration);
                 await databaseMigrator.MigrateAsync();
                 isMigrationSuccessful = true;
@@ -75,15 +75,15 @@ namespace Todo.Persistence
             // Arrange
             DbContextOptions<TodoDbContext> dbContextOptions = GetDbContextOptions(databaseName: "use-concurrent-transactions");
 
-            await using TodoDbContext firstTodoDbContext = new TodoDbContext(dbContextOptions);
+            await using TodoDbContext firstTodoDbContext = new(dbContextOptions);
             IMigrator databaseMigrator = firstTodoDbContext.GetInfrastructure().GetRequiredService<IMigrator>();
             await databaseMigrator.MigrateAsync();
 
             try
             {
-                string name = "ConcurrentlyAccessedTodoItem";
+                const string name = "ConcurrentlyAccessedTodoItem";
 
-                TodoItem todoItem = new TodoItem(name, "it")
+                TodoItem todoItem = new(name, "it")
                 {
                     IsComplete = false,
                 };
@@ -101,7 +101,7 @@ namespace Todo.Persistence
                 todoItemFromFirstTransaction.LastUpdatedBy = Guid.NewGuid().ToString("N");
                 todoItemFromFirstTransaction.LastUpdatedOn = DateTime.UtcNow;
 
-                await using TodoDbContext secondTodoDbContext = new TodoDbContext(dbContextOptions);
+                await using TodoDbContext secondTodoDbContext = new(dbContextOptions);
 
                 await using IDbContextTransaction secondTransaction =
                     await secondTodoDbContext.Database.BeginTransactionAsync();
@@ -146,11 +146,9 @@ namespace Todo.Persistence
                 .AddEnvironmentVariables()
                 .Build();
 
-            // ReSharper disable once SettingNotFoundInConfiguration
-            var testConnectionString =
-                testConfiguration.GetConnectionString(ConnectionStrings.UsedByIntegrationTests);
+            string testConnectionString = testConfiguration.GetConnectionString(ConnectionStrings.UsedByIntegrationTests);
 
-            var connectionStringBuilder = new NpgsqlConnectionStringBuilder(testConnectionString)
+            NpgsqlConnectionStringBuilder connectionStringBuilder = new(testConnectionString)
             {
                 Database = databaseName
             };

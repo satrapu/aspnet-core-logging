@@ -40,9 +40,10 @@ namespace Todo.ApplicationFlows.DependencyInjection
             });
 
             builder
-                .Register(componentContext =>
-                ApplicationConfiguration.GetSection(ApplicationFlowsConfigurationSectionName).Get<ApplicationFlowOptions>())
-                .SingleInstance();
+                .Register(_ =>
+                    ApplicationConfiguration
+                        .GetSection(ApplicationFlowsConfigurationSectionName).Get<ApplicationFlowOptions>())
+                        .SingleInstance();
 
             builder
                 .RegisterType<GenerateJwtFlow>()

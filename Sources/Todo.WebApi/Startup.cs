@@ -1,6 +1,7 @@
 namespace Todo.WebApi
 {
     using System;
+    using System.Diagnostics;
     using System.Diagnostics.CodeAnalysis;
     using System.Security.Claims;
     using System.Text;
@@ -8,6 +9,7 @@ namespace Todo.WebApi
 
     using Authorization;
 
+    using Commons;
     using Commons.ApplicationEvents;
 
     using ExceptionHandling;
@@ -91,12 +93,9 @@ namespace Todo.WebApi
                 .UseAuthorization()
                 .UseEndpoints(endpoints => { endpoints.MapControllers(); });
 
-            IApplicationStartedEventNotifier applicationStartedEventNotifier =
-                serviceProvider.GetRequiredService<IApplicationStartedEventNotifier>();
+            IApplicationStartedEventNotifier applicationStartedEventNotifier = serviceProvider.GetRequiredService<IApplicationStartedEventNotifier>();
 
-            hostApplicationLifetime.ApplicationStarted.Register(() =>
-                OnApplicationStarted(applicationStartedEventNotifier, logger));
-
+            hostApplicationLifetime.ApplicationStarted.Register(() => OnApplicationStarted(applicationStartedEventNotifier, logger));
             hostApplicationLifetime.ApplicationStopping.Register(() => OnApplicationStopping(logger));
             hostApplicationLifetime.ApplicationStopped.Register(() => OnApplicationStopped(logger));
 
@@ -184,7 +183,7 @@ namespace Todo.WebApi
             services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
 
             // Configure options used for customizing generating JWT tokens.
-            // Options pattern: https://docs.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-5.0.
+            // Options pattern: https://learn.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-7.0.
             services.Configure<GenerateJwtOptions>(generateJwtOptions);
         }
 
@@ -229,18 +228,24 @@ namespace Todo.WebApi
             logger.LogInformation("The registered application started event listeners have been notified");
             logger.LogInformation("Application [{ApplicationName}] has started on environment [{EnvironmentName}]",
                 webHostEnvironment.ApplicationName, webHostEnvironment.EnvironmentName);
+
+            using Activity _ = ActivitySources.TodoWebApi.StartActivity("Application has started");
         }
 
         private void OnApplicationStopping(ILogger logger)
         {
             logger.LogInformation("Application [{ApplicationName}] is stopping on environment [{EnvironmentName}] ...",
                 webHostEnvironment.ApplicationName, webHostEnvironment.EnvironmentName);
+
+            using Activity _ = ActivitySources.TodoWebApi.StartActivity("Application is stopping");
         }
 
         private void OnApplicationStopped(ILogger logger)
         {
             logger.LogInformation("Application [{ApplicationName}] has stopped on environment [{EnvironmentName}]",
                 webHostEnvironment.ApplicationName, webHostEnvironment.EnvironmentName);
+
+            using Activity _ = ActivitySources.TodoWebApi.StartActivity("Application has stopped");
         }
     }
 }

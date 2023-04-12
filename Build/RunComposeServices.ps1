@@ -194,12 +194,13 @@ foreach ($ComposeService in $ComposeServices)
 
     foreach ($RawPortMapping in $RawPortMappings)
     {
-        if ($RawPortMapping -like '*-> ::*')
+        if (($RawPortMapping -like '* -> ::*') -or ($RawPortMapping -like '* -> `[::`]*'))
         {
             # Skip processing mappings which do not follow the proper format (e.g. <IP_ADDRESS>:<HOST_PORT>).
             # I've found a weird port mapping, 5432/tcp -> :::49153, when pipeline was running on
             # Linux-based agent; this port mapping appeared in addition to the legit one,
             # 5432/tcp -> 0.0.0.0:49153.
+            # Same thing with 5432/tcp -> [::]:49153 mapping.
             Write-Output "Skip processing port mapping: `"$RawPortMapping`" since it does not look legit!"
             continue;
         }
