@@ -54,15 +54,16 @@ namespace Todo.ApplicationFlows
                 [Logging.ApplicationFlowName] = flowName
             }))
             {
-                string flowInitiatorName = flowInitiator.GetNameOrDefault();
-                using Activity flowActivity = ActivitySources.TodoWebApi.StartActivity($"ApplicationFlow: {flowName}");
                 bool isSuccess = false;
+                string flowInitiatorName = flowInitiator.GetNameOrDefault();
+
+                using Activity flowActivity = ActivitySources.TodoWebApi.StartActivity($"Application flow: {flowName}");
+                flowActivity?.AddBaggage("flow_initiator", flowInitiatorName);
+                flowActivity?.AddBaggage("flow_name", flowName);
 
                 try
                 {
-                    logger.LogInformation(
-                        "User [{FlowInitiator}] has started executing application flow [{ApplicationFlowName}] ...",
-                        flowInitiatorName, flowName);
+                    logger.LogInformation("User [{FlowInitiator}] has started executing application flow [{ApplicationFlowName}] ...", flowInitiatorName, flowName);
 
                     TOutput output = await InternalExecuteAsync(input, flowInitiator);
                     isSuccess = true;
@@ -71,14 +72,13 @@ namespace Todo.ApplicationFlows
                 }
                 finally
                 {
+                    string flowOutcome = isSuccess ? "success" : "failure";
+                    flowActivity?.AddTag("flow_outcome", flowOutcome);
                     flowActivity?.Stop();
 
-                    logger.LogInformation(
-                        "User [{FlowInitiator}] has finished executing application flow [{ApplicationFlowName}] "
-                        + "with the outcome: [{ApplicationFlowOutcome}]; "
-                        + "time taken: [{ApplicationFlowDurationAsTimeSpan}] ({ApplicationFlowDurationInMillis}ms)",
-                        flowInitiatorName, flowName, isSuccess ? "success" : "failure", flowActivity?.Duration,
-                        flowActivity?.Duration.TotalMilliseconds);
+                    logger.LogInformation("User [{FlowInitiator}] has finished executing application flow [{ApplicationFlowName}] "
+                        + "with the outcome: [{ApplicationFlowOutcome}]; time taken: [{ApplicationFlowDurationAsTimeSpan}] ({ApplicationFlowDurationInMillis}ms)",
+                        flowInitiatorName, flowName, flowOutcome, flowActivity?.Duration, flowActivity?.Duration.TotalMilliseconds);
                 }
             }
         }
