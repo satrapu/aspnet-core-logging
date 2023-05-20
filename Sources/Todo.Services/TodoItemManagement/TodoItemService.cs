@@ -126,7 +126,7 @@ namespace Todo.Services.TodoItemManagement
             // @satrapu January 15th, 2023: Read more about "Activity.IsAllDataRequested" property
             // here: https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/trace/api.md#isrecording
             // and here: https://rehansaeed.com/deep-dive-into-open-telemetry-for-net/#isrecording.
-            if (activity?.IsAllDataRequested is true)
+            if (activity is not null && activity.IsAllDataRequested)
             {
                 activity.AddEvent(new ActivityEvent(name: "Data has been fetched",
                     tags: new ActivityTagsCollection { new("data", JsonSerializer.Serialize(result)) }));
@@ -153,7 +153,7 @@ namespace Todo.Services.TodoItemManagement
             logger.LogInformation("Item with id {TodoItemId} has been added by user [{User}]",
                 newTodoItem.Id, newTodoItem.CreatedBy);
 
-            if (activity?.IsAllDataRequested is true)
+            if (activity is not null && activity.IsAllDataRequested)
             {
                 activity.AddEvent(new ActivityEvent(name: "Data has been added",
                     tags: new ActivityTagsCollection { new("data", JsonSerializer.Serialize(new { newTodoItem.Id, newTodoItem.CreatedBy })) }));
@@ -184,7 +184,7 @@ namespace Todo.Services.TodoItemManagement
             logger.LogInformation("Item with id {TodoItemId} has been updated by user [{User}]",
                 existingTodoItem.Id, existingTodoItem.LastUpdatedBy);
 
-            if (activity?.IsAllDataRequested is true)
+            if (activity is not null && activity.IsAllDataRequested)
             {
                 activity.AddEvent(new ActivityEvent(name: "Data has been updated",
                     tags: new ActivityTagsCollection { new("data", JsonSerializer.Serialize(new { existingTodoItem.Id, existingTodoItem.LastUpdatedBy })) }));
@@ -204,7 +204,7 @@ namespace Todo.Services.TodoItemManagement
             logger.LogInformation("Item with id {TodoItemId} has been deleted by user [{User}]",
                 deleteTodoItemInfo.Id, deleteTodoItemInfo.Owner.GetName());
 
-            if (activity?.IsAllDataRequested is true)
+            if (activity is not null && activity.IsAllDataRequested)
             {
                 activity.AddEvent(new ActivityEvent(name: "Data has been deleted", tags: new ActivityTagsCollection
                 {
@@ -248,7 +248,7 @@ namespace Todo.Services.TodoItemManagement
                 todoItems = todoItems.Where(todoItem => todoItem.IsComplete == todoItemQuery.IsComplete.Value);
             }
 
-            if (activity?.IsAllDataRequested is true)
+            if (activity is not null && activity.IsAllDataRequested)
             {
                 activity.AddEvent(new ActivityEvent(name: "Data has been filtered", tags: new ActivityTagsCollection
                 {
@@ -274,7 +274,7 @@ namespace Todo.Services.TodoItemManagement
                 todoItems = todoItems.OrderBy(keySelector);
             }
 
-            if (activity?.IsAllDataRequested is true)
+            if (activity is not null && activity.IsAllDataRequested)
             {
                 activity.AddEvent(new ActivityEvent(name: "Data has been sorted", tags: new ActivityTagsCollection
                 {
@@ -348,7 +348,7 @@ namespace Todo.Services.TodoItemManagement
 
             IQueryable<TodoItem> result = todoItems.Skip(pageIndex * pageSize).Take(pageSize);
 
-            if (activity?.IsAllDataRequested is true)
+            if (activity is not null && activity.IsAllDataRequested)
             {
                 activity.AddEvent(new ActivityEvent(name: "Data has been paginated", tags: new ActivityTagsCollection
                 {
