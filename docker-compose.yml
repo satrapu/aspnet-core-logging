@@ -20,7 +20,7 @@ services:
       - aspnet-core-logging-dev_data:/var/lib/postgresql/data
     ports:
       - "5432:5432/tcp"
-    networks: 
+    networks:
       - local_postgresql
     environment:
       - POSTGRES_USER=${DB_DEV_POSTGRES_USER}
@@ -46,13 +46,13 @@ services:
       - aspnet-core-logging-it_data:/var/lib/postgresql/data
     ports:
       - "5433:5432/tcp"
-    networks: 
+    networks:
       - local_postgresql
     environment:
       - POSTGRES_USER=${DB_IT_POSTGRES_USER}
       - POSTGRES_PASSWORD=${DB_IT_POSTGRES_PASSWORD}
       - POSTGRES_DB=aspnet-core-logging-it
-      
+
   jaeger:
     container_name: jaeger
     image: jaegertracing/all-in-one:1.47
@@ -63,11 +63,11 @@ services:
       # jaeger-agent port
       - "6831:6831/udp"
       # jaeger-collector port
-      # server health check is available via "/" endpoint (i.e., http://localhost:14269/)
-      # server metrics are available via "/metrics" endpoint (i.e., http://localhost:14269/metrics)
+      #   - server health check is available via "/" endpoint (i.e., http://localhost:14269/)
+      #   - server metrics are available via "/metrics" endpoint (i.e., http://localhost:14269/metrics)
       - "14269:14269"
       # jaeger-query port
-      # dashboard is available via "/" endpoint (i.e., http://localhost:16686/)
+      #   - dashboard is available via "/" endpoint (i.e., http://localhost:16686/)
       - "16686:16686"
     networks:
       - local_jaeger
@@ -90,7 +90,7 @@ services:
     depends_on:
       - aspnet-core-logging-dev
       - aspnet-core-logging-it
-    
+
   seq:
     container_name: seq
     image: datalust/seq:2023.3
