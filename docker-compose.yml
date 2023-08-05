@@ -71,8 +71,6 @@ services:
       - "16686:16686"
     networks:
       - local_jaeger
-    environment:
-      - COLLECTOR_ZIPKIN_HOST_PORT=:9411
 
   pgadmin:
     container_name: pgadmin-ui
