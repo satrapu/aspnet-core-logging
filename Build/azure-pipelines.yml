@@ -68,7 +68,7 @@ variables:
 
   # Represents the prefix of the Docker image tag to use when running the database to be targeted by the integration tests.
   - name: 'IntegrationTests.Database.DockerImage.TagPrefix'
-    value: '14.0'
+    value: '15.1'
 
   - name: SolutionFileName
     value: 'Todo.WebApi.sln'
