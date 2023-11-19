@@ -221,6 +221,7 @@ dotnet_diagnostic.cs8851.severity = error
 dotnet_diagnostic.cs8860.severity = error
 dotnet_diagnostic.cs8892.severity = error
 dotnet_diagnostic.cs8907.severity = error
+dotnet_diagnostic.ide1006.severity = error
 dotnet_diagnostic.ef1001.severity = error
 dotnet_diagnostic.enc0001.severity = error
 dotnet_diagnostic.enc0002.severity = error
@@ -324,87 +325,71 @@ dotnet_diagnostic.wme006.severity = error
 # Ignoring S3935 based on this GitHUb issue: https://github.com/SonarSource/sonar-dotnet/issues/4993.
 dotnet_diagnostic.s3925.severity = none
 
-dotnet_naming_rule.constants_rule.import_to_resharper = as_predefined
+# Naming rules
 dotnet_naming_rule.constants_rule.severity = error
 dotnet_naming_rule.constants_rule.style = upper_camel_case_style
 dotnet_naming_rule.constants_rule.symbols = constants_symbols
 
-dotnet_naming_rule.event_rule.import_to_resharper = as_predefined
 dotnet_naming_rule.event_rule.severity = error
 dotnet_naming_rule.event_rule.style = upper_camel_case_style
 dotnet_naming_rule.event_rule.symbols = event_symbols
 
-dotnet_naming_rule.interfaces_rule.import_to_resharper = as_predefined
 dotnet_naming_rule.interfaces_rule.severity = error
 dotnet_naming_rule.interfaces_rule.style = i_upper_camel_case_style
 dotnet_naming_rule.interfaces_rule.symbols = interfaces_symbols
 
-dotnet_naming_rule.locals_rule.import_to_resharper = as_predefined
 dotnet_naming_rule.locals_rule.severity = error
 dotnet_naming_rule.locals_rule.style = lower_camel_case_style
 dotnet_naming_rule.locals_rule.symbols = locals_symbols
 
-dotnet_naming_rule.local_constants_rule.import_to_resharper = as_predefined
 dotnet_naming_rule.local_constants_rule.severity = error
 dotnet_naming_rule.local_constants_rule.style = lower_camel_case_style
 dotnet_naming_rule.local_constants_rule.symbols = local_constants_symbols
 
-dotnet_naming_rule.local_functions_rule.import_to_resharper = as_predefined
 dotnet_naming_rule.local_functions_rule.severity = error
 dotnet_naming_rule.local_functions_rule.style = upper_camel_case_style
 dotnet_naming_rule.local_functions_rule.symbols = local_functions_symbols
 
-dotnet_naming_rule.method_rule.import_to_resharper = as_predefined
 dotnet_naming_rule.method_rule.severity = error
 dotnet_naming_rule.method_rule.style = upper_camel_case_style
 dotnet_naming_rule.method_rule.symbols = method_symbols
 
-dotnet_naming_rule.parameters_rule.import_to_resharper = as_predefined
 dotnet_naming_rule.parameters_rule.severity = error
 dotnet_naming_rule.parameters_rule.style = lower_camel_case_style
 dotnet_naming_rule.parameters_rule.symbols = parameters_symbols
 
-dotnet_naming_rule.private_constants_rule.import_to_resharper = as_predefined
 dotnet_naming_rule.private_constants_rule.severity = error
 dotnet_naming_rule.private_constants_rule.style = upper_camel_case_style
 dotnet_naming_rule.private_constants_rule.symbols = private_constants_symbols
 
-dotnet_naming_rule.private_instance_fields_rule.import_to_resharper = as_predefined
 dotnet_naming_rule.private_instance_fields_rule.severity = error
 dotnet_naming_rule.private_instance_fields_rule.style = lower_camel_case_style
 dotnet_naming_rule.private_instance_fields_rule.symbols = private_instance_fields_symbols
 
-dotnet_naming_rule.private_static_fields_rule.import_to_resharper = as_predefined
 dotnet_naming_rule.private_static_fields_rule.severity = error
 dotnet_naming_rule.private_static_fields_rule.style = upper_camel_case_style
 dotnet_naming_rule.private_static_fields_rule.symbols = private_static_fields_symbols
 
-dotnet_naming_rule.private_static_readonly_rule.import_to_resharper = as_predefined
 dotnet_naming_rule.private_static_readonly_rule.severity = error
 dotnet_naming_rule.private_static_readonly_rule.style = lower_camel_case_style
 dotnet_naming_rule.private_static_readonly_rule.symbols = private_static_readonly_symbols
 
-dotnet_naming_rule.property_rule.import_to_resharper = as_predefined
 dotnet_naming_rule.property_rule.severity = error
 dotnet_naming_rule.property_rule.style = upper_camel_case_style
 dotnet_naming_rule.property_rule.symbols = property_symbols
 
-dotnet_naming_rule.public_fields_rule.import_to_resharper = as_predefined
 dotnet_naming_rule.public_fields_rule.severity = error
 dotnet_naming_rule.public_fields_rule.style = upper_camel_case_style
 dotnet_naming_rule.public_fields_rule.symbols = public_fields_symbols
 
-dotnet_naming_rule.static_readonly_rule.import_to_resharper = as_predefined
 dotnet_naming_rule.static_readonly_rule.severity = error
 dotnet_naming_rule.static_readonly_rule.style = upper_camel_case_style
 dotnet_naming_rule.static_readonly_rule.symbols = static_readonly_symbols
 
-dotnet_naming_rule.types_and_namespaces_rule.import_to_resharper = as_predefined
 dotnet_naming_rule.types_and_namespaces_rule.severity = error
 dotnet_naming_rule.types_and_namespaces_rule.style = upper_camel_case_style
 dotnet_naming_rule.types_and_namespaces_rule.symbols = types_and_namespaces_symbols
 
-dotnet_naming_rule.type_parameters_rule.import_to_resharper = as_predefined
 dotnet_naming_rule.type_parameters_rule.severity = error
 dotnet_naming_rule.type_parameters_rule.style = t_upper_camel_case_style
 dotnet_naming_rule.type_parameters_rule.symbols = type_parameters_symbols
@@ -480,8 +465,6 @@ dotnet_style_parentheses_in_relational_binary_operators = never_if_unnecessary:n
 dotnet_style_predefined_type_for_locals_parameters_members = true:error
 dotnet_style_predefined_type_for_member_access = true:error
 
-file_header_template =
-
 [{*.har, *.json}]
 indent_size = 2
 
@@ -518,15 +501,11 @@ dotnet_naming_rule.private_constants_rule.symbols = private_constants_symbols
 
 dotnet_naming_rule.private_instance_fields_rule.severity = error
 dotnet_naming_rule.private_instance_fields_rule.style = lower_camel_case_style
-
 dotnet_naming_rule.private_instance_fields_rule.symbols = private_instance_fields_symbols
 
 dotnet_naming_rule.private_static_readonly_rule.severity = error
 dotnet_naming_rule.private_static_readonly_rule.style = upper_camel_case_style
 dotnet_naming_rule.private_static_readonly_rule.symbols = private_static_readonly_symbols
-
-dotnet_naming_style.lower_camel_case_style.capitalization = camel_case
-dotnet_naming_style.upper_camel_case_style.capitalization = pascal_case
 
 dotnet_naming_symbols.private_constants_symbols.applicable_accessibilities = private
 dotnet_naming_symbols.private_constants_symbols.applicable_kinds = field
