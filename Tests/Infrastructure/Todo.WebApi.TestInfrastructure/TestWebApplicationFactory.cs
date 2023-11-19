@@ -4,6 +4,7 @@ namespace Todo.WebApi.TestInfrastructure
     using System.Collections.Generic;
     using System.Net.Http;
     using System.Text;
+    using System.Text.Json;
     using System.Threading.Tasks;
 
     using Autofac;
@@ -21,8 +22,6 @@ namespace Todo.WebApi.TestInfrastructure
     using Microsoft.Extensions.Logging;
 
     using Models;
-
-    using Newtonsoft.Json;
 
     using Npgsql;
 
@@ -151,7 +150,8 @@ namespace Todo.WebApi.TestInfrastructure
             HttpClient httpClient = CreateHttpClientWithLoggingCapabilities();
 
             HttpResponseMessage httpResponseMessage = await httpClient.PostAsync("api/jwt",
-                new StringContent(JsonConvert.SerializeObject(generateJwtModel), Encoding.UTF8, "application/json"));
+                new StringContent(JsonSerializer.Serialize(generateJwtModel), Encoding.UTF8,
+                    "application/json"));
 
             if (!httpResponseMessage.IsSuccessStatusCode)
             {
@@ -159,7 +159,7 @@ namespace Todo.WebApi.TestInfrastructure
             }
 
             JwtModel jwtModel =
-                JsonConvert.DeserializeObject<JwtModel>(await httpResponseMessage.Content.ReadAsStringAsync());
+                JsonSerializer.Deserialize<JwtModel>(await httpResponseMessage.Content.ReadAsStringAsync());
 
             return jwtModel.AccessToken;
         }

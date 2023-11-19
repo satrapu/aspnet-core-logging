@@ -17,7 +17,6 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
-        <PackageReference Include="Newtonsoft.Json" />
     </ItemGroup>
 
     <PropertyGroup Label="FineCodeCoverage">
