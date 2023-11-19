@@ -320,7 +320,8 @@ dotnet_diagnostic.mvc1005.severity = error
 dotnet_diagnostic.mvc1006.severity = error
 dotnet_diagnostic.wme006.severity = error
 
-# Ignore certain Sonar rules
+# Sonar rules
+# Ignoring S3935 based on this GitHUb issue: https://github.com/SonarSource/sonar-dotnet/issues/4993.
 dotnet_diagnostic.s3925.severity = none
 
 dotnet_naming_rule.constants_rule.import_to_resharper = as_predefined
