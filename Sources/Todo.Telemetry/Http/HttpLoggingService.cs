@@ -8,6 +8,7 @@ namespace Todo.Telemetry.Http
 
     using Microsoft.AspNetCore.Http;
     using Microsoft.Extensions.Logging;
+    using Microsoft.Extensions.Primitives;
 
     /// <summary>
     /// Logs text-based only HTTP requests and responses (e.g. plain text, JSON or XML).
@@ -15,8 +16,8 @@ namespace Todo.Telemetry.Http
     public class HttpLoggingService : IHttpContextLoggingHandler, IHttpObjectConverter
     {
         private const int BufferSize = 1000;
-        private static readonly string[] TextBasedHeaderNames = { "Accept", "Content-Type" };
-        private static readonly string[] TextBasedHeaderValues = { "application/json", "application/xml", "text/" };
+        private static readonly string[] textBasedHeaderNames = { "Accept", "Content-Type" };
+        private static readonly string[] textBasedHeaderValues = { "application/json", "application/xml", "text/" };
         private const string AcceptableRequestUrlPrefix = "/api/";
         private readonly ILogger logger;
 
@@ -35,18 +36,19 @@ namespace Todo.Telemetry.Http
 
             if (logger.IsEnabled(LogLevel.Debug))
             {
-                logger.LogDebug("Checking whether the HTTP context {HttpContextTraceIdentifier} should be logged or not ...",
-                    httpContext?.TraceIdentifier);
+                logger.LogDebug(
+                    "Checking whether the HTTP context {HttpContextTraceIdentifier} should be logged or not ...",
+                    httpContext.TraceIdentifier);
             }
 
-            bool result = IsTextBased(httpContext?.Request);
+            bool result = IsTextBased(httpContext.Request);
 
             if (logger.IsEnabled(LogLevel.Debug))
             {
                 string willBeLoggedOutcome = result ? string.Empty : " NOT";
 
                 logger.LogDebug("HTTP context {HttpContextTraceIdentifier} will{WillBeLoggedOutcome} be logged",
-                     httpContext?.TraceIdentifier, willBeLoggedOutcome);
+                    httpContext.TraceIdentifier, willBeLoggedOutcome);
             }
 
             return result;
@@ -76,11 +78,13 @@ namespace Todo.Telemetry.Http
 
             var stringBuilder = new StringBuilder(BufferSize);
             stringBuilder.AppendLine($"--- REQUEST {httpRequest.HttpContext.TraceIdentifier}: BEGIN ---");
-            stringBuilder.AppendLine($"{httpRequest.Method} {httpRequest.Path}{httpRequest.QueryString.ToUriComponent()} {httpRequest.Protocol}");
+
+            stringBuilder.AppendLine(
+                $"{httpRequest.Method} {httpRequest.Path}{httpRequest.QueryString.ToUriComponent()} {httpRequest.Protocol}");
 
             if (httpRequest.Headers.Any())
             {
-                foreach (var (key, value) in httpRequest.Headers)
+                foreach ((string key, StringValues value) in httpRequest.Headers)
                 {
                     stringBuilder.AppendLine($"{key}: {value}");
                 }
@@ -90,7 +94,8 @@ namespace Todo.Telemetry.Http
             stringBuilder.AppendLine(await httpRequest.Body.ReadAndResetAsync());
             stringBuilder.AppendLine($"--- REQUEST {httpRequest.HttpContext.TraceIdentifier}: END ---");
 
-            var result = stringBuilder.ToString();
+            string result = stringBuilder.ToString();
+
             return result;
         }
 
@@ -104,11 +109,13 @@ namespace Todo.Telemetry.Http
 
             var stringBuilder = new StringBuilder(BufferSize);
             stringBuilder.AppendLine($"--- RESPONSE {httpResponse.HttpContext.TraceIdentifier}: BEGIN ---");
-            stringBuilder.AppendLine($"{httpResponse.HttpContext.Request.Protocol} {httpResponse.StatusCode} {((HttpStatusCode) httpResponse.StatusCode).ToString()}");
+
+            stringBuilder.AppendLine(
+                $"{httpResponse.HttpContext.Request.Protocol} {httpResponse.StatusCode} {((HttpStatusCode) httpResponse.StatusCode).ToString()}");
 
             if (httpResponse.Headers.Any())
             {
-                foreach (var (key, value) in httpResponse.Headers)
+                foreach ((string key, StringValues value) in httpResponse.Headers)
                 {
                     stringBuilder.AppendLine($"{key}: {value}");
                 }
@@ -118,21 +125,22 @@ namespace Todo.Telemetry.Http
             stringBuilder.AppendLine(await httpResponse.Body.ReadAndResetAsync());
             stringBuilder.AppendLine($"--- RESPONSE {httpResponse.HttpContext.TraceIdentifier}: END ---");
 
-            var result = stringBuilder.ToString();
+            string result = stringBuilder.ToString();
+
             return result;
         }
 
         private static bool IsTextBased(HttpRequest httpRequest)
         {
-            return TextBasedHeaderNames.Any(headerName => IsTextBased(httpRequest, headerName))
-                || httpRequest.Path.ToUriComponent().StartsWith(AcceptableRequestUrlPrefix);
+            return Array.Exists(textBasedHeaderNames, headerName => IsTextBased(httpRequest, headerName))
+                   || httpRequest.Path.ToUriComponent().StartsWith(AcceptableRequestUrlPrefix);
         }
 
         private static bool IsTextBased(HttpRequest httpRequest, string headerName)
         {
-            return httpRequest.Headers.TryGetValue(headerName, out var headerValues)
-                && TextBasedHeaderValues.Any(acceptedHeaderValue
-                    => headerValues.Any(headerValue => headerValue.StartsWith(acceptedHeaderValue)));
+            return httpRequest.Headers.TryGetValue(headerName, out StringValues headerValues)
+                   && Array.Exists(textBasedHeaderValues, acceptedHeaderValue
+                       => headerValues.Any(headerValue => headerValue.StartsWith(acceptedHeaderValue)));
         }
     }
 }

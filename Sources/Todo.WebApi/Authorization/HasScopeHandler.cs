@@ -1,6 +1,6 @@
 namespace Todo.WebApi.Authorization
 {
-    using System.Linq;
+    using System;
     using System.Security.Claims;
     using System.Threading.Tasks;
 
@@ -19,9 +19,9 @@ namespace Todo.WebApi.Authorization
 
             if (scopeClaim != null)
             {
-                var scopes = scopeClaim.Value.Split(separator: ' ');
+                string[] scopes = scopeClaim.Value.Split(separator: ' ');
 
-                if (scopes.Any(scope => scope == requirement.Scope))
+                if (Array.Exists(scopes, scope => scope == requirement.Scope))
                 {
                     context.Succeed(requirement);
                     return Task.CompletedTask;

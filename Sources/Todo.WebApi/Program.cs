@@ -25,7 +25,7 @@ namespace Todo.WebApi
     public static class Program
     {
         private const string HttpLoggingEnabledConfigurationLookupKey = "HttpLogging:Enabled";
-        private static readonly Logger Logger = new LoggerConfiguration()
+        private static readonly Logger logger = new LoggerConfiguration()
             .Enrich.FromLogContext()
             .WriteTo.Console()
             .CreateLogger();
@@ -42,19 +42,19 @@ namespace Todo.WebApi
             }
             catch (Exception exception)
             {
-                Logger.Fatal(exception, "Application failed to start");
+                logger.Fatal(exception, "Application failed to start");
 
                 throw;
             }
             finally
             {
-                Logger.Dispose();
+                logger.Dispose();
             }
         }
 
         private static IHostBuilder CreateHostBuilder(string[] args)
         {
-            Logger.Information("Configuring the host builder needed to run the application ...");
+            logger.Information("Configuring the host builder needed to run the application ...");
 
             IHostBuilder hostBuilder =
                 Host.CreateDefaultBuilder(args)
@@ -109,7 +109,7 @@ namespace Todo.WebApi
                         localHostBuilder.UseStartup<Startup>();
                     });
 
-            Logger.Information("The host builder needed to run the application has been configured");
+            logger.Information("The host builder needed to run the application has been configured");
 
             return hostBuilder;
         }

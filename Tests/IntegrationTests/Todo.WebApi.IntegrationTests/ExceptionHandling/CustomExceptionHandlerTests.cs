@@ -47,7 +47,7 @@ namespace Todo.WebApi.ExceptionHandling
             var generateJwtModel = new GenerateJwtModel
             {
                 UserName = $"test-user--{Guid.NewGuid():N}",
-                Password = $"test-password--{Guid.NewGuid():N}",
+                Password = $"test-password--{Guid.NewGuid():N}"
             };
 
             await using WebApplicationFactory<Startup> testWebApplicationFactory =

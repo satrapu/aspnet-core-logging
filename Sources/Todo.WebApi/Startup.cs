@@ -157,7 +157,7 @@ namespace Todo.WebApi
                             {
                                 // Add a custom HTTP header to the response in case the application detected that the
                                 // current request is accompanied by an expired security token.
-                                context.Response.Headers.Add("Token-Expired", "true");
+                                context.Response.Headers.Append("Token-Expired", "true");
                             }
 
                             return Task.CompletedTask;
@@ -229,6 +229,7 @@ namespace Todo.WebApi
             logger.LogInformation("Application [{ApplicationName}] has started on environment [{EnvironmentName}]",
                 webHostEnvironment.ApplicationName, webHostEnvironment.EnvironmentName);
 
+            // ReSharper disable once ExplicitCallerInfoArgument
             using Activity _ = ActivitySources.TodoWebApi.StartActivity("Application has started");
         }
 
@@ -237,6 +238,7 @@ namespace Todo.WebApi
             logger.LogInformation("Application [{ApplicationName}] is stopping on environment [{EnvironmentName}] ...",
                 webHostEnvironment.ApplicationName, webHostEnvironment.EnvironmentName);
 
+            // ReSharper disable once ExplicitCallerInfoArgument
             using Activity _ = ActivitySources.TodoWebApi.StartActivity("Application is stopping");
         }
 
@@ -245,6 +247,7 @@ namespace Todo.WebApi
             logger.LogInformation("Application [{ApplicationName}] has stopped on environment [{EnvironmentName}]",
                 webHostEnvironment.ApplicationName, webHostEnvironment.EnvironmentName);
 
+            // ReSharper disable once ExplicitCallerInfoArgument
             using Activity _ = ActivitySources.TodoWebApi.StartActivity("Application has stopped");
         }
     }

@@ -85,7 +85,7 @@ namespace Todo.Persistence
 
                 TodoItem todoItem = new(name, "it")
                 {
-                    IsComplete = false,
+                    IsComplete = false
                 };
 
                 await firstTodoDbContext.TodoItems.AddAsync(todoItem);

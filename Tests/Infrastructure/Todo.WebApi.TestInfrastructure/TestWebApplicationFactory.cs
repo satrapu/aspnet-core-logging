@@ -3,7 +3,9 @@ namespace Todo.WebApi.TestInfrastructure
     using System;
     using System.Collections.Generic;
     using System.Net.Http;
+    using System.Net.Http.Json;
     using System.Text;
+    using System.Text.Json;
     using System.Threading.Tasks;
 
     using Autofac;
@@ -21,8 +23,6 @@ namespace Todo.WebApi.TestInfrastructure
     using Microsoft.Extensions.Logging;
 
     using Models;
-
-    using Newtonsoft.Json;
 
     using Npgsql;
 
@@ -145,22 +145,21 @@ namespace Todo.WebApi.TestInfrastructure
             var generateJwtModel = new GenerateJwtModel
             {
                 UserName = $"user-{Guid.NewGuid():N}",
-                Password = $"password-{Guid.NewGuid():N}",
+                Password = $"password-{Guid.NewGuid():N}"
             };
 
             HttpClient httpClient = CreateHttpClientWithLoggingCapabilities();
 
             HttpResponseMessage httpResponseMessage = await httpClient.PostAsync("api/jwt",
-                new StringContent(JsonConvert.SerializeObject(generateJwtModel), Encoding.UTF8, "application/json"));
+                new StringContent(JsonSerializer.Serialize(generateJwtModel), Encoding.UTF8,
+                    "application/json"));
 
             if (!httpResponseMessage.IsSuccessStatusCode)
             {
                 throw new CouldNotGetJwtException(httpResponseMessage);
             }
 
-            JwtModel jwtModel =
-                JsonConvert.DeserializeObject<JwtModel>(await httpResponseMessage.Content.ReadAsStringAsync());
-
+            JwtModel jwtModel = await httpResponseMessage.Content.ReadFromJsonAsync<JwtModel>();
             return jwtModel.AccessToken;
         }
     }
