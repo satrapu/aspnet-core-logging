@@ -157,7 +157,7 @@ namespace Todo.WebApi
                             {
                                 // Add a custom HTTP header to the response in case the application detected that the
                                 // current request is accompanied by an expired security token.
-                                context.Response.Headers.Add("Token-Expired", "true");
+                                context.Response.Headers.Append("Token-Expired", "true");
                             }
 
                             return Task.CompletedTask;
