@@ -167,7 +167,7 @@ jobs:
 
   # Run 'dotnet format' command and generate a report with its outcome.
   - script: >-
-      dotnet format $(Build.SourcesDirectory)/$(SolutionFileName)
+      dotnet format
       --no-restore
       --severity info
       --verify-no-changes
