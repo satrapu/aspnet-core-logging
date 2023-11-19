@@ -320,6 +320,9 @@ dotnet_diagnostic.mvc1005.severity = error
 dotnet_diagnostic.mvc1006.severity = error
 dotnet_diagnostic.wme006.severity = error
 
+# Ignore certain Sonar rules
+dotnet_diagnostic.s3925.severity = none
+
 dotnet_naming_rule.constants_rule.import_to_resharper = as_predefined
 dotnet_naming_rule.constants_rule.severity = error
 dotnet_naming_rule.constants_rule.style = upper_camel_case_style

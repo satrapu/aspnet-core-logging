@@ -36,10 +36,10 @@ namespace Todo.Telemetry.Http
                 || string.IsNullOrWhiteSpace(conversationId))
             {
                 conversationId = Guid.NewGuid().ToString("N");
-                httpContext.Request.Headers.Add(conversationIdKey, conversationId);
+                httpContext.Request.Headers.Append(conversationIdKey, conversationId);
             }
 
-            httpContext.Response.Headers.Add(conversationIdKey, conversationId);
+            httpContext.Response.Headers.Append(conversationIdKey, conversationId);
 
             using (logger.BeginScope(new Dictionary<string, object>
             {
