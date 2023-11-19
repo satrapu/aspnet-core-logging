@@ -128,6 +128,7 @@ namespace Todo.Telemetry.OpenTelemetry
         /// <returns>The given <paramref name="loggingBuilder"/> instance.</returns>
         /// <exception cref="ArgumentNullException">Thrown when either <paramref name="loggingBuilder"/>
         /// or <paramref name="openTelemetryOptions"/> is null.</exception>
+        // ReSharper disable once UnusedMethodReturnValue.Local
         private static ILoggingBuilder AddOpenTelemetry(this ILoggingBuilder loggingBuilder, OpenTelemetryOptions openTelemetryOptions)
         {
             return loggingBuilder.AddOpenTelemetry(options =>
