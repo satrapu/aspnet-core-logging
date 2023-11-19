@@ -1,6 +1,6 @@
 namespace Todo.WebApi.Authorization
 {
-    using System.Linq;
+    using System;
     using System.Security.Claims;
     using System.Threading.Tasks;
 

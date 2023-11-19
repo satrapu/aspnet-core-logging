@@ -1,7 +1,6 @@
 namespace Todo.Services.TodoItemManagement
 {
     using System;
-    using System.Diagnostics.CodeAnalysis;
 
     /// <summary>
     /// Thrown when failed to fetch an entity using a key.

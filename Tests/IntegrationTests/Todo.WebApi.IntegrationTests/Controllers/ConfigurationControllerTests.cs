@@ -12,7 +12,6 @@ namespace Todo.WebApi.Controllers
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc.Testing;
     using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.Hosting;
 
     using NUnit.Framework;
 
