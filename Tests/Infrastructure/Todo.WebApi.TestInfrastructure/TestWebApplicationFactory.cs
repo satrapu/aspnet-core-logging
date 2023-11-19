@@ -3,6 +3,7 @@ namespace Todo.WebApi.TestInfrastructure
     using System;
     using System.Collections.Generic;
     using System.Net.Http;
+    using System.Net.Http.Json;
     using System.Text;
     using System.Text.Json;
     using System.Threading.Tasks;
@@ -158,9 +159,7 @@ namespace Todo.WebApi.TestInfrastructure
                 throw new CouldNotGetJwtException(httpResponseMessage);
             }
 
-            JwtModel jwtModel =
-                JsonSerializer.Deserialize<JwtModel>(await httpResponseMessage.Content.ReadAsStringAsync());
-
+            JwtModel jwtModel = await httpResponseMessage.Content.ReadFromJsonAsync<JwtModel>();
             return jwtModel.AccessToken;
         }
     }
