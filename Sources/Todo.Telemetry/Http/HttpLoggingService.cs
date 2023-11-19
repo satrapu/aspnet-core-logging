@@ -16,8 +16,8 @@ namespace Todo.Telemetry.Http
     public class HttpLoggingService : IHttpContextLoggingHandler, IHttpObjectConverter
     {
         private const int BufferSize = 1000;
-        private static readonly string[] textBasedHeaderNames = { "Accept", "Content-Type" };
-        private static readonly string[] textBasedHeaderValues = { "application/json", "application/xml", "text/" };
+        private static readonly string[] TextBasedHeaderNames = { "Accept", "Content-Type" };
+        private static readonly string[] TextBasedHeaderValues = { "application/json", "application/xml", "text/" };
         private const string AcceptableRequestUrlPrefix = "/api/";
         private readonly ILogger logger;
 
@@ -132,14 +132,14 @@ namespace Todo.Telemetry.Http
 
         private static bool IsTextBased(HttpRequest httpRequest)
         {
-            return Array.Exists(textBasedHeaderNames, headerName => IsTextBased(httpRequest, headerName))
+            return Array.Exists(TextBasedHeaderNames, headerName => IsTextBased(httpRequest, headerName))
                    || httpRequest.Path.ToUriComponent().StartsWith(AcceptableRequestUrlPrefix);
         }
 
         private static bool IsTextBased(HttpRequest httpRequest, string headerName)
         {
             return httpRequest.Headers.TryGetValue(headerName, out StringValues headerValues)
-                   && Array.Exists(textBasedHeaderValues, acceptedHeaderValue
+                   && Array.Exists(TextBasedHeaderValues, acceptedHeaderValue
                        => headerValues.Any(headerValue => headerValue.StartsWith(acceptedHeaderValue)));
         }
     }

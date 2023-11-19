@@ -4,6 +4,7 @@ namespace Todo.Services.TodoItemManagement
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.Diagnostics;
+    using System.Diagnostics.CodeAnalysis;
     using System.Linq;
     using System.Linq.Expressions;
     using System.Runtime.CompilerServices;
@@ -24,6 +25,7 @@ namespace Todo.Services.TodoItemManagement
     /// <summary>
     /// An <see cref="ITodoItemService"/> implementation which persists data using Entity Framework Core.
     /// </summary>
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
     public class TodoItemService : ITodoItemService
     {
         private readonly TodoDbContext todoDbContext;
@@ -32,8 +34,8 @@ namespace Todo.Services.TodoItemManagement
         private const string SortById = nameof(TodoItem.Id);
         private const string SortByLastUpdatedOn = nameof(TodoItem.LastUpdatedOn);
         private const string SortByName = nameof(TodoItem.Name);
-        private static readonly Expression<Func<TodoItem, object>> defaultKeySelector = todoItem => todoItem.Id;
-        private static readonly string typeFullName = typeof(TodoItemService).FullName;
+        private static readonly Expression<Func<TodoItem, object>> DefaultKeySelector = todoItem => todoItem.Id;
+        private static readonly string TypeFullName = typeof(TodoItemService).FullName;
 
         /// <summary>
         /// Creates a new instance of the <see cref="TodoItemService"/> class.
@@ -95,7 +97,7 @@ namespace Todo.Services.TodoItemManagement
 
         private static string CreateActivityName([CallerMemberName] string callerMemberName = "")
         {
-            return $"{typeFullName}.{callerMemberName}";
+            return $"{TypeFullName}.{callerMemberName}";
         }
 
         private async Task<IList<TodoItemInfo>> InternalGetByQueryAsync(TodoItemQuery todoItemQuery)
@@ -295,7 +297,7 @@ namespace Todo.Services.TodoItemManagement
 
             if (string.IsNullOrWhiteSpace(sortByProperty))
             {
-                return defaultKeySelector;
+                return DefaultKeySelector;
             }
 
             if (SortByCreatedOn.Equals(sortByProperty, StringComparison.InvariantCultureIgnoreCase))
@@ -318,7 +320,7 @@ namespace Todo.Services.TodoItemManagement
                 return todoItem => todoItem.Name;
             }
 
-            return defaultKeySelector;
+            return DefaultKeySelector;
         }
 
         private static IQueryable<TodoItemInfo> ProjectItems(IQueryable<TodoItem> todoItems)
