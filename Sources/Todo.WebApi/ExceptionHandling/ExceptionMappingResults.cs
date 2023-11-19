@@ -44,7 +44,7 @@ namespace Todo.WebApi.ExceptionHandling
                 TransactionException _ => DatabaseError,
 
                 // Fall-back to HTTP status code 500.
-                _ => GenericError,
+                _ => GenericError
             };
         }
     }

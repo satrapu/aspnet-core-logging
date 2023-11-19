@@ -31,7 +31,7 @@ namespace Todo.Services.Security
                 {
                     new(ClaimTypes.NameIdentifier, userNameAsBase64),
                     new("scope", string.Join(separator: ' ', generateJwtInfo.Scopes))
-                }),
+                })
             };
 
             var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();

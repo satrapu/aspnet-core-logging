@@ -66,7 +66,7 @@ namespace Todo.WebApi.Controllers
                 ShouldListenTo = _ => false,
                 Sample = (ref ActivityCreationOptions<ActivityContext> _) => ActivitySamplingResult.None,
                 ActivityStarted = _ => { },
-                ActivityStopped = activity => { },
+                ActivityStopped = _ => { }
             };
 
             ActivitySource.AddActivityListener(activityListener);
