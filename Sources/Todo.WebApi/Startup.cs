@@ -229,6 +229,7 @@ namespace Todo.WebApi
             logger.LogInformation("Application [{ApplicationName}] has started on environment [{EnvironmentName}]",
                 webHostEnvironment.ApplicationName, webHostEnvironment.EnvironmentName);
 
+            // ReSharper disable once ExplicitCallerInfoArgument
             using Activity _ = ActivitySources.TodoWebApi.StartActivity("Application has started");
         }
 
@@ -237,6 +238,7 @@ namespace Todo.WebApi
             logger.LogInformation("Application [{ApplicationName}] is stopping on environment [{EnvironmentName}] ...",
                 webHostEnvironment.ApplicationName, webHostEnvironment.EnvironmentName);
 
+            // ReSharper disable once ExplicitCallerInfoArgument
             using Activity _ = ActivitySources.TodoWebApi.StartActivity("Application is stopping");
         }
 
@@ -245,6 +247,7 @@ namespace Todo.WebApi
             logger.LogInformation("Application [{ApplicationName}] has stopped on environment [{EnvironmentName}]",
                 webHostEnvironment.ApplicationName, webHostEnvironment.EnvironmentName);
 
+            // ReSharper disable once ExplicitCallerInfoArgument
             using Activity _ = ActivitySources.TodoWebApi.StartActivity("Application has stopped");
         }
     }
