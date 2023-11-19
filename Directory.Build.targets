@@ -4,58 +4,59 @@
 -->
 <Project>
     <ItemGroup>
-        <PackageReference Update="Autofac" Version="7.0.1"/>
+        <PackageReference Update="Autofac" Version="7.1.0"/>
         <PackageReference Update="Autofac.Extensions.DependencyInjection" Version="8.0.0"/>
-        <PackageReference Update="Azure.Monitor.OpenTelemetry.Exporter" Version="1.0.0-beta.9"/>
+        <PackageReference Update="Azure.Monitor.OpenTelemetry.Exporter" Version="1.0.0"/>
 
         <!--
             Use 'Include' XML attribute instead of 'Update' since this reference will be added to all projects affected
             by this .targets file, more specifically, all test projects found in this solution!
         -->
-        <PackageReference Include="coverlet.collector" Version="3.2.0">
+        <PackageReference Include="coverlet.collector" Version="6.0.0">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
 
         <PackageReference Update="EntityFrameworkCoreMock.Moq" Version="2.4.0"/>
-        <PackageReference Update="FluentAssertions" Version="6.11.0"/>
-        <PackageReference Update="Microsoft.AspNet.WebApi.Client" Version="5.2.9"/>
-        <PackageReference Update="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.5"/>
-        <PackageReference Update="Microsoft.AspNetCore.Mvc.Testing" Version="7.0.5"/>
-        <PackageReference Update="Microsoft.EntityFrameworkCore.Design" Version="7.0.5"/>
-        <PackageReference Update="Microsoft.EntityFrameworkCore.InMemory" Version="7.0.5"/>
-        <PackageReference Update="Microsoft.Extensions.Configuration.Binder" Version="7.0.4"/>
-        <PackageReference Update="Microsoft.Extensions.Hosting.Abstractions" Version="7.0.0"/>
-        <PackageReference Update="Microsoft.Extensions.Logging.Abstractions" Version="7.0.0"/>
-        <PackageReference Update="Microsoft.NET.Test.Sdk" Version="17.6.0"/>
-        <PackageReference Update="Moq" Version="4.18.4"/>
+        <PackageReference Update="FluentAssertions" Version="6.12.0"/>
+        <PackageReference Update="Microsoft.AspNet.WebApi.Client" Version="6.0.0"/>
+        <PackageReference Update="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0"/>
+        <PackageReference Update="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.0"/>
+        <PackageReference Update="Microsoft.EntityFrameworkCore.Design" Version="8.0.0"/>
+        <PackageReference Update="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.0"/>
+        <PackageReference Update="Microsoft.Extensions.Configuration.Binder" Version="8.0.0"/>
+        <PackageReference Update="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0"/>
+        <PackageReference Update="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0"/>
+        <PackageReference Update="Microsoft.NET.Test.Sdk" Version="17.8.0"/>
+        <PackageReference Update="Moq" Version="4.20.69"/>
+        <!-- FIXME Do I really need this lib? -->
         <PackageReference Update="Newtonsoft.Json" Version="13.0.3" />
-        <PackageReference Update="Npgsql.EntityFrameworkCore.PostgreSQL" Version="7.0.4"/>
+        <PackageReference Update="Npgsql.EntityFrameworkCore.PostgreSQL" Version="8.0.0-rc.2"/>
         <PackageReference Update="NetArchTest.Rules" Version="1.3.2"/>
-        <PackageReference Update="NUnit" Version="3.13.3"/>
-        <PackageReference Update="NUnit3TestAdapter" Version="4.4.2"/>
-        <PackageReference Update="NunitXml.TestLogger" Version="3.0.131"/>
-        <PackageReference Update="OpenTelemetry" Version="1.4.0" />
+        <PackageReference Update="NUnit" Version="3.14.0"/>
+        <PackageReference Update="NUnit3TestAdapter" Version="4.5.0"/>
+        <PackageReference Update="NunitXml.TestLogger" Version="3.1.15"/>
+        <PackageReference Update="OpenTelemetry" Version="1.6.0" />
         <PackageReference Update="OpenTelemetry.Contrib.Instrumentation.EntityFrameworkCore" Version="1.0.0-beta2" />
-        <PackageReference Update="OpenTelemetry.Exporter.Jaeger" Version="1.4.0" />
+        <PackageReference Update="OpenTelemetry.Exporter.Jaeger" Version="1.5.1" />
         <PackageReference Update="OpenTelemetry.Extensions" Version="1.0.0-beta.4" />
-        <PackageReference Update="OpenTelemetry.Extensions.Hosting" Version="1.4.0" />
+        <PackageReference Update="OpenTelemetry.Extensions.Hosting" Version="1.6.0" />
         <PackageReference Update="OpenTelemetry.Instrumentation.AspNetCore" Version="1.0.0-rc9.14" />
-        <PackageReference Update="Serilog.AspNetCore" Version="7.0.0"/>
+        <PackageReference Update="Serilog.AspNetCore" Version="8.0.0"/>
         <PackageReference Update="Serilog.Enrichers.Span" Version="3.1.0" />
         <PackageReference Update="Serilog.Enrichers.Thread" Version="3.1.0"/>
         <PackageReference Update="Serilog.Sinks.ApplicationInsights" Version="4.0.0"/>
-        <PackageReference Update="Serilog.Sinks.Seq" Version="5.2.2"/>
+        <PackageReference Update="Serilog.Sinks.Seq" Version="6.0.0"/>
 
         <!--
             Use 'Include' XML attribute instead of 'Update' since this reference will be added to all projects affected
             by this .targets file, more specifically, all projects found in this solution!
         -->
-        <PackageReference Include="SonarAnalyzer.CSharp" Version="9.0.0.68202">
+        <PackageReference Include="SonarAnalyzer.CSharp" Version="9.12.0.78982">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
 
-        <PackageReference Update="System.IdentityModel.Tokens.Jwt" Version="6.30.1"/>
+        <PackageReference Update="System.IdentityModel.Tokens.Jwt" Version="7.0.3"/>
     </ItemGroup>
 </Project>
