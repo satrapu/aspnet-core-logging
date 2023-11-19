@@ -52,12 +52,6 @@ variables:
   - name: 'DotNetCore_SDK_Version'
     value: '8.0.100'
 
-  # Specifies the version of the dotnet-format tool used for enforcing rules found in .editorconfig files.
-  # All releases can be found here: https://github.com/dotnet/format/releases.
-  # All NuGet packages can be found here: https://www.nuget.org/packages/dotnet-format/.
-  - name: 'DotNetFormat_Version'
-    value: '5.1.250801'
-
   # Specifies the version of the ReportGenerator tool used for generating code coverage reports.
   # All releases can be found here: https://github.com/danielpalme/ReportGenerator/releases.
   # All NuGet packages can be found here: https://www.nuget.org/packages/ReportGenerator/.
@@ -130,7 +124,7 @@ jobs:
       displayName: 'Run on Windows'
     pool:
       vmImage: 'windows-2022'
-    runDotNetFormatTool: True
+    runDotNetFormatCommand: True
     integrationTests:
       databaseHost: 'localhost'
       databaseName: '$(IntegrationTests.Database.Todo.Name)'
