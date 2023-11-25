@@ -1,8 +1,8 @@
 version: '3.8'
 
 services:
-  aspnet-core-logging-dev:
-    container_name: aspnet-core-logging-dev-db
+  aspnet-core-logging-db-local-dev:
+    container_name: aspnet-core-logging-db-for-local-dev
     image: satrapu/postgresql:15.1-linux
     restart: unless-stopped
     healthcheck:
@@ -10,25 +10,25 @@ services:
         pg_isready \
           --host=localhost \
           --port=5432 \
-          --dbname=aspnet-core-logging-dev \
-          --username=${DB_DEV_POSTGRES_USER}
+          --dbname=$$POSTGRES_DB \
+          --username=$$POSTGRES_USER
       interval: "2s"
       timeout: "5s"
       retries: 5
       start_period: "1s"
     volumes:
-      - aspnet-core-logging-dev_data:/var/lib/postgresql/data
+      - aspnet-core-logging-db-for-local-dev_data:/var/lib/postgresql/data
     ports:
       - "5432:5432/tcp"
     networks:
       - local_postgresql
     environment:
-      - POSTGRES_USER=${DB_DEV_POSTGRES_USER}
-      - POSTGRES_PASSWORD=${DB_DEV_POSTGRES_PASSWORD}
-      - POSTGRES_DB=aspnet-core-logging-dev
+      - POSTGRES_USER=${DB_LOCAL_POSTGRES_USER}
+      - POSTGRES_PASSWORD=${DB_LOCAL_POSTGRES_PASSWORD}
+      - POSTGRES_DB=aspnet-core-logging-db-local-dev
 
-  aspnet-core-logging-it:
-    container_name: aspnet-core-logging-it-db
+  aspnet-core-logging-db-integration-tests:
+    container_name: aspnet-core-logging-db-for-integration-tests
     image: satrapu/postgresql:15.1-linux
     restart: unless-stopped
     healthcheck:
@@ -36,22 +36,48 @@ services:
         pg_isready \
           --host=localhost \
           --port=5432 \
-          --dbname=aspnet-core-logging-it \
-          --username=${DB_IT_POSTGRES_USER}
+          --dbname=$$POSTGRES_DB \
+          --username=$$POSTGRES_USER
       interval: "2s"
       timeout: "5s"
       retries: 5
       start_period: "1s"
     volumes:
-      - aspnet-core-logging-it_data:/var/lib/postgresql/data
+      - aspnet-core-logging-db-for-integration-tests_data:/var/lib/postgresql/data
     ports:
       - "5433:5432/tcp"
     networks:
       - local_postgresql
     environment:
-      - POSTGRES_USER=${DB_IT_POSTGRES_USER}
-      - POSTGRES_PASSWORD=${DB_IT_POSTGRES_PASSWORD}
-      - POSTGRES_DB=aspnet-core-logging-it
+      - POSTGRES_USER=${DB_INTEGRATION_TESTS_POSTGRES_USER}
+      - POSTGRES_PASSWORD=${DB_INTEGRATION_TESTS_POSTGRES_PASSWORD}
+      - POSTGRES_DB=aspnet-core-logging-db-integration-tests
+
+  aspnet-core-logging-db-acceptance-tests:
+      container_name: aspnet-core-logging-db-for-acceptance-tests
+      image: satrapu/postgresql:15.1-linux
+      restart: unless-stopped
+      healthcheck:
+        test: >
+          pg_isready \
+            --host=localhost \
+            --port=5432 \
+            --dbname=$$POSTGRES_DB \
+            --username=$$POSTGRES_USER
+        interval: "2s"
+        timeout: "5s"
+        retries: 5
+        start_period: "1s"
+      volumes:
+        - aspnet-core-logging-db-for-acceptance-tests_data:/var/lib/postgresql/data
+      ports:
+        - "5434:5432/tcp"
+      networks:
+        - local_postgresql
+      environment:
+        - POSTGRES_USER=${DB_ACCEPTANCE_TESTS_POSTGRES_USER}
+        - POSTGRES_PASSWORD=${DB_ACCEPTANCE_TESTS_POSTGRES_PASSWORD}
+        - POSTGRES_DB=aspnet-core-logging-db-acceptance-tests
 
   jaeger:
     container_name: jaeger
@@ -74,7 +100,7 @@ services:
 
   pgadmin:
     container_name: pgadmin-ui
-    image: dpage/pgadmin4:7.8
+    image: dpage/pgadmin4:8.0
     restart: unless-stopped
     volumes:
       - pgadmin_data:/var/lib/pgadmin
@@ -86,8 +112,9 @@ services:
       - PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL}
       - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD}
     depends_on:
-      - aspnet-core-logging-dev
-      - aspnet-core-logging-it
+      - aspnet-core-logging-db-local-dev
+      - aspnet-core-logging-db-integration-tests
+      - aspnet-core-logging-db-acceptance-tests
 
   seq:
     container_name: seq
@@ -106,9 +133,11 @@ services:
       - ACCEPT_EULA=Y
 
 volumes:
-  aspnet-core-logging-dev_data:
+  aspnet-core-logging-db-for-local-dev_data:
     external: true
-  aspnet-core-logging-it_data:
+  aspnet-core-logging-db-for-integration-tests_data:
+    external: true
+  aspnet-core-logging-db-for-acceptance-tests_data:
     external: true
   pgadmin_data:
     external: true
