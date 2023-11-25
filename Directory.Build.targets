@@ -55,6 +55,14 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
 
+        <PackageReference Update="SpecFlow.Plus.LivingDocPlugin" Version="3.9.57"/>
+        <PackageReference Update="SpecFlow.xUnit" Version="3.9.74"/>
+        <PackageReference Update="xunit" Version="2.6.2"/>
+        <PackageReference Update="xunit.runner.visualstudio" Version="2.5.4">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+
         <PackageReference Update="System.IdentityModel.Tokens.Jwt" Version="7.0.3"/>
     </ItemGroup>
 </Project>
