@@ -19,7 +19,7 @@ namespace Todo.WebApi.AcceptanceTests.Features
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "3.9.0.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public partial class AddTodoItemFeature : object, Xunit.IClassFixture<AddTodoItemFeature.FixtureData>, System.IDisposable
+    public partial class AddTodoItemsFeature : object, Xunit.IClassFixture<AddTodoItemsFeature.FixtureData>, System.IDisposable
     {
         
         private static TechTalk.SpecFlow.ITestRunner testRunner;
@@ -31,7 +31,7 @@ namespace Todo.WebApi.AcceptanceTests.Features
 #line 1 "AddTodoItem.feature"
 #line hidden
         
-        public AddTodoItemFeature(AddTodoItemFeature.FixtureData fixtureData, Todo_WebApi_AcceptanceTests_XUnitAssemblyFixture assemblyFixture, Xunit.Abstractions.ITestOutputHelper testOutputHelper)
+        public AddTodoItemsFeature(AddTodoItemsFeature.FixtureData fixtureData, Todo_WebApi_AcceptanceTests_XUnitAssemblyFixture assemblyFixture, Xunit.Abstractions.ITestOutputHelper testOutputHelper)
         {
             this._testOutputHelper = testOutputHelper;
             this.TestInitialize();
@@ -40,7 +40,7 @@ namespace Todo.WebApi.AcceptanceTests.Features
         public static void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "Add todo item", "As a user I want to be able to add todo items so I won\'t forget about important t" +
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "Add todo items", "As a user I want to be able to add todo items so I won\'t forget about important t" +
                     "hings I need to do each day.", ProgrammingLanguage.CSharp, featureTags);
             testRunner.OnFeatureStart(featureInfo);
         }
@@ -82,7 +82,7 @@ namespace Todo.WebApi.AcceptanceTests.Features
         }
         
         [Xunit.SkippableFactAttribute(DisplayName="Add new todo item")]
-        [Xunit.TraitAttribute("FeatureTitle", "Add todo item")]
+        [Xunit.TraitAttribute("FeatureTitle", "Add todo items")]
         [Xunit.TraitAttribute("Description", "Add new todo item")]
         [Xunit.TraitAttribute("Category", "add-todo-item")]
         public void AddNewTodoItem()
@@ -106,10 +106,10 @@ namespace Todo.WebApi.AcceptanceTests.Features
 #line hidden
                 TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
                             "Name",
-                            "Description"});
+                            "IsComplete"});
                 table1.AddRow(new string[] {
-                            "Do the laundry",
-                            "Do the laundry"});
+                            "Add more tests",
+                            "true"});
 #line 7
         testRunner.When("the current user adds a new todo item using the below details", ((string)(null)), table1, "When ");
 #line hidden
@@ -127,12 +127,12 @@ namespace Todo.WebApi.AcceptanceTests.Features
             
             public FixtureData()
             {
-                AddTodoItemFeature.FeatureSetup();
+                AddTodoItemsFeature.FeatureSetup();
             }
             
             void System.IDisposable.Dispose()
             {
-                AddTodoItemFeature.FeatureTearDown();
+                AddTodoItemsFeature.FeatureTearDown();
             }
         }
     }
