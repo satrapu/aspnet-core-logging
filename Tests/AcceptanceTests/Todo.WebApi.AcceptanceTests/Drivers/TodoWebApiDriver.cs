@@ -8,13 +8,14 @@ namespace Todo.WebApi.AcceptanceTests.Drivers
 
     public class TodoWebApiDriver
     {
-        private const string AuthenticationScheme = "Bearer";
+        internal const string HttpClientName = nameof(TodoWebApiDriver);
+        internal const string AuthenticationScheme = "Bearer";
         private static readonly Type accessTokenType = new { accessToken = "" }.GetType();
         private readonly HttpClient httpClient;
 
         public TodoWebApiDriver(IHttpClientFactory httpClientFactory)
         {
-            httpClient = httpClientFactory.CreateClient(name: "AcceptanceTests");
+            httpClient = httpClientFactory.CreateClient(name: HttpClientName);
         }
 
         public async Task<HttpResponseMessage> AddNewTodoItemAsync
@@ -29,7 +30,6 @@ namespace Todo.WebApi.AcceptanceTests.Drivers
 
             return await httpClient.SendAsync(httpRequestMessage);
         }
-
 
         public async Task<AuthenticationHeaderValue> GetAuthorizationHeaderAsync(UserDetails userDetails)
         {

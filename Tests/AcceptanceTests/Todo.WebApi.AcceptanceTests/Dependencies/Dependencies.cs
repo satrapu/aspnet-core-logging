@@ -4,33 +4,39 @@
     using System.Net.Http.Headers;
     using System.Reflection;
 
+    using Drivers;
+
     using Microsoft.Extensions.DependencyInjection;
 
     using SolidToken.SpecFlow.DependencyInjection;
 
-    using Todo.WebApi.AcceptanceTests.Drivers;
-
     public static class Dependencies
     {
+        private const string DefaultProductName = "Todo.WebApi.AcceptanceTests";
+        private const string DefaultProductVersion = "1.0.0.0";
+
         [ScenarioDependencies]
         public static IServiceCollection CreateServices()
         {
             AssemblyName assemblyName = Assembly.GetExecutingAssembly().GetName();
-
-            ProductHeaderValue productHeaderValue = new ProductHeaderValue
-            (
-                name: assemblyName.Name ?? "Todo.WebApi.AcceptanceTests",
-                version: assemblyName.Version?.ToString() ?? "1.0.0.0"
-            );
-
             ServiceCollection services = new();
 
             services
                 .AddSingleton<TodoWebApiDriver>()
-                .AddHttpClient(name: "AcceptanceTests", httpClient =>
+                .AddHttpClient(name: TodoWebApiDriver.HttpClientName, httpClient =>
                 {
                     httpClient.BaseAddress = new Uri(uriString: "https://localhost:5001", uriKind: UriKind.Absolute);
-                    httpClient.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue(productHeaderValue));
+                    httpClient.DefaultRequestHeaders.UserAgent.Add
+                    (
+                        new ProductInfoHeaderValue
+                        (
+                            new ProductHeaderValue
+                            (
+                                name: assemblyName.Name ?? DefaultProductName,
+                                version: assemblyName.Version?.ToString() ?? DefaultProductVersion
+                            )
+                        )
+                    );
                 });
 
             return services;
