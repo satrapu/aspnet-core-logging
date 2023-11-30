@@ -22,6 +22,7 @@ Todo.sln.DotSettings.user
 # Tests
 /Tests/**/.TestResults/
 /Tests/**/TestResults/
+LivingDoc.html
 
 # Code coverage
 /Tests/**/.CodeCoverageResults/
