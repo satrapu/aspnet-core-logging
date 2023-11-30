@@ -8,6 +8,8 @@ namespace Todo.WebApi.AcceptanceTests.Drivers
 
     public class TodoWebApiDriver
     {
+        private const string AuthenticationScheme = "Bearer";
+        private static readonly Type accessTokenType = new { accessToken = "" }.GetType();
         private readonly HttpClient httpClient;
 
         public TodoWebApiDriver(IHttpClientFactory httpClientFactory)
@@ -15,32 +17,30 @@ namespace Todo.WebApi.AcceptanceTests.Drivers
             httpClient = httpClientFactory.CreateClient(name: "AcceptanceTests");
         }
 
-        public async Task<HttpResponseMessage> AddNewTodoItemAsync(NewTodoItemInfo newTodoItemInfo)
+        public async Task<HttpResponseMessage> AddNewTodoItemAsync
+        (
+            NewTodoItemInfo newTodoItemInfo,
+            AuthenticationHeaderValue authenticationHeaderValue
+        )
         {
             using HttpRequestMessage httpRequestMessage = new(method: HttpMethod.Post, requestUri: "api/todo");
             httpRequestMessage.Content = JsonContent.Create(newTodoItemInfo);
-
-            await InjectAuthorizationHeaderAsync(httpRequestMessage);
+            httpRequestMessage.Headers.Authorization = authenticationHeaderValue;
 
             return await httpClient.SendAsync(httpRequestMessage);
         }
 
-        private async Task InjectAuthorizationHeaderAsync(HttpRequestMessage httpRequestMessage)
+
+        public async Task<AuthenticationHeaderValue> GetAuthorizationHeaderAsync(UserDetails userDetails)
         {
-            using HttpRequestMessage jwtHttpRequestMessage = new(method: HttpMethod.Post, requestUri: "api/jwt");
+            using HttpRequestMessage httpRequestMessage = new(method: HttpMethod.Post, requestUri: "api/jwt");
+            httpRequestMessage.Content = JsonContent.Create(userDetails);
 
-            jwtHttpRequestMessage.Content = JsonContent.Create(new
-            {
-                UserName = "acceptance-tests-user",
-                Password = "Qwerty!"
-            });
+            using HttpResponseMessage httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
+            httpResponseMessage.EnsureSuccessStatusCode();
+            dynamic dynamicResult = await httpResponseMessage.Content.ReadAsAsync(type: accessTokenType);
 
-            using HttpResponseMessage jwtHttpResponseMessage = await httpClient.SendAsync(jwtHttpRequestMessage);
-            jwtHttpResponseMessage.EnsureSuccessStatusCode();
-
-            Type resultType = new { accessToken = "" }.GetType();
-            dynamic dynamicResult = await jwtHttpResponseMessage.Content.ReadAsAsync(resultType);
-            httpRequestMessage.Headers.Authorization = new AuthenticationHeaderValue(scheme: "Bearer", parameter: dynamicResult.accessToken);
+            return new AuthenticationHeaderValue(scheme: AuthenticationScheme, parameter: dynamicResult.accessToken);
         }
     }
 }

@@ -101,20 +101,26 @@ namespace Todo.WebApi.AcceptanceTests.Features
             else
             {
                 this.ScenarioStart();
-#line 6
-        testRunner.Given("the current user is authorized to add a new todo item", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line hidden
                 TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
+                            "UserName",
+                            "Password"});
+                table1.AddRow(new string[] {
+                            "acceptance-tests",
+                            "Qwerty!123"});
+#line 6
+        testRunner.Given("the current user has the below details", ((string)(null)), table1, "Given ");
+#line hidden
+                TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
                             "Name",
                             "IsComplete"});
-                table1.AddRow(new string[] {
+                table2.AddRow(new string[] {
                             "Add more tests",
                             "true"});
-#line 7
-        testRunner.When("the current user adds a new todo item using the below details", ((string)(null)), table1, "When ");
+#line 9
+        testRunner.When("the current user adds a new todo item using the below details", ((string)(null)), table2, "When ");
 #line hidden
-#line 10
-        testRunner.Then("the system must store that todo item", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line 12
+        testRunner.Then("the system must create the todo item", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();
