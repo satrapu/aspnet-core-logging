@@ -101,20 +101,20 @@ namespace Todo.WebApi.TestInfrastructure
 
         private IConfiguration CreateConfigurationForEnvironment(string environmentName)
         {
-            IConfiguration configuration = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
-                .AddJsonFile($"appsettings.{environmentName}.json", optional: false, reloadOnChange: false)
-                .AddEnvironmentVariables()
-                .Build();
+            IConfiguration configuration =
+                new ConfigurationBuilder()
+                    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
+                    .AddJsonFile($"appsettings.{environmentName}.json", optional: false, reloadOnChange: false)
+                    .AddEnvironmentVariables()
+                    .Build();
 
-            var connectionStringBuilder =
-                new NpgsqlConnectionStringBuilder(configuration.GetValue<string>(ConnectionStringKey))
-                {
-                    Database = $"db4it--{applicationName}",
-                    IncludeErrorDetail = true
-                };
+            NpgsqlConnectionStringBuilder connectionStringBuilder = new(connectionString: configuration.GetValue<string>(ConnectionStringKey))
+            {
+                Database = $"db4it--{applicationName}",
+                IncludeErrorDetail = true
+            };
 
-            var memoryConfigurationSource = new MemoryConfigurationSource
+            MemoryConfigurationSource memoryConfigurationSource = new()
             {
                 InitialData = new List<KeyValuePair<string, string>>
                 {
@@ -142,7 +142,7 @@ namespace Todo.WebApi.TestInfrastructure
 
         private async Task<string> GetAccessTokenAsync()
         {
-            var generateJwtModel = new GenerateJwtModel
+            GenerateJwtModel generateJwtModel = new()
             {
                 UserName = $"user-{Guid.NewGuid():N}",
                 Password = $"password-{Guid.NewGuid():N}"
@@ -150,17 +150,20 @@ namespace Todo.WebApi.TestInfrastructure
 
             HttpClient httpClient = CreateHttpClientWithLoggingCapabilities();
 
-            HttpResponseMessage httpResponseMessage = await httpClient.PostAsync("api/jwt",
-                new StringContent(JsonSerializer.Serialize(generateJwtModel), Encoding.UTF8,
-                    "application/json"));
+            using HttpResponseMessage httpResponseMessage =
+                await httpClient.PostAsync
+                (
+                    requestUri: "api/jwt",
+                    content: new StringContent(JsonSerializer.Serialize(generateJwtModel), Encoding.UTF8, "application/json")
+                );
 
-            if (!httpResponseMessage.IsSuccessStatusCode)
+            if (httpResponseMessage.IsSuccessStatusCode)
             {
-                throw new CouldNotGetJwtException(httpResponseMessage);
+                JwtModel jwtModel = await httpResponseMessage.Content.ReadFromJsonAsync<JwtModel>();
+                return jwtModel.AccessToken;
             }
 
-            JwtModel jwtModel = await httpResponseMessage.Content.ReadFromJsonAsync<JwtModel>();
-            return jwtModel.AccessToken;
+            throw new CouldNotGetJwtException(httpResponseMessage);
         }
     }
 }
