@@ -112,38 +112,26 @@ namespace Todo.WebApi.Controllers
             // Arrange
             using HttpClient httpClient = await webApplicationFactory.CreateHttpClientWithJwtAsync();
 
-            long? id = null;
             const long idThreshold = 1;
 
-            try
+            NewTodoItemModel newTodoItemModel = new()
             {
-                NewTodoItemModel newTodoItemModel = new()
-                {
-                    Name = $"it--{nameof(CreateAsync_UsingValidTodoItem_ReturnsExpectedData)}--{Guid.NewGuid():N}",
-                    IsComplete = DateTime.UtcNow.Ticks % 2 == 0
-                };
+                Name = $"it--{nameof(CreateAsync_UsingValidTodoItem_ReturnsExpectedData)}--{Guid.NewGuid():N}",
+                IsComplete = DateTime.UtcNow.Ticks % 2 == 0
+            };
 
-                // Act
-                using HttpResponseMessage response = await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemModel);
+            // Act
+            using HttpResponseMessage response = await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemModel);
 
-                // Assert
-                using AssertionScope _ = new();
-                response.IsSuccessStatusCode.Should().BeTrue();
-                response.StatusCode.Should().Be(HttpStatusCode.Created);
-                response.Headers.Location.Should().NotBeNull();
-                response.Headers.Location!.ToString().Should().MatchRegex(@"api/todo/\d+");
+            // Assert
+            using AssertionScope _ = new();
+            response.IsSuccessStatusCode.Should().BeTrue();
+            response.StatusCode.Should().Be(HttpStatusCode.Created);
+            response.Headers.Location.Should().NotBeNull();
+            response.Headers.Location!.ToString().Should().MatchRegex(@"api/todo/\d+");
 
-                id = GetCreatedEntityIdFrom(response);
-                id.Should().BeGreaterOrEqualTo(idThreshold);
-            }
-            finally
-            {
-                if (id.HasValue)
-                {
-                    using HttpResponseMessage response = await httpClient.DeleteAsync($"{BaseUrl}/{id}");
-                    response.EnsureSuccessStatusCode();
-                }
-            }
+            long id = GetCreatedEntityIdFrom(response);
+            id.Should().BeGreaterOrEqualTo(idThreshold);
         }
 
         /// <summary>
@@ -155,7 +143,7 @@ namespace Todo.WebApi.Controllers
         {
             // Arrange
             using HttpClient httpClient = await webApplicationFactory.CreateHttpClientWithJwtAsync();
-            NewTodoItemModel invalidModel = new ();
+            NewTodoItemModel invalidModel = new();
 
             // Act
             using HttpResponseMessage response = await httpClient.PostAsJsonAsync(BaseUrl, invalidModel);
@@ -206,63 +194,51 @@ namespace Todo.WebApi.Controllers
         {
             // Arrange
             using HttpClient httpClient = await webApplicationFactory.CreateHttpClientWithJwtAsync();
-            long? id = null;
 
-            try
+            string nameSuffix = Guid.NewGuid().ToString("N");
+            string name = $"it--{nameof(GetByQueryAsync_UsingDefaults_ReturnsExpectedResult)}--{nameSuffix}";
+
+            NewTodoItemModel newTodoItemModel = new()
             {
-                string nameSuffix = Guid.NewGuid().ToString("N");
-                string name = $"it--{nameof(GetByQueryAsync_UsingDefaults_ReturnsExpectedResult)}--{nameSuffix}";
+                IsComplete = DateTime.UtcNow.Ticks % 2 == 0,
+                Name = name
+            };
 
-                NewTodoItemModel newTodoItemModel = new()
-                {
-                    IsComplete = DateTime.UtcNow.Ticks % 2 == 0,
-                    Name = name
-                };
+            HttpResponseMessage response = await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemModel);
+            response.IsSuccessStatusCode.Should().BeTrue();
+            response.StatusCode.Should().Be(HttpStatusCode.Created);
+            response.Headers.Location.Should().NotBeNull();
 
-                HttpResponseMessage response = await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemModel);
-                response.IsSuccessStatusCode.Should().BeTrue();
-                response.StatusCode.Should().Be(HttpStatusCode.Created);
-                response.Headers.Location.Should().NotBeNull();
+            long id = GetCreatedEntityIdFrom(response);
 
-                id = GetCreatedEntityIdFrom(response);
-
-                Dictionary<string, string> queryString = new()
-                {
-                    [nameof(TodoItemQueryModel.Id)] = id.ToString(),
-                    [nameof(TodoItemQueryModel.IsComplete)] = newTodoItemModel.IsComplete.ToString(),
-                    [nameof(TodoItemQueryModel.NamePattern)] = name,
-                    [nameof(TodoItemQueryModel.PageIndex)] = 0.ToString(),
-                    [nameof(TodoItemQueryModel.PageSize)] = 5.ToString(),
-                    [nameof(TodoItemQueryModel.SortBy)] = nameof(TodoItem.CreatedOn),
-                    [nameof(TodoItemQueryModel.IsSortAscending)] = bool.FalseString
-                };
-
-                string requestUri = QueryHelpers.AddQueryString(BaseUrl, queryString);
-
-                // Act
-                response = await httpClient.GetAsync(requestUri);
-
-                // Assert
-                using AssertionScope _ = new();
-                response.IsSuccessStatusCode.Should().BeTrue();
-                response.StatusCode.Should().Be(HttpStatusCode.OK);
-
-                List<TodoItemModel> todoItemModels = await response.Content.ReadAsAsync<List<TodoItemModel>>();
-                todoItemModels.Should().HaveCount(1);
-
-                TodoItemModel todoItemModel = todoItemModels.SingleOrDefault();
-                todoItemModel.Should().NotBeNull();
-                todoItemModel!.Name.Should().Be(newTodoItemModel.Name);
-                todoItemModel!.IsComplete.Should().Be(newTodoItemModel.IsComplete.Value);
-            }
-            finally
+            Dictionary<string, string> queryString = new()
             {
-                if (id.HasValue)
-                {
-                    using HttpResponseMessage response = await httpClient.DeleteAsync($"{BaseUrl}/{id}");
-                    response.EnsureSuccessStatusCode();
-                }
-            }
+                [nameof(TodoItemQueryModel.Id)] = id.ToString(),
+                [nameof(TodoItemQueryModel.IsComplete)] = newTodoItemModel.IsComplete.ToString(),
+                [nameof(TodoItemQueryModel.NamePattern)] = name,
+                [nameof(TodoItemQueryModel.PageIndex)] = 0.ToString(),
+                [nameof(TodoItemQueryModel.PageSize)] = 5.ToString(),
+                [nameof(TodoItemQueryModel.SortBy)] = nameof(TodoItem.CreatedOn),
+                [nameof(TodoItemQueryModel.IsSortAscending)] = bool.FalseString
+            };
+
+            string requestUri = QueryHelpers.AddQueryString(BaseUrl, queryString);
+
+            // Act
+            response = await httpClient.GetAsync(requestUri);
+
+            // Assert
+            using AssertionScope _ = new();
+            response.IsSuccessStatusCode.Should().BeTrue();
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+            List<TodoItemModel> todoItemModels = await response.Content.ReadAsAsync<List<TodoItemModel>>();
+            todoItemModels.Should().HaveCount(1);
+
+            TodoItemModel todoItemModel = todoItemModels.SingleOrDefault();
+            todoItemModel.Should().NotBeNull();
+            todoItemModel!.Name.Should().Be(newTodoItemModel.Name);
+            todoItemModel!.IsComplete.Should().Be(newTodoItemModel.IsComplete.Value);
         }
 
         /// <summary>
@@ -295,48 +271,36 @@ namespace Todo.WebApi.Controllers
         {
             // Arrange
             using HttpClient httpClient = await webApplicationFactory.CreateHttpClientWithJwtAsync();
-            long? id = null;
 
-            try
+            string nameSuffix = Guid.NewGuid().ToString("N");
+            string name = $"it--{nameof(GetByIdAsync_UsingNewlyCreatedItem_ReturnsExpectedResult)}--{nameSuffix}";
+
+            NewTodoItemModel newTodoItemModel = new()
             {
-                string nameSuffix = Guid.NewGuid().ToString("N");
-                string name = $"it--{nameof(GetByIdAsync_UsingNewlyCreatedItem_ReturnsExpectedResult)}--{nameSuffix}";
+                IsComplete = DateTime.UtcNow.Ticks % 2 == 0,
+                Name = name
+            };
 
-                NewTodoItemModel newTodoItemModel = new()
-                {
-                    IsComplete = DateTime.UtcNow.Ticks % 2 == 0,
-                    Name = name
-                };
+            HttpResponseMessage response = await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemModel);
+            response.IsSuccessStatusCode.Should().BeTrue();
+            response.StatusCode.Should().Be(HttpStatusCode.Created);
+            response.Headers.Location.Should().NotBeNull();
 
-                HttpResponseMessage response = await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemModel);
-                response.IsSuccessStatusCode.Should().BeTrue();
-                response.StatusCode.Should().Be(HttpStatusCode.Created);
-                response.Headers.Location.Should().NotBeNull();
+            long id = GetCreatedEntityIdFrom(response);
 
-                id = GetCreatedEntityIdFrom(response);
+            // Act
+            response = await httpClient.GetAsync($"{BaseUrl}/{id}");
 
-                // Act
-                response = await httpClient.GetAsync($"{BaseUrl}/{id}");
+            // Assert
+            using AssertionScope _ = new();
+            response.IsSuccessStatusCode.Should().BeTrue();
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-                // Assert
-                using AssertionScope _ = new();
-                response.IsSuccessStatusCode.Should().BeTrue();
-                response.StatusCode.Should().Be(HttpStatusCode.OK);
-
-                TodoItemModel todoItemModel = await response.Content.ReadAsAsync<TodoItemModel>();
-                todoItemModel.Should().NotBeNull();
-                todoItemModel.Id.Should().Be(id);
-                todoItemModel.Name.Should().Be(newTodoItemModel.Name);
-                todoItemModel.IsComplete.Should().Be(newTodoItemModel.IsComplete.Value);
-            }
-            finally
-            {
-                if (id.HasValue)
-                {
-                    using HttpResponseMessage response = await httpClient.DeleteAsync($"{BaseUrl}/{id}");
-                    response.EnsureSuccessStatusCode();
-                }
-            }
+            TodoItemModel todoItemModel = await response.Content.ReadAsAsync<TodoItemModel>();
+            todoItemModel.Should().NotBeNull();
+            todoItemModel.Id.Should().Be(id);
+            todoItemModel.Name.Should().Be(newTodoItemModel.Name);
+            todoItemModel.IsComplete.Should().Be(newTodoItemModel.IsComplete.Value);
         }
 
         /// <summary>
@@ -349,42 +313,28 @@ namespace Todo.WebApi.Controllers
         {
             // Arrange
             using HttpClient httpClient = await webApplicationFactory.CreateHttpClientWithJwtAsync();
-            long? id = null;
 
-            try
+            string nameSuffix = Guid.NewGuid().ToString("N");
+            string name = $"it--{nameof(GetByIdAsync_UsingNonExistingId_ReturnsNotFoundHttpStatusCode)}--{nameSuffix}";
+
+            NewTodoItemModel newTodoItemModel = new()
             {
-                string nameSuffix = Guid.NewGuid().ToString("N");
-                string name =
-                    $"it--{nameof(GetByIdAsync_UsingNonExistingId_ReturnsNotFoundHttpStatusCode)}--{nameSuffix}";
+                IsComplete = DateTime.UtcNow.Ticks % 2 == 0,
+                Name = name
+            };
 
-                NewTodoItemModel newTodoItemModel = new()
-                {
-                    IsComplete = DateTime.UtcNow.Ticks % 2 == 0,
-                    Name = name
-                };
+            HttpResponseMessage response = await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemModel);
+            response.EnsureSuccessStatusCode();
 
-                HttpResponseMessage response = await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemModel);
-                response.EnsureSuccessStatusCode();
+            long nonExistentId = long.MinValue;
 
-                id = GetCreatedEntityIdFrom(response);
-                long nonExistentId = long.MinValue;
+            // Act
+            response = await httpClient.GetAsync($"{BaseUrl}/{nonExistentId}");
 
-                // Act
-                response = await httpClient.GetAsync($"{BaseUrl}/{nonExistentId}");
-
-                // Assert
-                using AssertionScope _ = new();
-                response.IsSuccessStatusCode.Should().BeFalse();
-                response.StatusCode.Should().Be(HttpStatusCode.NotFound);
-            }
-            finally
-            {
-                if (id.HasValue)
-                {
-                    using HttpResponseMessage response = await httpClient.DeleteAsync($"{BaseUrl}/{id}");
-                    response.EnsureSuccessStatusCode();
-                }
-            }
+            // Assert
+            using AssertionScope _ = new();
+            response.IsSuccessStatusCode.Should().BeFalse();
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
         /// <summary>
@@ -418,57 +368,45 @@ namespace Todo.WebApi.Controllers
         {
             // Arrange
             using HttpClient httpClient = await webApplicationFactory.CreateHttpClientWithJwtAsync();
-            long? id = null;
 
-            try
+            string name = $"it--{nameof(UpdateAsync_UsingNewlyCreatedTodoItem_MustSucceed)}--{Guid.NewGuid():N}";
+            bool isComplete = DateTime.UtcNow.Ticks % 2 == 0;
+
+            NewTodoItemModel newTodoItemInfo = new()
             {
-                string name = $"it--{nameof(UpdateAsync_UsingNewlyCreatedTodoItem_MustSucceed)}--{Guid.NewGuid():N}";
-                bool isComplete = DateTime.UtcNow.Ticks % 2 == 0;
+                Name = name,
+                IsComplete = isComplete
+            };
 
-                NewTodoItemModel newTodoItemInfo = new()
-                {
-                    Name = name,
-                    IsComplete = isComplete
-                };
+            HttpResponseMessage response = await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemInfo);
+            response.IsSuccessStatusCode.Should().BeTrue();
+            response.Headers.Location.Should().NotBeNull();
 
-                HttpResponseMessage response = await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemInfo);
-                response.IsSuccessStatusCode.Should().BeTrue();
-                response.Headers.Location.Should().NotBeNull();
+            long id = GetCreatedEntityIdFrom(response);
 
-                id = GetCreatedEntityIdFrom(response);
-
-                UpdateTodoItemModel updateTodoItemModel = new()
-                {
-                    IsComplete = !newTodoItemInfo.IsComplete,
-                    Name = $"CHANGED--{newTodoItemInfo.Name}"
-                };
-
-                // Act
-                response = await httpClient.PutAsJsonAsync($"{BaseUrl}/{id}", updateTodoItemModel);
-
-                // Assert
-                using AssertionScope _ = new();
-                response.IsSuccessStatusCode.Should().BeTrue();
-                response.StatusCode.Should().Be(HttpStatusCode.NoContent);
-
-                response = await httpClient.GetAsync($"{BaseUrl}/{id}");
-                response.IsSuccessStatusCode.Should().BeTrue();
-                response.StatusCode.Should().Be(HttpStatusCode.OK);
-
-                TodoItemModel todoItemModel = await response.Content.ReadAsAsync<TodoItemModel>();
-                todoItemModel.Should().NotBeNull();
-                todoItemModel.Id.Should().Be(id);
-                todoItemModel.IsComplete.Should().Be(updateTodoItemModel.IsComplete.Value);
-                todoItemModel.Name.Should().Be(updateTodoItemModel.Name);
-            }
-            finally
+            UpdateTodoItemModel updateTodoItemModel = new()
             {
-                if (id.HasValue)
-                {
-                    using HttpResponseMessage response = await httpClient.DeleteAsync($"{BaseUrl}/{id}");
-                    response.EnsureSuccessStatusCode();
-                }
-            }
+                IsComplete = !newTodoItemInfo.IsComplete,
+                Name = $"CHANGED--{newTodoItemInfo.Name}"
+            };
+
+            // Act
+            response = await httpClient.PutAsJsonAsync($"{BaseUrl}/{id}", updateTodoItemModel);
+
+            // Assert
+            using AssertionScope _ = new();
+            response.IsSuccessStatusCode.Should().BeTrue();
+            response.StatusCode.Should().Be(HttpStatusCode.NoContent);
+
+            response = await httpClient.GetAsync($"{BaseUrl}/{id}");
+            response.IsSuccessStatusCode.Should().BeTrue();
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+            TodoItemModel todoItemModel = await response.Content.ReadAsAsync<TodoItemModel>();
+            todoItemModel.Should().NotBeNull();
+            todoItemModel.Id.Should().Be(id);
+            todoItemModel.IsComplete.Should().Be(updateTodoItemModel.IsComplete.Value);
+            todoItemModel.Name.Should().Be(updateTodoItemModel.Name);
         }
 
         /// <summary>
@@ -481,7 +419,7 @@ namespace Todo.WebApi.Controllers
         {
             // Arrange
             using HttpClient httpClient = webApplicationFactory.CreateClient();
-            long? id = int.MaxValue;
+            long id = int.MaxValue;
 
             // Act
             using HttpResponseMessage response = await httpClient.DeleteAsync($"{BaseUrl}/{id}");
