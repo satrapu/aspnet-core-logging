@@ -40,8 +40,8 @@ namespace Todo.WebApi.AcceptanceTests.Features
         public static void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "Add todo items", "As a user I want to be able to add todo items so I won\'t forget about important t" +
-                    "hings I need to do each day.", ProgrammingLanguage.CSharp, featureTags);
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "Add todo items", "As a user I want to be able to add new todo items so I won\'t forget about the imp" +
+                    "ortant things I need to take care of each day.", ProgrammingLanguage.CSharp, featureTags);
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -81,18 +81,18 @@ namespace Todo.WebApi.AcceptanceTests.Features
             this.TestTearDown();
         }
         
-        [Xunit.SkippableFactAttribute(DisplayName="Add new todo item using valid input")]
+        [Xunit.SkippableFactAttribute(DisplayName="Add new todo item")]
         [Xunit.TraitAttribute("FeatureTitle", "Add todo items")]
-        [Xunit.TraitAttribute("Description", "Add new todo item using valid input")]
-        [Xunit.TraitAttribute("Category", "add-todo-item")]
-        [Xunit.TraitAttribute("Category", "positive")]
-        public void AddNewTodoItemUsingValidInput()
+        [Xunit.TraitAttribute("Description", "Add new todo item")]
+        [Xunit.TraitAttribute("Category", "add-new-todo-item")]
+        [Xunit.TraitAttribute("Category", "expected-positive-result")]
+        public void AddNewTodoItem()
         {
             string[] tagsOfScenario = new string[] {
-                    "add-todo-item",
-                    "positive"};
+                    "add-new-todo-item",
+                    "expected-positive-result"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Add new todo item using valid input", null, tagsOfScenario, argumentsOfScenario, featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Add new todo item", null, tagsOfScenario, argumentsOfScenario, featureTags);
 #line 6
     this.ScenarioInitialize(scenarioInfo);
 #line hidden
@@ -103,50 +103,47 @@ namespace Todo.WebApi.AcceptanceTests.Features
             else
             {
                 this.ScenarioStart();
-                TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
-                            "UserName",
-                            "Password"});
-                table1.AddRow(new string[] {
-                            "acceptance-tests",
-                            "Qwerty!123"});
 #line 7
-        testRunner.Given("the current user has the below details", ((string)(null)), table1, "Given ");
+        testRunner.Given("the current user is authorized to add todo items", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line hidden
+                TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
+                            "Name",
+                            "IsComplete"});
+                table1.AddRow(new string[] {
+                            "Add more acceptance tests",
+                            "true"});
+#line 8
+        testRunner.When("the current user tries adding a new todo item", ((string)(null)), table1, "When ");
+#line hidden
+#line 11
+        testRunner.Then("the system must add the new todo item", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
                 TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
-                            "Name",
-                            "IsComplete"});
-                table2.AddRow(new string[] {
-                            "Add more tests",
-                            "true"});
-#line 10
-        testRunner.When("the current user adds a new todo item using the below details", ((string)(null)), table2, "When ");
-#line hidden
-                TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
                             "HttpStatusCode",
                             "LocationHeaderValueMatchExpression"});
-                table3.AddRow(new string[] {
+                table2.AddRow(new string[] {
                             "201",
                             "http*:*//*/api/todo/*"});
-#line 13
-        testRunner.Then("the system must reply with a success response", ((string)(null)), table3, "Then ");
+#line 12
+        testRunner.And("reply with a success response", ((string)(null)), table2, "And ");
 #line hidden
             }
             this.ScenarioCleanup();
         }
         
-        [Xunit.SkippableFactAttribute(DisplayName="Unauthenticated user cannot add todo item")]
+        [Xunit.SkippableFactAttribute(DisplayName="Unauthenticated user cannot add todo items")]
         [Xunit.TraitAttribute("FeatureTitle", "Add todo items")]
-        [Xunit.TraitAttribute("Description", "Unauthenticated user cannot add todo item")]
-        [Xunit.TraitAttribute("Category", "add-todo-item")]
-        [Xunit.TraitAttribute("Category", "negative")]
-        public void UnauthenticatedUserCannotAddTodoItem()
+        [Xunit.TraitAttribute("Description", "Unauthenticated user cannot add todo items")]
+        [Xunit.TraitAttribute("Category", "add-new-todo-item")]
+        [Xunit.TraitAttribute("Category", "expected-negative-result")]
+        public void UnauthenticatedUserCannotAddTodoItems()
         {
             string[] tagsOfScenario = new string[] {
-                    "add-todo-item",
-                    "negative"};
+                    "add-new-todo-item",
+                    "expected-negative-result"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Unauthenticated user cannot add todo item", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 19
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Unauthenticated user cannot add todo items", null, tagsOfScenario, argumentsOfScenario, featureTags);
+#line 18
     this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -156,38 +153,45 @@ namespace Todo.WebApi.AcceptanceTests.Features
             else
             {
                 this.ScenarioStart();
-#line 20
+#line 19
         testRunner.Given("the current user is not authenticated", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
-                TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
+                TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
                             "Name",
                             "IsComplete"});
-                table4.AddRow(new string[] {
-                            "Authenticate user",
+                table3.AddRow(new string[] {
+                            "Authenticate user first",
                             "false"});
-#line 21
-        testRunner.When("the current user adds a new todo item using the below details", ((string)(null)), table4, "When ");
+#line 20
+        testRunner.When("the current user tries adding a new todo item", ((string)(null)), table3, "When ");
 #line hidden
+#line 23
+        testRunner.Then("the system must not add the new todo item", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+                TechTalk.SpecFlow.Table table4 = new TechTalk.SpecFlow.Table(new string[] {
+                            "HttpStatusCode"});
+                table4.AddRow(new string[] {
+                            "401"});
 #line 24
-        testRunner.Then("the system must reply with an error response with status code 401", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+        testRunner.And("reply with a failed response", ((string)(null)), table4, "And ");
 #line hidden
             }
             this.ScenarioCleanup();
         }
         
-        [Xunit.SkippableFactAttribute(DisplayName="Unauthorized user cannot add todo item")]
+        [Xunit.SkippableFactAttribute(DisplayName="Unauthorized user cannot add todo items")]
         [Xunit.TraitAttribute("FeatureTitle", "Add todo items")]
-        [Xunit.TraitAttribute("Description", "Unauthorized user cannot add todo item")]
-        [Xunit.TraitAttribute("Category", "add-todo-item")]
-        [Xunit.TraitAttribute("Category", "negative")]
-        public void UnauthorizedUserCannotAddTodoItem()
+        [Xunit.TraitAttribute("Description", "Unauthorized user cannot add todo items")]
+        [Xunit.TraitAttribute("Category", "add-new-todo-item")]
+        [Xunit.TraitAttribute("Category", "expected-negative-result")]
+        public void UnauthorizedUserCannotAddTodoItems()
         {
             string[] tagsOfScenario = new string[] {
-                    "add-todo-item",
-                    "negative"};
+                    "add-new-todo-item",
+                    "expected-negative-result"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Unauthorized user cannot add todo item", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 28
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Unauthorized user cannot add todo items", null, tagsOfScenario, argumentsOfScenario, featureTags);
+#line 30
     this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -197,20 +201,27 @@ namespace Todo.WebApi.AcceptanceTests.Features
             else
             {
                 this.ScenarioStart();
-#line 29
-        testRunner.Given("the current user is not authorized", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
+#line 31
+        testRunner.Given("the current user is not authorized to add todo items", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
                 TechTalk.SpecFlow.Table table5 = new TechTalk.SpecFlow.Table(new string[] {
                             "Name",
                             "IsComplete"});
                 table5.AddRow(new string[] {
-                            "Authorize user",
+                            "Grant the appropriate permissions to the current user first",
                             "false"});
-#line 30
-        testRunner.When("the current user adds a new todo item using the below details", ((string)(null)), table5, "When ");
+#line 32
+        testRunner.When("the current user tries adding a new todo item", ((string)(null)), table5, "When ");
 #line hidden
-#line 33
-        testRunner.Then("the system must reply with an error response with status code 401", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line 35
+        testRunner.Then("the system must not add the new todo item", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+                TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
+                            "HttpStatusCode"});
+                table6.AddRow(new string[] {
+                            "403"});
+#line 36
+        testRunner.And("reply with a failed response", ((string)(null)), table6, "And ");
 #line hidden
             }
             this.ScenarioCleanup();
