@@ -19,6 +19,12 @@ namespace Todo.Commons.Constants
         public const string IntegrationTests = "IntegrationTests";
 
         /// <summary>
+        /// Represents the name of the environment where acceptance tests are run
+        /// (could be a local development machine, CI environment or even cloud).
+        /// </summary>
+        public const string AcceptanceTests = "AcceptanceTests";
+
+        /// <summary>
         /// Represents the name of the Azure environment used for demonstrating various application features.
         /// </summary>
         // ReSharper disable once UnusedMember.Global
