@@ -2,6 +2,7 @@ namespace Todo.ApplicationFlows.TodoItems
 {
     using System;
     using System.Security.Principal;
+    using System.Threading.Tasks;
 
     using Commons.ApplicationEvents;
 
@@ -17,9 +18,7 @@ namespace Todo.ApplicationFlows.TodoItems
     public class RunDatabaseMigrations : IApplicationStartedEventListener
     {
         private const string FlowName = "Events/ApplicationStarted/RunDatabaseMigrations";
-
-        private static readonly IPrincipal Principal =
-            new GenericPrincipal(new GenericIdentity("run-database-migrations"), Array.Empty<string>());
+        private static readonly IPrincipal Principal = new GenericPrincipal(new GenericIdentity("run-database-migrations"), Array.Empty<string>());
 
         private readonly TodoDbContext todoDbContext;
         private readonly IConfiguration configuration;
@@ -42,39 +41,45 @@ namespace Todo.ApplicationFlows.TodoItems
         /// <summary>
         /// Runs existing database migrations.
         /// </summary>
-        public void OnApplicationStarted()
+        public async Task OnApplicationStartedAsync()
         {
-            SimpleApplicationFlow.Execute(FlowName, InternalRunDatabaseMigrations, Principal, logger);
+            await SimpleApplicationFlow.ExecuteAsync(FlowName, InternalRunDatabaseMigrationsAsync, Principal, logger);
         }
 
-        private void InternalRunDatabaseMigrations()
+        private async Task InternalRunDatabaseMigrationsAsync()
         {
             string databaseName = "<unknown>";
 
             try
             {
+                databaseName = todoDbContext.Database.GetDbConnection().Database;
+
                 // ReSharper disable once SettingNotFoundInConfiguration
                 bool shouldMigrateDatabase = configuration.GetValue<bool>("MigrateDatabase");
 
-                if (!shouldMigrateDatabase)
+                if (shouldMigrateDatabase is false)
                 {
                     logger.LogInformation("Migrating database has been turned off");
 
                     return;
                 }
 
-                logger.LogInformation("Migrating database has been turned on");
+                bool shouldDeleteDatabase = configuration.GetValue<bool>("DeleteDatabaseBeforeRunningMigrations");
 
-                databaseName = todoDbContext.Database.GetDbConnection().Database;
+                if (shouldDeleteDatabase)
+                {
+                    logger.LogInformation("About to delete database {DatabaseName} ...", databaseName);
+                    await todoDbContext.Database.EnsureDeletedAsync();
+                    logger.LogInformation("Database {DatabaseName} has been deleted", databaseName);
+                }
 
                 logger.LogInformation("About to migrate database {DatabaseName} ...", databaseName);
-                todoDbContext.Database.Migrate();
-                logger.LogInformation("Database {DatabaseName} has been migrated successfully ", databaseName);
+                await todoDbContext.Database.MigrateAsync();
+                logger.LogInformation("Database {DatabaseName} has been migrated successfully", databaseName);
             }
             catch (Exception exception)
             {
                 logger.LogCritical(exception, "Failed to migrate database {DatabaseName}", databaseName);
-
                 throw;
             }
         }
