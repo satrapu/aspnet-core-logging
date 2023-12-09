@@ -17,7 +17,7 @@
                 "ASPNETCORE_ENVIRONMENT": "Development"
             }
         },
-        "Todo Web API": {
+        "Development": {
             "commandName": "Project",
             "launchBrowser": false,
             "launchUrl": "api/todo",
@@ -25,6 +25,15 @@
                 "ASPNETCORE_ENVIRONMENT": "Development"
             },
             "applicationUrl": "https://localhost:5001;http://localhost:5000"
+        },
+        "AcceptanceTests": {
+            "commandName": "Project",
+            "launchBrowser": false,
+            "launchUrl": "api/todo",
+            "environmentVariables": {
+                "ASPNETCORE_ENVIRONMENT": "AcceptanceTests"
+            },
+            "applicationUrl": "https://localhost:6001;http://localhost:6000"
         }
     }
 }
