@@ -25,7 +25,7 @@
                 .AddSingleton<TodoWebApiDriver>()
                 .AddHttpClient(name: TodoWebApiDriver.HttpClientName, httpClient =>
                 {
-                    httpClient.BaseAddress = new Uri(uriString: "https://localhost:5001", uriKind: UriKind.Absolute);
+                    httpClient.BaseAddress = new Uri(uriString: "https://localhost:6001", uriKind: UriKind.Absolute);
                     httpClient.DefaultRequestHeaders.UserAgent.Add
                     (
                         new ProductInfoHeaderValue
