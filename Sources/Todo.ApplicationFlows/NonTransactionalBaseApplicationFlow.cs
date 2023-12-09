@@ -63,7 +63,8 @@ namespace Todo.ApplicationFlows
 
                 try
                 {
-                    logger.LogInformation("User [{FlowInitiator}] has started executing application flow [{ApplicationFlowName}] ...", flowInitiatorName, flowName);
+                    logger.LogInformation("User [{FlowInitiator}] has started executing application flow [{ApplicationFlowName}] ...",
+                        flowInitiatorName, flowName);
 
                     TOutput output = await InternalExecuteAsync(input, flowInitiator);
                     isSuccess = true;
@@ -77,7 +78,8 @@ namespace Todo.ApplicationFlows
                     flowActivity?.Stop();
 
                     logger.LogInformation("User [{FlowInitiator}] has finished executing application flow [{ApplicationFlowName}] "
-                        + "with the outcome: [{ApplicationFlowOutcome}]; time taken: [{ApplicationFlowDurationAsTimeSpan}] ({ApplicationFlowDurationInMillis}ms)",
+                                          + "with the outcome: [{ApplicationFlowOutcome}]; "
+                                          + "time taken: [{ApplicationFlowDurationAsTimeSpan}] ({ApplicationFlowDurationInMillis}ms)",
                         flowInitiatorName, flowName, flowOutcome, flowActivity?.Duration, flowActivity?.Duration.TotalMilliseconds);
                 }
             }

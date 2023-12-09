@@ -60,9 +60,7 @@ namespace Todo.ApplicationFlows
             string[] roles = { $"role--{Guid.NewGuid():N}" };
             IPrincipal flowInitiator = new GenericPrincipal(identity, roles);
 
-            ITodoItemService todoItemService =
-                testWebApplicationFactory.Services.GetRequiredService<ITodoItemService>();
-
+            ITodoItemService todoItemService = testWebApplicationFactory.Services.GetRequiredService<ITodoItemService>();
             ILoggerFactory loggerFactory = testWebApplicationFactory.Services.GetRequiredService<ILoggerFactory>();
             ILogger logger = loggerFactory.CreateLogger<ApplicationFlowServingTestingPurposes>();
             string namePrefix = $"todo-item--{Guid.NewGuid():N}";
@@ -72,19 +70,19 @@ namespace Todo.ApplicationFlows
             // This flow is expected to fail since the service is unable to persist invalid models
             async Task<object> FlowExpectedToThrowExceptionAsync()
             {
-                await localTodoItemService.AddAsync(new()
+                await localTodoItemService.AddAsync(new NewTodoItemInfo
                 {
                     Name = $"{namePrefix}--#1",
                     Owner = flowInitiator
                 });
 
-                await localTodoItemService.AddAsync(new()
+                await localTodoItemService.AddAsync(new NewTodoItemInfo
                 {
                     Name = $"{namePrefix}--#2",
                     Owner = flowInitiator
                 });
 
-                await localTodoItemService.AddAsync(new()
+                await localTodoItemService.AddAsync(new NewTodoItemInfo
                 {
                     Name = $"{namePrefix}--#3",
                     Owner = flowInitiator
@@ -93,11 +91,8 @@ namespace Todo.ApplicationFlows
                 return null;
             }
 
-            ApplicationFlowOptions applicationFlowOptions =
-                testWebApplicationFactory.Services.GetRequiredService<ApplicationFlowOptions>();
-
-            var applicationFlow = new ApplicationFlowServingTestingPurposes(FlowExpectedToThrowExceptionAsync,
-                applicationFlowOptions, logger);
+            ApplicationFlowOptions applicationFlowOptions = testWebApplicationFactory.Services.GetRequiredService<ApplicationFlowOptions>();
+            var applicationFlow = new ApplicationFlowServingTestingPurposes(FlowExpectedToThrowExceptionAsync, applicationFlowOptions, logger);
 
             // Act
             Func<Task> executeAsyncCall = async () => await applicationFlow.ExecuteAsync(input: null, flowInitiator);
@@ -105,9 +100,7 @@ namespace Todo.ApplicationFlows
             // Assert
             using (new AssertionScope())
             {
-                await executeAsyncCall
-                    .Should()
-                    .ThrowExactlyAsync<ValidationException>("application flow must fail in case of an error");
+                await executeAsyncCall.Should().ThrowExactlyAsync<ValidationException>("application flow must fail in case of an error");
 
                 var query = new TodoItemQuery
                 {
@@ -176,11 +169,8 @@ namespace Todo.ApplicationFlows
                 return null;
             }
 
-            ApplicationFlowOptions applicationFlowOptions =
-                testWebApplicationFactory.Services.GetRequiredService<ApplicationFlowOptions>();
-
-            var applicationFlow = new ApplicationFlowServingTestingPurposes(FlowExpectedToSucceedAsync,
-                applicationFlowOptions, logger);
+            ApplicationFlowOptions applicationFlowOptions = testWebApplicationFactory.Services.GetRequiredService<ApplicationFlowOptions>();
+            ApplicationFlowServingTestingPurposes applicationFlow = new(FlowExpectedToSucceedAsync, applicationFlowOptions, logger);
 
             // Act
             await applicationFlow.ExecuteAsync(input: null, flowInitiator);
@@ -247,7 +237,7 @@ namespace Todo.ApplicationFlows
 
                 // Ensure this flow step will take more time to execute than the configured transaction timeout used
                 // by the application flow.
-                Task.Delay(biggerTimeout).Wait();
+                await Task.Delay(biggerTimeout);
 
                 return null;
             }

@@ -17,16 +17,15 @@ namespace Todo.ApplicationFlows.TodoItems
     {
         private readonly ITodoItemService todoItemService;
 
-        public FetchTodoItemByIdFlow(ITodoItemService todoItemService,
-            ApplicationFlowOptions applicationFlowOptions, ILogger<FetchTodoItemByIdFlow> logger) :
-            base("TodoItem/FetchById", applicationFlowOptions, logger)
+        public FetchTodoItemByIdFlow(ITodoItemService todoItemService, ApplicationFlowOptions applicationFlowOptions, ILogger<FetchTodoItemByIdFlow> logger)
+            : base("TodoItem/FetchById", applicationFlowOptions, logger)
         {
             this.todoItemService = todoItemService ?? throw new ArgumentNullException(nameof(todoItemService));
         }
 
         protected override async Task<TodoItemInfo> ExecuteFlowStepsAsync(long input, IPrincipal flowInitiator)
         {
-            var todoItemQuery = new TodoItemQuery
+            TodoItemQuery todoItemQuery = new()
             {
                 Id = input,
                 // Ensure that the application fetches data belonging to the current user only (usually the one
