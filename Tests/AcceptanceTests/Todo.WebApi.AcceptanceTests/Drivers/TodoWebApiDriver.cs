@@ -10,7 +10,7 @@ namespace Todo.WebApi.AcceptanceTests.Drivers
     {
         internal const string HttpClientName = nameof(TodoWebApiDriver);
         internal const string AuthenticationScheme = "Bearer";
-        private static readonly Type accessTokenType = new { accessToken = "" }.GetType();
+        private static readonly Type AccessTokenType = new { accessToken = "" }.GetType();
         private readonly HttpClient httpClient;
 
         public TodoWebApiDriver(IHttpClientFactory httpClientFactory)
@@ -18,11 +18,7 @@ namespace Todo.WebApi.AcceptanceTests.Drivers
             httpClient = httpClientFactory.CreateClient(name: HttpClientName);
         }
 
-        public async Task<HttpResponseMessage> AddNewTodoItemAsync
-        (
-            NewTodoItemInfo newTodoItemInfo,
-            AuthenticationHeaderValue authenticationHeaderValue
-        )
+        public async Task<HttpResponseMessage> AddNewTodoItemAsync(NewTodoItemInfo newTodoItemInfo, AuthenticationHeaderValue authenticationHeaderValue)
         {
             using HttpRequestMessage httpRequestMessage = new(method: HttpMethod.Post, requestUri: "api/todo");
             httpRequestMessage.Content = JsonContent.Create(newTodoItemInfo);
@@ -38,7 +34,7 @@ namespace Todo.WebApi.AcceptanceTests.Drivers
 
             using HttpResponseMessage httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
             httpResponseMessage.EnsureSuccessStatusCode();
-            dynamic dynamicResult = await httpResponseMessage.Content.ReadAsAsync(type: accessTokenType);
+            dynamic dynamicResult = await httpResponseMessage.Content.ReadAsAsync(type: AccessTokenType);
 
             return new AuthenticationHeaderValue(scheme: AuthenticationScheme, parameter: dynamicResult.accessToken);
         }
