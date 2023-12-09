@@ -9,13 +9,11 @@ namespace Todo.Commons
 
         static ActivitySources()
         {
-            string applicationInformationalVersion =
-                Assembly
-                    .GetEntryAssembly()
-                    .GetCustomAttribute<AssemblyInformationalVersionAttribute>()
-                    .InformationalVersion;
-
-            TodoWebApi = new(name: ActivitySourceName, version: applicationInformationalVersion);
+            TodoWebApi = new ActivitySource
+            (
+                name: ActivitySourceName,
+                version: Assembly.GetEntryAssembly()!.GetCustomAttribute<AssemblyInformationalVersionAttribute>()!.InformationalVersion
+            );
         }
 
         public static ActivitySource TodoWebApi { get; }
