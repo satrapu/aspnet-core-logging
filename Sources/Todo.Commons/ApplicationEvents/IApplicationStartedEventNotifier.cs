@@ -1,5 +1,7 @@
 namespace Todo.Commons.ApplicationEvents
 {
+    using System.Threading.Tasks;
+
     /// <summary>
     /// Notifies any registered <see cref="IApplicationStartedEventListener"/> when application started event has
     /// occurred.
@@ -9,6 +11,6 @@ namespace Todo.Commons.ApplicationEvents
         /// <summary>
         /// Notifies listeners.
         /// </summary>
-        public void Notify();
+        public Task NotifyAsync();
     }
 }

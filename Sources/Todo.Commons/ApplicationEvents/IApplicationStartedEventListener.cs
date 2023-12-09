@@ -1,5 +1,7 @@
 namespace Todo.Commons.ApplicationEvents
 {
+    using System.Threading.Tasks;
+
     /// <summary>
     /// Listens to application started event.
     /// </summary>
@@ -8,6 +10,6 @@ namespace Todo.Commons.ApplicationEvents
         /// <summary>
         /// Execute logic during application started event.
         /// </summary>
-        public void OnApplicationStarted();
+        public Task OnApplicationStartedAsync();
     }
 }

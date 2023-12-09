@@ -2,6 +2,7 @@ namespace Todo.WebApi
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
+    using System.Threading.Tasks;
 
     using ApplicationFlows.DependencyInjection;
 
@@ -34,21 +35,20 @@ namespace Todo.WebApi
         /// The entry point for running the application.
         /// </summary>
         /// <param name="args">The command line arguments used when invoking the application executable.</param>
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             try
             {
-                CreateHostBuilder(args).Build().Run();
+                await CreateHostBuilder(args).Build().RunAsync();
             }
             catch (Exception exception)
             {
                 Logger.Fatal(exception, "Application failed to start");
-
                 throw;
             }
             finally
             {
-                Logger.Dispose();
+                await Logger.DisposeAsync();
             }
         }
 

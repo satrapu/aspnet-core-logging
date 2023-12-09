@@ -3,6 +3,7 @@ namespace Todo.ApplicationFlows.ApplicationEvents
     using System;
     using System.Collections.Generic;
     using System.Security.Principal;
+    using System.Threading.Tasks;
 
     using Microsoft.Extensions.Hosting;
     using Microsoft.Extensions.Logging;
@@ -35,12 +36,12 @@ namespace Todo.ApplicationFlows.ApplicationEvents
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public void Notify()
+        public async Task NotifyAsync()
         {
-            SimpleApplicationFlow.Execute(FlowName, InternalNotify, Principal, logger);
+            await SimpleApplicationFlow.ExecuteAsync(FlowName, InternalNotifyAsync, Principal, logger);
         }
 
-        private void InternalNotify()
+        private async Task InternalNotifyAsync()
         {
             try
             {
@@ -48,22 +49,16 @@ namespace Todo.ApplicationFlows.ApplicationEvents
                 {
                     string eventListenerName = eventListener.GetType().AssemblyQualifiedName;
 
-                    logger.LogInformation(
-                        "Application started event listener: [{ApplicationStartedEventListener}] is about to run ...",
-                        eventListenerName);
+                    logger.LogInformation("Application started event listener: [{ApplicationStartedEventListener}] is about to run ...", eventListenerName);
 
-                    eventListener.OnApplicationStarted();
+                    await eventListener.OnApplicationStartedAsync();
 
-                    logger.LogInformation(
-                        "Application started event listener: [{ApplicationStartedEventListener}] has run successfully",
-                        eventListenerName);
+                    logger.LogInformation("Application started event listener: [{ApplicationStartedEventListener}] has run successfully", eventListenerName);
                 }
             }
             catch (Exception exception)
             {
-                logger.LogCritical(exception,
-                    "An error has occurred while executing application started event listeners");
-
+                logger.LogCritical(exception, "An error has occurred while executing application started event listeners");
                 hostApplicationLifetime.StopApplication();
             }
         }
