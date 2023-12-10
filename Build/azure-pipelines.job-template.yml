@@ -6,7 +6,7 @@ parameters:
   build:
     configuration: 'Release'
   installDotNetSdk: True
-  # @satrapu September 3rd, 2020: Since currently downloading an archive containing a cache of restored
+  # @satrapu 2020-09-03: Since currently downloading an archive containing a cache of restored
   # NuGet packages takes considerably more time than just doing a restore
   # with each build, this feature has been turned off.
   cacheRestoredNuGetPackages: False

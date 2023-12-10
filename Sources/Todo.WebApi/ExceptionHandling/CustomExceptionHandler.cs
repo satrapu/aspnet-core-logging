@@ -56,7 +56,7 @@ namespace Todo.WebApi.ExceptionHandling
                 "An unexpected error with id: {ErrorId} has been caught; see more details here: {@ProblemDetails}",
                 problemDetails.Extensions[ErrorId], problemDetails);
 
-            // @satrapu April 30th, 2021: Do not send exception Data dictionary over the wire since it may contain
+            // @satrapu 2021-04-30: Do not send exception Data dictionary over the wire since it may contain
             // sensitive data!
             problemDetails.Extensions.Remove(ErrorData);
 
@@ -65,7 +65,7 @@ namespace Todo.WebApi.ExceptionHandling
 
             // Since the ProblemDetails instance is always serialized as JSON, the web API will not be able to
             // correctly handle 'Accept' HTTP header.
-            // @satrapu April 1st 2020: Find a way to use ASP.NET Core content negotiation to serialize
+            // @satrapu 2020-04-01: Find a way to use ASP.NET Core content negotiation to serialize
             // the ProblemDetails instance in the format expected by the client, if possible.
             await JsonSerializer.SerializeAsync(httpContext.Response.Body, problemDetails);
         }

@@ -125,7 +125,7 @@ namespace Todo.Services.TodoItemManagement
                 logger.LogDebug("{@TodoItemInfoList}", result);
             }
 
-            // @satrapu January 15th, 2023: Read more about "Activity.IsAllDataRequested" property
+            // @satrapu 2023-01-15: Read more about "Activity.IsAllDataRequested" property
             // here: https://github.com/open-telemetry/opentelemetry-specification/blob/main/specification/trace/api.md#isrecording
             // and here: https://rehansaeed.com/deep-dive-into-open-telemetry-for-net/#isrecording.
             if (activity is not null && activity.IsAllDataRequested)
