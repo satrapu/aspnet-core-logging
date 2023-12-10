@@ -6,11 +6,12 @@ namespace Todo.ApplicationFlows.DependencyInjection
 
     using Autofac;
 
+    using Commons.StartupLogic;
+
     using Microsoft.Extensions.Configuration;
 
     using Security;
 
-    using Todo.Commons.ApplicationEvents;
     using Todo.Services.DependencyInjection;
 
     using TodoItems;
@@ -25,12 +26,12 @@ namespace Todo.ApplicationFlows.DependencyInjection
         /// <summary>
         /// Gets or sets the name of the environment where this application runs.
         /// </summary>
-        public string EnvironmentName { get; set; }
+        public string EnvironmentName { get; init; }
 
         /// <summary>
         /// Gets or sets the configuration used by this application.
         /// </summary>
-        public IConfiguration ApplicationConfiguration { get; set; }
+        public IConfiguration ApplicationConfiguration { get; init; }
 
         protected override void Load(ContainerBuilder builder)
         {
@@ -40,10 +41,8 @@ namespace Todo.ApplicationFlows.DependencyInjection
             });
 
             builder
-                .Register(_ =>
-                    ApplicationConfiguration
-                        .GetSection(ApplicationFlowsConfigurationSectionName).Get<ApplicationFlowOptions>())
-                        .SingleInstance();
+                .Register(_ => ApplicationConfiguration.GetSection(ApplicationFlowsConfigurationSectionName).Get<ApplicationFlowOptions>())
+                .SingleInstance();
 
             builder
                 .RegisterType<GenerateJwtFlow>()
@@ -76,13 +75,13 @@ namespace Todo.ApplicationFlows.DependencyInjection
                 .InstancePerLifetimeScope();
 
             builder
-                .RegisterType<ApplicationStartedEventNotifier>()
-                .As<IApplicationStartedEventNotifier>()
+                .RegisterType<StartupLogicTaskExecutor>()
+                .As<IStartupLogicTaskExecutor>()
                 .SingleInstance();
 
             builder
                 .RegisterType<RunDatabaseMigrations>()
-                .As<IApplicationStartedEventListener>()
+                .As<IStartupLogicTask>()
                 .SingleInstance();
         }
     }

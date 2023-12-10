@@ -5,14 +5,13 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Todo.ApplicationFlows\Todo.ApplicationFlows.csproj" />
-        <ProjectReference Include="..\Todo.Commons\Todo.Commons.csproj" />
-        <ProjectReference Include="..\Todo.Telemetry\Todo.Telemetry.csproj" />
+        <ProjectReference Include="..\Todo.Commons\Todo.Commons.csproj"/>
+        <ProjectReference Include="..\Todo.Telemetry\Todo.Telemetry.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Autofac.Extensions.DependencyInjection" />
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
+        <PackageReference Include="Autofac.Extensions.DependencyInjection"/>
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer"/>
         <!--
         The Microsoft.EntityFrameworkCore.Design NuGet package is required by the dotnet-ef tool.
         -->

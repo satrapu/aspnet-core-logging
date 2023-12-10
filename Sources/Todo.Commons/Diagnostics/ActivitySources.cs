@@ -1,4 +1,4 @@
-namespace Todo.Commons
+namespace Todo.Commons.Diagnostics
 {
     using System.Diagnostics;
     using System.Reflection;

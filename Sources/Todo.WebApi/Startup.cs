@@ -9,8 +9,7 @@ namespace Todo.WebApi
 
     using Authorization;
 
-    using Commons;
-    using Commons.ApplicationEvents;
+    using Commons.Diagnostics;
 
     using ExceptionHandling;
     using ExceptionHandling.Configuration;
@@ -96,12 +95,9 @@ namespace Todo.WebApi
                 .UseRouting()
                 .UseAuthentication()
                 .UseAuthorization()
-                .UseEndpoints(endpoints => { endpoints.MapControllers(); });
+                .UseEndpoints(endpoints => endpoints.MapControllers());
 
-            IApplicationStartedEventNotifier applicationStartedEventNotifier = serviceProvider.GetRequiredService<IApplicationStartedEventNotifier>();
-            async void OnApplicationStartedCallback() => await OnApplicationStarted(applicationStartedEventNotifier, logger);
-
-            hostApplicationLifetime.ApplicationStarted.Register(OnApplicationStartedCallback);
+            hostApplicationLifetime.ApplicationStarted.Register(() => OnApplicationStarted());
             hostApplicationLifetime.ApplicationStopping.Register(() => OnApplicationStopping(logger));
             hostApplicationLifetime.ApplicationStopped.Register(() => OnApplicationStopped(logger));
 
@@ -214,27 +210,19 @@ namespace Todo.WebApi
             services.Configure<ExceptionHandlingOptions>(configuration.GetSection("ExceptionHandling"));
         }
 
-        private async Task OnApplicationStarted(IApplicationStartedEventNotifier applicationStartedEventNotifier, ILogger logger)
+        private void OnApplicationStarted()
         {
-            logger.LogInformation("About to notify the registered application started event listeners ...");
-
-            await applicationStartedEventNotifier.NotifyAsync();
-
-            logger.LogInformation("The registered application started event listeners have been notified");
-            logger.LogInformation("Application [{ApplicationName}] has started on environment [{EnvironmentName}]",
-                webHostEnvironment.ApplicationName, webHostEnvironment.EnvironmentName);
-
             // ReSharper disable once ExplicitCallerInfoArgument
             using Activity _ = ActivitySources.TodoWebApi.StartActivity("Application has started");
         }
 
         private void OnApplicationStopping(ILogger logger)
         {
-            logger.LogInformation("Application [{ApplicationName}] is stopping on environment [{EnvironmentName}] ...",
+            logger.LogInformation("Application [{ApplicationName}] is about to stop on environment [{EnvironmentName}] ...",
                 webHostEnvironment.ApplicationName, webHostEnvironment.EnvironmentName);
 
             // ReSharper disable once ExplicitCallerInfoArgument
-            using Activity _ = ActivitySources.TodoWebApi.StartActivity("Application is stopping");
+            using Activity _ = ActivitySources.TodoWebApi.StartActivity("Application is about to stop");
         }
 
         private void OnApplicationStopped(ILogger logger)

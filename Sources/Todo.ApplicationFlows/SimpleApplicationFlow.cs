@@ -12,25 +12,24 @@ namespace Todo.ApplicationFlows
     /// </summary>
     public static class SimpleApplicationFlow
     {
-        public static async Task ExecuteAsync(string flowName, Func<Task> action, IPrincipal flowInitiator, ILogger logger)
+        public static async Task ExecuteAsync(string flowName, Func<Task> simpleApplicationFlow, IPrincipal flowInitiator, ILogger logger)
         {
-            InternalNonTransactionalApplicationFlow applicationFlow = new(flowName, action, logger);
-            await applicationFlow.ExecuteAsync(null, flowInitiator);
+            await new InternalNonTransactionalApplicationFlow(flowName, simpleApplicationFlow, logger).ExecuteAsync(null, flowInitiator);
         }
 
         private sealed class InternalNonTransactionalApplicationFlow : NonTransactionalBaseApplicationFlow<object, object>
         {
-            private readonly Func<Task> asyncFlow;
+            private readonly Func<Task> simpleApplicationFlow;
 
-            public InternalNonTransactionalApplicationFlow(string flowName, Func<Task> asyncFlow, ILogger logger) : base(flowName, logger)
+            public InternalNonTransactionalApplicationFlow(string flowName, Func<Task> simpleApplicationFlow, ILogger logger) : base(flowName, logger)
             {
-                this.asyncFlow = asyncFlow;
+                this.simpleApplicationFlow = simpleApplicationFlow;
             }
 
             protected override async Task<object> ExecuteFlowStepsAsync(object input, IPrincipal flowInitiator)
             {
-                await asyncFlow();
-                return Task.FromResult((object)null);
+                await simpleApplicationFlow();
+                return Task.CompletedTask;
             }
         }
     }

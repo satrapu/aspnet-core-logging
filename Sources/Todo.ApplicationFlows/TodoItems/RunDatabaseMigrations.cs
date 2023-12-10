@@ -4,20 +4,20 @@ namespace Todo.ApplicationFlows.TodoItems
     using System.Security.Principal;
     using System.Threading.Tasks;
 
-    using Commons.ApplicationEvents;
-
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
 
+    using Commons.StartupLogic;
+
     using Persistence;
 
     /// <summary>
-    /// Runs database migrations during application started event.
+    /// Runs database migrations during application startup.
     /// </summary>
-    public class RunDatabaseMigrations : IApplicationStartedEventListener
+    public class RunDatabaseMigrations : IStartupLogicTask
     {
-        private const string FlowName = "Events/ApplicationStarted/RunDatabaseMigrations";
+        private const string FlowName = "ApplicationStartup/ExecuteStartupLogicTasks/RunDatabaseMigrations";
         private static readonly IPrincipal Principal = new GenericPrincipal(new GenericIdentity("run-database-migrations"), Array.Empty<string>());
 
         private readonly TodoDbContext todoDbContext;
@@ -41,12 +41,12 @@ namespace Todo.ApplicationFlows.TodoItems
         /// <summary>
         /// Runs existing database migrations.
         /// </summary>
-        public async Task OnApplicationStartedAsync()
+        public Task ExecuteAsync()
         {
-            await SimpleApplicationFlow.ExecuteAsync(FlowName, InternalRunDatabaseMigrationsAsync, Principal, logger);
+            return SimpleApplicationFlow.ExecuteAsync(FlowName, RunDatabaseMigrationsAsync, Principal, logger);
         }
 
-        private async Task InternalRunDatabaseMigrationsAsync()
+        private async Task RunDatabaseMigrationsAsync()
         {
             string databaseName = "<unknown>";
 

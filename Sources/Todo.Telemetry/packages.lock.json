@@ -541,6 +541,13 @@
         "resolved": "4.5.4",
         "contentHash": "zteT+G8xuGu6mS+mzDzYXbzS7rd3K6Fjb9RiZlYlJPam2/hU7JCBZBVEcywNuR+oZ1ncTvc/cq0faRr3P01OVg=="
       },
+      "todo.applicationflows": {
+        "type": "Project",
+        "dependencies": {
+          "Todo.Commons": "[1.0.0, )",
+          "Todo.Services": "[1.0.0, )"
+        }
+      },
       "todo.commons": {
         "type": "Project",
         "dependencies": {
