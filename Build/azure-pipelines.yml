@@ -47,9 +47,12 @@ variables:
   # See more about secret variables here: https://learn.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&tabs=yaml%2Cbatch#secret-variables.
   - group: 'IntegrationTests'
 
-  # Specifies the version of the .NET SDK to install and use when running this pipeline.
+  # Specifies the versions of the .NET SDK to install and use when running this pipeline.
   # All releases can be found here: https://dotnet.microsoft.com/download/dotnet.
-  - name: 'DotNetCore_SDK_Version'
+  - name: 'DotNetCore_SDK_7_Version'
+    # satrapu 2023-12-10: Version 7.x is used by acceptance tests project.
+    value: '7.0.404'
+  - name: 'DotNetCore_SDK_8_Version'
     value: '8.0.100'
 
   # Specifies the version of the ReportGenerator tool used for generating code coverage reports.
