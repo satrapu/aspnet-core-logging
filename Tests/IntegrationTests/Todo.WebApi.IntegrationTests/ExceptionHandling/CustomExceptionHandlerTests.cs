@@ -50,7 +50,7 @@ namespace Todo.WebApi.ExceptionHandling
                 Password = $"test-password--{Guid.NewGuid():N}"
             };
 
-            await using WebApplicationFactory<Startup> testWebApplicationFactory =
+            await using WebApplicationFactory<Program> testWebApplicationFactory =
                 new TestWebApplicationFactory(MethodBase.GetCurrentMethod()?.DeclaringType?.Name)
                     .WithMockServices(containerBuilder =>
                     {

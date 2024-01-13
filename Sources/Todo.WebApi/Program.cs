@@ -24,8 +24,9 @@ namespace Todo.WebApi
     /// Runs an application used for managing user todo items (aka user tasks).
     /// </summary>
     [SuppressMessage("ReSharper", "S1135", Justification = "The todo word represents an entity")]
+    [SuppressMessage("Sonar", "S1118", Justification = "Class is needed by WebApplicationFactory")]
     [ExcludeFromCodeCoverage]
-    public static class Program
+    public class Program
     {
         private const string HttpLoggingEnabledConfigurationLookupKey = "HttpLogging:Enabled";
 

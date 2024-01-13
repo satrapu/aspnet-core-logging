@@ -33,7 +33,7 @@ namespace Todo.WebApi.TestInfrastructure
     /// <br/>
     /// Each instance of this class will use its own database to ensure isolation at test class level.
     /// </summary>
-    public class TestWebApplicationFactory : WebApplicationFactory<Startup>
+    public class TestWebApplicationFactory : WebApplicationFactory<Program>
     {
         private const string ConnectionStringKey = "ConnectionStrings:TodoForIntegrationTests";
         private Action<ContainerBuilder> setupMockServicesAction;
