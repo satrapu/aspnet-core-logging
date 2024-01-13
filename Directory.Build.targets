@@ -66,6 +66,6 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
 
-        <PackageReference Update="System.IdentityModel.Tokens.Jwt" Version="7.0.3"/>
+        <PackageReference Update="System.IdentityModel.Tokens.Jwt" Version="7.2.0"/>
     </ItemGroup>
 </Project>
