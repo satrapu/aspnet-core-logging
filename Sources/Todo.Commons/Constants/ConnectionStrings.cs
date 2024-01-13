@@ -8,16 +8,16 @@ namespace Todo.Commons.Constants
         /// <summary>
         /// Represents the name of the connection string to be used when running integration tests.
         /// </summary>
-        public const string UsedByIntegrationTests = "TodoForIntegrationTests";
+        public const string UsedByIntegrationTests = "IntegrationTests";
 
         /// <summary>
         /// Represents the name of the connection string to be used when running acceptance tests.
         /// </summary>
-        public const string UsedByAcceptanceTests = "TodoForAcceptanceTests";
+        public const string UsedByAcceptanceTests = "AcceptanceTests";
 
         /// <summary>
         /// Represents the name of the connection string to be used when running the application.
         /// </summary>
-        public const string UsedByApplication = "Todo";
+        public const string UsedByApplication = "Application";
     }
 }

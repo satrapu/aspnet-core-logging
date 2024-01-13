@@ -1,3 +1,5 @@
+using Todo.Commons.Constants;
+
 namespace Todo.WebApi.TestInfrastructure
 {
     using System;
@@ -10,13 +12,10 @@ namespace Todo.WebApi.TestInfrastructure
 
     using Autofac;
 
-    using Commons.Constants;
-
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc.Testing;
     using Microsoft.AspNetCore.TestHost;
     using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.Configuration.Memory;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection.Extensions;
     using Microsoft.Extensions.Hosting;
@@ -35,16 +34,17 @@ namespace Todo.WebApi.TestInfrastructure
     /// </summary>
     public class TestWebApplicationFactory : WebApplicationFactory<Program>
     {
-        private const string ConnectionStringKey = "ConnectionStrings:TodoForIntegrationTests";
         private Action<ContainerBuilder> setupMockServicesAction;
         private readonly string applicationName;
+        private readonly string environmentName;
 
-        public TestWebApplicationFactory(string applicationName)
+        public TestWebApplicationFactory(string applicationName, string environmentName)
         {
             this.applicationName = applicationName;
+            this.environmentName = environmentName;
         }
 
-        public async Task<HttpClient> CreateHttpClientWithJwtAsync()
+        public async Task<HttpClient> CreateHttpClientAsync()
         {
             string accessToken = await GetAccessTokenAsync();
             HttpClient httpClient = CreateHttpClientWithLoggingCapabilities();
@@ -73,23 +73,24 @@ namespace Todo.WebApi.TestInfrastructure
         /// <returns></returns>
         protected override IHost CreateHost(IHostBuilder builder)
         {
-            builder.ConfigureContainer<ContainerBuilder>(containerBuilder =>
+            if (setupMockServicesAction is not null)
             {
-                setupMockServicesAction?.Invoke(containerBuilder);
-            });
+                builder.ConfigureContainer<ContainerBuilder>(containerBuilder =>
+                {
+                    setupMockServicesAction.Invoke(containerBuilder);
+                });
+            }
 
             return base.CreateHost(builder);
         }
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
-            string environmentName = EnvironmentNames.IntegrationTests;
             builder.UseEnvironment(environmentName);
 
             builder.ConfigureAppConfiguration((_, configurationBuilder) =>
             {
-                IConfiguration configuration = CreateConfigurationForEnvironment(environmentName);
-                configurationBuilder.AddConfiguration(configuration);
+                configurationBuilder.AddConfiguration(GetDatabaseConfiguration());
             });
 
             builder.ConfigureTestServices(services =>
@@ -99,36 +100,34 @@ namespace Todo.WebApi.TestInfrastructure
             });
         }
 
-        private IConfiguration CreateConfigurationForEnvironment(string environmentName)
+        private IConfiguration GetDatabaseConfiguration()
         {
-            IConfiguration configuration =
+            string connectionString =
                 new ConfigurationBuilder()
                     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
                     .AddJsonFile($"appsettings.{environmentName}.json", optional: false, reloadOnChange: false)
-                    .AddEnvironmentVariables()
-                    .Build();
+                    .AddEnvironmentVariables(prefix: EnvironmentVariables.Prefix)
+                    .Build()
+                    .GetConnectionString(name: environmentName);
 
-            NpgsqlConnectionStringBuilder connectionStringBuilder = new(connectionString: configuration.GetValue<string>(ConnectionStringKey))
+            NpgsqlConnectionStringBuilder npgsqlConnectionStringBuilder = new(connectionString)
             {
-                Database = $"db4it--{applicationName}",
+                Database = $"db--{applicationName}",
                 IncludeErrorDetail = true
             };
 
-            MemoryConfigurationSource memoryConfigurationSource = new()
-            {
-                InitialData = new List<KeyValuePair<string, string>>
-                {
-                    new(ConnectionStringKey, connectionStringBuilder.ConnectionString)
-                }
-            };
-
-            IConfiguration enhancedConfiguration =
+            IConfiguration databaseConfiguration =
                 new ConfigurationBuilder()
-                    .AddConfiguration(configuration)
-                    .Add(memoryConfigurationSource)
+                    .AddInMemoryCollection
+                    (
+                        initialData: new List<KeyValuePair<string, string>>
+                        {
+                            new($"ConnectionStrings:{environmentName}", npgsqlConnectionStringBuilder.ConnectionString)
+                        }
+                    )
                     .Build();
 
-            return enhancedConfiguration;
+            return databaseConfiguration;
         }
 
         private HttpClient CreateHttpClientWithLoggingCapabilities()

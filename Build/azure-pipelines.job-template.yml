@@ -363,7 +363,7 @@ jobs:
         , eq(variables['UnitTestsOutcome'], 'success')
       )
     env:
-      CONNECTIONSTRINGS__TODOFORINTEGRATIONTESTS: >-
+      TODO_WEB_API_BY_SATRAPU_CONNECTIONSTRINGS__INTEGRATIONTESTS: >-
         Host=${{ parameters.integrationTests.databaseHost }};
         Port=$(compose.project.${{ parameters.integrationTests.composeProjectName }}.service.db4it.port.5432);
         Database=${{ parameters.integrationTests.databaseName }};

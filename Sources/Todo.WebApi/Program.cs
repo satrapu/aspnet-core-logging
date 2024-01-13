@@ -1,3 +1,5 @@
+using Todo.Commons.Constants;
+
 namespace Todo.WebApi
 {
     using System;
@@ -74,7 +76,7 @@ namespace Todo.WebApi
                                 .SetBasePath(hostBuilderContext.HostingEnvironment.ContentRootPath)
                                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
                                 .AddJsonFile($"appsettings.{hostBuilderContext.HostingEnvironment.EnvironmentName}.json", optional: true, reloadOnChange: true)
-                                .AddEnvironmentVariables()
+                                .AddEnvironmentVariables(prefix: EnvironmentVariables.Prefix)
                                 .AddCommandLine(args);
                         }
                     )
