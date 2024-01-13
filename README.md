@@ -16,18 +16,18 @@ This project has several posts associated with it:
 
 ## Build
 
-| Build Server                                                                    | Operating System | Status                                                                                                                                                                                                                                                          |
-| ------------------------------------------------------------------------------- | ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/) | Linux            | [![Build Status](https://dev.azure.com/satrapu/aspnet-core-logging/_apis/build/status/ci-pipeline?branchName=master&jobName=Run%20on%20Linux)](https://dev.azure.com/satrapu/aspnet-core-logging/_build/latest?definitionId=2&branchName=master)                |
-| [Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/) | macOs            | [![Build Status](https://dev.azure.com/satrapu/aspnet-core-logging/_apis/build/status/ci-pipeline?branchName=master&jobName=Run%20on%20macOS)](https://dev.azure.com/satrapu/aspnet-core-logging/_build/latest?definitionId=2&branchName=master)                |
-| [Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/) | Windows          | [![Build Status](https://dev.azure.com/satrapu/aspnet-core-logging/_apis/build/status/ci-pipeline?branchName=master&jobName=Run%20on%20Windows)](https://dev.azure.com/satrapu/aspnet-core-logging/_build/latest?definitionId=2&branchName=master)              |
+| Build Server                                                                    | Operating System | Status                                                                                                                                                                                                                                             |
+|---------------------------------------------------------------------------------|------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/) | Linux            | [![Build Status](https://dev.azure.com/satrapu/aspnet-core-logging/_apis/build/status/ci-pipeline?branchName=master&jobName=Run%20on%20Linux)](https://dev.azure.com/satrapu/aspnet-core-logging/_build/latest?definitionId=2&branchName=master)   |
+| [Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/) | macOs            | [![Build Status](https://dev.azure.com/satrapu/aspnet-core-logging/_apis/build/status/ci-pipeline?branchName=master&jobName=Run%20on%20macOS)](https://dev.azure.com/satrapu/aspnet-core-logging/_build/latest?definitionId=2&branchName=master)   |
+| [Azure Pipelines](https://azure.microsoft.com/en-us/services/devops/pipelines/) | Windows          | [![Build Status](https://dev.azure.com/satrapu/aspnet-core-logging/_apis/build/status/ci-pipeline?branchName=master&jobName=Run%20on%20Windows)](https://dev.azure.com/satrapu/aspnet-core-logging/_build/latest?definitionId=2&branchName=master) |
 
 ## Code quality
 
-| Provider                                  | Badge                                                                                                                                                                                                                  |
-| ----------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [Codacy](https://www.codacy.com/)         | [![Codacy Badge](https://api.codacy.com/project/badge/Grade/001d9d7bbf43459aae186c7d8cd49858)](https://www.codacy.com/gh/satrapu/aspnet-core-logging)                                                                 |
-| [FOSSA](https://fossa.com/)               | [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fsatrapu%2Faspnet-core-logging.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fsatrapu%2Faspnet-core-logging?ref=badge_shield) |
+| Provider                                  | Badge                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+|-------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| [Codacy](https://www.codacy.com/)         | [![Codacy Badge](https://api.codacy.com/project/badge/Grade/001d9d7bbf43459aae186c7d8cd49858)](https://www.codacy.com/gh/satrapu/aspnet-core-logging)                                                                                                                                                                                                                                                                                                                                                                                  |
+| [FOSSA](https://fossa.com/)               | [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fsatrapu%2Faspnet-core-logging.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fsatrapu%2Faspnet-core-logging?ref=badge_shield)                                                                                                                                                                                                                                                                                                                 |
 | [SonarCloud](https://sonarcloud.io/about) | [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=aspnet-core-logging&metric=ncloc)](https://sonarcloud.io/dashboard?id=aspnet-core-logging) <br/> [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=aspnet-core-logging&metric=coverage)](https://sonarcloud.io/dashboard?id=aspnet-core-logging) <br/> [![SonarCloud Status](https://sonarcloud.io/api/project_badges/measure?project=aspnet-core-logging&metric=alert_status)](https://sonarcloud.io/dashboard?id=aspnet-core-logging) |
 
 ## Setup local development environment
@@ -45,13 +45,19 @@ These volumes are needed to store data outside the Docker containers running the
 - Volume used by the local development database
 
 ```bash
-docker volume create --name=aspnet-core-logging-dev_data
+docker volume create --name=aspnet-core-logging-db-for-local-dev_data
 ```
 
 - Volume used by the integration tests when run locally
 
 ```bash
-docker volume create --name=aspnet-core-logging-it_data
+docker volume create --name=aspnet-core-logging-db-for-integration-tests_data
+```
+
+- Volume used by the acceptance tests when run locally
+
+```bash
+docker volume create --name=aspnet-core-logging-db-for-acceptance-tests_data
 ```
 
 - Volume used by pgAdmin tool
@@ -72,26 +78,24 @@ The [.env](https://docs.docker.com/compose/env-file/) file is used by Docker Com
 Create a new file named `.env` inside the folder where you have checked-out this git repository and add the following lines:
 
 ```properties
-# Environment variables used by 'aspnet-core-logging-dev' service
-# suppress inspection "UnusedProperty"
-DB_DEV_POSTGRES_USER=<DB_DEV_USER>
-# suppress inspection "UnusedProperty"
-DB_DEV_POSTGRES_PASSWORD=<DB_DEV_PASSWORD>
+# Environment variables used by the local dev DB compose service
+DB_LOCAL_POSTGRES_USER=<DB_LOCAL_USERNAME>
+DB_LOCAL_POSTGRES_PASSWORD=<DB_LOCAL_PASSWORD>
 
-# Environment variables used by 'aspnet-core-logging-it' service
-# suppress inspection "UnusedProperty"
-DB_IT_POSTGRES_USER=<DB_IT_USER>
-# suppress inspection "UnusedProperty"
-DB_IT_POSTGRES_PASSWORD=<DB_IT_PASSWORD>
+# Environment variables used by the integration tests DB compose service
+DB_INTEGRATION_TESTS_POSTGRES_USER=<DB_INTEGRATION_TESTS_USERNAME>
+DB_INTEGRATION_TESTS_POSTGRES_PASSWORD=<DB_INTEGRATION_TESTS_PASSWORD>
 
-# Environment variables used by 'pgadmin' service
-# suppress inspection "UnusedProperty"
-PGADMIN_DEFAULT_EMAIL=<PGADMIN_EMAIL_ADDRESS>
-# suppress inspection "UnusedProperty"
+# Environment variables used by the acceptance tests DB compose service
+DB_ACCEPTANCE_TESTS_POSTGRES_USER==<DB_ACCEPTANCE_TESTS_USERNAME>
+DB_ACCEPTANCE_TESTS_POSTGRES_PASSWORD=<DB_ACCEPTANCE_TESTS_PASSWORD>
+
+# Environment variables used by DB client compose service
+PGADMIN_DEFAULT_EMAIL=<PGADMIN_EMAIL>
 PGADMIN_DEFAULT_PASSWORD=<PGADMIN_PASSWORD>
 ```
 
-Make sure you replace all of the above `<DB_DEV_USER>`, `<DB_DEV_PASSWORD>`, ..., `<PGADMIN_PASSWORD>` tokens with the appropriate values.
+Make sure you replace all of the above `<DB_LOCAL_USERNAME>`, `<DB_LOCAL_PASSWORD>`, ..., `<PGADMIN_PASSWORD>` tokens with the appropriate values.
 
 #### Compose commands
 
@@ -157,11 +161,12 @@ as it mentions *container name*, that's why the services found inside the `docke
 Since storing sensitive data inside configuration file put under source control is not a very good idea,
 the following environment variables must be defined on your local development machine:
 
-| Name                                       | Value                                                                                          | Description                                                                    |
-| ------------------------------------------ | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| CONNECTIONSTRINGS__TODO                    | Server=localhost; Port=5432; Database=aspnet-core-logging-dev; Username=satrapu; Password=***; | The connection string pointing to the local development database               |
-| CONNECTIONSTRINGS__TODOFORINTEGRATIONTESTS | Server=localhost; Port=5433; Database=aspnet-core-logging-it; Username=satrapu; Password=***;  | The connection string pointing to the integration tests database               |
-| GENERATEJWT__SECRET                        | <YOUR_JWT_SECRET>                                                                              | The secret used for generating JSON web tokens for experimenting purposes only |
+| Name                                                        | Value                                                                                                       | Description                                                                    |
+|-------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------|
+| TODO_WEB_API_BY_SATRAPU_CONNECTIONSTRINGS__APPLICATION      | Server=localhost; Port=5432; Database=aspnet-core-logging-dev; Username=satrapu; Password=***;              | The connection string pointing to the local development database               |
+| TODO_WEB_API_BY_SATRAPU_CONNECTIONSTRINGS__INTEGRATIONTESTS | Server=localhost; Port=5433; Database=aspnet-core-logging-integrationtests; Username=satrapu; Password=***; | The connection string pointing to the integration tests database               |
+| TODO_WEB_API_BY_SATRAPU_CONNECTIONSTRINGS__ACCEPTANCETESTS  | Server=localhost; Port=5434; Database=aspnet-core-logging-acceptancetests; Username=satrapu; Password=***;  | The connection string pointing to the acceptance tests database                |
+| TODO_WEB_API_BY_SATRAPU_GENERATEJWT__SECRET                 | <YOUR_JWT_SECRET>                                                                                           | The secret used for generating JSON web tokens for experimenting purposes only |
 
 The connection strings above use the same username and password pairs find in the local `.env` file.
 The port from each connection string represent the host port declared inside the local `docker-compose.yml` file -
@@ -226,6 +231,6 @@ In order to inspect application log events generated via [Serilog](https://seril
 
 ### Inspect traces using Jaeger
 
-In order to inspect application traces, navigate to [http://localhost:16686/search](http://localhost:16686/search), which will open [Jaeger](https://www.jaegertracing.io/) UI.  
-To see Jaeger metrics, navigate to [http://localhost:14269/metrics](http://localhost:14269/metrics).  
+In order to inspect application traces, navigate to [http://localhost:16686/search](http://localhost:16686/search), which will open [Jaeger](https://www.jaegertracing.io/) UI.
+To see Jaeger metrics, navigate to [http://localhost:14269/metrics](http://localhost:14269/metrics).
 To see Jaeger health status, navigate to [http://localhost:14269/](http://localhost:14269/).
