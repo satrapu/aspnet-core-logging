@@ -128,8 +128,7 @@ namespace Todo.Persistence
                 // Assert
                 await saveChangesAsyncCall
                     .Should()
-                    .ThrowExactlyAsync<DbUpdateConcurrencyException>(
-                        "2 transactions were concurrently modifying the same entity");
+                    .ThrowExactlyAsync<DbUpdateConcurrencyException>("2 transactions were concurrently modifying the same entity");
             }
             finally
             {
@@ -139,22 +138,23 @@ namespace Todo.Persistence
 
         private static DbContextOptions<TodoDbContext> GetDbContextOptions(string databaseName)
         {
-            var configurationBuilder = new ConfigurationBuilder();
+            string connectionString =
+                new ConfigurationBuilder()
+                    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
+                    .AddJsonFile($"appsettings.{EnvironmentNames.IntegrationTests}.json", optional: false, reloadOnChange: false)
+                    .AddEnvironmentVariables(prefix: EnvironmentVariables.Prefix)
+                    .Build()
+                    .GetConnectionString(ConnectionStrings.UsedByIntegrationTests);
 
-            IConfigurationRoot testConfiguration = configurationBuilder.AddJsonFile("appsettings.json", false)
-                .AddJsonFile($"appsettings.{EnvironmentNames.IntegrationTests}.json", false)
-                .AddEnvironmentVariables()
-                .Build();
-
-            string testConnectionString = testConfiguration.GetConnectionString(ConnectionStrings.UsedByIntegrationTests);
-
-            NpgsqlConnectionStringBuilder connectionStringBuilder = new(testConnectionString)
+            NpgsqlConnectionStringBuilder dbConnectionStringBuilder = new (connectionString)
             {
                 Database = databaseName
             };
 
-            DbContextOptions<TodoDbContext> dbContextOptions = new DbContextOptionsBuilder<TodoDbContext>()
-                .UseNpgsql(connectionStringBuilder.ConnectionString).Options;
+            DbContextOptions<TodoDbContext> dbContextOptions =
+                new DbContextOptionsBuilder<TodoDbContext>()
+                    .UseNpgsql(dbConnectionStringBuilder.ConnectionString)
+                    .Options;
 
             return dbContextOptions;
         }
