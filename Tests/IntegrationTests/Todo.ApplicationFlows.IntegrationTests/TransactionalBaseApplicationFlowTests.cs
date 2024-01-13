@@ -1,10 +1,12 @@
+using Todo.Commons.Constants;
+using Todo.Commons.StartupLogic;
+
 namespace Todo.ApplicationFlows
 {
     using System;
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.Diagnostics.CodeAnalysis;
-    using System.Reflection;
     using System.Security.Principal;
     using System.Threading.Tasks;
     using System.Transactions;
@@ -31,9 +33,16 @@ namespace Todo.ApplicationFlows
         private TestWebApplicationFactory testWebApplicationFactory;
 
         [OneTimeSetUp]
-        public void GivenAnApplicationFlowIsToBeExecuted()
+        public async Task GivenAnApplicationFlowIsToBeExecuted()
         {
-            testWebApplicationFactory = new TestWebApplicationFactory(MethodBase.GetCurrentMethod()?.DeclaringType?.Name);
+            testWebApplicationFactory = new TestWebApplicationFactory
+            (
+                applicationName: nameof(TransactionalBaseApplicationFlowTests),
+                environmentName: EnvironmentNames.IntegrationTests
+            );
+
+            // Ensure startup logic is executed before running any tests.
+            await testWebApplicationFactory.Services.GetRequiredService<IStartupLogicTaskExecutor>().ExecuteAsync();
         }
 
         [OneTimeTearDown]

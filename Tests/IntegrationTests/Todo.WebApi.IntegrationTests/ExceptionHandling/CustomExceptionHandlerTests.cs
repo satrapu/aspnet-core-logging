@@ -1,3 +1,8 @@
+using Microsoft.Extensions.DependencyInjection;
+
+using Todo.Commons.Constants;
+using Todo.Commons.StartupLogic;
+
 namespace Todo.WebApi.ExceptionHandling
 {
     using System;
@@ -5,7 +10,6 @@ namespace Todo.WebApi.ExceptionHandling
     using System.IO;
     using System.Net;
     using System.Net.Http;
-    using System.Reflection;
     using System.Security.Principal;
     using System.Text.Json;
     using System.Threading.Tasks;
@@ -50,8 +54,12 @@ namespace Todo.WebApi.ExceptionHandling
                 Password = $"test-password--{Guid.NewGuid():N}"
             };
 
-            await using WebApplicationFactory<Program> testWebApplicationFactory =
-                new TestWebApplicationFactory(MethodBase.GetCurrentMethod()?.DeclaringType?.Name)
+            await using WebApplicationFactory<Program> webApplicationFactory =
+                new TestWebApplicationFactory
+                    (
+                        applicationName: nameof(CustomExceptionHandlerTests),
+                        environmentName: EnvironmentNames.IntegrationTests
+                    )
                     .WithMockServices(containerBuilder =>
                     {
                         // Ensure a mock implementation will be injected whenever a service requires an instance of the
@@ -67,14 +75,16 @@ namespace Todo.WebApi.ExceptionHandling
                         {
                             configurationBuilder.AddInMemoryCollection(new[]
                             {
-                                // Ensure database is not migrated, since having an up-to-date RDBMS will just complicate
-                                // this test method.
+                                // Ensure database is not migrated, since having an up-to-date RDBMS would just complicate this test method.
                                 new KeyValuePair<string, string>("MigrateDatabase", bool.FalseString)
                             });
                         });
                     });
 
-            using HttpClient httpClient = testWebApplicationFactory.CreateClient();
+            // Ensure startup logic is executed before running any tests.
+            await webApplicationFactory.Services.GetRequiredService<IStartupLogicTaskExecutor>().ExecuteAsync();
+
+            using HttpClient httpClient = webApplicationFactory.CreateClient();
 
             // Act
             HttpResponseMessage httpResponseMessage = await httpClient.PostAsJsonAsync("api/jwt", generateJwtModel);

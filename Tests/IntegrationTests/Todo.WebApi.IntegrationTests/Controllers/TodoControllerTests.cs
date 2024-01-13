@@ -1,3 +1,8 @@
+using Microsoft.Extensions.DependencyInjection;
+
+using Todo.Commons.Constants;
+using Todo.Commons.StartupLogic;
+
 namespace Todo.WebApi.Controllers
 {
     using System;
@@ -6,7 +11,6 @@ namespace Todo.WebApi.Controllers
     using System.Linq;
     using System.Net;
     using System.Net.Http;
-    using System.Reflection;
     using System.Threading.Tasks;
 
     using FluentAssertions;
@@ -33,7 +37,7 @@ namespace Todo.WebApi.Controllers
     {
         private const string BaseUrl = "api/todo";
 
-        private TestWebApplicationFactory webApplicationFactory;
+        private TestWebApplicationFactory testWebApplicationFactory;
         private ActivityListener activityListener;
         private ActivityListener noOpActivityListener;
 
@@ -42,9 +46,16 @@ namespace Todo.WebApi.Controllers
         /// any test method found in this class.
         /// </summary>
         [OneTimeSetUp]
-        public void GivenAnHttpRequestIsToBePerformed()
+        public async Task GivenAnHttpRequestIsToBePerformed()
         {
-            webApplicationFactory = new TestWebApplicationFactory(MethodBase.GetCurrentMethod()?.DeclaringType?.Name);
+            testWebApplicationFactory = new TestWebApplicationFactory
+            (
+                applicationName: nameof(TodoControllerTests),
+                environmentName: EnvironmentNames.IntegrationTests
+            );
+
+            // Ensure startup logic is executed before running any tests.
+            await testWebApplicationFactory.Services.GetRequiredService<IStartupLogicTaskExecutor>().ExecuteAsync();
 
             activityListener = new ActivityListener
             {
@@ -73,7 +84,7 @@ namespace Todo.WebApi.Controllers
         [OneTimeTearDown]
         public void Cleanup()
         {
-            webApplicationFactory?.Dispose();
+            testWebApplicationFactory?.Dispose();
         }
 
         /// <summary>
@@ -85,7 +96,7 @@ namespace Todo.WebApi.Controllers
         public async Task CreateAsync_UsingNoJsonWebToken_ReturnsUnauthorizedHttpStatusCode()
         {
             // Arrange
-            using HttpClient httpClient = webApplicationFactory.CreateClient();
+            using HttpClient httpClient = testWebApplicationFactory.CreateClient();
 
             NewTodoItemModel newTodoItemModel = new()
             {
@@ -110,7 +121,7 @@ namespace Todo.WebApi.Controllers
         public async Task CreateAsync_UsingValidTodoItem_ReturnsExpectedData()
         {
             // Arrange
-            using HttpClient httpClient = await webApplicationFactory.CreateHttpClientWithJwtAsync();
+            using HttpClient httpClient = await testWebApplicationFactory.CreateHttpClientAsync();
 
             const long idThreshold = 1;
 
@@ -142,7 +153,7 @@ namespace Todo.WebApi.Controllers
         public async Task CreateAsync_UsingInvalidTodoItem_ReturnsExpectedHttpStatusCode()
         {
             // Arrange
-            using HttpClient httpClient = await webApplicationFactory.CreateHttpClientWithJwtAsync();
+            using HttpClient httpClient = await testWebApplicationFactory.CreateHttpClientAsync();
             NewTodoItemModel invalidModel = new();
 
             // Act
@@ -163,7 +174,7 @@ namespace Todo.WebApi.Controllers
         public async Task GetByQueryAsync_UsingNoJsonWebToken_ReturnsUnauthorizedHttpStatusCode()
         {
             // Arrange
-            using HttpClient httpClient = webApplicationFactory.CreateClient();
+            using HttpClient httpClient = testWebApplicationFactory.CreateClient();
 
             Dictionary<string, string> queryString = new()
             {
@@ -193,7 +204,7 @@ namespace Todo.WebApi.Controllers
         public async Task GetByQueryAsync_UsingDefaults_ReturnsExpectedResult()
         {
             // Arrange
-            using HttpClient httpClient = await webApplicationFactory.CreateHttpClientWithJwtAsync();
+            using HttpClient httpClient = await testWebApplicationFactory.CreateHttpClientAsync();
 
             string nameSuffix = Guid.NewGuid().ToString("N");
             string name = $"it--{nameof(GetByQueryAsync_UsingDefaults_ReturnsExpectedResult)}--{nameSuffix}";
@@ -250,7 +261,7 @@ namespace Todo.WebApi.Controllers
         public async Task GetByIdAsync_UsingNoJsonWebToken_ReturnsUnauthorizedHttpStatusCode()
         {
             // Arrange
-            using HttpClient httpClient = webApplicationFactory.CreateClient();
+            using HttpClient httpClient = testWebApplicationFactory.CreateClient();
             long? id = int.MaxValue;
 
             // Act
@@ -270,7 +281,7 @@ namespace Todo.WebApi.Controllers
         public async Task GetByIdAsync_UsingNewlyCreatedItem_ReturnsExpectedResult()
         {
             // Arrange
-            using HttpClient httpClient = await webApplicationFactory.CreateHttpClientWithJwtAsync();
+            using HttpClient httpClient = await testWebApplicationFactory.CreateHttpClientAsync();
 
             string nameSuffix = Guid.NewGuid().ToString("N");
             string name = $"it--{nameof(GetByIdAsync_UsingNewlyCreatedItem_ReturnsExpectedResult)}--{nameSuffix}";
@@ -312,7 +323,7 @@ namespace Todo.WebApi.Controllers
         public async Task GetByIdAsync_UsingNonExistingId_ReturnsNotFoundHttpStatusCode()
         {
             // Arrange
-            using HttpClient httpClient = await webApplicationFactory.CreateHttpClientWithJwtAsync();
+            using HttpClient httpClient = await testWebApplicationFactory.CreateHttpClientAsync();
 
             string nameSuffix = Guid.NewGuid().ToString("N");
             string name = $"it--{nameof(GetByIdAsync_UsingNonExistingId_ReturnsNotFoundHttpStatusCode)}--{nameSuffix}";
@@ -346,7 +357,7 @@ namespace Todo.WebApi.Controllers
         public async Task UpdateAsync_UsingNoJsonWebToken_ReturnsUnauthorizedHttpStatusCode()
         {
             // Arrange
-            using HttpClient httpClient = webApplicationFactory.CreateClient();
+            using HttpClient httpClient = testWebApplicationFactory.CreateClient();
             long? id = int.MaxValue;
             UpdateTodoItemModel updateTodoItemModel = new();
 
@@ -367,7 +378,7 @@ namespace Todo.WebApi.Controllers
         public async Task UpdateAsync_UsingNewlyCreatedTodoItem_MustSucceed()
         {
             // Arrange
-            using HttpClient httpClient = await webApplicationFactory.CreateHttpClientWithJwtAsync();
+            using HttpClient httpClient = await testWebApplicationFactory.CreateHttpClientAsync();
 
             string name = $"it--{nameof(UpdateAsync_UsingNewlyCreatedTodoItem_MustSucceed)}--{Guid.NewGuid():N}";
             bool isComplete = DateTime.UtcNow.Ticks % 2 == 0;
@@ -418,7 +429,7 @@ namespace Todo.WebApi.Controllers
         public async Task DeleteAsync_UsingNoJsonWebToken_ReturnsUnauthorizedHttpStatusCode()
         {
             // Arrange
-            using HttpClient httpClient = webApplicationFactory.CreateClient();
+            using HttpClient httpClient = testWebApplicationFactory.CreateClient();
             long id = int.MaxValue;
 
             // Act
@@ -447,7 +458,7 @@ namespace Todo.WebApi.Controllers
                 IsComplete = isComplete
             };
 
-            using HttpClient httpClient = await webApplicationFactory.CreateHttpClientWithJwtAsync();
+            using HttpClient httpClient = await testWebApplicationFactory.CreateHttpClientAsync();
 
             HttpResponseMessage response = await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemInfo);
             response.IsSuccessStatusCode.Should().BeTrue();
