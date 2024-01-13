@@ -80,33 +80,27 @@ namespace Todo.WebApi.ExceptionHandling
             HttpResponseMessage httpResponseMessage = await httpClient.PostAsJsonAsync("api/jwt", generateJwtModel);
 
             // Assert
-            using (new AssertionScope())
-            {
-                const HttpStatusCode expectedStatusCode = HttpStatusCode.InternalServerError;
+            using AssertionScope _ = new();
+            const HttpStatusCode expectedStatusCode = HttpStatusCode.InternalServerError;
 
-                httpResponseMessage.IsSuccessStatusCode
-                    .Should().BeFalse("the endpoint was supposed to throw a hard-coded exception");
+            httpResponseMessage.IsSuccessStatusCode.Should().BeFalse("the endpoint was supposed to throw a hard-coded exception");
+            httpResponseMessage.StatusCode.Should().Be(expectedStatusCode, $"the hard-coded exception was mapped to HTTP status {expectedStatusCode}");
 
-                httpResponseMessage.StatusCode.Should().Be(expectedStatusCode,
-                    $"the hard-coded exception was mapped to HTTP status {expectedStatusCode}");
+            byte[] problemDetailsAsBytes = await httpResponseMessage.Content.ReadAsByteArrayAsync();
+            await using var memoryStream = new MemoryStream(problemDetailsAsBytes);
 
-                byte[] problemDetailsAsBytes = await httpResponseMessage.Content.ReadAsByteArrayAsync();
-                await using var memoryStream = new MemoryStream(problemDetailsAsBytes);
+            // Must use System.Text.Json.JsonSerializer instead of Newtonsoft.Json.JsonSerializer to ensure
+            // ProblemDetails.Extensions property is correctly deserialized and does not end up as an empty
+            // dictionary.
+            ProblemDetails problemDetails = await JsonSerializer.DeserializeAsync<ProblemDetails>(memoryStream);
+            problemDetails.Should().NotBeNull("application must handle any exception");
+            // ReSharper disable once PossibleNullReferenceException
+            problemDetails.Extensions.Should().NotBeNull("problem details must contain extra info");
+            problemDetails.Extensions.Should().NotContainKey("errorData", "error data must not be present");
+            problemDetails.Extensions.Should().ContainKey("rootCauseKey", "root cause key must be present");
+            problemDetails.Extensions.Should().ContainKey("errorId", "error id must be present");
 
-                // Must use System.Text.Json.JsonSerializer instead of Newtonsoft.Json.JsonSerializer to ensure
-                // ProblemDetails.Extensions property is correctly deserialized and does not end up as an empty
-                // dictionary.
-                ProblemDetails problemDetails = await JsonSerializer.DeserializeAsync<ProblemDetails>(memoryStream);
-                problemDetails.Should().NotBeNull("application must handle any exception");
-                // ReSharper disable once PossibleNullReferenceException
-                problemDetails.Extensions.Should().NotBeNull("problem details must contain extra info");
-                problemDetails.Extensions.Should().NotContainKey("errorData", "error data must not be present");
-                problemDetails.Extensions.Should().ContainKey("rootCauseKey", "root cause key must be present");
-                problemDetails.Extensions.Should().ContainKey("errorId", "error id must be present");
-
-                Guid.TryParse(problemDetails.Extensions["errorId"].ToString(), out Guid _)
-                    .Should().BeTrue("error id is a GUID");
-            }
+            Guid.TryParse(problemDetails.Extensions["errorId"].ToString(), out Guid _).Should().BeTrue("error id is a GUID");
         }
 
         /// <summary>
