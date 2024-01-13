@@ -1,4 +1,4 @@
-﻿namespace Todo.Commons.Constants
+namespace Todo.Commons.Constants
 {
     public static class EnvironmentVariables
     {

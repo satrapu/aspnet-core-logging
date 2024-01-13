@@ -1,4 +1,4 @@
-﻿namespace Todo.WebApi.AcceptanceTests.Dependencies
+namespace Todo.WebApi.AcceptanceTests.Dependencies
 {
     using System;
     using System.Net.Http.Headers;

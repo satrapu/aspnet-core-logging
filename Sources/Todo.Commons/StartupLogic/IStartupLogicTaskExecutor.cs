@@ -1,4 +1,4 @@
-﻿namespace Todo.Commons.StartupLogic
+namespace Todo.Commons.StartupLogic
 {
     using System.Threading.Tasks;
 

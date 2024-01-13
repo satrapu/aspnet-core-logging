@@ -146,7 +146,7 @@ namespace Todo.Persistence
                     .Build()
                     .GetConnectionString(ConnectionStrings.UsedByIntegrationTests);
 
-            NpgsqlConnectionStringBuilder dbConnectionStringBuilder = new (connectionString)
+            NpgsqlConnectionStringBuilder dbConnectionStringBuilder = new(connectionString)
             {
                 Database = databaseName
             };

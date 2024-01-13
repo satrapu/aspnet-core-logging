@@ -1,4 +1,4 @@
-﻿namespace Todo.WebApi.AcceptanceTests.Steps.AddTodoItem
+namespace Todo.WebApi.AcceptanceTests.Steps.AddTodoItem
 {
     using System;
     using System.Net;

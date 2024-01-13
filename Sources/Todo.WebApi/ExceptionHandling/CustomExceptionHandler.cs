@@ -61,7 +61,7 @@ namespace Todo.WebApi.ExceptionHandling
             problemDetails.Extensions.Remove(ErrorData);
 
             httpContext.Response.ContentType = ProblemDetailContentType;
-            httpContext.Response.StatusCode = problemDetails.Status ?? (int) HttpStatusCode.InternalServerError;
+            httpContext.Response.StatusCode = problemDetails.Status ?? (int)HttpStatusCode.InternalServerError;
 
             // Since the ProblemDetails instance is always serialized as JSON, the web API will not be able to
             // correctly handle 'Accept' HTTP header.
@@ -76,7 +76,7 @@ namespace Todo.WebApi.ExceptionHandling
 
             var problemDetails = new ProblemDetails
             {
-                Status = (int) exceptionMappingResult.HttpStatusCode,
+                Status = (int)exceptionMappingResult.HttpStatusCode,
                 Title = "An unexpected error occurred while trying to process the current request",
                 Detail = includeDetails ? exception?.ToString() : string.Empty,
                 Extensions =

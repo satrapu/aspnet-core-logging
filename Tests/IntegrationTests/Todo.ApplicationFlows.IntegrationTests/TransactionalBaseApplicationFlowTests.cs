@@ -247,7 +247,7 @@ namespace Todo.ApplicationFlows
                 return null;
             }
 
-            TodoItemQuery query = new ()
+            TodoItemQuery query = new()
             {
                 Owner = flowInitiator,
                 NamePattern = $"{namePrefix}%"
