@@ -1,6 +1,3 @@
-using Todo.Commons.Constants;
-using Todo.Commons.StartupLogic;
-
 namespace Todo.ApplicationFlows
 {
     using System;
@@ -10,6 +7,8 @@ namespace Todo.ApplicationFlows
     using System.Security.Principal;
     using System.Threading.Tasks;
     using System.Transactions;
+
+    using Commons.Constants;
 
     using FluentAssertions;
     using FluentAssertions.Execution;
@@ -35,14 +34,11 @@ namespace Todo.ApplicationFlows
         [OneTimeSetUp]
         public async Task GivenAnApplicationFlowIsToBeExecuted()
         {
-            testWebApplicationFactory = new TestWebApplicationFactory
+            testWebApplicationFactory = await TestWebApplicationFactory.CreateAsync
             (
                 applicationName: nameof(TransactionalBaseApplicationFlowTests),
                 environmentName: EnvironmentNames.IntegrationTests
             );
-
-            // Ensure startup logic is executed before running any tests.
-            await testWebApplicationFactory.Services.GetRequiredService<IStartupLogicTaskExecutor>().ExecuteAsync();
         }
 
         [OneTimeTearDown]

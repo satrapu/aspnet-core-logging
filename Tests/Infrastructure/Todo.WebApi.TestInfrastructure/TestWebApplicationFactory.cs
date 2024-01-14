@@ -1,5 +1,3 @@
-using Todo.Commons.Constants;
-
 namespace Todo.WebApi.TestInfrastructure
 {
     using System;
@@ -11,6 +9,9 @@ namespace Todo.WebApi.TestInfrastructure
     using System.Threading.Tasks;
 
     using Autofac;
+
+    using Commons.Constants;
+    using Commons.StartupLogic;
 
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc.Testing;
@@ -38,10 +39,45 @@ namespace Todo.WebApi.TestInfrastructure
         private readonly string applicationName;
         private readonly string environmentName;
 
-        public TestWebApplicationFactory(string applicationName, string environmentName)
+        private TestWebApplicationFactory(string applicationName, string environmentName)
         {
+            if (string.IsNullOrWhiteSpace(applicationName))
+            {
+                throw new ArgumentException(message: "Application name cannot be null or white-space only", paramName: nameof(applicationName));
+            }
+
+            if (string.IsNullOrWhiteSpace(environmentName))
+            {
+                throw new ArgumentException(message: "Environment name cannot be null or white-space only", paramName: nameof(environmentName));
+            }
+
             this.applicationName = applicationName;
             this.environmentName = environmentName;
+        }
+
+        public static TestWebApplicationFactory Create(string applicationName, string environmentName)
+        {
+            return new TestWebApplicationFactory(applicationName, environmentName);
+        }
+
+        public static async Task<TestWebApplicationFactory> CreateAsync
+        (
+            string applicationName,
+            string environmentName,
+            bool shouldRunStartupLogicTasks = true
+        )
+        {
+            TestWebApplicationFactory testWebApplicationFactory = Create(applicationName, environmentName);
+
+            if (shouldRunStartupLogicTasks)
+            {
+                await testWebApplicationFactory
+                    .Services
+                    .GetRequiredService<IStartupLogicTaskExecutor>()
+                    .ExecuteAsync();
+            }
+
+            return testWebApplicationFactory;
         }
 
         public async Task<HttpClient> CreateHttpClientAsync()

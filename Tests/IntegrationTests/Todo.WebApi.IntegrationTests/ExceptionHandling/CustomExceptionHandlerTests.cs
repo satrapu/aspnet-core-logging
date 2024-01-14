@@ -1,8 +1,3 @@
-using Microsoft.Extensions.DependencyInjection;
-
-using Todo.Commons.Constants;
-using Todo.Commons.StartupLogic;
-
 namespace Todo.WebApi.ExceptionHandling
 {
     using System;
@@ -18,6 +13,9 @@ namespace Todo.WebApi.ExceptionHandling
 
     using Autofac;
 
+    using Commons.Constants;
+    using Commons.StartupLogic;
+
     using FluentAssertions;
     using FluentAssertions.Execution;
 
@@ -25,6 +23,7 @@ namespace Todo.WebApi.ExceptionHandling
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.AspNetCore.Mvc.Testing;
     using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
 
     using Models;
 
@@ -55,7 +54,8 @@ namespace Todo.WebApi.ExceptionHandling
             };
 
             await using WebApplicationFactory<Program> webApplicationFactory =
-                new TestWebApplicationFactory
+                TestWebApplicationFactory
+                    .Create
                     (
                         applicationName: nameof(CustomExceptionHandlerTests),
                         environmentName: EnvironmentNames.IntegrationTests

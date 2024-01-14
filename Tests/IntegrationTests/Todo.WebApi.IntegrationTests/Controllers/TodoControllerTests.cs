@@ -1,8 +1,3 @@
-using Microsoft.Extensions.DependencyInjection;
-
-using Todo.Commons.Constants;
-using Todo.Commons.StartupLogic;
-
 namespace Todo.WebApi.Controllers
 {
     using System;
@@ -12,6 +7,8 @@ namespace Todo.WebApi.Controllers
     using System.Net;
     using System.Net.Http;
     using System.Threading.Tasks;
+
+    using Commons.Constants;
 
     using FluentAssertions;
     using FluentAssertions.Execution;
@@ -48,14 +45,11 @@ namespace Todo.WebApi.Controllers
         [OneTimeSetUp]
         public async Task GivenAnHttpRequestIsToBePerformed()
         {
-            testWebApplicationFactory = new TestWebApplicationFactory
+            testWebApplicationFactory = await TestWebApplicationFactory.CreateAsync
             (
                 applicationName: nameof(TodoControllerTests),
                 environmentName: EnvironmentNames.IntegrationTests
             );
-
-            // Ensure startup logic is executed before running any tests.
-            await testWebApplicationFactory.Services.GetRequiredService<IStartupLogicTaskExecutor>().ExecuteAsync();
 
             activityListener = new ActivityListener
             {
