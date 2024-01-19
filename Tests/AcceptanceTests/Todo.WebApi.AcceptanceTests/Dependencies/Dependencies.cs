@@ -22,10 +22,14 @@ namespace Todo.WebApi.AcceptanceTests.Dependencies
             ServiceCollection services = new();
 
             services
+                .AddSingleton<TcpPortProvider>()
                 .AddSingleton<TodoWebApiDriver>()
-                .AddHttpClient(name: TodoWebApiDriver.HttpClientName, httpClient =>
+                .AddHttpClient(name: TodoWebApiDriver.HttpClientName,(serviceProvider, httpClient) =>
                 {
-                    httpClient.BaseAddress = new Uri(uriString: "https://localhost:6001", uriKind: UriKind.Absolute);
+                    TcpPortProvider tcpPortProvider = serviceProvider.GetRequiredService<TcpPortProvider>();
+                    int port = tcpPortProvider.GetAvailableTcpPort();
+
+                    httpClient.BaseAddress = new Uri(uriString: $"http://localhost:{port}", uriKind: UriKind.Absolute);
                     httpClient.DefaultRequestHeaders.UserAgent.Add
                     (
                         new ProductInfoHeaderValue

@@ -1,3 +1,6 @@
+using Todo.Commons.Constants;
+using Todo.Persistence;
+
 namespace Todo.WebApi
 {
     using System;
@@ -83,6 +86,10 @@ namespace Todo.WebApi
         {
             logger.LogInformation("Configuring ASP.NET Core request processing pipeline ...");
 
+            bool isDevelopmentEnvironment = EnvironmentNames.Development.Equals(webHostEnvironment.EnvironmentName);
+            bool isIntegrationTestsEnvironment = EnvironmentNames.IntegrationTests.Equals(webHostEnvironment.EnvironmentName);
+            bool isAcceptanceTestsEnvironment = EnvironmentNames.AcceptanceTests.Equals(webHostEnvironment.EnvironmentName);
+
             applicationBuilder
                 .UseConversationId()
                 .UseHttpLogging(configuration)
@@ -90,12 +97,22 @@ namespace Todo.WebApi
                 {
                     ExceptionHandler = CustomExceptionHandler.HandleException,
                     AllowStatusCode404Response = true
-                })
-                .UseHttpsRedirection()
+                });
+
+            if (!isDevelopmentEnvironment && !isIntegrationTestsEnvironment && !isAcceptanceTestsEnvironment)
+            {
+                applicationBuilder.UseHttpsRedirection();
+            }
+
+            applicationBuilder
                 .UseRouting()
                 .UseAuthentication()
                 .UseAuthorization()
-                .UseEndpoints(endpoints => endpoints.MapControllers());
+                .UseEndpoints(endpoints =>
+                {
+                    endpoints.MapControllers().RequireAuthorization();
+                    endpoints.MapHealthChecks("health").AllowAnonymous();
+                });
 
             hostApplicationLifetime.ApplicationStarted.Register(() => OnApplicationStarted());
             hostApplicationLifetime.ApplicationStopping.Register(() => OnApplicationStopping(logger));
@@ -109,7 +126,8 @@ namespace Todo.WebApi
             services
                 .AddLogging(loggingBuilder => loggingBuilder.ClearProviders())
                 .AddSerilog(configuration)
-                .AddOpenTelemetry(configuration, webHostEnvironment);
+                .AddOpenTelemetry(configuration, webHostEnvironment)
+                .AddHealthChecks().AddDbContextCheck<TodoDbContext>();
         }
 
         private void ConfigureSecurity(IServiceCollection services)
