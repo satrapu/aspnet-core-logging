@@ -3,29 +3,27 @@
     using System.Threading.Tasks;
     using System.Diagnostics.CodeAnalysis;
 
-    using Dependencies;
-
     using TechTalk.SpecFlow;
     using TechTalk.SpecFlow.Infrastructure;
+
+    using Infrastructure;
 
     [Binding]
     [SuppressMessage("Sonar", "S1118", Justification = "Class must be instantiable by SpecFlow test runner")]
     public class Hooks
     {
-        private const string SystemUnderTestProcessKey = "Todo.WebApi.Process";
-        private const string SystemUnderTestPortKey = "Todo.WebApi.Port";
+        private const string SystemUnderTestProcessKey = $"{nameof(SystemUnderTest)}.Process";
 
         [BeforeFeature]
         public static async Task StartApplication(FeatureContext featureContext)
         {
-            TcpPortProvider tcpPortProvider = featureContext.FeatureContainer.Resolve<TcpPortProvider>();
-            int port = tcpPortProvider.GetAvailableTcpPort();
-
-            ISpecFlowOutputHelper specFlowOutputHelper = featureContext.FeatureContainer.Resolve<ISpecFlowOutputHelper>();
-            SystemUnderTest systemUnderTestProcess = await SystemUnderTest.StartNewAsync(port, specFlowOutputHelper);
+            SystemUnderTest systemUnderTestProcess = await SystemUnderTest.StartNewAsync
+            (
+                port: featureContext.FeatureContainer.Resolve<TcpPortProvider>().GetAvailableTcpPort(),
+                specFlowOutputHelper: featureContext.FeatureContainer.Resolve<ISpecFlowOutputHelper>()
+            );
 
             featureContext.Add(SystemUnderTestProcessKey, systemUnderTestProcess);
-            featureContext.Add(SystemUnderTestPortKey, port);
         }
 
         [AfterFeature]

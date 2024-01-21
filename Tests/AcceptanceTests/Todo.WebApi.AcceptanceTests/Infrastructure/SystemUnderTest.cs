@@ -1,21 +1,24 @@
-﻿namespace Todo.WebApi.AcceptanceTests.Dependencies
+﻿namespace Todo.WebApi.AcceptanceTests.Infrastructure
 {
+    using System;
     using System.Diagnostics;
     using System.IO;
-    using System;
     using System.Net.Http;
     using System.Threading.Tasks;
 
     using Polly;
-    using Polly.Retry;
 
     using TechTalk.SpecFlow.Infrastructure;
 
     public class SystemUnderTest : IAsyncDisposable
     {
+        private const string EnvironmentName = "AcceptanceTests";
+        private const string TodoWebApiSourcesRelativePath = "../../../../../../Sources/Todo.WebApi";
+
         private static readonly TimeSpan MaxWaitTime = TimeSpan.FromSeconds(5);
-        private static readonly TimeSpan RetryWaitTime = TimeSpan.FromMilliseconds(500);
+        private static readonly TimeSpan RetryWaitTime = TimeSpan.FromMilliseconds(250);
         private static readonly HttpClient HttpClient = new();
+
         private readonly Process systemUnderTest;
 
         private SystemUnderTest(Process systemUnderTest)
@@ -26,27 +29,27 @@
         public static async Task<SystemUnderTest> StartNewAsync(int port, ISpecFlowOutputHelper specFlowOutputHelper)
         {
             string baseUrl = $"http://localhost:{port}";
-            string endpoint = $"{baseUrl}/health";
+            string healthEndpoint = $"{baseUrl}/health";
 
             Process process = StartSystemUnderTest(baseUrl, specFlowOutputHelper);
-            await WaitUntilSystemUnderTestIsAvailableAsync(endpoint);
+            await WaitUntilSystemUnderTestIsHealthyAsync(healthEndpoint);
 
             return new SystemUnderTest(process);
         }
 
         private static Process StartSystemUnderTest(string urls, ISpecFlowOutputHelper specFlowOutputHelper)
         {
-            DirectoryInfo todoWebApiDirectoryInfo = new("../../../../../../Sources/Todo.WebApi");
-
             ProcessStartInfo processStartInfo = new()
             {
                 FileName = "dotnet",
-                Arguments = $"run --urls=\"{urls}\" --environment AcceptanceTests",
+                Arguments = $"""
+                             run --urls="{urls}" --environment="{EnvironmentName}
+                             """,
                 CreateNoWindow = true,
                 RedirectStandardOutput = true,
                 RedirectStandardError = true,
                 UseShellExecute = false,
-                WorkingDirectory = todoWebApiDirectoryInfo.FullName
+                WorkingDirectory = new DirectoryInfo(path: TodoWebApiSourcesRelativePath).FullName
             };
 
             Process process = Process.Start(processStartInfo);
@@ -65,20 +68,15 @@
             return process;
         }
 
-        private static async Task WaitUntilSystemUnderTestIsAvailableAsync(string endpoint)
+        private static async Task WaitUntilSystemUnderTestIsHealthyAsync(string healthEndpoint)
         {
-            AsyncRetryPolicy retryPolicy =
-                Policy
-                    .Handle<Exception>()
-                    .WaitAndRetryForeverAsync(_ => RetryWaitTime);
-
-            PolicyResult<HttpResponseMessage> result =
+            PolicyResult<HttpResponseMessage> policyResult =
                 await Policy
                     .TimeoutAsync(MaxWaitTime)
-                    .WrapAsync(retryPolicy)
-                    .ExecuteAndCaptureAsync(() => HttpClient.GetAsync(endpoint));
+                    .WrapAsync(innerPolicy: Policy.Handle<Exception>().WaitAndRetryForeverAsync(_ => RetryWaitTime))
+                    .ExecuteAndCaptureAsync(() => HttpClient.GetAsync(healthEndpoint));
 
-            if (result.Outcome == OutcomeType.Failure)
+            if (policyResult.Outcome == OutcomeType.Failure)
             {
                 throw new InvalidOperationException($"The ASP.NET Core process did not start after waiting more than {MaxWaitTime.TotalSeconds} seconds");
             }

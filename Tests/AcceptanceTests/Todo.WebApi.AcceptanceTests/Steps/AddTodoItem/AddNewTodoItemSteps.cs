@@ -63,8 +63,9 @@ namespace Todo.WebApi.AcceptanceTests.Steps.AddTodoItem
         [Then("the system must add the new todo item")]
         public void ThenTheSystemMustAddTheNewTodoItem()
         {
-            ArgumentNullException.ThrowIfNull(httpResponseMessage);
-            httpResponseMessage.EnsureSuccessStatusCode();
+            using AssertionScope _ = new();
+            httpResponseMessage.Should().NotBeNull();
+            httpResponseMessage.IsSuccessStatusCode.Should().BeTrue();
         }
 
         [Then("reply with a success response")]
@@ -88,26 +89,29 @@ namespace Todo.WebApi.AcceptanceTests.Steps.AddTodoItem
             httpResponseMessage.Headers.Location!.ToString().Should().Match(responseDetailsTable.Rows[0]["LocationHeaderValueMatchExpression"]);
         }
 
-        [Then("the system must reply with a success response")]
-        public async Task ThenTheSystemMustReplyWithASuccessResponse(Table responseDetailsTable)
+        [Then("the system must not add the new todo item")]
+        public void ThenTheSystemMustNotAddTheNewTodoItem()
         {
-            if (Enum.TryParse(responseDetailsTable.Rows[0]["HttpStatusCode"], out HttpStatusCode expectedStatusCode) is false)
-            {
-                throw new ArgumentException(message: "Failed to parse HttpStatusCode", paramName: nameof(responseDetailsTable));
-            }
-
-            httpResponseMessage = await todoWebApiDriver.AddNewTodoItemAsync(newTodoItemInfo, authenticationHeaderValue);
-        }
-
-        [Then(@"the system must reply with an error response with status code (.*)")]
-        public async Task ThenTheSystemMustReplyWithAnErrorResponseWithStatusCode(int httpStatusCode)
-        {
-            httpResponseMessage =
-                await todoWebApiDriver.AddNewTodoItemAsync(newTodoItemInfo, authenticationHeaderValue);
-
             using AssertionScope _ = new();
             httpResponseMessage.Should().NotBeNull();
             httpResponseMessage.IsSuccessStatusCode.Should().BeFalse();
+        }
+
+        [Then("reply with a failed response")]
+        public void ThenReplyWithAFailedResponse(Table responseDetailsTable)
+        {
+            string httpStatusCodeAsString = responseDetailsTable.Rows[0]["HttpStatusCode"];
+
+            if (Enum.TryParse(httpStatusCodeAsString, out HttpStatusCode expectedStatusCode) is false)
+            {
+                throw new ArgumentException
+                (
+                    message: $"Cannot parse {nameof(HttpStatusCode)} from value: \"{httpStatusCodeAsString}\"",
+                    paramName: nameof(responseDetailsTable)
+                );
+            }
+
+            httpResponseMessage.StatusCode.Should().Be(expectedStatusCode);
         }
     }
 }

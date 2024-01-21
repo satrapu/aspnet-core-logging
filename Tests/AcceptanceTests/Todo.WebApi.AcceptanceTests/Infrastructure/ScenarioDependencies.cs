@@ -1,22 +1,22 @@
-namespace Todo.WebApi.AcceptanceTests.Dependencies
+namespace Todo.WebApi.AcceptanceTests.Infrastructure
 {
     using System;
     using System.Net.Http.Headers;
     using System.Reflection;
 
-    using Drivers;
-
     using Microsoft.Extensions.DependencyInjection;
 
     using SolidToken.SpecFlow.DependencyInjection;
 
-    public static class Dependencies
+    using Drivers;
+
+    public static class ScenarioDependencies
     {
         private const string DefaultProductName = "Todo.WebApi.AcceptanceTests";
         private const string DefaultProductVersion = "1.0.0.0";
 
         [ScenarioDependencies]
-        public static IServiceCollection CreateServices()
+        public static IServiceCollection CreateScenarioDependencies()
         {
             AssemblyName assemblyName = Assembly.GetExecutingAssembly().GetName();
             ServiceCollection services = new();
@@ -24,7 +24,7 @@ namespace Todo.WebApi.AcceptanceTests.Dependencies
             services
                 .AddSingleton<TcpPortProvider>()
                 .AddSingleton<TodoWebApiDriver>()
-                .AddHttpClient(name: TodoWebApiDriver.HttpClientName,(serviceProvider, httpClient) =>
+                .AddHttpClient(name: TodoWebApiDriver.HttpClientName, (serviceProvider, httpClient) =>
                 {
                     TcpPortProvider tcpPortProvider = serviceProvider.GetRequiredService<TcpPortProvider>();
                     int port = tcpPortProvider.GetAvailableTcpPort();

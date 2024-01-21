@@ -1,8 +1,8 @@
-﻿using System.Net;
-using System.Net.Sockets;
-
-namespace Todo.WebApi.AcceptanceTests.Dependencies
+﻿namespace Todo.WebApi.AcceptanceTests.Infrastructure
 {
+    using System.Net;
+    using System.Net.Sockets;
+
     public class TcpPortProvider
     {
         private static readonly int AvailableTcpPort;
