@@ -1,6 +1,3 @@
-using Todo.Commons.Constants;
-using Todo.Persistence;
-
 namespace Todo.WebApi
 {
     using System;
@@ -12,6 +9,11 @@ namespace Todo.WebApi
 
     using Authorization;
 
+    using Autofac;
+
+    using ApplicationFlows.DependencyInjection;
+
+    using Commons.Constants;
     using Commons.Diagnostics;
 
     using ExceptionHandling;
@@ -32,6 +34,9 @@ namespace Todo.WebApi
 
     using Models;
 
+    using Persistence;
+
+    using Telemetry.DependencyInjection;
     using Telemetry.Http;
     using Telemetry.OpenTelemetry;
     using Telemetry.Serilog;
@@ -42,6 +47,8 @@ namespace Todo.WebApi
     [ExcludeFromCodeCoverage]
     public class Startup
     {
+        private const string HttpLoggingEnabledConfigurationLookupKey = "HttpLogging:Enabled";
+
         private readonly IConfiguration configuration;
         private readonly IWebHostEnvironment webHostEnvironment;
 
@@ -54,6 +61,20 @@ namespace Todo.WebApi
         {
             this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             this.webHostEnvironment = webHostEnvironment ?? throw new ArgumentNullException(nameof(webHostEnvironment));
+        }
+
+        public void ConfigureContainer(HostBuilderContext hostBuilderContext, ContainerBuilder containerBuilder)
+        {
+            containerBuilder
+                .RegisterModule(new TelemetryModule
+                {
+                    EnableHttpLogging = hostBuilderContext.Configuration.GetValue<bool>(HttpLoggingEnabledConfigurationLookupKey)
+                })
+                .RegisterModule(new ApplicationFlowsModule
+                {
+                    EnvironmentName = hostBuilderContext.HostingEnvironment.EnvironmentName,
+                    ApplicationConfiguration = hostBuilderContext.Configuration
+                });
         }
 
         /// <summary>
@@ -212,12 +233,20 @@ namespace Todo.WebApi
                             Status = StatusCodes.Status422UnprocessableEntity,
                             Detail = "See the errors property for more details",
                             Instance = context.HttpContext.Request.Path,
-                            Extensions = { { "TraceId", context.HttpContext.TraceIdentifier } }
+                            Extensions =
+                            {
+                                {
+                                    "TraceId", context.HttpContext.TraceIdentifier
+                                }
+                            }
                         };
 
                         return new UnprocessableEntityObjectResult(validationProblemDetails)
                         {
-                            ContentTypes = { "application/problem+json" }
+                            ContentTypes =
+                            {
+                                "application/problem+json"
+                            }
                         };
                     };
                 });
