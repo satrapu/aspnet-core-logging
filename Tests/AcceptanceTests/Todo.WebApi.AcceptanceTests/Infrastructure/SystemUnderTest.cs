@@ -43,7 +43,7 @@
             {
                 FileName = "dotnet",
                 Arguments = $"""
-                             run --urls="{urls}" --environment="{EnvironmentName}
+                             run --urls="{urls}" --environment="{EnvironmentName}"
                              """,
                 CreateNoWindow = true,
                 RedirectStandardOutput = true,
