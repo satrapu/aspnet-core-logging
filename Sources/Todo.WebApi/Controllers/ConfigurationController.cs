@@ -21,9 +21,8 @@ namespace Todo.WebApi.Controllers
 
         public ConfigurationController(IConfiguration applicationConfiguration, IWebHostEnvironment webHostEnvironment)
         {
-            configurationRoot = applicationConfiguration as IConfigurationRoot ??
-                                throw new ArgumentException("Expected configuration root",
-                                    nameof(applicationConfiguration));
+            configurationRoot = applicationConfiguration as IConfigurationRoot
+                                ?? throw new ArgumentException("Expected configuration root", nameof(applicationConfiguration));
 
             this.webHostEnvironment = webHostEnvironment ?? throw new ArgumentNullException(nameof(webHostEnvironment));
         }

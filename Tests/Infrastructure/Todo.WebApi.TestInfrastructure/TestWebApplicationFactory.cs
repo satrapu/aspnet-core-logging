@@ -26,8 +26,6 @@ namespace Todo.WebApi.TestInfrastructure
 
     using Npgsql;
 
-    using WebApi;
-
     /// <summary>
     /// A <see cref="WebApplicationFactory{TEntryPoint}"/> implementation to be used for running integration tests.
     /// <br/>
@@ -141,7 +139,7 @@ namespace Todo.WebApi.TestInfrastructure
             string connectionString =
                 new ConfigurationBuilder()
                     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
-                    .AddJsonFile($"appsettings.{environmentName}.json", optional: false, reloadOnChange: false)
+                    .AddJsonFile($"appsettings.{environmentName}.json", optional: true, reloadOnChange: false)
                     .AddEnvironmentVariables(prefix: EnvironmentVariables.Prefix)
                     .Build()
                     .GetConnectionString(name: environmentName);
