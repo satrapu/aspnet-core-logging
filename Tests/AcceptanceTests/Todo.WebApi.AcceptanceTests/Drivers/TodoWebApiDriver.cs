@@ -6,11 +6,16 @@ namespace Todo.WebApi.AcceptanceTests.Drivers
     using System.Net.Http.Json;
     using System.Threading.Tasks;
 
+    using Services.Security;
+
     public class TodoWebApiDriver
     {
         internal const string HttpClientName = nameof(TodoWebApiDriver);
-        internal const string AuthenticationScheme = "Bearer";
-        private static readonly Type AccessTokenType = new { accessToken = "" }.GetType();
+        private const string AuthenticationScheme = "Bearer";
+        private static readonly Type AccessTokenType = new
+        {
+            accessToken = ""
+        }.GetType();
         private readonly HttpClient httpClient;
 
         public TodoWebApiDriver(IHttpClientFactory httpClientFactory)
@@ -37,6 +42,26 @@ namespace Todo.WebApi.AcceptanceTests.Drivers
             dynamic dynamicResult = await httpResponseMessage.Content.ReadAsAsync(type: AccessTokenType);
 
             return new AuthenticationHeaderValue(scheme: AuthenticationScheme, parameter: dynamicResult.accessToken);
+        }
+
+        public async Task<AuthenticationHeaderValue> GetAuthorizationHeaderAsync(UserDetails userDetails, string[] scopes)
+        {
+            JwtService jwtService = new();
+
+            JwtInfo jwtInfo = await jwtService.GenerateJwtAsync
+            (
+                new GenerateJwtInfo
+                {
+                    UserName = userDetails.UserName,
+                    Password = userDetails.Password,
+                    Scopes = scopes,
+                    Issuer = "https://acceptancetests.auth.todo-by-satrapu.com",
+                    Audience = "https://acceptancetests.api.todo-by-satrapu.com",
+                    Secret = Guid.NewGuid().ToString("N")
+                }
+            );
+
+            return new AuthenticationHeaderValue(scheme: AuthenticationScheme, parameter: jwtInfo.AccessToken);
         }
     }
 }
