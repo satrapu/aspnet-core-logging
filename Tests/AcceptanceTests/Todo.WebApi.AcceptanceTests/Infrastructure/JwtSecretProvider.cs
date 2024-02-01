@@ -1,4 +1,4 @@
-﻿namespace Todo.WebApi.AcceptanceTests.Infrastructure
+namespace Todo.WebApi.AcceptanceTests.Infrastructure
 {
     using System;
 
