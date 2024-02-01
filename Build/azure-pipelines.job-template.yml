@@ -322,7 +322,7 @@ jobs:
       targetType: 'filePath'
       filePath: '$(Build.SourcesDirectory)/Build/RunComposeServices.ps1'
       arguments: >-
-        -ComposeProjectName '${{ parameters.integrationTests.composeProjectName }}' `
+        -ComposeProjectName '${{ parameters.tests.composeProjectName }}' `
         -RelativePathToComposeFile './db4tests/docker-compose.yml' `
         -EnvironmentVariables `
          @{ `
@@ -398,7 +398,7 @@ jobs:
       targetType: 'filePath'
       filePath: '$(Build.SourcesDirectory)/Build/PublishComposeServiceLogs.ps1'
       arguments: >-
-        -ComposeProjectName '${{ parameters.integrationTests.composeProjectName }}' `
+        -ComposeProjectName '${{ parameters.tests.composeProjectName }}' `
         -LogsOutputFolder '$(Build.SourcesDirectory)/Tests/.ComposeService-Logs'
       # Docker Compose commands write to standard error stream, thus tricking Azure DevOps
       # into thinking this PowerShell script has failed, which isn't the case.
