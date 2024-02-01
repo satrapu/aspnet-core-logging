@@ -22,6 +22,7 @@ namespace Todo.WebApi.AcceptanceTests.Infrastructure
             ServiceCollection services = new();
 
             services
+                .AddSingleton<JwtSecretProvider>()
                 .AddSingleton<TcpPortProvider>()
                 .AddSingleton<TodoWebApiDriver>()
                 .AddHttpClient(name: TodoWebApiDriver.HttpClientName, (serviceProvider, httpClient) =>

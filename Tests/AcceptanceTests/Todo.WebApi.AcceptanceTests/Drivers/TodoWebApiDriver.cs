@@ -6,6 +6,8 @@ namespace Todo.WebApi.AcceptanceTests.Drivers
     using System.Net.Http.Json;
     using System.Threading.Tasks;
 
+    using Infrastructure;
+
     using Services.Security;
 
     public class TodoWebApiDriver
@@ -15,10 +17,12 @@ namespace Todo.WebApi.AcceptanceTests.Drivers
         internal const string HttpClientName = nameof(TodoWebApiDriver);
         private const string AuthenticationScheme = "Bearer";
 
+        private readonly JwtSecretProvider jwtSecretProvider;
         private readonly HttpClient httpClient;
 
-        public TodoWebApiDriver(IHttpClientFactory httpClientFactory)
+        public TodoWebApiDriver(IHttpClientFactory httpClientFactory, JwtSecretProvider jwtSecretProvider)
         {
+            this.jwtSecretProvider = jwtSecretProvider;
             httpClient = httpClientFactory.CreateClient(name: HttpClientName);
         }
 
@@ -56,7 +60,7 @@ namespace Todo.WebApi.AcceptanceTests.Drivers
                     Scopes = scopes,
                     Issuer = "https://acceptancetests.auth.todo-by-satrapu.com",
                     Audience = "https://acceptancetests.api.todo-by-satrapu.com",
-                    Secret = Guid.NewGuid().ToString("N")
+                    Secret = jwtSecretProvider.GetSecret()
                 }
             );
 

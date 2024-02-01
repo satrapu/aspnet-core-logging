@@ -1,10 +1,13 @@
 ﻿namespace Todo.WebApi.AcceptanceTests.Infrastructure
 {
     using System;
+    using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO;
     using System.Net.Http;
     using System.Threading.Tasks;
+
+    using Commons.Constants;
 
     using Polly;
 
@@ -12,7 +15,6 @@
 
     public class SystemUnderTest : IAsyncDisposable
     {
-        private const string EnvironmentName = "AcceptanceTests";
         private const string TodoWebApiSourcesRelativePath = "../../../../../../Sources/Todo.WebApi";
 
         private static readonly TimeSpan MaxWaitTime = TimeSpan.FromSeconds(30);
@@ -26,24 +28,34 @@
             this.systemUnderTest = systemUnderTest;
         }
 
-        public static async Task<SystemUnderTest> StartNewAsync(int port, ISpecFlowOutputHelper specFlowOutputHelper)
+        public static async Task<SystemUnderTest> StartNewAsync
+        (
+            int port,
+            ISpecFlowOutputHelper specFlowOutputHelper,
+            IDictionary<string, string> environmentVariables = null
+        )
         {
             string baseUrl = $"http://localhost:{port}";
             string healthEndpoint = $"{baseUrl}/health";
 
-            Process process = StartSystemUnderTest(baseUrl, specFlowOutputHelper);
+            Process process = StartSystemUnderTest(baseUrl, specFlowOutputHelper, environmentVariables);
             await WaitUntilSystemUnderTestIsHealthyAsync(healthEndpoint);
 
             return new SystemUnderTest(process);
         }
 
-        private static Process StartSystemUnderTest(string urls, ISpecFlowOutputHelper specFlowOutputHelper)
+        private static Process StartSystemUnderTest
+        (
+            string urls,
+            ISpecFlowOutputHelper specFlowOutputHelper,
+            IDictionary<string, string> environmentVariables = null
+        )
         {
             ProcessStartInfo processStartInfo = new()
             {
                 FileName = "dotnet",
                 Arguments = $"""
-                             run --urls="{urls}" --environment="{EnvironmentName}"
+                             run --urls="{urls}" --environment="{EnvironmentNames.AcceptanceTests}"
                              """,
                 CreateNoWindow = true,
                 RedirectStandardOutput = true,
@@ -51,6 +63,14 @@
                 UseShellExecute = false,
                 WorkingDirectory = new DirectoryInfo(path: TodoWebApiSourcesRelativePath).FullName
             };
+
+            if (environmentVariables is not null)
+            {
+                foreach (KeyValuePair<string, string> environmentVariable in environmentVariables)
+                {
+                    processStartInfo.EnvironmentVariables[environmentVariable.Key] = environmentVariable.Value;
+                }
+            }
 
             Process process = Process.Start(processStartInfo);
 
