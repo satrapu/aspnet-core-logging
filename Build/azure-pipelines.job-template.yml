@@ -511,7 +511,7 @@ jobs:
   - script: >-
       $(Build.SourcesDirectory)/Tests/.SpecFlow.Plus.LivingDoc/livingdoc
       test-assembly $(Build.SourcesDirectory)/Tests/AcceptanceTests/Todo.WebApi.AcceptanceTests/bin/${{ parameters.build.configuration }}/net8.0/Todo.WebApi.AcceptanceTests.dll
-      -t TestExecution.json
+      -t $(Build.SourcesDirectory)/Tests/AcceptanceTests/Todo.WebApi.AcceptanceTests/bin/${{ parameters.build.configuration }}/net8.0/TestExecution.json
     name: 'generate_living_doc'
     displayName: 'Generate living doc'
     condition: |
