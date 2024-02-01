@@ -15,7 +15,7 @@
         private const string EnvironmentName = "AcceptanceTests";
         private const string TodoWebApiSourcesRelativePath = "../../../../../../Sources/Todo.WebApi";
 
-        private static readonly TimeSpan MaxWaitTime = TimeSpan.FromSeconds(5);
+        private static readonly TimeSpan MaxWaitTime = TimeSpan.FromSeconds(30);
         private static readonly TimeSpan RetryWaitTime = TimeSpan.FromMilliseconds(250);
         private static readonly HttpClient HttpClient = new();
 
