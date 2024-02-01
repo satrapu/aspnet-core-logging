@@ -4,7 +4,7 @@
 
 # Publish test results
 !**/TestResults/TestResults.xml
-!**/Tests/AcceptanceTests/**/AcceptanceTestsResults.json
+!**/Tests/AcceptanceTests/**/TestExecution.json
 !**/Tests/AcceptanceTests/**/LivingDoc.html
 
 # Publish code coverage results
