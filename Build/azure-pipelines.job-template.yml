@@ -21,7 +21,8 @@ parameters:
   publishPipelineArtifacts: True
   runDotNetFormatCommand: False
   runTests: True
-  integrationTests:
+  tests:
+    runTests: True
     databaseHost: ''
     databaseName: ''
     databaseUsername: ''
@@ -84,15 +85,14 @@ jobs:
     condition: eq(${{ parameters.installDotNetSdk }}, True)
     inputs:
       packageType: 'sdk'
-      version: $(DotNetCore_SDK_8_Version)
+      version: $(DotNet_SDK_8_Version)
 
   - task: UseDotNet@2
-    name: 'install_dotnet_sdk_required_by_acceptance_tests'
-    displayName: 'Install .NET SDK required by acceptance tests'
-    condition: eq(${{ parameters.installDotNetSdk }}, True)
+    name: 'install_dotnet_sdk_required_by_livingdoc'
+    displayName: 'Install .NET SDK required by living doc'
     inputs:
-      packageType: 'sdk'
-      version: $(DotNetCore_SDK_7_Version)
+        packageType: 'sdk'
+        version: $(DotNet_SDK_7_Version)
 
   # Install a specific .NET Core SDK as needed by the Azure DevOps extension used for running Sonar scans.
   # See more about running Sonar analysis on Azure DevOps here:
@@ -212,7 +212,7 @@ jobs:
       --filter "TestCategory=ArchitectureTests"
     name: 'run_architecture_tests'
     displayName: 'Run architecture tests'
-    condition: eq(${{ parameters.runTests }}, True)
+    condition: eq(${{ parameters.tests.runTests }}, True)
 
   - powershell: echo "##vso[task.setvariable variable=ArchitectureTestsOutcome]success"
     name: 'set_architecture_tests_outcome_variable'
@@ -221,7 +221,7 @@ jobs:
       and
       (
           succeeded()
-        , eq(${{ parameters.runTests }}, True)
+        , eq(${{ parameters.tests.runTests }}, True)
       )
 
   - task: PublishTestResults@2
@@ -231,7 +231,7 @@ jobs:
       and
       (
           succeededOrFailed()
-        , eq(${{ parameters.runTests }}, True)
+        , eq(${{ parameters.tests.runTests }}, True)
       )
     inputs:
       testResultsFormat: 'NUnit'
@@ -259,7 +259,7 @@ jobs:
     condition: |
       and
       (
-          eq(${{ parameters.runTests }}, True)
+          eq(${{ parameters.tests.runTests }}, True)
         , eq(variables['ArchitectureTestsOutcome'], 'success')
       )
 
@@ -270,7 +270,7 @@ jobs:
       and
       (
           succeeded()
-        , eq(${{ parameters.runTests }}, True)
+        , eq(${{ parameters.tests.runTests }}, True)
         , eq(variables['ArchitectureTestsOutcome'], 'success')
       )
 
@@ -282,7 +282,7 @@ jobs:
     condition: |
       and
       (
-          eq(${{ parameters.runTests }}, True)
+          eq(${{ parameters.tests.runTests }}, True)
         , eq(variables['ArchitectureTestsOutcome'], 'success')
       )
     inputs:
@@ -303,19 +303,19 @@ jobs:
       and
       (
           eq(variables['Agent.OS'], 'Darwin')
-        , eq(${{ parameters.runTests }}, True)
+        , eq(${{ parameters.tests.runTests }}, True)
         , eq(variables['UnitTestsOutcome'], 'success')
       )
 
-  # Run a PowerShell script to start compose services needed when running integration tests.
+  # Run a PowerShell script to start compose services needed when running tests.
   - task: PowerShell@2
-    name: 'start_compose_services_used_by_integration_tests'
-    displayName: 'Start compose services used by integration tests'
+    name: 'start_compose_services_used_by_tests'
+    displayName: 'Start compose services used by tests'
     condition: |
       and
       (
           succeeded()
-        , eq(${{ parameters.runTests }}, True)
+        , eq(${{ parameters.tests.runTests }}, True)
         , eq(variables['UnitTestsOutcome'], 'success')
       )
     inputs:
@@ -323,13 +323,13 @@ jobs:
       filePath: '$(Build.SourcesDirectory)/Build/RunComposeServices.ps1'
       arguments: >-
         -ComposeProjectName '${{ parameters.integrationTests.composeProjectName }}' `
-        -RelativePathToComposeFile './db4it/docker-compose.yml' `
+        -RelativePathToComposeFile './db4tests/docker-compose.yml' `
         -EnvironmentVariables `
          @{ `
-           'db_docker_image'='${{ parameters.integrationTests.databaseDockerImage }}'; `
-           'db_name'='${{ parameters.integrationTests.databaseName }}'; `
-           'db_username'='${{ parameters.integrationTests.databaseUsername }}'; `
-           'db_password'='${{ parameters.integrationTests.databasePassword }}'; `
+           'db_docker_image'='${{ parameters.tests.databaseDockerImage }}'; `
+           'db_name'='${{ parameters.tests.databaseName }}'; `
+           'db_username'='${{ parameters.tests.databaseUsername }}'; `
+           'db_password'='${{ parameters.tests.databasePassword }}'; `
          }
       # Docker Compose commands write to standard error stream, thus tricking Azure DevOps
       # into thinking this PowerShell script has failed, which isn't the case.
@@ -359,17 +359,17 @@ jobs:
       and
       (
           succeeded()
-        , eq(${{ parameters.runTests }}, True)
+        , eq(${{ parameters.tests. }}, True)
         , eq(variables['UnitTestsOutcome'], 'success')
       )
     env:
       TODO_WEB_API_BY_SATRAPU_CONNECTIONSTRINGS__INTEGRATIONTESTS: >-
-        Host=${{ parameters.integrationTests.databaseHost }};
-        Port=$(compose.project.${{ parameters.integrationTests.composeProjectName }}.service.db4it.port.5432);
-        Database=${{ parameters.integrationTests.databaseName }};
-        Username=${{ parameters.integrationTests.databaseUsername }};
-        Password=${{ parameters.integrationTests.databasePassword }};
-      GENERATEJWT__SECRET: $(IntegrationTests.GenerateJwt.Secret)
+        Host=${{ parameters.tests.databaseHost }};
+        Port=$(compose.project.${{ parameters.tests.composeProjectName }}.service.db4it.port.5432);
+        Database=${{ parameters.tests.databaseName }};
+        Username=${{ parameters.tests.databaseUsername }};
+        Password=${{ parameters.tests.databasePassword }};
+      TODO_WEB_API_BY_SATRAPU_GENERATEJWT__SECRET: $(Tests.GenerateJwt.Secret)
 
   - powershell: echo "##vso[task.setvariable variable=IntegrationTestsOutcome]success"
     name: 'set_integration_tests_outcome_variable'
@@ -378,7 +378,7 @@ jobs:
       and
       (
           succeeded()
-        , eq(${{ parameters.runTests }}, True)
+        , eq(${{ parameters.tests.runTests }}, True)
         , eq(variables['UnitTestsOutcome'], 'success')
       )
 
@@ -391,7 +391,7 @@ jobs:
       and
       (
           eq(${{ parameters.publishPipelineArtifacts }}, True)
-        , eq(${{ parameters.runTests }}, True)
+        , eq(${{ parameters.tests.runTests }}, True)
         , eq(variables['UnitTestsOutcome'], 'success')
       )
     inputs:
@@ -418,7 +418,7 @@ jobs:
       and
       (
           eq(${{ parameters.publishPipelineArtifacts }}, True)
-        , eq(${{ parameters.runTests }}, True)
+        , eq(${{ parameters.tests.runTests }}, True)
         , eq(variables['UnitTestsOutcome'], 'success')
       )
     inputs:
@@ -428,17 +428,82 @@ jobs:
       buildConfiguration: ${{ parameters.build.configuration }}
       publishRunAttachments: True
 
+  # Run acceptance tests.
+  - script: >-
+        dotnet test $(Build.SourcesDirectory)/Tests/AcceptanceTests/Todo.WebApi.AcceptanceTests/Todo.WebApi.AcceptanceTests.csproj
+        --no-build
+        --no-restore
+        --configuration ${{ parameters.build.configuration }}
+    name: 'run_acceptance_tests'
+    displayName: 'Run acceptance tests'
+    condition: |
+        and
+        (
+            succeeded()
+          , eq(${{ parameters.tests.runTests }}, True)
+          , eq(variables['IntegrationTestsOutcome'], 'success')
+        )
+    env:
+      TODO_WEB_API_BY_SATRAPU_CONNECTIONSTRINGS__ACCEPTANCETESTS: >-
+        Host=${{ parameters.tests.databaseHost }};
+        Port=$(compose.project.${{ parameters.tests.composeProjectName }}.service.db4at.port.5432);
+        Database=${{ parameters.tests.databaseName }};
+        Username=${{ parameters.tests.databaseUsername }};
+        Password=${{ parameters.tests.databasePassword }};
+      TODO_WEB_API_BY_SATRAPU_GENERATEJWT__SECRET: $(Tests.GenerateJwt.Secret)
+
+  - powershell: echo "##vso[task.setvariable variable=AcceptanceTestsOutcome]success"
+    name: 'set_acceptance_tests_outcome_variable'
+    displayName: 'Set AcceptanceTestsOutcome variable'
+    condition: |
+        and
+        (
+            succeeded()
+          , eq(${{ parameters.tests.runTests }}, True)
+          , eq(variables['IntegrationTestsOutcome'], 'success')
+        )
+
   - powershell: echo "##vso[task.setvariable variable=AllTestsOutcome]success"
     name: 'set_all_tests_outcome_variable'
     displayName: 'Set AllTestsOutcome variable'
     condition: |
       and
       (
-          eq(${{ parameters.runTests }}, True)
+          eq(${{ parameters.tests.runTests }}, True)
         , eq(variables['ArchitectureTestsOutcome'], 'success')
         , eq(variables['UnitTestsOutcome'], 'success')
         , eq(variables['IntegrationTestsOutcome'], 'success')
+        , eq(variables['AcceptanceTestsOutcome'], 'success')
       )
+
+  # Install SpecFlow.Plus.LivingDoc.CLI tool to be able to generate acceptance test results report.
+  # See more about this tool here: https://docs.specflow.org/projects/getting-started/en/latest/gettingstartedrider/Step8r.html.
+  - script: >-
+        dotnet tool install SpecFlow.Plus.LivingDoc.CLI
+        --tool-path $(Build.SourcesDirectory)/Tests/.SpecFlow.Plus.LivingDoc
+        --version $(SpecFlowPlusLivingDoc_Version)
+    name: 'install_specflow_plus_livingdoc'
+    displayName: 'Install SpecFlow.Plus.LivingDoc tool'
+    condition: |
+        and
+        (
+            eq(${{ parameters.tests.runTests }}, True)
+          , eq(variables['AllTestsOutcome'], 'success')
+        )
+
+  # Generate living doc.
+  - script: >-
+      livingdoc
+      test-assembly $(Build.SourcesDirectory)/Tests/AcceptanceTests/Todo.WebApi.AcceptanceTests/bin/${{ parameters.build.configuration }}/net8.0/Todo.WebApi.AcceptanceTests.dll
+      -t AcceptanceTestsResults.json
+    name: 'generate_living_doc'
+    displayName: 'Generate living doc'
+    condition: |
+        and
+        (
+            eq(${{ parameters.tests.runTests }}, True)
+          , eq(variables['AllTestsOutcome'], 'success')
+        )
 
   # Install reportgenerator tool to be able to generate code coverage related reports using 'dotnet tool install' command.
   # See more about this command here: https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-tool-install.
@@ -451,7 +516,7 @@ jobs:
     condition: |
       and
       (
-          eq(${{ parameters.runTests }}, True)
+          eq(${{ parameters.tests.runTests }}, True)
         , eq(variables['AllTestsOutcome'], 'success')
       )
 
@@ -472,7 +537,7 @@ jobs:
     condition: |
       and
       (
-          eq(${{ parameters.runTests }}, True)
+          eq(${{ parameters.tests.runTests }}, True)
         , eq(variables['AllTestsOutcome'], 'success')
       )
 
@@ -484,7 +549,7 @@ jobs:
     condition: |
       and
       (
-          eq(${{ parameters.runTests }}, True)
+          eq(${{ parameters.tests.runTests }}, True)
         , eq(variables['AllTestsOutcome'], 'success')
       )
     inputs:
@@ -504,7 +569,7 @@ jobs:
       and
       (
           eq(${{ parameters.publishPipelineArtifacts }}, True)
-        , eq(${{ parameters.runTests }}, True)
+        , eq(${{ parameters.tests.runTests }}, True)
       )
     inputs:
       artifact: 'test-artifacts-$(Agent.OS)-$(Agent.OSArchitecture)-$(Build.BuildNumber)-$(Build.BuildID)'
