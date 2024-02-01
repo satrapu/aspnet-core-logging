@@ -27,7 +27,8 @@ namespace Todo.WebApi.Controllers
             await using TestWebApplicationFactory testWebApplicationFactory = await TestWebApplicationFactory.CreateAsync
             (
                 applicationName: nameof(ConfigurationControllerTests),
-                environmentName: environmentName
+                environmentName: environmentName,
+                shouldRunStartupLogicTasks: false
             );
 
             using HttpClient httpClient = testWebApplicationFactory.CreateClient();
