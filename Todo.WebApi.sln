@@ -81,7 +81,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Todo.ArchitectureTests", "T
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "db4tests", "db4tests", "{851D8B4A-A6C9-469E-8633-E6679738DA72}"
 	ProjectSection(SolutionItems) = preProject
-		Build\db4it\docker-compose.yml = Build\db4it\docker-compose.yml
+		Build\db4tests\docker-compose.yml = Build\db4tests\docker-compose.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CodeStyle", "CodeStyle", "{3FCA9560-CE93-4B1F-9DE3-21461427E995}"
