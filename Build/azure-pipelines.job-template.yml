@@ -359,7 +359,7 @@ jobs:
       and
       (
           succeeded()
-        , eq(${{ parameters.tests. }}, True)
+        , eq(${{ parameters.tests.runTests }}, True)
         , eq(variables['UnitTestsOutcome'], 'success')
       )
     env:
