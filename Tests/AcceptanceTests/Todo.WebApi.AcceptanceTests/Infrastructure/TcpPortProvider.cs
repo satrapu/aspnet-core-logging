@@ -16,7 +16,7 @@
 
         private static int InternalGetAvailableTcpPort()
         {
-            TcpListener tcpListener = new(IPAddress.Loopback, 0);
+            using TcpListener tcpListener = new(IPAddress.Loopback, 0);
             tcpListener.Start();
 
             int availableTcpPort = ((IPEndPoint)tcpListener.LocalEndpoint).Port;
