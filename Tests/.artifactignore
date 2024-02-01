@@ -5,7 +5,7 @@
 # Publish test results
 !**/TestResults/TestResults.xml
 !**/Tests/AcceptanceTests/**/TestExecution.json
-!**/Tests/AcceptanceTests/**/LivingDoc.html
+!**/LivingDoc.html
 
 # Publish code coverage results
 !**/coverage.opencover.xml
