@@ -1,21 +1,19 @@
-﻿namespace Todo.WebApi.AcceptanceTests.Hooks
+﻿namespace Todo.WebApi.AcceptanceTests.Infrastructure
 {
-    using System.Threading.Tasks;
     using System.Diagnostics.CodeAnalysis;
+    using System.Threading.Tasks;
 
     using TechTalk.SpecFlow;
     using TechTalk.SpecFlow.Infrastructure;
 
-    using Infrastructure;
-
     [Binding]
     [SuppressMessage("Sonar", "S1118", Justification = "Class must be instantiable by SpecFlow test runner")]
-    public class Hooks
+    public class SetupSystemUnderTest
     {
         private const string SystemUnderTestProcessKey = $"{nameof(SystemUnderTest)}.Process";
 
         [BeforeFeature]
-        public static async Task StartApplication(FeatureContext featureContext)
+        public static async Task StartSystemUnderTestAsync(FeatureContext featureContext)
         {
             SystemUnderTest systemUnderTestProcess = await SystemUnderTest.StartNewAsync
             (
@@ -27,7 +25,7 @@
         }
 
         [AfterFeature]
-        public static async Task StopApplication(FeatureContext featureContext)
+        public static async Task StopSystemUnderTestAsync(FeatureContext featureContext)
         {
             SystemUnderTest systemUnderTest = featureContext.Get<SystemUnderTest>(SystemUnderTestProcessKey);
 
