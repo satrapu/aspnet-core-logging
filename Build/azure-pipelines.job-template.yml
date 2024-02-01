@@ -369,6 +369,14 @@ jobs:
         Database=${{ parameters.tests.databaseName }};
         Username=${{ parameters.tests.databaseUsername }};
         Password=${{ parameters.tests.databasePassword }};
+      # Variable needed when running ConfigurationControllerTests.GetConfigurationDebugView_WhenCalled_MustBehaveAsExpected test method where
+      # environmentName parameter is set to 'AcceptanceTests'.
+      TODO_WEB_API_BY_SATRAPU_CONNECTIONSTRINGS__ACCEPTANCETESTS: >-
+        Host=${{ parameters.tests.databaseHost }};
+        Port=$(compose.project.${{ parameters.tests.composeProjectName }}.service.db4at.port.5432);
+        Database=${{ parameters.tests.databaseName }};
+        Username=${{ parameters.tests.databaseUsername }};
+        Password=${{ parameters.tests.databasePassword }};
       TODO_WEB_API_BY_SATRAPU_GENERATEJWT__SECRET: $(Tests.GenerateJwt.Secret)
 
   - powershell: echo "##vso[task.setvariable variable=IntegrationTestsOutcome]success"
