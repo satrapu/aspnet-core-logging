@@ -38,7 +38,8 @@ namespace Todo.WebApi.AcceptanceTests.Steps.AddTodoItem
         public async Task GivenTheCurrentUserIsNotAuthorizedToAddTodoItems()
         {
             UserDetails unauthorizedUser = new(UserName: "unauthorized-user-tests", Password: Guid.NewGuid().ToString("N"));
-            authenticationHeaderValue = await todoWebApiDriver.GetAuthorizationHeaderAsync(unauthorizedUser, scopes: Array.Empty<string>());
+            authenticationHeaderValue =
+                await todoWebApiDriver.GetAuthorizationHeaderAsync(unauthorizedUser, scopes: new[] { $"dummy-scope-{Guid.NewGuid():N}" });
         }
 
         [Given("the current user is not authenticated")]

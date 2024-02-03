@@ -58,8 +58,8 @@ namespace Todo.WebApi.AcceptanceTests.Drivers
                     UserName = userDetails.UserName,
                     Password = userDetails.Password,
                     Scopes = scopes,
-                    Issuer = "https://acceptancetests.auth.todo-by-satrapu.com",
                     Audience = "https://acceptancetests.api.todo-by-satrapu.com",
+                    Issuer = "https://acceptancetests.auth.todo-by-satrapu.com",
                     Secret = jwtSecretProvider.GetSecret()
                 }
             );
