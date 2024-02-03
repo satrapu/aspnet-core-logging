@@ -103,6 +103,8 @@ jobs:
         enabled: True
     tests:
       runTests: True
+      databaseHost: 'localhost'
+      databaseName: 'db-for-linux'
       databaseUsername: 'tests-on-linux'
       databasePassword: '$(Tests.Database.Todo.Password)'
       databaseDockerImage: '$(Tests.Database.DockerImage.Name):$(Tests.Database.DockerImage.TagPrefix)-linux'
@@ -117,6 +119,8 @@ jobs:
       vmImage: 'macOS-12'
     tests:
       runTests: True
+      databaseHost: 'localhost'
+      databaseName: 'db-for-macos'
       databaseUsername: 'tests-on-macos'
       databasePassword: '$(Tests.Database.Todo.Password)'
       databaseDockerImage: '$(Tests.Database.DockerImage.Name):$(Tests.Database.DockerImage.TagPrefix)-linux'
@@ -132,6 +136,8 @@ jobs:
     runDotNetFormatCommand: True
     tests:
       runTests: True
+      databaseHost: 'localhost'
+      databaseName: 'db-for-windows'
       databaseUsername: 'tests-on-windows'
       databasePassword: '$(Tests.Database.Todo.Password)'
       databaseDockerImage: '$(Tests.Database.DockerImage.Name):$(Tests.Database.DockerImage.TagPrefix)-windows'
