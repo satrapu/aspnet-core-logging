@@ -24,7 +24,7 @@ services:
       POSTGRES_USER: "${db_username}"
       POSTGRES_PASSWORD: "${db_password}"
     ports:
-      - 5432
+      - "5432"
 
   db4at:
       image: "${db_docker_image}"
@@ -46,4 +46,4 @@ services:
         POSTGRES_USER: "${db_username}"
         POSTGRES_PASSWORD: "${db_password}"
       ports:
-        - 5432
+        - "5432"
