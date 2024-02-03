@@ -25,16 +25,12 @@ namespace Todo.WebApi.Controllers
         public async Task GetConfigurationDebugView_WhenCalled_MustBehaveAsExpected(string environmentName, HttpStatusCode expectedStatusCode)
         {
             // Arrange
-            await using TestWebApplicationFactory testWebApplicationFactory =
-                await
-                    TestWebApplicationFactory
-                        .CreateAsync
-                        (
-                            applicationName: nameof(ConfigurationControllerTests),
-                            environmentName,
-                            shouldRunStartupLogicTasks: false
-                        )
-                        .WaitAsync(timeout: TimeSpan.FromSeconds(10));
+            await using TestWebApplicationFactory testWebApplicationFactory = await TestWebApplicationFactory.CreateAsync
+            (
+                applicationName: nameof(ConfigurationControllerTests),
+                environmentName,
+                shouldRunStartupLogicTasks: false
+            );
 
             using HttpClient httpClient = testWebApplicationFactory.CreateClient();
 

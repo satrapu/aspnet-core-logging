@@ -45,16 +45,12 @@ namespace Todo.WebApi.Controllers
         [OneTimeSetUp]
         public async Task GivenAnHttpRequestIsToBePerformed()
         {
-            testWebApplicationFactory =
-                await
-                    TestWebApplicationFactory
-                        .CreateAsync
-                        (
-                            applicationName: nameof(TodoControllerTests),
-                            environmentName: EnvironmentNames.IntegrationTests,
-                            shouldRunStartupLogicTasks: true
-                        )
-                        .WaitAsync(timeout: TimeSpan.FromSeconds(10));
+            testWebApplicationFactory = await TestWebApplicationFactory.CreateAsync
+            (
+                applicationName: nameof(TodoControllerTests),
+                environmentName: EnvironmentNames.IntegrationTests,
+                shouldRunStartupLogicTasks: true
+            );
 
             activityListener = new ActivityListener
             {
