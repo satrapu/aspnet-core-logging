@@ -20,7 +20,6 @@ parameters:
       enabled: False
   publishPipelineArtifacts: True
   runDotNetFormatCommand: False
-  runTests: True
   tests:
     runTests: True
     databaseHost: ''
