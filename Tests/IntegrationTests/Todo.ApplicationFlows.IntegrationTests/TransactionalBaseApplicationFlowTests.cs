@@ -38,7 +38,7 @@ namespace Todo.ApplicationFlows
             (
                 applicationName: nameof(TransactionalBaseApplicationFlowTests),
                 environmentName: EnvironmentNames.IntegrationTests,
-                shouldRunStartupLogicTasks: false
+                shouldRunStartupLogicTasks: true
             );
         }
 
