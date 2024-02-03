@@ -61,6 +61,7 @@ jobs:
     ArchitectureTestsOutcome: 'failure'
     UnitTestsOutcome: 'failure'
     IntegrationTestsOutcome: 'failure'
+    AcceptanceTestsOutcome: 'failure'
     AllTestsOutcome: 'failure'
   steps:
   # Customize the way this job checkouts the current Git branch.
