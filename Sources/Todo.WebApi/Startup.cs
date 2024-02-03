@@ -162,9 +162,6 @@ namespace Todo.WebApi
             // ReSharper disable once SettingNotFoundInConfiguration
             string tokenIssuer = generateJwtOptions.GetValue<string>("Issuer");
 
-            // ReSharper disable once SettingNotFoundInConfiguration
-            string tokenAudience = generateJwtOptions.GetValue<string>("Audience");
-
             services
                 .AddAuthentication(options =>
                 {
@@ -173,6 +170,8 @@ namespace Todo.WebApi
                 })
                 .AddJwtBearer(options =>
                 {
+                    options.Audience = generateJwtOptions.GetValue<string>("Audience");
+
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuerSigningKey = true,
@@ -180,7 +179,6 @@ namespace Todo.WebApi
                         ValidateIssuer = true,
                         ValidIssuer = tokenIssuer,
                         ValidateAudience = true,
-                        ValidAudience = tokenAudience,
                         ValidateLifetime = true,
                         ClockSkew = TimeSpan.Zero,
                         // Ensure the User.Identity.Name is set to the user identifier and not to the user name.
