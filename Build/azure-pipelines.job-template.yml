@@ -558,10 +558,11 @@ jobs:
         )
 
   # Generate living doc.
+  # See more here: https://docs.specflow.org/projects/specflow-livingdoc/en/latest/LivingDocGenerator/CLI/livingdoc-feature-folder.html.
   - script: >-
       $(Build.SourcesDirectory)/Tests/.SpecFlow.Plus.LivingDoc/livingdoc
-      test-assembly $(Build.SourcesDirectory)/Tests/AcceptanceTests/Todo.WebApi.AcceptanceTests/bin/${{ parameters.build.configuration }}/net8.0/Todo.WebApi.AcceptanceTests.dll
-      -t $(Build.SourcesDirectory)/Tests/AcceptanceTests/Todo.WebApi.AcceptanceTests/bin/${{ parameters.build.configuration }}/net8.0/TestExecution.json
+      feature-folder $(Build.SourcesDirectory)/Tests/AcceptanceTests/Todo.WebApi.AcceptanceTests
+      --test-execution-json $(Build.SourcesDirectory)/Tests/AcceptanceTests/Todo.WebApi.AcceptanceTests/bin/${{ parameters.build.configuration }}/net8.0/TestExecution.json
     name: 'generate_living_doc'
     displayName: 'Generate living doc'
     condition: |
