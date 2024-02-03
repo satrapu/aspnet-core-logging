@@ -34,12 +34,16 @@ namespace Todo.ApplicationFlows
         [OneTimeSetUp]
         public async Task GivenAnApplicationFlowIsToBeExecuted()
         {
-            testWebApplicationFactory = await TestWebApplicationFactory.CreateAsync
-            (
-                applicationName: nameof(TransactionalBaseApplicationFlowTests),
-                environmentName: EnvironmentNames.IntegrationTests,
-                shouldRunStartupLogicTasks: true
-            );
+            testWebApplicationFactory =
+                await
+                    TestWebApplicationFactory
+                        .CreateAsync
+                        (
+                            applicationName: nameof(TransactionalBaseApplicationFlowTests),
+                            environmentName: EnvironmentNames.IntegrationTests,
+                            shouldRunStartupLogicTasks: true
+                        )
+                        .WaitAsync(timeout: TimeSpan.FromSeconds(10));
         }
 
         [OneTimeTearDown]
