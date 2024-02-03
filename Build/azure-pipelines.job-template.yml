@@ -22,8 +22,8 @@ parameters:
   runDotNetFormatCommand: False
   tests:
     runTests: True
-    databaseHost: ''
-    databaseName: ''
+    databaseHost: 'localhost'
+    databaseName: 'db-for-tests'
     databaseUsername: ''
     databasePassword: ''
     databaseDockerImage: ''
