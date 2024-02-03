@@ -81,6 +81,9 @@ variables:
   - name: SolutionFileName
     value: 'Todo.WebApi.sln'
 
+  - name: AcceptanceTestsHomeFolder
+    value: '$(Build.SourcesDirectory)/Tests/AcceptanceTests/Todo.WebApi.AcceptanceTests'
+
 # Define multiple jobs, one per supported operating system (Linux, macOS and Windows).
 # See more here: https://learn.microsoft.com/en-us/azure/devops/pipelines/process/phases?view=azure-devops&tabs=yaml
 #
