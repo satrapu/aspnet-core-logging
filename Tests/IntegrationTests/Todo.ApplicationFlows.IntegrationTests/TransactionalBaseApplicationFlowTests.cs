@@ -37,7 +37,8 @@ namespace Todo.ApplicationFlows
             testWebApplicationFactory = await TestWebApplicationFactory.CreateAsync
             (
                 applicationName: nameof(TransactionalBaseApplicationFlowTests),
-                environmentName: EnvironmentNames.IntegrationTests
+                environmentName: EnvironmentNames.IntegrationTests,
+                shouldRunStartupLogicTasks: true
             );
         }
 

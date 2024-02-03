@@ -48,7 +48,8 @@ namespace Todo.WebApi.Controllers
             testWebApplicationFactory = await TestWebApplicationFactory.CreateAsync
             (
                 applicationName: nameof(TodoControllerTests),
-                environmentName: EnvironmentNames.IntegrationTests
+                environmentName: EnvironmentNames.IntegrationTests,
+                shouldRunStartupLogicTasks: true
             );
 
             activityListener = new ActivityListener
