@@ -553,8 +553,7 @@ jobs:
     condition: |
         and
         (
-            succeeded()
-          , eq(${{ parameters.tests.runTests }}, True)
+            eq(${{ parameters.tests.runTests }}, True)
           , eq(variables['IntegrationTestsOutcome'], 'success')
         )
 
@@ -568,8 +567,7 @@ jobs:
     condition: |
         and
         (
-            succeeded()
-          , eq(${{ parameters.tests.runTests }}, True)
+            eq(${{ parameters.tests.runTests }}, True)
           , eq(variables['IntegrationTestsOutcome'], 'success')
         )
 
