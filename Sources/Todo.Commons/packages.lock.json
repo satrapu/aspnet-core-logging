@@ -4,11 +4,11 @@
     "net8.0": {
       "Autofac": {
         "type": "Direct",
-        "requested": "[7.1.0, )",
-        "resolved": "7.1.0",
-        "contentHash": "XCXmpxhOnuztTTRkzG+8B8KU8SR8WjBYwSntndjlsFR5lM3K/g43r9hUwewIPDBJwDrmZU3TjmNdH6s8IF3VFQ==",
+        "requested": "[8.0.0, )",
+        "resolved": "8.0.0",
+        "contentHash": "qxVqJcl3fixxa5aZc9TmIuYTwooI9GCL5RzfUiTZtTlbAF3NcWz7bPeEyJEAyS/0qGhSyGnXeku2eiu/7L+3qw==",
         "dependencies": {
-          "System.Diagnostics.DiagnosticSource": "4.7.1"
+          "System.Diagnostics.DiagnosticSource": "7.0.2"
         }
       },
       "Microsoft.Extensions.Hosting.Abstractions": {
@@ -26,18 +26,18 @@
       },
       "Microsoft.Extensions.Logging.Abstractions": {
         "type": "Direct",
-        "requested": "[8.0.0, )",
-        "resolved": "8.0.0",
-        "contentHash": "arDBqTgFCyS0EvRV7O3MZturChstm50OJ0y9bDJvAcmEPJm0FFpFyjU/JLYyStNGGey081DvnQYlncNX5SJJGA==",
+        "requested": "[8.0.1, )",
+        "resolved": "8.0.1",
+        "contentHash": "RIFgaqoaINxkM2KTOw72dmilDmTrYA0ns2KW4lDz4gZ2+o6IQ894CzmdL3StM2oh7QQq44nCWiqKqc4qUI9Jmg==",
         "dependencies": {
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.0"
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.1"
         }
       },
       "SonarAnalyzer.CSharp": {
         "type": "Direct",
-        "requested": "[9.12.0.78982, )",
-        "resolved": "9.12.0.78982",
-        "contentHash": "QxhfMFCNeZWP3gP/R8QM3MuDWm+Esj8Lt3oD61tid5TPuqsaKJtwMZNZWE2FOqqGuKlu3805o8MlkTWBL75skA=="
+        "requested": "[9.27.0.93347, )",
+        "resolved": "9.27.0.93347",
+        "contentHash": "NinyCe6I1D+b8anA7RaTg1wkdGglMeW+qsp+z0tMQ4vm616oLAn47XU9DK3NclE5r3UhAoXyrUZVzcBVHe6dDA=="
       },
       "Microsoft.Extensions.Configuration.Abstractions": {
         "type": "Transitive",
@@ -49,8 +49,8 @@
       },
       "Microsoft.Extensions.DependencyInjection.Abstractions": {
         "type": "Transitive",
-        "resolved": "8.0.0",
-        "contentHash": "cjWrLkJXK0rs4zofsK4bSdg+jhDLTaxrkXu4gS6Y7MAlCvRyNNgwY/lJi5RDlQOnSZweHqoyvgvbdvQsRIW+hg=="
+        "resolved": "8.0.1",
+        "contentHash": "fGLiCRLMYd00JYpClraLjJTNKLmMJPnqxMaiRzEBIIvevlzxz33mXy39Lkd48hu1G+N21S7QpaO5ZzKsI6FRuA=="
       },
       "Microsoft.Extensions.Diagnostics.Abstractions": {
         "type": "Transitive",
