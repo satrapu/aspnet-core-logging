@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Todo.WebApi.Controllers
 {
     using System;
@@ -19,6 +21,8 @@ namespace Todo.WebApi.Controllers
     [Route("api/todo")]
     [Authorize]
     [ApiController]
+    [SuppressMessage(category: "Major Code Smell", checkId: "S6960:Controllers should not have mixed responsibilities",
+        Justification = "This controller will be replaced at some point with several endpoints")]
     public class TodoController : ControllerBase
     {
         private readonly IFetchTodoItemsFlow fetchTodoItemsFlow;
@@ -105,7 +109,10 @@ namespace Todo.WebApi.Controllers
             (
                 httpContext: HttpContext,
                 action: "GetById",
-                values: new { id = newlyCreatedEntityId }
+                values: new
+                {
+                    id = newlyCreatedEntityId
+                }
             );
 
             return Created(getNewlyCreatedEntityUri, value: null);

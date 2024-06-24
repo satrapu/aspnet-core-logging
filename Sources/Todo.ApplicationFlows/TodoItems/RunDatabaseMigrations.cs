@@ -79,8 +79,7 @@ namespace Todo.ApplicationFlows.TodoItems
             }
             catch (Exception exception)
             {
-                logger.LogCritical(exception, "Failed to migrate database {DatabaseName}", databaseName);
-                throw;
+                throw new InvalidOperationException($"Failed to migrate database: {databaseName}", exception);
             }
         }
     }
