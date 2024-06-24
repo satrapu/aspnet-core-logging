@@ -553,7 +553,7 @@ jobs:
   - script: >-
       $(Build.SourcesDirectory)/Tests/.SpecFlow.Plus.LivingDoc/livingdoc
       feature-folder $(AcceptanceTestsHomeFolder)
-      --test-execution-json $(AcceptanceTestsHomeFolder)/TestResults/TestExecution*.json
+      --test-execution-json $(AcceptanceTestsHomeFolder)/bin/${{ parameters.build.configuration }}/net8.0/TestExecution*.json
       --output $(Build.SourcesDirectory)/Tests/AcceptanceTests
       --output-type HTML
     name: 'generate_living_doc'
