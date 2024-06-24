@@ -21,7 +21,6 @@ namespace Todo.WebApi.ExceptionHandling
 
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc;
-    using Microsoft.AspNetCore.Mvc.Testing;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.DependencyInjection;
 
@@ -53,36 +52,34 @@ namespace Todo.WebApi.ExceptionHandling
                 Password = $"test-password--{Guid.NewGuid():N}"
             };
 
-            await using WebApplicationFactory<Program> webApplicationFactory =
-                TestWebApplicationFactory
-                    .Create
-                    (
-                        applicationName: nameof(CustomExceptionHandlerTests),
-                        environmentName: EnvironmentNames.IntegrationTests
-                    )
-                    .WithMockServices(containerBuilder =>
+            await using TestWebApplicationFactory webApplicationFactory = await TestWebApplicationFactory.CreateAsync
+            (
+                applicationName: nameof(CustomExceptionHandlerTests),
+                environmentName: EnvironmentNames.IntegrationTests,
+                shouldRunStartupLogicTasks: false
+            );
+
+            webApplicationFactory
+                .WithMockServices(containerBuilder =>
+                {
+                    // Ensure a mock implementation will be injected whenever a service requires an instance of the
+                    // IGenerateJwtFlow interface.
+                    containerBuilder
+                        .RegisterType<GenerateJwtFlowWhichThrowsException>()
+                        .As<IGenerateJwtFlow>()
+                        .InstancePerLifetimeScope();
+                })
+                .WithWebHostBuilder(webHostBuilder =>
+                {
+                    webHostBuilder.ConfigureAppConfiguration(configurationBuilder =>
                     {
-                        // Ensure a mock implementation will be injected whenever a service requires an instance of the
-                        // IGenerateJwtFlow interface.
-                        containerBuilder
-                            .RegisterType<GenerateJwtFlowWhichThrowsException>()
-                            .As<IGenerateJwtFlow>()
-                            .InstancePerLifetimeScope();
-                    })
-                    .WithWebHostBuilder(webHostBuilder =>
-                    {
-                        webHostBuilder.ConfigureAppConfiguration(configurationBuilder =>
+                        configurationBuilder.AddInMemoryCollection(new[]
                         {
-                            configurationBuilder.AddInMemoryCollection(new[]
-                            {
-                                // Ensure database is not migrated, since having an up-to-date RDBMS would just complicate this test method.
-                                new KeyValuePair<string, string>("MigrateDatabase", bool.FalseString)
-                            });
+                            // Ensure database is not migrated, since having an up-to-date RDBMS would just complicate this test method.
+                            new KeyValuePair<string, string>("MigrateDatabase", bool.FalseString)
                         });
                     });
-
-            // Ensure startup logic is executed before running any tests.
-            await webApplicationFactory.Services.GetRequiredService<IStartupLogicTaskExecutor>().ExecuteAsync();
+                });
 
             using HttpClient httpClient = webApplicationFactory.CreateClient();
 
