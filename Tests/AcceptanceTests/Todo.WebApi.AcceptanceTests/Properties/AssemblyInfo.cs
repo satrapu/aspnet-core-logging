@@ -1,1 +1,1 @@
-﻿[assembly: Xunit.AssemblyTrait("TestCategory", "AcceptanceTests")]
+[assembly: Xunit.AssemblyTrait("TestCategory", "AcceptanceTests")]
