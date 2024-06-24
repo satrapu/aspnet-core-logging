@@ -554,7 +554,7 @@ jobs:
   - script: >-
       $(Build.SourcesDirectory)/Tests/.SpecFlow.Plus.LivingDoc/livingdoc
       feature-folder $(AcceptanceTestsHomeFolder)
-      --test-execution-json $(AcceptanceTestsHomeFolder)/bin/${{ parameters.build.configuration }}/**/TestExecution*.json
+      --test-execution-json $(AcceptanceTestsHomeFolder)/**/TestExecution*.json
       --output $(Build.SourcesDirectory)/Tests/AcceptanceTests
       --output-type HTML
     name: 'generate_living_doc'
