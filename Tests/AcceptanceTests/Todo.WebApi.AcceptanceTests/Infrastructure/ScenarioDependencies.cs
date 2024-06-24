@@ -1,3 +1,8 @@
+using Microsoft.Extensions.Configuration;
+
+using Todo.Commons.Constants;
+using Todo.Services.Security;
+
 namespace Todo.WebApi.AcceptanceTests.Infrastructure
 {
     using System;
@@ -22,9 +27,17 @@ namespace Todo.WebApi.AcceptanceTests.Infrastructure
             ServiceCollection services = new();
 
             services
-                .AddSingleton<JwtSecretProvider>()
+                .AddSingleton<IJwtService, JwtService>()
                 .AddSingleton<TcpPortProvider>()
                 .AddSingleton<TodoWebApiDriver>()
+                .AddSingleton<IConfiguration>
+                (
+                    new ConfigurationBuilder()
+                        .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
+                        .AddJsonFile($"appsettings.{EnvironmentNames.AcceptanceTests}.json", optional: false, reloadOnChange: false)
+                        .AddEnvironmentVariables(prefix: EnvironmentVariables.Prefix)
+                        .Build()
+                )
                 .AddHttpClient(name: TodoWebApiDriver.HttpClientName, (serviceProvider, httpClient) =>
                 {
                     TcpPortProvider tcpPortProvider = serviceProvider.GetRequiredService<TcpPortProvider>();

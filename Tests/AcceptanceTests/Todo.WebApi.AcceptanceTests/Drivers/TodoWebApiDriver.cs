@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Configuration;
+
 namespace Todo.WebApi.AcceptanceTests.Drivers
 {
     using System;
@@ -6,23 +8,31 @@ namespace Todo.WebApi.AcceptanceTests.Drivers
     using System.Net.Http.Json;
     using System.Threading.Tasks;
 
-    using Infrastructure;
-
     using Services.Security;
 
     public class TodoWebApiDriver
     {
-        private static readonly Type AccessTokenType = new { accessToken = "" }.GetType();
+        private static readonly Type AccessTokenType = new
+        {
+            accessToken = ""
+        }.GetType();
 
         internal const string HttpClientName = nameof(TodoWebApiDriver);
         private const string AuthenticationScheme = "Bearer";
 
-        private readonly JwtSecretProvider jwtSecretProvider;
+        private readonly IJwtService jwtService;
+        private readonly IConfiguration applicationConfiguration;
         private readonly HttpClient httpClient;
 
-        public TodoWebApiDriver(IHttpClientFactory httpClientFactory, JwtSecretProvider jwtSecretProvider)
+        public TodoWebApiDriver
+        (
+            IHttpClientFactory httpClientFactory,
+            IJwtService jwtService,
+            IConfiguration applicationConfiguration
+        )
         {
-            this.jwtSecretProvider = jwtSecretProvider;
+            this.jwtService = jwtService;
+            this.applicationConfiguration = applicationConfiguration;
             httpClient = httpClientFactory.CreateClient(name: HttpClientName);
         }
 
@@ -49,8 +59,6 @@ namespace Todo.WebApi.AcceptanceTests.Drivers
 
         public async Task<AuthenticationHeaderValue> GetAuthorizationHeaderAsync(UserDetails userDetails, string[] scopes)
         {
-            JwtService jwtService = new();
-
             JwtInfo jwtInfo = await jwtService.GenerateJwtAsync
             (
                 new GenerateJwtInfo
@@ -58,9 +66,9 @@ namespace Todo.WebApi.AcceptanceTests.Drivers
                     UserName = userDetails.UserName,
                     Password = userDetails.Password,
                     Scopes = scopes,
-                    Audience = "https://acceptancetests.api.todo-by-satrapu.com",
-                    Issuer = "https://acceptancetests.auth.todo-by-satrapu.com",
-                    Secret = jwtSecretProvider.GetSecret()
+                    Audience = applicationConfiguration.GetValue<string>("GenerateJwt:Audience"),
+                    Issuer = applicationConfiguration.GetValue<string>("GenerateJwt:Issuer"),
+                    Secret = applicationConfiguration.GetValue<string>("GenerateJwt:Secret")
                 }
             );
 

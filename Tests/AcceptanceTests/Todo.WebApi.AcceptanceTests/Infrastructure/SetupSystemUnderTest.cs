@@ -1,10 +1,7 @@
 namespace Todo.WebApi.AcceptanceTests.Infrastructure
 {
-    using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Threading.Tasks;
-
-    using Commons.Constants;
 
     using TechTalk.SpecFlow;
     using TechTalk.SpecFlow.Infrastructure;
@@ -21,11 +18,7 @@ namespace Todo.WebApi.AcceptanceTests.Infrastructure
             SystemUnderTest systemUnderTestProcess = await SystemUnderTest.StartNewAsync
             (
                 port: featureContext.FeatureContainer.Resolve<TcpPortProvider>().GetAvailableTcpPort(),
-                specFlowOutputHelper: featureContext.FeatureContainer.Resolve<ISpecFlowOutputHelper>(),
-                environmentVariables: new Dictionary<string, string>
-                {
-                    [$"{EnvironmentVariables.Prefix}GenerateJwt__Secret"] = featureContext.FeatureContainer.Resolve<JwtSecretProvider>().GetSecret()
-                }
+                specFlowOutputHelper: featureContext.FeatureContainer.Resolve<ISpecFlowOutputHelper>()
             );
 
             featureContext.Add(SystemUnderTestProcessKey, systemUnderTestProcess);
