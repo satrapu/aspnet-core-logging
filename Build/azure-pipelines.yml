@@ -105,7 +105,7 @@ jobs:
       runTests: True
       databaseHost: 'localhost'
       databaseName: 'db-for-linux'
-      databaseUsername: 'satrapu'
+      databaseUsername: '$(Tests.Database.Todo.Username)'
       databasePassword: '$(Tests.Database.Todo.Password)'
       databaseDockerImage: '$(Tests.Database.DockerImage.Name):$(Tests.Database.DockerImage.TagPrefix)-linux'
       composeProjectName: 'test-prerequisites-on-linux'
@@ -121,7 +121,7 @@ jobs:
       runTests: True
       databaseHost: 'localhost'
       databaseName: 'db-for-macos'
-      databaseUsername: 'satrapu'
+      databaseUsername: '$(Tests.Database.Todo.Username)'
       databasePassword: '$(Tests.Database.Todo.Password)'
       databaseDockerImage: '$(Tests.Database.DockerImage.Name):$(Tests.Database.DockerImage.TagPrefix)-linux'
       composeProjectName: 'test-prerequisites-on-macos'
@@ -138,7 +138,7 @@ jobs:
       runTests: True
       databaseHost: 'localhost'
       databaseName: 'db-for-windows'
-      databaseUsername: 'satrapu'
+      databaseUsername: '$(Tests.Database.Todo.Username)'
       databasePassword: '$(Tests.Database.Todo.Password)'
       databaseDockerImage: '$(Tests.Database.DockerImage.Name):$(Tests.Database.DockerImage.TagPrefix)-windows'
       composeProjectName: 'test-prerequisites-on-windows'
