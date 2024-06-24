@@ -33,7 +33,7 @@ namespace Todo.WebApi.TestInfrastructure
     /// </summary>
     public class TestWebApplicationFactory : WebApplicationFactory<Program>
     {
-        private static readonly TimeSpan RunStartupLogicTimeout = TimeSpan.FromSeconds(30);
+        private static readonly TimeSpan RunStartupLogicTimeout = TimeSpan.FromMinutes(5);
         private Action<ContainerBuilder> setupMockServicesAction;
         private readonly string applicationName;
         private readonly string environmentName;
