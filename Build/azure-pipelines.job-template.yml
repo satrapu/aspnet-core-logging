@@ -85,14 +85,14 @@ jobs:
     condition: eq(${{ parameters.installDotNetSdk }}, True)
     inputs:
       packageType: 'sdk'
-      version: $(DotNet_SDK_8_Version)
+      version: $(DotNetSdkVersionUsedByApplication)
 
   - task: UseDotNet@2
     name: 'install_dotnet_sdk_required_by_livingdoc'
     displayName: 'Install .NET SDK required by living doc'
     inputs:
         packageType: 'sdk'
-        version: $(DotNet_SDK_7_Version)
+        version: $(DotNetSdkVersionUsedByLivingDoc)
 
   # Install a specific .NET Core SDK as needed by the Azure DevOps extension used for running Sonar scans.
   # See more about running Sonar analysis on Azure DevOps here:
