@@ -17,11 +17,11 @@
     <ItemGroup>
         <PackageReference Include="Azure.Monitor.OpenTelemetry.Exporter"/>
         <PackageReference Include="OpenTelemetry"/>
-        <PackageReference Include="OpenTelemetry.Contrib.Instrumentation.EntityFrameworkCore"/>
         <PackageReference Include="OpenTelemetry.Exporter.Jaeger"/>
         <PackageReference Include="OpenTelemetry.Extensions"/>
         <PackageReference Include="OpenTelemetry.Extensions.Hosting"/>
         <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore"/>
+        <PackageReference Include="OpenTelemetry.Instrumentation.EntityFrameworkCore"/>
         <PackageReference Include="Serilog.AspNetCore"/>
         <PackageReference Include="Serilog.Enrichers.Span"/>
         <PackageReference Include="Serilog.Enrichers.Thread"/>
