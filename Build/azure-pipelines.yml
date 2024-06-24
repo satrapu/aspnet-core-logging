@@ -53,7 +53,7 @@ variables:
     value: '8.0.302'
   # satrapu 2024-06-24: Version 6.x is used by SpecFlow.Plus.LivingDoc tool.
   - name: 'DotNetSdkVersionUsedByLivingDoc'
-    value: ' 6.0.423'
+    value: '6.0.423'
 
   # Specifies the version of the ReportGenerator tool used for generating code coverage reports.
   # All releases can be found here: https://github.com/danielpalme/ReportGenerator/releases.
