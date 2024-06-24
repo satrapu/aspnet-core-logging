@@ -91,19 +91,8 @@ jobs:
     name: 'install_dotnet_sdk_required_by_livingdoc'
     displayName: 'Install .NET SDK required by living doc'
     inputs:
-        packageType: 'sdk'
-        version: $(DotNetSdkVersionUsedByLivingDoc)
-
-  # Install a specific .NET Core SDK as needed by the Azure DevOps extension used for running Sonar scans.
-  # See more about running Sonar analysis on Azure DevOps here:
-  # https://docs.sonarqube.org/latest/analysis/scan/sonarscanner-for-azure-devops/.
-  - task: UseDotNet@2
-    name: 'install_dotnetcore_sdk_required_by_sonarsource_extension'
-    displayName: 'Install .NET Core SDK required by Sonar Azure DevOps extension'
-    condition: eq(${{ parameters.sonar.enabled }}, True)
-    inputs:
       packageType: 'sdk'
-      version: '3.1.415'
+      version: $(DotNetSdkVersionUsedByLivingDoc)
 
   # Prepares analysis on SonarCloud.
   # Before using any Sonar tasks, please make sure SonarCloud extension is installed in the Azure DevOps organization
