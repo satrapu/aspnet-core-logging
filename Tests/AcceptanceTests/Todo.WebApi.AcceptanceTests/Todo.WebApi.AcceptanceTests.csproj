@@ -22,6 +22,7 @@
         <PackageReference Include="SpecFlow.xUnit"/>
         <PackageReference Include="xunit"/>
         <PackageReference Include="xunit.runner.visualstudio"/>
+        <PackageReference Include="XunitXml.TestLogger"/>
     </ItemGroup>
 
     <ItemGroup>

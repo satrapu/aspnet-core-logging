@@ -140,6 +140,12 @@
         "resolved": "2.8.1",
         "contentHash": "qBTK0WAcnw65mymIjVDqWUTdqjMyzjwu9e9SF0oGYfYELgbcteDZ4fQLJaXw8mzkvpAD7YdoexBbg8VYQFkWWA=="
       },
+      "XunitXml.TestLogger": {
+        "type": "Direct",
+        "requested": "[3.1.20, )",
+        "resolved": "3.1.20",
+        "contentHash": "4l8eILNiKFG1v8/eJ3VfAkjpZhIbbHTAB7sAVB0DwpMtLFx56+J1m29XvG2aa0RU49f32A00HW0uFzQFuCKCHg=="
+      },
       "Autofac": {
         "type": "Transitive",
         "resolved": "8.0.0",

@@ -502,6 +502,9 @@ jobs:
         --no-build
         --no-restore
         --configuration ${{ parameters.build.configuration }}
+        --test-adapter-path "."
+        --logger "xunit"
+        --filter "TestCategory=AcceptanceTests"
     name: 'run_acceptance_tests'
     displayName: 'Run acceptance tests'
     condition: |

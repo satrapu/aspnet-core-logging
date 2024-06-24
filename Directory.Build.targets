@@ -70,6 +70,7 @@
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
+        <PackageReference Update="XunitXml.TestLogger" Version="3.1.20" />
 
     </ItemGroup>
 </Project>
