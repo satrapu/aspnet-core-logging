@@ -54,11 +54,6 @@ namespace Todo.WebApi.TestInfrastructure
             this.environmentName = environmentName;
         }
 
-        public static TestWebApplicationFactory Create(string applicationName, string environmentName)
-        {
-            return new TestWebApplicationFactory(applicationName, environmentName);
-        }
-
         public static async Task<TestWebApplicationFactory> CreateAsync
         (
             string applicationName,
@@ -66,7 +61,7 @@ namespace Todo.WebApi.TestInfrastructure
             bool shouldRunStartupLogicTasks = true
         )
         {
-            TestWebApplicationFactory testWebApplicationFactory = Create(applicationName, environmentName);
+            TestWebApplicationFactory testWebApplicationFactory = new(applicationName, environmentName);
 
             if (shouldRunStartupLogicTasks)
             {
