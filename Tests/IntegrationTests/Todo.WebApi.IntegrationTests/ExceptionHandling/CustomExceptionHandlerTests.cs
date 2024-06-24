@@ -14,7 +14,6 @@ namespace Todo.WebApi.ExceptionHandling
     using Autofac;
 
     using Commons.Constants;
-    using Commons.StartupLogic;
 
     using FluentAssertions;
     using FluentAssertions.Execution;
@@ -22,7 +21,6 @@ namespace Todo.WebApi.ExceptionHandling
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.DependencyInjection;
 
     using Models;
 
