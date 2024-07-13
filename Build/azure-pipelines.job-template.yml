@@ -548,12 +548,30 @@ jobs:
           , eq(variables['IntegrationTestsOutcome'], 'success')
         )
 
+  # Ensure the path pointing to the acceptance test execution file contains the proper file separator.
+  - task: PowerShell@2
+    name: 'normalize_acceptance_test_execution_file_path'
+    displayName: 'Normalize acceptance test execution file path'
+    condition: |
+        and
+        (
+            eq(${{ parameters.tests.runTests }}, True)
+          , eq(variables['IntegrationTestsOutcome'], 'success')
+        )
+    inputs:
+        targetType: 'inline'
+        errorActionPreference: 'stop'
+        script: |
+            $normalizedTestExecutionFilePath = Join-Path '$(AcceptanceTestsHomeFolder)' 'bin' '${{ parameters.build.configuration }}' 'net8.0' 'TestExecution*.json'
+            Write-Output "##vso[task.setvariable variable=NormalizedTestExecutionFilePath]$normalizedTestExecutionFilePath"
+            Write-Output "The normalized test execution file path is: $normalizedTestExecutionFilePath"
+
   # Generate living doc.
   # See more here: https://docs.specflow.org/projects/specflow-livingdoc/en/latest/LivingDocGenerator/CLI/livingdoc-feature-folder.html.
   - script: >-
       $(Build.SourcesDirectory)/Tests/.SpecFlow.Plus.LivingDoc/livingdoc
       feature-folder $(AcceptanceTestsHomeFolder)
-      --test-execution-json $(AcceptanceTestsHomeFolder)/bin/${{ parameters.build.configuration }}/net8.0/TestExecution*.json
+      --test-execution-json $(NormalizedTestExecutionFilePath)
       --output $(Build.SourcesDirectory)/Tests/AcceptanceTests
       --output-type HTML
     name: 'generate_living_doc'
