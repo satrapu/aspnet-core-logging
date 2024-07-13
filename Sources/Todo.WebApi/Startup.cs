@@ -255,7 +255,7 @@ namespace Todo.WebApi
             services.Configure<ExceptionHandlingOptions>(configuration.GetSection("ExceptionHandling"));
         }
 
-        private void OnApplicationStarted()
+        private static void OnApplicationStarted()
         {
             // ReSharper disable once ExplicitCallerInfoArgument
             using Activity _ = ActivitySources.TodoWebApi.StartActivity("Application has started");
