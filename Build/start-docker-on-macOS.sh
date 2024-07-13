@@ -15,10 +15,10 @@ dockerComposeVersion='2.28.1'
 
 echo "Installing Docker CLI with version: $dockerCliVersion ..."
 # Check for installing a specific Homebrew formula version here: https://github.com/orgs/Homebrew/discussions/155#discussioncomment-133894.
-dockerCliCustomFormula='satrapu/docker'
+dockerCustomFormula="$USER/custom-docker"
 brew uninstall docker
-brew tap-new "$dockerCliCustomFormula"
-brew extract --version $dockerCliVersion docker "$dockerCliCustomFormula"
+brew tap-new "$dockerCustomFormula"
+brew extract --version $dockerCliVersion docker "$dockerCustomFormula"
 brew install "docker@$dockerCliVersion"
 echo 'Checking Docker CLI installation ...'
 docker --version
