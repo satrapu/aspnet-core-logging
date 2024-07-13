@@ -13,7 +13,7 @@ namespace Todo.WebApi.AcceptanceTests.Infrastructure
 
     using TechTalk.SpecFlow.Infrastructure;
 
-    public class SystemUnderTest : IAsyncDisposable
+    public sealed class SystemUnderTest : IAsyncDisposable
     {
         private const string TodoWebApiSourcesRelativePath = "../../../../../../Sources/Todo.WebApi";
 
