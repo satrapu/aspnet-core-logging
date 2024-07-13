@@ -18,20 +18,19 @@ namespace Todo.Services.DependencyInjection
         /// <summary>
         /// Gets or sets the name of the environment where this application runs.
         /// </summary>
-        public string EnvironmentName { get; set; }
+        public string EnvironmentName { get; init; }
 
         protected override void Load(ContainerBuilder builder)
         {
             bool isDevelopmentEnvironment = EnvironmentNames.Development.Equals(EnvironmentName);
             bool isIntegrationTestsEnvironment = EnvironmentNames.IntegrationTests.Equals(EnvironmentName);
+            bool isAcceptanceTestsEnvironment = EnvironmentNames.AcceptanceTests.Equals(EnvironmentName);
 
             var persistenceModule = new PersistenceModule
             {
-                ConnectionStringName = isIntegrationTestsEnvironment
-                    ? ConnectionStrings.UsedByIntegrationTests
-                    : ConnectionStrings.UsedByApplication,
-                EnableDetailedErrors = isDevelopmentEnvironment || isIntegrationTestsEnvironment,
-                EnableSensitiveDataLogging = isDevelopmentEnvironment || isIntegrationTestsEnvironment
+                ConnectionStringName = GetConnectionStringNameByEnvironment(EnvironmentName),
+                EnableDetailedErrors = isDevelopmentEnvironment || isIntegrationTestsEnvironment || isAcceptanceTestsEnvironment,
+                EnableSensitiveDataLogging = isDevelopmentEnvironment || isIntegrationTestsEnvironment || isAcceptanceTestsEnvironment
             };
 
             builder.RegisterModule(persistenceModule);
@@ -45,6 +44,16 @@ namespace Todo.Services.DependencyInjection
                 .RegisterType<TodoItemService>()
                 .As<ITodoItemService>()
                 .InstancePerLifetimeScope();
+        }
+
+        private static string GetConnectionStringNameByEnvironment(string environmentName)
+        {
+            return environmentName switch
+            {
+                EnvironmentNames.AcceptanceTests => ConnectionStrings.UsedByAcceptanceTests,
+                EnvironmentNames.IntegrationTests => ConnectionStrings.UsedByIntegrationTests,
+                _ => ConnectionStrings.UsedByApplication
+            };
         }
     }
 }

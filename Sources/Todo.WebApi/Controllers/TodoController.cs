@@ -1,3 +1,5 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace Todo.WebApi.Controllers
 {
     using System;
@@ -10,6 +12,7 @@ namespace Todo.WebApi.Controllers
 
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Mvc;
+    using Microsoft.AspNetCore.Routing;
 
     using Models;
 
@@ -18,6 +21,8 @@ namespace Todo.WebApi.Controllers
     [Route("api/todo")]
     [Authorize]
     [ApiController]
+    [SuppressMessage(category: "Major Code Smell", checkId: "S6960:Controllers should not have mixed responsibilities",
+        Justification = "This controller will be replaced at some point with several endpoints")]
     public class TodoController : ControllerBase
     {
         private readonly IFetchTodoItemsFlow fetchTodoItemsFlow;
@@ -25,19 +30,27 @@ namespace Todo.WebApi.Controllers
         private readonly IAddTodoItemFlow addTodoItemFlow;
         private readonly IUpdateTodoItemFlow updateTodoItemFlow;
         private readonly IDeleteTodoItemFlow deleteTodoItemFlow;
+        private readonly LinkGenerator linkGenerator;
 
-        public TodoController(IFetchTodoItemsFlow fetchTodoItemsFlow,
+        public TodoController
+        (
+            IFetchTodoItemsFlow fetchTodoItemsFlow,
             IFetchTodoItemByIdFlow fetchTodoItemByIdFlow,
             IAddTodoItemFlow addTodoItemFlow,
             IUpdateTodoItemFlow updateTodoItemFlow,
-            IDeleteTodoItemFlow deleteTodoItemFlow)
+            IDeleteTodoItemFlow deleteTodoItemFlow,
+            LinkGenerator linkGenerator
+        )
         {
             this.fetchTodoItemsFlow = fetchTodoItemsFlow ?? throw new ArgumentNullException(nameof(fetchTodoItemsFlow));
+
             this.fetchTodoItemByIdFlow =
                 fetchTodoItemByIdFlow ?? throw new ArgumentNullException(nameof(fetchTodoItemByIdFlow));
+
             this.addTodoItemFlow = addTodoItemFlow ?? throw new ArgumentNullException(nameof(addTodoItemFlow));
             this.updateTodoItemFlow = updateTodoItemFlow ?? throw new ArgumentNullException(nameof(updateTodoItemFlow));
             this.deleteTodoItemFlow = deleteTodoItemFlow ?? throw new ArgumentNullException(nameof(deleteTodoItemFlow));
+            this.linkGenerator = linkGenerator;
         }
 
         [HttpGet]
@@ -76,6 +89,7 @@ namespace Todo.WebApi.Controllers
             }
 
             TodoItemModel result = MapFrom(todoItemInfo);
+
             return Ok(result);
         }
 
@@ -90,7 +104,18 @@ namespace Todo.WebApi.Controllers
             };
 
             long newlyCreatedEntityId = await addTodoItemFlow.ExecuteAsync(newTodoItemInfo, User);
-            return Created($"api/todo/{newlyCreatedEntityId}", newlyCreatedEntityId);
+
+            string getNewlyCreatedEntityUri = linkGenerator.GetUriByAction
+            (
+                httpContext: HttpContext,
+                action: "GetById",
+                values: new
+                {
+                    id = newlyCreatedEntityId
+                }
+            );
+
+            return Created(getNewlyCreatedEntityUri, value: null);
         }
 
         [HttpPut("{id:long}")]
@@ -106,6 +131,7 @@ namespace Todo.WebApi.Controllers
             };
 
             await updateTodoItemFlow.ExecuteAsync(updateTodoItemInfo, User);
+
             return NoContent();
         }
 
@@ -120,6 +146,7 @@ namespace Todo.WebApi.Controllers
             };
 
             await deleteTodoItemFlow.ExecuteAsync(deleteTodoItemInfo, User);
+
             return NoContent();
         }
 

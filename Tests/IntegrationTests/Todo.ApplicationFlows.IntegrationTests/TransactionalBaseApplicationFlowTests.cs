@@ -4,10 +4,11 @@ namespace Todo.ApplicationFlows
     using System.Collections.Generic;
     using System.ComponentModel.DataAnnotations;
     using System.Diagnostics.CodeAnalysis;
-    using System.Reflection;
     using System.Security.Principal;
     using System.Threading.Tasks;
     using System.Transactions;
+
+    using Commons.Constants;
 
     using FluentAssertions;
     using FluentAssertions.Execution;
@@ -31,9 +32,14 @@ namespace Todo.ApplicationFlows
         private TestWebApplicationFactory testWebApplicationFactory;
 
         [OneTimeSetUp]
-        public void GivenAnApplicationFlowIsToBeExecuted()
+        public async Task GivenAnApplicationFlowIsToBeExecuted()
         {
-            testWebApplicationFactory = new TestWebApplicationFactory(MethodBase.GetCurrentMethod()?.DeclaringType?.Name);
+            testWebApplicationFactory = await TestWebApplicationFactory.CreateAsync
+            (
+                applicationName: nameof(TransactionalBaseApplicationFlowTests),
+                environmentName: EnvironmentNames.IntegrationTests,
+                shouldRunStartupLogicTasks: true
+            );
         }
 
         [OneTimeTearDown]
@@ -60,9 +66,7 @@ namespace Todo.ApplicationFlows
             string[] roles = { $"role--{Guid.NewGuid():N}" };
             IPrincipal flowInitiator = new GenericPrincipal(identity, roles);
 
-            ITodoItemService todoItemService =
-                testWebApplicationFactory.Services.GetRequiredService<ITodoItemService>();
-
+            ITodoItemService todoItemService = testWebApplicationFactory.Services.GetRequiredService<ITodoItemService>();
             ILoggerFactory loggerFactory = testWebApplicationFactory.Services.GetRequiredService<ILoggerFactory>();
             ILogger logger = loggerFactory.CreateLogger<ApplicationFlowServingTestingPurposes>();
             string namePrefix = $"todo-item--{Guid.NewGuid():N}";
@@ -72,19 +76,19 @@ namespace Todo.ApplicationFlows
             // This flow is expected to fail since the service is unable to persist invalid models
             async Task<object> FlowExpectedToThrowExceptionAsync()
             {
-                await localTodoItemService.AddAsync(new()
+                await localTodoItemService.AddAsync(new NewTodoItemInfo
                 {
                     Name = $"{namePrefix}--#1",
                     Owner = flowInitiator
                 });
 
-                await localTodoItemService.AddAsync(new()
+                await localTodoItemService.AddAsync(new NewTodoItemInfo
                 {
                     Name = $"{namePrefix}--#2",
                     Owner = flowInitiator
                 });
 
-                await localTodoItemService.AddAsync(new()
+                await localTodoItemService.AddAsync(new NewTodoItemInfo
                 {
                     Name = $"{namePrefix}--#3",
                     Owner = flowInitiator
@@ -93,34 +97,27 @@ namespace Todo.ApplicationFlows
                 return null;
             }
 
-            ApplicationFlowOptions applicationFlowOptions =
-                testWebApplicationFactory.Services.GetRequiredService<ApplicationFlowOptions>();
-
-            var applicationFlow = new ApplicationFlowServingTestingPurposes(FlowExpectedToThrowExceptionAsync,
-                applicationFlowOptions, logger);
+            ApplicationFlowOptions applicationFlowOptions = testWebApplicationFactory.Services.GetRequiredService<ApplicationFlowOptions>();
+            ApplicationFlowServingTestingPurposes applicationFlow = new(FlowExpectedToThrowExceptionAsync, applicationFlowOptions, logger);
 
             // Act
             Func<Task> executeAsyncCall = async () => await applicationFlow.ExecuteAsync(input: null, flowInitiator);
 
             // Assert
-            using (new AssertionScope())
+            using AssertionScope _ = new();
+            await executeAsyncCall.Should().ThrowExactlyAsync<ValidationException>("application flow must fail in case of an error");
+
+            TodoItemQuery query = new()
             {
-                await executeAsyncCall
-                    .Should()
-                    .ThrowExactlyAsync<ValidationException>("application flow must fail in case of an error");
+                Owner = flowInitiator,
+                NamePattern = $"{namePrefix}%"
+            };
 
-                var query = new TodoItemQuery
-                {
-                    Owner = flowInitiator,
-                    NamePattern = $"{namePrefix}%"
-                };
-
-                // Get a new instance of ITodoItemService service to ensure data will be fetched from
-                // a new DbContext.
-                todoItemService = testWebApplicationFactory.Services.GetRequiredService<ITodoItemService>();
-                IList<TodoItemInfo> list = await todoItemService.GetByQueryAsync(query);
-                list.Count.Should().Be(expected: 0, "the application flow failed to persist todo items");
-            }
+            // Get a new instance of ITodoItemService service to ensure data will be fetched from
+            // a new DbContext.
+            todoItemService = testWebApplicationFactory.Services.GetRequiredService<ITodoItemService>();
+            IList<TodoItemInfo> list = await todoItemService.GetByQueryAsync(query);
+            list.Count.Should().Be(expected: 0, "the application flow failed to persist todo items");
         }
 
         /// <summary>
@@ -140,9 +137,7 @@ namespace Todo.ApplicationFlows
             string[] roles = { $"role--{Guid.NewGuid():N}" };
             IPrincipal flowInitiator = new GenericPrincipal(identity, roles);
 
-            ITodoItemService todoItemService =
-                testWebApplicationFactory.Services.GetRequiredService<ITodoItemService>();
-
+            ITodoItemService todoItemService = testWebApplicationFactory.Services.GetRequiredService<ITodoItemService>();
             ILoggerFactory loggerFactory = testWebApplicationFactory.Services.GetRequiredService<ILoggerFactory>();
             ILogger logger = loggerFactory.CreateLogger<ApplicationFlowServingTestingPurposes>();
             string namePrefix = $"todo-item--{Guid.NewGuid():N}";
@@ -176,17 +171,14 @@ namespace Todo.ApplicationFlows
                 return null;
             }
 
-            ApplicationFlowOptions applicationFlowOptions =
-                testWebApplicationFactory.Services.GetRequiredService<ApplicationFlowOptions>();
-
-            var applicationFlow = new ApplicationFlowServingTestingPurposes(FlowExpectedToSucceedAsync,
-                applicationFlowOptions, logger);
+            ApplicationFlowOptions applicationFlowOptions = testWebApplicationFactory.Services.GetRequiredService<ApplicationFlowOptions>();
+            ApplicationFlowServingTestingPurposes applicationFlow = new(FlowExpectedToSucceedAsync, applicationFlowOptions, logger);
 
             // Act
             await applicationFlow.ExecuteAsync(input: null, flowInitiator);
 
             // Assert
-            var query = new TodoItemQuery
+            TodoItemQuery query = new()
             {
                 Owner = flowInitiator,
                 NamePattern = $"{namePrefix}%"
@@ -205,8 +197,6 @@ namespace Todo.ApplicationFlows
         /// </summary>
         /// <returns></returns>
         [Test]
-        [Ignore("I need to figure a better way of triggering throwing a TransactionAbortedException since the current "
-                + "approach fails sometimes")]
         public async Task ExecuteAsync_WhenTransactionTimesOut_MustThrowException()
         {
             // Arrange
@@ -231,14 +221,14 @@ namespace Todo.ApplicationFlows
 
             async Task<object> FlowExpectedToFailAsync()
             {
-                await localTodoItemService.AddAsync(new()
+                await localTodoItemService.AddAsync(new NewTodoItemInfo
                 {
                     Name = $"{namePrefix}--#1",
                     IsComplete = false,
                     Owner = flowInitiator
                 });
 
-                await localTodoItemService.AddAsync(new()
+                await localTodoItemService.AddAsync(new NewTodoItemInfo
                 {
                     Name = $"{namePrefix}--#2",
                     IsComplete = false,
@@ -247,25 +237,22 @@ namespace Todo.ApplicationFlows
 
                 // Ensure this flow step will take more time to execute than the configured transaction timeout used
                 // by the application flow.
-                Task.Delay(biggerTimeout).Wait();
+                await Task.Delay(biggerTimeout);
 
                 return null;
             }
 
-            var query = new TodoItemQuery
+            TodoItemQuery query = new()
             {
                 Owner = flowInitiator,
                 NamePattern = $"{namePrefix}%"
             };
 
-            ApplicationFlowOptions applicationFlowOptions =
-                testWebApplicationFactory.Services.GetRequiredService<ApplicationFlowOptions>();
-
+            ApplicationFlowOptions applicationFlowOptions = testWebApplicationFactory.Services.GetRequiredService<ApplicationFlowOptions>();
             // Ensure the application flow will use a very short timeout value for its transaction.
             applicationFlowOptions.TransactionOptions.Timeout = transactionTimeOut;
 
-            var applicationFlow =
-                new ApplicationFlowServingTestingPurposes(FlowExpectedToFailAsync, applicationFlowOptions, logger);
+            ApplicationFlowServingTestingPurposes applicationFlow = new(FlowExpectedToFailAsync, applicationFlowOptions, logger);
 
             // Act
             Func<Task> executeAsyncCall = async () => await applicationFlow.ExecuteAsync(input: null, flowInitiator);
@@ -276,16 +263,9 @@ namespace Todo.ApplicationFlows
             IList<TodoItemInfo> list = await todoItemService.GetByQueryAsync(query);
 
             // Assert
-            using (new AssertionScope())
-            {
-                await executeAsyncCall
-                    .Should()
-                    .ThrowExactlyAsync<TransactionAbortedException>(
-                        "application flow must fail in case of transaction timeout");
-
-                list.Count.Should().Be(expected: 0,
-                    "no entities must be created in the event of a transaction timeout");
-            }
+            using AssertionScope _ = new();
+            await executeAsyncCall.Should().ThrowExactlyAsync<TransactionAbortedException>("application flow must fail in case of transaction timeout");
+            list.Count.Should().Be(expected: 0, "no entities must be created in the event of a transaction timeout");
         }
 
         /// <summary>
@@ -297,8 +277,7 @@ namespace Todo.ApplicationFlows
         {
             private readonly Func<Task<object>> applicationFlow;
 
-            public ApplicationFlowServingTestingPurposes(Func<Task<object>> applicationFlow,
-                ApplicationFlowOptions applicationFlowOptions, ILogger logger)
+            public ApplicationFlowServingTestingPurposes(Func<Task<object>> applicationFlow, ApplicationFlowOptions applicationFlowOptions, ILogger logger)
                 : base(nameof(ApplicationFlowServingTestingPurposes), applicationFlowOptions, logger)
             {
                 this.applicationFlow = applicationFlow;

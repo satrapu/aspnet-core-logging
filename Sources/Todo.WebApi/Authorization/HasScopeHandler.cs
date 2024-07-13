@@ -11,11 +11,9 @@ namespace Todo.WebApi.Authorization
     /// </summary>
     public class HasScopeHandler : AuthorizationHandler<HasScopeRequirement>
     {
-        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context,
-            HasScopeRequirement requirement)
+        protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, HasScopeRequirement requirement)
         {
-            Claim scopeClaim =
-                context.User.FindFirst(claim => claim.Type == "scope" && claim.Issuer == requirement.Issuer);
+            Claim scopeClaim = context.User.FindFirst(claim => claim.Type == "scope" && claim.Issuer == requirement.Issuer);
 
             if (scopeClaim != null)
             {

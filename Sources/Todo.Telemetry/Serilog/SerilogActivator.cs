@@ -1,3 +1,5 @@
+using Serilog.Core;
+
 namespace Todo.Telemetry.Serilog
 {
     using System;
@@ -37,7 +39,7 @@ namespace Todo.Telemetry.Serilog
                     SetFileSinkDestinationFolder();
                 }
 
-                var serilogLogger = new LoggerConfiguration().ReadFrom.Configuration(configuration).CreateLogger();
+                Logger serilogLogger = new LoggerConfiguration().ReadFrom.Configuration(configuration).CreateLogger();
                 loggingBuilder.AddSerilog(logger: serilogLogger, dispose: true);
             });
 
@@ -51,12 +53,8 @@ namespace Todo.Telemetry.Serilog
         /// <returns>True, if a Serilog file sink has been configured; false, otherwise.</returns>
         internal static bool IsFileSinkConfigured(IConfiguration configuration)
         {
-            IEnumerable<KeyValuePair<string, string>> configuredSerilogSinks =
-                configuration.GetSection(SerilogConstants.SectionNames.Using).AsEnumerable();
-
-            bool isSerilogFileSinkConfigured =
-                configuredSerilogSinks.Any(sink => SerilogConstants.SinkShortNames.File.Equals(sink.Value));
-
+            IEnumerable<KeyValuePair<string, string>> configuredSerilogSinks = configuration.GetSection(SerilogConstants.SectionNames.Using).AsEnumerable();
+            bool isSerilogFileSinkConfigured = configuredSerilogSinks.Any(sink => SerilogConstants.SinkShortNames.File.Equals(sink.Value));
             return isSerilogFileSinkConfigured;
         }
 
@@ -65,12 +63,12 @@ namespace Todo.Telemetry.Serilog
             const string logsHomeEnvironmentVariableName = Logging.LogsHomeEnvironmentVariable;
             string logsHomeDirectoryPath = Environment.GetEnvironmentVariable(logsHomeEnvironmentVariableName);
 
-            if (!string.IsNullOrWhiteSpace(logsHomeDirectoryPath) && Directory.Exists(logsHomeDirectoryPath))
+            if (Directory.Exists(logsHomeDirectoryPath))
             {
                 return;
             }
 
-            var currentWorkingDirectory = new DirectoryInfo(Directory.GetCurrentDirectory());
+            DirectoryInfo currentWorkingDirectory = new(Directory.GetCurrentDirectory());
             DirectoryInfo logsHomeDirectory = currentWorkingDirectory.CreateSubdirectory("Logs");
             Environment.SetEnvironmentVariable(logsHomeEnvironmentVariableName, logsHomeDirectory.FullName);
         }

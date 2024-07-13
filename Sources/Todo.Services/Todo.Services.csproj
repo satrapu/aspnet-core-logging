@@ -5,11 +5,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Todo.Persistence\Todo.Persistence.csproj" />
+        <ProjectReference Include="..\Todo.Persistence\Todo.Persistence.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="System.IdentityModel.Tokens.Jwt" />
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt"/>
     </ItemGroup>
 
 </Project>

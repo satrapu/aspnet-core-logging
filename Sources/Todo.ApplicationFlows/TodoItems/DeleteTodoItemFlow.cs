@@ -15,9 +15,8 @@ namespace Todo.ApplicationFlows.TodoItems
     {
         private readonly ITodoItemService todoItemService;
 
-        public DeleteTodoItemFlow(ITodoItemService todoItemService,
-            ApplicationFlowOptions applicationFlowOptions, ILogger<DeleteTodoItemFlow> logger) :
-            base("TodoItem/Delete", applicationFlowOptions, logger)
+        public DeleteTodoItemFlow(ITodoItemService todoItemService, ApplicationFlowOptions applicationFlowOptions, ILogger<DeleteTodoItemFlow> logger)
+            : base("TodoItem/Delete", applicationFlowOptions, logger)
         {
             this.todoItemService = todoItemService ?? throw new ArgumentNullException(nameof(todoItemService));
         }

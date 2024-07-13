@@ -54,7 +54,7 @@ namespace Todo.WebApi.TestInfrastructure
             CancellationToken cancellationToken)
         {
             stringBuilder.AppendLine("-- REQUEST: BEGIN --");
-            stringBuilder.AppendLine($"{request.Method.Method} {request.RequestUri.LocalPath} HTTP/{request.Version}");
+            stringBuilder.AppendLine($"{request.Method.Method} {request.RequestUri?.LocalPath} HTTP/{request.Version}");
             stringBuilder.AppendHeaders(request.Headers);
             await stringBuilder.AppendAsync(request.Content, cancellationToken);
             stringBuilder.AppendLine("-- REQUEST: END --");
@@ -64,7 +64,7 @@ namespace Todo.WebApi.TestInfrastructure
             CancellationToken cancellationToken)
         {
             stringBuilder.AppendLine("-- RESPONSE: BEGIN --");
-            stringBuilder.AppendLine($"HTTP/{response.Version} {(int) response.StatusCode} {response.StatusCode}");
+            stringBuilder.AppendLine($"HTTP/{response.Version} {(int)response.StatusCode} {response.StatusCode}");
             stringBuilder.AppendHeaders(response.Headers);
             await stringBuilder.AppendAsync(response.Content, cancellationToken);
             stringBuilder.AppendLine("-- RESPONSE: END --");

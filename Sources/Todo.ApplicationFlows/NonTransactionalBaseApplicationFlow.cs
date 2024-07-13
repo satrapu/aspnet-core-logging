@@ -6,15 +6,15 @@ namespace Todo.ApplicationFlows
     using System.Security.Principal;
     using System.Threading.Tasks;
 
-    using Commons;
     using Commons.Constants;
+    using Commons.Diagnostics;
 
     using Microsoft.Extensions.Logging;
 
     using Todo.Services.Security;
 
     /// <summary>
-    /// Base class for all application flows which do not need transactions.
+    /// Base class for all application flows which do not need to run inside a transactions.
     /// </summary>
     public abstract class NonTransactionalBaseApplicationFlow<TInput, TOutput> : IApplicationFlow<TInput, TOutput>
     {
@@ -49,37 +49,45 @@ namespace Todo.ApplicationFlows
         /// <returns></returns>
         public async Task<TOutput> ExecuteAsync(TInput input, IPrincipal flowInitiator)
         {
-            using (logger.BeginScope(new Dictionary<string, object>
+            using IDisposable _ = logger.BeginScope(new Dictionary<string, object>
             {
                 [Logging.ApplicationFlowName] = flowName
-            }))
+            });
+
+            bool isSuccess = false;
+            string flowInitiatorName = flowInitiator.GetNameOrDefault();
+
+            using Activity flowActivity = ActivitySources.TodoWebApi.StartActivity($"Application flow: {flowName}");
+            flowActivity?.AddBaggage("flow_initiator", flowInitiatorName);
+            flowActivity?.AddBaggage("flow_name", flowName);
+
+            // @satrapu 2023-12-10: Since the current activity might be null, I need a way to compute the flow duration, hence the need for explicitly
+            // using a Stopwatch instance instead of relying on System.Diagnostics.Activity.Duration property.
+            Stopwatch stopwatch = new();
+            stopwatch.Start();
+
+            try
             {
-                bool isSuccess = false;
-                string flowInitiatorName = flowInitiator.GetNameOrDefault();
+                logger.LogInformation("User [{FlowInitiator}] has started executing application flow [{ApplicationFlowName}] ...", flowInitiatorName, flowName);
 
-                using Activity flowActivity = ActivitySources.TodoWebApi.StartActivity($"Application flow: {flowName}");
-                flowActivity?.AddBaggage("flow_initiator", flowInitiatorName);
-                flowActivity?.AddBaggage("flow_name", flowName);
+                TOutput output = await InternalExecuteAsync(input, flowInitiator);
+                stopwatch.Stop();
+                isSuccess = true;
 
-                try
-                {
-                    logger.LogInformation("User [{FlowInitiator}] has started executing application flow [{ApplicationFlowName}] ...", flowInitiatorName, flowName);
+                return output;
+            }
+            finally
+            {
+                string flowOutcome = isSuccess ? "success" : "failure";
+                flowActivity?.AddTag("flow_outcome", flowOutcome);
+                flowActivity?.Stop();
 
-                    TOutput output = await InternalExecuteAsync(input, flowInitiator);
-                    isSuccess = true;
-
-                    return output;
-                }
-                finally
-                {
-                    string flowOutcome = isSuccess ? "success" : "failure";
-                    flowActivity?.AddTag("flow_outcome", flowOutcome);
-                    flowActivity?.Stop();
-
-                    logger.LogInformation("User [{FlowInitiator}] has finished executing application flow [{ApplicationFlowName}] "
-                        + "with the outcome: [{ApplicationFlowOutcome}]; time taken: [{ApplicationFlowDurationAsTimeSpan}] ({ApplicationFlowDurationInMillis}ms)",
-                        flowInitiatorName, flowName, flowOutcome, flowActivity?.Duration, flowActivity?.Duration.TotalMilliseconds);
-                }
+                logger.LogInformation
+                (
+                    "User [{FlowInitiator}] has finished executing application flow [{ApplicationFlowName}] with the outcome: [{ApplicationFlowOutcome}]; "
+                    + "time taken: [{ApplicationFlowDurationAsTimeSpan}] ({ApplicationFlowDurationInMillis}ms)",
+                    flowInitiatorName, flowName, flowOutcome, stopwatch.Elapsed, stopwatch.ElapsedMilliseconds
+                );
             }
         }
 
@@ -90,11 +98,9 @@ namespace Todo.ApplicationFlows
         /// <param name="input">The flow input.</param>
         /// <param name="flowInitiator">The user who initiated executing this flow.</param>
         /// <returns>The flow output.</returns>
-        protected virtual async Task<TOutput> InternalExecuteAsync(TInput input, IPrincipal flowInitiator)
+        protected virtual Task<TOutput> InternalExecuteAsync(TInput input, IPrincipal flowInitiator)
         {
-            TOutput output = await ExecuteFlowStepsAsync(input, flowInitiator);
-
-            return output;
+            return ExecuteFlowStepsAsync(input, flowInitiator);
         }
 
         /// <summary>

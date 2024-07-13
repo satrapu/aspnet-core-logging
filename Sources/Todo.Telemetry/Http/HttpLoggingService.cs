@@ -111,7 +111,7 @@ namespace Todo.Telemetry.Http
             stringBuilder.AppendLine($"--- RESPONSE {httpResponse.HttpContext.TraceIdentifier}: BEGIN ---");
 
             stringBuilder.AppendLine(
-                $"{httpResponse.HttpContext.Request.Protocol} {httpResponse.StatusCode} {((HttpStatusCode) httpResponse.StatusCode).ToString()}");
+                $"{httpResponse.HttpContext.Request.Protocol} {httpResponse.StatusCode} {((HttpStatusCode)httpResponse.StatusCode).ToString()}");
 
             if (httpResponse.Headers.Any())
             {

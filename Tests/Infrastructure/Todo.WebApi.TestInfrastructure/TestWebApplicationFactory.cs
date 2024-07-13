@@ -11,12 +11,12 @@ namespace Todo.WebApi.TestInfrastructure
     using Autofac;
 
     using Commons.Constants;
+    using Commons.StartupLogic;
 
     using Microsoft.AspNetCore.Hosting;
     using Microsoft.AspNetCore.Mvc.Testing;
     using Microsoft.AspNetCore.TestHost;
     using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.Configuration.Memory;
     using Microsoft.Extensions.DependencyInjection;
     using Microsoft.Extensions.DependencyInjection.Extensions;
     using Microsoft.Extensions.Hosting;
@@ -26,25 +26,56 @@ namespace Todo.WebApi.TestInfrastructure
 
     using Npgsql;
 
-    using WebApi;
-
     /// <summary>
     /// A <see cref="WebApplicationFactory{TEntryPoint}"/> implementation to be used for running integration tests.
     /// <br/>
     /// Each instance of this class will use its own database to ensure isolation at test class level.
     /// </summary>
-    public class TestWebApplicationFactory : WebApplicationFactory<Startup>
+    public class TestWebApplicationFactory : WebApplicationFactory<Program>
     {
-        private const string ConnectionStringKey = "ConnectionStrings:TodoForIntegrationTests";
+        private static readonly TimeSpan RunStartupLogicTimeout = TimeSpan.FromMinutes(5);
         private Action<ContainerBuilder> setupMockServicesAction;
         private readonly string applicationName;
+        private readonly string environmentName;
 
-        public TestWebApplicationFactory(string applicationName)
+        private TestWebApplicationFactory(string applicationName, string environmentName)
         {
+            if (string.IsNullOrWhiteSpace(applicationName))
+            {
+                throw new ArgumentException(message: "Application name cannot be null or white-space only", paramName: nameof(applicationName));
+            }
+
+            if (string.IsNullOrWhiteSpace(environmentName))
+            {
+                throw new ArgumentException(message: "Environment name cannot be null or white-space only", paramName: nameof(environmentName));
+            }
+
             this.applicationName = applicationName;
+            this.environmentName = environmentName;
         }
 
-        public async Task<HttpClient> CreateHttpClientWithJwtAsync()
+        public static async Task<TestWebApplicationFactory> CreateAsync
+        (
+            string applicationName,
+            string environmentName,
+            bool shouldRunStartupLogicTasks = true
+        )
+        {
+            TestWebApplicationFactory testWebApplicationFactory = new(applicationName, environmentName);
+
+            if (shouldRunStartupLogicTasks)
+            {
+                await testWebApplicationFactory
+                    .Services
+                    .GetRequiredService<IStartupLogicTaskExecutor>()
+                    .ExecuteAsync()
+                    .WaitAsync(timeout: RunStartupLogicTimeout);
+            }
+
+            return testWebApplicationFactory;
+        }
+
+        public async Task<HttpClient> CreateHttpClientAsync()
         {
             string accessToken = await GetAccessTokenAsync();
             HttpClient httpClient = CreateHttpClientWithLoggingCapabilities();
@@ -73,23 +104,24 @@ namespace Todo.WebApi.TestInfrastructure
         /// <returns></returns>
         protected override IHost CreateHost(IHostBuilder builder)
         {
-            builder.ConfigureContainer<ContainerBuilder>(containerBuilder =>
+            if (setupMockServicesAction is not null)
             {
-                setupMockServicesAction?.Invoke(containerBuilder);
-            });
+                builder.ConfigureContainer<ContainerBuilder>(containerBuilder =>
+                {
+                    setupMockServicesAction.Invoke(containerBuilder);
+                });
+            }
 
             return base.CreateHost(builder);
         }
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
-            string environmentName = EnvironmentNames.IntegrationTests;
             builder.UseEnvironment(environmentName);
 
             builder.ConfigureAppConfiguration((_, configurationBuilder) =>
             {
-                IConfiguration configuration = CreateConfigurationForEnvironment(environmentName);
-                configurationBuilder.AddConfiguration(configuration);
+                configurationBuilder.AddConfiguration(GetDatabaseConfiguration());
             });
 
             builder.ConfigureTestServices(services =>
@@ -99,36 +131,34 @@ namespace Todo.WebApi.TestInfrastructure
             });
         }
 
-        private IConfiguration CreateConfigurationForEnvironment(string environmentName)
+        private IConfiguration GetDatabaseConfiguration()
         {
-            IConfiguration configuration = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
-                .AddJsonFile($"appsettings.{environmentName}.json", optional: false, reloadOnChange: false)
-                .AddEnvironmentVariables()
-                .Build();
+            string connectionString =
+                new ConfigurationBuilder()
+                    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: false)
+                    .AddJsonFile($"appsettings.{environmentName}.json", optional: true, reloadOnChange: false)
+                    .AddEnvironmentVariables(prefix: EnvironmentVariables.Prefix)
+                    .Build()
+                    .GetConnectionString(name: environmentName);
 
-            var connectionStringBuilder =
-                new NpgsqlConnectionStringBuilder(configuration.GetValue<string>(ConnectionStringKey))
-                {
-                    Database = $"db4it--{applicationName}",
-                    IncludeErrorDetail = true
-                };
-
-            var memoryConfigurationSource = new MemoryConfigurationSource
+            NpgsqlConnectionStringBuilder npgsqlConnectionStringBuilder = new(connectionString)
             {
-                InitialData = new List<KeyValuePair<string, string>>
-                {
-                    new(ConnectionStringKey, connectionStringBuilder.ConnectionString)
-                }
+                Database = $"db--{applicationName}",
+                IncludeErrorDetail = true
             };
 
-            IConfiguration enhancedConfiguration =
+            IConfiguration databaseConfiguration =
                 new ConfigurationBuilder()
-                    .AddConfiguration(configuration)
-                    .Add(memoryConfigurationSource)
+                    .AddInMemoryCollection
+                    (
+                        initialData: new List<KeyValuePair<string, string>>
+                        {
+                            new($"ConnectionStrings:{environmentName}", npgsqlConnectionStringBuilder.ConnectionString)
+                        }
+                    )
                     .Build();
 
-            return enhancedConfiguration;
+            return databaseConfiguration;
         }
 
         private HttpClient CreateHttpClientWithLoggingCapabilities()
@@ -142,7 +172,7 @@ namespace Todo.WebApi.TestInfrastructure
 
         private async Task<string> GetAccessTokenAsync()
         {
-            var generateJwtModel = new GenerateJwtModel
+            GenerateJwtModel generateJwtModel = new()
             {
                 UserName = $"user-{Guid.NewGuid():N}",
                 Password = $"password-{Guid.NewGuid():N}"
@@ -150,17 +180,20 @@ namespace Todo.WebApi.TestInfrastructure
 
             HttpClient httpClient = CreateHttpClientWithLoggingCapabilities();
 
-            HttpResponseMessage httpResponseMessage = await httpClient.PostAsync("api/jwt",
-                new StringContent(JsonSerializer.Serialize(generateJwtModel), Encoding.UTF8,
-                    "application/json"));
+            using HttpResponseMessage httpResponseMessage =
+                await httpClient.PostAsync
+                (
+                    requestUri: "api/jwt",
+                    content: new StringContent(JsonSerializer.Serialize(generateJwtModel), Encoding.UTF8, "application/json")
+                );
 
-            if (!httpResponseMessage.IsSuccessStatusCode)
+            if (httpResponseMessage.IsSuccessStatusCode)
             {
-                throw new CouldNotGetJwtException(httpResponseMessage);
+                JwtModel jwtModel = await httpResponseMessage.Content.ReadFromJsonAsync<JwtModel>();
+                return jwtModel.AccessToken;
             }
 
-            JwtModel jwtModel = await httpResponseMessage.Content.ReadFromJsonAsync<JwtModel>();
-            return jwtModel.AccessToken;
+            throw new CouldNotGetJwtException(httpResponseMessage);
         }
     }
 }

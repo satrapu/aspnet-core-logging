@@ -1,25 +1,25 @@
 namespace Todo.ApplicationFlows.TodoItems
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.Security.Principal;
-
-    using Commons.ApplicationEvents;
+    using System.Threading.Tasks;
 
     using Microsoft.EntityFrameworkCore;
     using Microsoft.Extensions.Configuration;
     using Microsoft.Extensions.Logging;
 
+    using Commons.StartupLogic;
+
     using Persistence;
 
     /// <summary>
-    /// Runs database migrations during application started event.
+    /// Runs database migrations during application startup.
     /// </summary>
-    public class RunDatabaseMigrations : IApplicationStartedEventListener
+    public class RunDatabaseMigrations : IStartupLogicTask
     {
-        private const string FlowName = "Events/ApplicationStarted/RunDatabaseMigrations";
-
-        private static readonly IPrincipal Principal =
-            new GenericPrincipal(new GenericIdentity("run-database-migrations"), Array.Empty<string>());
+        private const string FlowName = "ApplicationStartup/ExecuteStartupLogicTasks/RunDatabaseMigrations";
+        private static readonly IPrincipal Principal = new GenericPrincipal(new GenericIdentity("run-database-migrations"), Array.Empty<string>());
 
         private readonly TodoDbContext todoDbContext;
         private readonly IConfiguration configuration;
@@ -42,17 +42,21 @@ namespace Todo.ApplicationFlows.TodoItems
         /// <summary>
         /// Runs existing database migrations.
         /// </summary>
-        public void OnApplicationStarted()
+        public Task ExecuteAsync()
         {
-            SimpleApplicationFlow.Execute(FlowName, InternalRunDatabaseMigrations, Principal, logger);
+            return SimpleApplicationFlow.ExecuteAsync(FlowName, RunDatabaseMigrationsAsync, Principal, logger);
         }
 
-        private void InternalRunDatabaseMigrations()
+        [SuppressMessage("Major Code Smell", "S1854:Unused assignments should be removed",
+            Justification = "The database name needs to be set to an initial value in case fetching a connection fails")]
+        private async Task RunDatabaseMigrationsAsync()
         {
             string databaseName = "<unknown>";
 
             try
             {
+                databaseName = todoDbContext.Database.GetDbConnection().Database;
+
                 // ReSharper disable once SettingNotFoundInConfiguration
                 bool shouldMigrateDatabase = configuration.GetValue<bool>("MigrateDatabase");
 
@@ -63,19 +67,22 @@ namespace Todo.ApplicationFlows.TodoItems
                     return;
                 }
 
-                logger.LogInformation("Migrating database has been turned on");
+                bool shouldDeleteDatabase = configuration.GetValue<bool>("DeleteDatabaseBeforeRunningMigrations");
 
-                databaseName = todoDbContext.Database.GetDbConnection().Database;
+                if (shouldDeleteDatabase)
+                {
+                    logger.LogInformation("About to delete database {DatabaseName} ...", databaseName);
+                    await todoDbContext.Database.EnsureDeletedAsync();
+                    logger.LogInformation("Database {DatabaseName} has been deleted", databaseName);
+                }
 
                 logger.LogInformation("About to migrate database {DatabaseName} ...", databaseName);
-                todoDbContext.Database.Migrate();
-                logger.LogInformation("Database {DatabaseName} has been migrated successfully ", databaseName);
+                await todoDbContext.Database.MigrateAsync();
+                logger.LogInformation("Database {DatabaseName} has been migrated successfully", databaseName);
             }
             catch (Exception exception)
             {
-                logger.LogCritical(exception, "Failed to migrate database {DatabaseName}", databaseName);
-
-                throw;
+                throw new InvalidOperationException($"Failed to migrate database: {databaseName}", exception);
             }
         }
     }

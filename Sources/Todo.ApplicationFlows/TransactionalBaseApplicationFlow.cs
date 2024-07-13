@@ -10,8 +10,7 @@ namespace Todo.ApplicationFlows
     /// <summary>
     /// Base class for all application flows which make use of transactions.
     /// </summary>
-    public abstract class TransactionalBaseApplicationFlow<TInput, TOutput>
-        : NonTransactionalBaseApplicationFlow<TInput, TOutput>
+    public abstract class TransactionalBaseApplicationFlow<TInput, TOutput> : NonTransactionalBaseApplicationFlow<TInput, TOutput>
     {
         private readonly ApplicationFlowOptions applicationFlowOptions;
 
@@ -25,12 +24,9 @@ namespace Todo.ApplicationFlows
         /// <exception cref="ArgumentException">Thrown in case the given <paramref name="flowName"/> is null or
         /// white-space only.</exception>
         /// <exception cref="ArgumentNullException">Thrown when the given <paramref name="logger"/> is null</exception>
-        protected TransactionalBaseApplicationFlow(string flowName,
-            ApplicationFlowOptions applicationFlowOptions,
-            ILogger logger) : base(flowName, logger)
+        protected TransactionalBaseApplicationFlow(string flowName, ApplicationFlowOptions applicationFlowOptions, ILogger logger) : base(flowName, logger)
         {
-            this.applicationFlowOptions = applicationFlowOptions ??
-                                          throw new ArgumentNullException(nameof(applicationFlowOptions));
+            this.applicationFlowOptions = applicationFlowOptions ?? throw new ArgumentNullException(nameof(applicationFlowOptions));
         }
 
         /// <summary>
@@ -42,16 +38,16 @@ namespace Todo.ApplicationFlows
         /// <returns>The flow output.</returns>
         protected override async Task<TOutput> InternalExecuteAsync(TInput input, IPrincipal flowInitiator)
         {
-            var transactionOptions = new System.Transactions.TransactionOptions
+            System.Transactions.TransactionOptions transactionOptions = new()
             {
                 IsolationLevel = applicationFlowOptions.TransactionOptions.IsolationLevel,
                 Timeout = applicationFlowOptions.TransactionOptions.Timeout
             };
 
-            using var transactionScope = new TransactionScope(TransactionScopeOption.Required, transactionOptions,
-                TransactionScopeAsyncFlowOption.Enabled);
+            using TransactionScope transactionScope = new(TransactionScopeOption.Required, transactionOptions, TransactionScopeAsyncFlowOption.Enabled);
             TOutput output = await base.InternalExecuteAsync(input, flowInitiator);
             transactionScope.Complete();
+
             return output;
         }
     }

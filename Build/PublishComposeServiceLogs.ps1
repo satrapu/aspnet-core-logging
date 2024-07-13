@@ -3,7 +3,7 @@ Param(
     # Docker Compose project name.
     # See more here: https://docs.docker.com/compose/reference/overview/#use--p-to-specify-a-project-name.
     [String]
-    $ComposeProjectName = 'aspnet-core-logging-it',
+    $ComposeProjectName = 'aspnet-core-logging-tests',
 
     # The path to the folder where Docker Compose will write its logs.
     [String]
@@ -57,7 +57,7 @@ $LsCommandOutput.Split([System.Environment]::NewLine, [System.StringSplitOptions
        New-Item -Path "$LogsOutputFolder" -ItemType "Directory"
     }
 
-    # Do not check whether this command has ended successfully since it's writing to 
+    # Do not check whether this command has ended successfully since it's writing to
     # standard error stream, thus tricking runtime into thinking it failed.
     docker logs --tail "all" `
                 --details `

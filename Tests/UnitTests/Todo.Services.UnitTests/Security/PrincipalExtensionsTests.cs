@@ -69,7 +69,7 @@ namespace Todo.Services.Security
         {
             // Arrange
             var principalMock = new Mock<IPrincipal>();
-            principalMock.SetupGet(principal => principal.Identity).Returns((IIdentity) null);
+            principalMock.SetupGet(principal => principal.Identity).Returns((IIdentity)null);
             IPrincipal mockedPrincipal = principalMock.Object;
 
             // Act

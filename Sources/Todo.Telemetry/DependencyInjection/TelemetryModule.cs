@@ -2,7 +2,7 @@ namespace Todo.Telemetry.DependencyInjection
 {
     using Autofac;
 
-    using Commons.ApplicationEvents;
+    using Commons.StartupLogic;
 
     using Http;
 
@@ -32,7 +32,7 @@ namespace Todo.Telemetry.DependencyInjection
 
             builder
                 .RegisterType<FileSinkMetadataLogger>()
-                .As<IApplicationStartedEventListener>()
+                .As<IStartupLogicTask>()
                 .SingleInstance();
         }
     }

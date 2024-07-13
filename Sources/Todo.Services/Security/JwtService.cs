@@ -30,7 +30,7 @@ namespace Todo.Services.Security
                 Subject = new ClaimsIdentity(new Claim[]
                 {
                     new(ClaimTypes.NameIdentifier, userNameAsBase64),
-                    new("scope", string.Join(separator: ' ', generateJwtInfo.Scopes))
+                    new("scope", string.Join(separator: ' ', generateJwtInfo.Scopes ?? Array.Empty<string>()))
                 })
             };
 

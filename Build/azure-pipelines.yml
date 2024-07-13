@@ -40,38 +40,45 @@ variables:
   # Be sure to link this group to this pipeline by selecting the latter -> Edit -> Variables -> Variable Groups!
   - group: 'SonarQube'
 
-  # Load group containing variables applicable to integration tests.
-  # This group contains the user name and password to be used when accessing the dockerized database targeted by the integration tests.
-  # The user name is stored as a secret under the name "IntegrationTests.Database.Todo.Username".
-  # The password is stored as a secret under the name "IntegrationTests.Database.Todo.Password".
+  # Load group containing variables applicable to tests.
+  # This group contains the user name and password to be used when accessing the dockerized database targeted by the tests.
+  # The user name is stored as a secret under the name "Tests.Database.Todo.Username".
+  # The password is stored as a secret under the name "Tests.Database.Todo.Password".
   # See more about secret variables here: https://learn.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&tabs=yaml%2Cbatch#secret-variables.
-  - group: 'IntegrationTests'
+  - group: 'Tests'
 
-  # Specifies the version of the .NET SDK to install and use when running this pipeline.
+  # Specifies the versions of the .NET SDK to install and use when running this pipeline.
   # All releases can be found here: https://dotnet.microsoft.com/download/dotnet.
-  - name: 'DotNetCore_SDK_Version'
-    value: '8.0.100'
+  - name: 'DotNetSdkVersionUsedByApplication'
+    value: '8.0.303'
+  # satrapu 2024-06-24: Version 6.x is used by SpecFlow.Plus.LivingDoc tool.
+  - name: 'DotNetSdkVersionUsedByLivingDoc'
+    value: '6.0.424'
 
   # Specifies the version of the ReportGenerator tool used for generating code coverage reports.
   # All releases can be found here: https://github.com/danielpalme/ReportGenerator/releases.
   # All NuGet packages can be found here: https://www.nuget.org/packages/ReportGenerator/.
   - name: 'ReportGenerator_Version'
-    value: '5.2.0'
+    value: '5.3.7'
 
-  # Represents the name of the database to be targeted by integration tests
-  - name: 'IntegrationTests.Database.Todo.Name'
-    value: 'todo-db4it'
+  # Specifies the version of the SpecFlowPlusLivingDoc tool used for generating acceptance test results.
+  # All NuGet packages can be found here: https://www.nuget.org/packages/SpecFlow.Plus.LivingDocPlugin.
+  - name: 'SpecFlowPlusLivingDoc_Version'
+    value: '3.9.57'
 
-  # Represents the Docker image to use when running the database to be targeted by the integration tests.
-  - name: 'IntegrationTests.Database.DockerImage.Name'
+  # Represents the Docker image to use when running the database to be targeted by tests.
+  - name: 'Tests.Database.DockerImage.Name'
     value: 'satrapu/postgresql'
 
-  # Represents the prefix of the Docker image tag to use when running the database to be targeted by the integration tests.
-  - name: 'IntegrationTests.Database.DockerImage.TagPrefix'
+  # Represents the prefix of the Docker image tag to use when running the database to be targeted by tests.
+  - name: 'Tests.Database.DockerImage.TagPrefix'
     value: '15.1'
 
   - name: SolutionFileName
     value: 'Todo.WebApi.sln'
+
+  - name: AcceptanceTestsHomeFolder
+    value: '$(Build.SourcesDirectory)/Tests/AcceptanceTests/Todo.WebApi.AcceptanceTests'
 
 # Define multiple jobs, one per supported operating system (Linux, macOS and Windows).
 # See more here: https://learn.microsoft.com/en-us/azure/devops/pipelines/process/phases?view=azure-devops&tabs=yaml
@@ -94,13 +101,14 @@ jobs:
       enabled: True
       buildBreaker:
         enabled: True
-    integrationTests:
+    tests:
+      runTests: True
       databaseHost: 'localhost'
-      databaseName: '$(IntegrationTests.Database.Todo.Name)'
-      databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
-      databasePassword: '$(IntegrationTests.Database.Todo.Password)'
-      databaseDockerImage: '$(IntegrationTests.Database.DockerImage.Name):$(IntegrationTests.Database.DockerImage.TagPrefix)-linux'
-      composeProjectName: 'integration-test-prerequisites'
+      databaseName: 'db-for-linux'
+      databaseUsername: '$(Tests.Database.Todo.Username)'
+      databasePassword: '$(Tests.Database.Todo.Password)'
+      databaseDockerImage: '$(Tests.Database.DockerImage.Name):$(Tests.Database.DockerImage.TagPrefix)-linux'
+      composeProjectName: 'test-prerequisites-on-linux'
 
 - template: './azure-pipelines.job-template.yml'
   parameters:
@@ -109,13 +117,14 @@ jobs:
       displayName: 'Run on macOS'
     pool:
       vmImage: 'macOS-12'
-    integrationTests:
+    tests:
+      runTests: True
       databaseHost: 'localhost'
-      databaseName: '$(IntegrationTests.Database.Todo.Name)'
-      databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
-      databasePassword: '$(IntegrationTests.Database.Todo.Password)'
-      databaseDockerImage: '$(IntegrationTests.Database.DockerImage.Name):$(IntegrationTests.Database.DockerImage.TagPrefix)-linux'
-      composeProjectName: 'integration-test-prerequisites'
+      databaseName: 'db-for-macos'
+      databaseUsername: '$(Tests.Database.Todo.Username)'
+      databasePassword: '$(Tests.Database.Todo.Password)'
+      databaseDockerImage: '$(Tests.Database.DockerImage.Name):$(Tests.Database.DockerImage.TagPrefix)-linux'
+      composeProjectName: 'test-prerequisites-on-macos'
 
 - template: './azure-pipelines.job-template.yml'
   parameters:
@@ -125,10 +134,11 @@ jobs:
     pool:
       vmImage: 'windows-2022'
     runDotNetFormatCommand: True
-    integrationTests:
+    tests:
+      runTests: True
       databaseHost: 'localhost'
-      databaseName: '$(IntegrationTests.Database.Todo.Name)'
-      databaseUsername: '$(IntegrationTests.Database.Todo.Username)'
-      databasePassword: '$(IntegrationTests.Database.Todo.Password)'
-      databaseDockerImage: '$(IntegrationTests.Database.DockerImage.Name):$(IntegrationTests.Database.DockerImage.TagPrefix)-windows'
-      composeProjectName: 'integration-test-prerequisites'
+      databaseName: 'db-for-windows'
+      databaseUsername: '$(Tests.Database.Todo.Username)'
+      databasePassword: '$(Tests.Database.Todo.Password)'
+      databaseDockerImage: '$(Tests.Database.DockerImage.Name):$(Tests.Database.DockerImage.TagPrefix)-windows'
+      composeProjectName: 'test-prerequisites-on-windows'
