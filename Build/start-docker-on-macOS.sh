@@ -18,7 +18,7 @@ echo "Installing Docker CLI with version: $dockerCliVersion ..."
 localDockerCliHomeFolder=$USER/local-docker-cli
 brew tap-new "$localDockerCliHomeFolder"
 brew extract --version=$dockerCliVersion docker "$localDockerCliHomeFolder"
-HOMEBREW_NO_AUTO_UPDATE=1 brew install "$localDockerCliHomeFolder@$dockerCliVersion"
+HOMEBREW_NO_AUTO_UPDATE=1 brew install "docker@$dockerCliVersion"
 echo 'Checking Docker installation ...'
 docker --version
 echo "Docker CLI v$dockerCliVersion has been installed successfully"
