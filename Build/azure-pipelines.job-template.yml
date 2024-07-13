@@ -562,7 +562,7 @@ jobs:
         targetType: 'inline'
         errorActionPreference: 'stop'
         script: |
-            $normalizedTestExecutionFilePath = Join-Path '$(AcceptanceTestsHomeFolder)' 'bin' '${{ parameters.build.configuration }}' 'net8.0' 'TestExecution*.json'
+            $normalizedTestExecutionFilePath = [IO.Path]::Combine('$(AcceptanceTestsHomeFolder)', 'bin', '${{ parameters.build.configuration }}', 'net8.0', 'TestExecution*.json')
             Write-Output "##vso[task.setvariable variable=NormalizedTestExecutionFilePath]$normalizedTestExecutionFilePath"
             Write-Output "The normalized test execution file path is: $normalizedTestExecutionFilePath"
 
