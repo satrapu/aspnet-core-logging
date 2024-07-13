@@ -276,7 +276,7 @@ namespace Todo.Services.TodoItemManagement
                 todoItems = todoItems.Where(todoItem => todoItem.Id == todoItemQuery.Id.Value);
             }
 
-            if (string.IsNullOrWhiteSpace(todoItemQuery.NamePattern) is false)
+            if (!string.IsNullOrWhiteSpace(todoItemQuery.NamePattern))
             {
                 todoItems = todoItems.Where(todoItem => EF.Functions.Like(todoItem.Name, todoItemQuery.NamePattern));
             }

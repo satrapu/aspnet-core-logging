@@ -48,7 +48,7 @@ namespace Todo.Telemetry.OpenTelemetry
 
             OpenTelemetryOptions openTelemetryOptions = configuration.GetOpenTelemetryOptions();
 
-            if (openTelemetryOptions.Enabled is false)
+            if (!openTelemetryOptions.Enabled)
             {
                 return services;
             }

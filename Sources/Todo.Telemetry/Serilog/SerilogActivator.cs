@@ -63,7 +63,7 @@ namespace Todo.Telemetry.Serilog
             const string logsHomeEnvironmentVariableName = Logging.LogsHomeEnvironmentVariable;
             string logsHomeDirectoryPath = Environment.GetEnvironmentVariable(logsHomeEnvironmentVariableName);
 
-            if (string.IsNullOrWhiteSpace(logsHomeDirectoryPath) is false && Directory.Exists(logsHomeDirectoryPath))
+            if (Directory.Exists(logsHomeDirectoryPath))
             {
                 return;
             }

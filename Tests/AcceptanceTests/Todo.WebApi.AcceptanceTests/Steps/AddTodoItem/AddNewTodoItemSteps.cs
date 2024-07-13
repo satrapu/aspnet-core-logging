@@ -75,7 +75,7 @@ namespace Todo.WebApi.AcceptanceTests.Steps.AddTodoItem
         {
             string httpStatusCodeAsString = responseDetailsTable.Rows[0]["HttpStatusCode"];
 
-            if (Enum.TryParse(httpStatusCodeAsString, out HttpStatusCode expectedStatusCode) is false)
+            if (!Enum.TryParse(httpStatusCodeAsString, out HttpStatusCode expectedStatusCode))
             {
                 throw new ArgumentException
                 (
@@ -104,7 +104,7 @@ namespace Todo.WebApi.AcceptanceTests.Steps.AddTodoItem
         {
             string httpStatusCodeAsString = responseDetailsTable.Rows[0]["HttpStatusCode"];
 
-            if (Enum.TryParse(httpStatusCodeAsString, out HttpStatusCode expectedStatusCode) is false)
+            if (!Enum.TryParse(httpStatusCodeAsString, out HttpStatusCode expectedStatusCode))
             {
                 throw new ArgumentException
                 (

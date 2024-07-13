@@ -60,7 +60,7 @@ namespace Todo.ApplicationFlows.TodoItems
                 // ReSharper disable once SettingNotFoundInConfiguration
                 bool shouldMigrateDatabase = configuration.GetValue<bool>("MigrateDatabase");
 
-                if (shouldMigrateDatabase is false)
+                if (!shouldMigrateDatabase)
                 {
                     logger.LogInformation("Migrating database has been turned off");
 
