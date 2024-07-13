@@ -12,16 +12,19 @@ echo 'Docker client has been installed'
 
 echo 'Installing Docker Compose ...'
 # Check for the right Docker Compose version here: https://github.com/docker/compose/releases.
-dockerComposeVersion='2.28.0'
+dockerComposeVersion='2.28.1'
 sudo curl -L https://github.com/docker/compose/releases/download/v$dockerComposeVersion/docker-compose-darwin-x86_64 -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 echo 'Docker Compose has been installed'
 
 echo 'Starting container runtime ...'
 colima start
-echo 'Container runtime has been started'
+echo 'Container runtime has started'
 
-echo 'Checking Docker and Docker Compose installations ...'
+echo 'Checking Docker installation ...'
 docker info
+
+echo 'Checking Docker Compose installation ...'
 docker-compose version
+
 echo 'All good :)'
