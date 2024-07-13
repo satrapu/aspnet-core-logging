@@ -15,8 +15,7 @@ dockerCliVersion='27.0.3'
 dockerComposeVersion='2.28.1'
 
 echo "Installing Docker CLI with version: $dockerCliVersion ..."
-curl -fsSL https://get.docker.com -o install-docker.sh -v
-sh install-docker.sh --version $dockerCliVersion
+brew install docker@$dockerCliVersion
 echo 'Checking Docker installation ...'
 docker --version
 echo "Docker CLI v$dockerCliVersion has been installed successfully"
