@@ -1,6 +1,7 @@
 namespace Todo.ApplicationFlows.TodoItems
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
     using System.Security.Principal;
     using System.Threading.Tasks;
 
@@ -46,6 +47,8 @@ namespace Todo.ApplicationFlows.TodoItems
             return SimpleApplicationFlow.ExecuteAsync(FlowName, RunDatabaseMigrationsAsync, Principal, logger);
         }
 
+        [SuppressMessage("Major Code Smell", "S1854:Unused assignments should be removed",
+            Justification = "The database name needs to be set to an initial value in case fetching a connection fails")]
         private async Task RunDatabaseMigrationsAsync()
         {
             string databaseName = "<unknown>";
