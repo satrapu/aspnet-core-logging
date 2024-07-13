@@ -5,14 +5,9 @@ namespace Todo.WebApi.AcceptanceTests.Infrastructure
 
     public class TcpPortProvider
     {
-        private static readonly int AvailableTcpPort;
+        private readonly int availableTcpPort = InternalGetAvailableTcpPort();
 
-        static TcpPortProvider()
-        {
-            AvailableTcpPort = InternalGetAvailableTcpPort();
-        }
-
-        public int GetAvailableTcpPort() => AvailableTcpPort;
+        public int GetAvailableTcpPort() => availableTcpPort;
 
         private static int InternalGetAvailableTcpPort()
         {
