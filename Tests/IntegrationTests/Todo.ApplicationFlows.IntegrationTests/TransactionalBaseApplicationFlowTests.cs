@@ -197,8 +197,6 @@ namespace Todo.ApplicationFlows
         /// </summary>
         /// <returns></returns>
         [Test]
-        [Ignore("I need to figure a better way of triggering throwing a TransactionAbortedException since the current "
-                + "approach fails sometimes")]
         public async Task ExecuteAsync_WhenTransactionTimesOut_MustThrowException()
         {
             // Arrange
