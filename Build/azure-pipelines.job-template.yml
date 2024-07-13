@@ -436,17 +436,17 @@ jobs:
   # Install reportgenerator tool to be able to generate code coverage related reports using 'dotnet tool install' command.
   # See more about this command here: https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-tool-install.
   - script: >-
-        dotnet tool install dotnet-reportgenerator-globaltool
-        --tool-path $(Build.SourcesDirectory)/Tests/.ReportGenerator
-        --version $(ReportGenerator_Version)
+      dotnet tool install dotnet-reportgenerator-globaltool
+      --tool-path $(Build.SourcesDirectory)/Tests/.ReportGenerator
+      --version $(ReportGenerator_Version)
     name: 'install_code_coverage_report_generator'
     displayName: 'Install code coverage report generator tool'
     condition: |
-        and
-        (
-            eq(${{ parameters.tests.runTests }}, True)
-          , eq(variables['IntegrationTestsOutcome'], 'success')
-        )
+     and
+     (
+       eq(${{ parameters.tests.runTests }}, True)
+       , eq(variables['IntegrationTestsOutcome'], 'success')
+     )
 
   # Generate code coverage report:
   #   - combine several OpenCover coverage data files into one single file in Cobertura format
@@ -456,18 +456,18 @@ jobs:
   # In order to be able to see the report inside the Code Coverage tab on Azure DevOps,
   # enable Azure Boards for your project, as documented here: https://developercommunity.visualstudio.com/solutions/403137/view.html.
   - script: >-
-        $(Build.SourcesDirectory)/Tests/.ReportGenerator/reportgenerator
-        "-reports:$(Build.SourcesDirectory)/Tests/**/coverage.opencover.xml"
-        "-targetdir:$(Build.SourcesDirectory)/Tests/.CodeCoverageReport"
-        "-reporttypes:Cobertura"
+      $(Build.SourcesDirectory)/Tests/.ReportGenerator/reportgenerator
+      "-reports:$(Build.SourcesDirectory)/Tests/**/coverage.opencover.xml"
+      "-targetdir:$(Build.SourcesDirectory)/Tests/.CodeCoverageReport"
+      "-reporttypes:Cobertura"
     name: 'generate_code_coverage_report'
     displayName: 'Generate code coverage report'
     condition: |
-        and
-        (
-            eq(${{ parameters.tests.runTests }}, True)
-          , eq(variables['IntegrationTestsOutcome'], 'success')
-        )
+      and
+      (
+        eq(${{ parameters.tests.runTests }}, True)
+        , eq(variables['IntegrationTestsOutcome'], 'success')
+      )
 
   # Publish code coverage report.
   # See more here: https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/publish-code-coverage-results-v1?view=azure-pipelines.
@@ -475,33 +475,33 @@ jobs:
     name: 'publish_code_coverage_report'
     displayName: 'Publish code coverage report'
     condition: |
-        and
-        (
-            eq(${{ parameters.tests.runTests }}, True)
-          , eq(variables['IntegrationTestsOutcome'], 'success')
-        )
+     and
+     (
+       eq(${{ parameters.tests.runTests }}, True)
+       , eq(variables['IntegrationTestsOutcome'], 'success')
+     )
     inputs:
-        codeCoverageTool: 'Cobertura'
-        pathToSources: '$(Build.SourcesDirectory)/Sources'
-        summaryFileLocation: '$(Build.SourcesDirectory)/Tests/.CodeCoverageReport/Cobertura.xml'
+      codeCoverageTool: 'Cobertura'
+      pathToSources: '$(Build.SourcesDirectory)/Sources'
+      summaryFileLocation: '$(Build.SourcesDirectory)/Tests/.CodeCoverageReport/Cobertura.xml'
 
   # Run acceptance tests.
   - script: >-
-        dotnet test $(AcceptanceTestsHomeFolder)
-        --no-build
-        --no-restore
-        --configuration ${{ parameters.build.configuration }}
-        --test-adapter-path "."
-        --filter "TestCategory=AcceptanceTests"
+      dotnet test $(AcceptanceTestsHomeFolder)
+      --no-build
+      --no-restore
+      --configuration ${{ parameters.build.configuration }}
+      --test-adapter-path "."
+      --filter "TestCategory=AcceptanceTests"
     name: 'run_acceptance_tests'
     displayName: 'Run acceptance tests'
     condition: |
-        and
-        (
-            succeeded()
-          , eq(${{ parameters.tests.runTests }}, True)
-          , eq(variables['IntegrationTestsOutcome'], 'success')
-        )
+      and
+      (
+        succeeded()
+        , eq(${{ parameters.tests.runTests }}, True)
+        , eq(variables['IntegrationTestsOutcome'], 'success')
+      )
     env:
       TODO_WEB_API_BY_SATRAPU_CONNECTIONSTRINGS__ACCEPTANCETESTS: >-
         Host=${{ parameters.tests.databaseHost }};
@@ -515,12 +515,12 @@ jobs:
     name: 'set_acceptance_tests_outcome_variable'
     displayName: 'Set AcceptanceTestsOutcome variable'
     condition: |
-        and
-        (
-            succeeded()
-          , eq(${{ parameters.tests.runTests }}, True)
-          , eq(variables['IntegrationTestsOutcome'], 'success')
-        )
+      and
+      (
+        succeeded()
+        , eq(${{ parameters.tests.runTests }}, True)
+        , eq(variables['IntegrationTestsOutcome'], 'success')
+      )
 
   - powershell: echo "##vso[task.setvariable variable=AllTestsOutcome]success"
     name: 'set_all_tests_outcome_variable'
@@ -528,7 +528,7 @@ jobs:
     condition: |
       and
       (
-          succeeded()
+        succeeded()
         , eq(${{ parameters.tests.runTests }}, True)
         , eq(variables['AcceptanceTestsOutcome'], 'success')
       )
@@ -536,53 +536,57 @@ jobs:
   # Install SpecFlow.Plus.LivingDoc.CLI tool to be able to generate acceptance test results report.
   # See more about this tool here: https://docs.specflow.org/projects/getting-started/en/latest/gettingstartedrider/Step8r.html.
   - script: >-
-        dotnet tool install SpecFlow.Plus.LivingDoc.CLI
-        --tool-path $(Build.SourcesDirectory)/Tests/.SpecFlow.Plus.LivingDoc
-        --version $(SpecFlowPlusLivingDoc_Version)
+      dotnet tool install SpecFlow.Plus.LivingDoc.CLI
+      --tool-path $(Build.SourcesDirectory)/Tests/.SpecFlow.Plus.LivingDoc
+      --version $(SpecFlowPlusLivingDoc_Version)
     name: 'install_specflow_plus_livingdoc'
     displayName: 'Install SpecFlow.Plus.LivingDoc tool'
     condition: |
-        and
-        (
-            eq(${{ parameters.tests.runTests }}, True)
-          , eq(variables['IntegrationTestsOutcome'], 'success')
-        )
+      and
+      (
+        eq(${{ parameters.tests.runTests }}, True)
+        , eq(variables['IntegrationTestsOutcome'], 'success')
+      )
 
   # Ensure the path pointing to the acceptance test execution file contains the proper file separator.
   - task: PowerShell@2
     name: 'normalize_acceptance_test_execution_file_path'
     displayName: 'Normalize acceptance test execution file path'
     condition: |
-        and
-        (
-            eq(${{ parameters.tests.runTests }}, True)
-          , eq(variables['IntegrationTestsOutcome'], 'success')
-        )
+      and
+      (
+        eq(${{ parameters.tests.runTests }}, True)
+        , eq(variables['IntegrationTestsOutcome'], 'success')
+      )
     inputs:
-        targetType: 'inline'
-        errorActionPreference: 'stop'
-        script: |
-            $acceptanceTestsHomeFolder = Resolve-Path -Path '$(AcceptanceTestsHomeFolder)'
-            $normalizedTestExecutionFilePath = [IO.Path]::Combine($acceptanceTestsHomeFolder, '**', 'TestExecution.json')
-            Write-Output "##vso[task.setvariable variable=NormalizedTestExecutionFilePath]$normalizedTestExecutionFilePath"
-            Write-Output "The normalized test execution file path is: $normalizedTestExecutionFilePath"
+      targetType: 'inline'
+      errorActionPreference: 'stop'
+      script: |
+        $acceptanceTestsHomeFolder = Resolve-Path -Path '$(AcceptanceTestsHomeFolder)'
+        $normalizedTestExecutionFilePath = [IO.Path]::Combine($acceptanceTestsHomeFolder, '**', 'TestExecution.json')
+        Write-Output "##vso[task.setvariable variable=NormalizedTestExecutionFilePath]$normalizedTestExecutionFilePath"
+        Write-Output "The normalized test execution file path is: $normalizedTestExecutionFilePath"
 
   # Generate living doc.
   # See more here: https://docs.specflow.org/projects/specflow-livingdoc/en/latest/LivingDocGenerator/CLI/livingdoc-feature-folder.html.
-  - script: >-
-      $(Build.SourcesDirectory)/Tests/.SpecFlow.Plus.LivingDoc/livingdoc
-      feature-folder $(AcceptanceTestsHomeFolder)
-      --test-execution-json $(NormalizedTestExecutionFilePath)
-      --output $(Build.SourcesDirectory)/Tests/AcceptanceTests
-      --output-type HTML
+  - task: PowerShell@2
     name: 'generate_living_doc'
     displayName: 'Generate living doc'
     condition: |
-        and
-        (
-            eq(${{ parameters.tests.runTests }}, True)
-          , eq(variables['IntegrationTestsOutcome'], 'success')
-        )
+      and
+      (
+        eq(${{ parameters.tests.runTests }}, True)
+        , eq(variables['IntegrationTestsOutcome'], 'success')
+      )
+    inputs:
+      targetType: 'inline'
+      errorActionPreference: 'stop'
+      script: >-
+        $(Build.SourcesDirectory)/Tests/.SpecFlow.Plus.LivingDoc/livingdoc
+        feature-folder $(AcceptanceTestsHomeFolder)
+        --test-execution-json $(NormalizedTestExecutionFilePath)
+        --output $(Build.SourcesDirectory)/Tests/AcceptanceTests
+        --output-type HTML
 
   # Publish test related artifacts.
   # See more here: https://learn.microsoft.com/en-us/azure/devops/pipelines/artifacts/pipeline-artifacts?view=azure-devops&tabs=yaml#publish-a-pipeline-artifact.
