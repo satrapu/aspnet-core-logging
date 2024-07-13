@@ -35,9 +35,9 @@
       },
       "SonarAnalyzer.CSharp": {
         "type": "Direct",
-        "requested": "[9.27.0.93347, )",
-        "resolved": "9.27.0.93347",
-        "contentHash": "NinyCe6I1D+b8anA7RaTg1wkdGglMeW+qsp+z0tMQ4vm616oLAn47XU9DK3NclE5r3UhAoXyrUZVzcBVHe6dDA=="
+        "requested": "[9.29.0.95321, )",
+        "resolved": "9.29.0.95321",
+        "contentHash": "dAvGL7gavcUYk83p1StVzvMFcbwN4hr08hjthsRr/wR/uPFgjd7LUn7QGN/1iH92aA7P72x06RRNtdUAqmVHdw=="
       },
       "Microsoft.Extensions.Configuration.Abstractions": {
         "type": "Transitive",

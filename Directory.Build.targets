@@ -21,14 +21,14 @@
         <PackageReference Update="FluentAssertions" Version="6.12.0"/>
         <PackageReference Update="FluentAssertions.Web" Version="1.4.0"/>
         <PackageReference Update="Microsoft.AspNet.WebApi.Client" Version="6.0.0"/>
-        <PackageReference Update="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.6"/>
-        <PackageReference Update="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.6"/>
-        <PackageReference Update="Microsoft.EntityFrameworkCore.Design" Version="8.0.6"/>
-        <PackageReference Update="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.6"/>
-        <PackageReference Update="Microsoft.Extensions.Configuration.Binder" Version="8.0.1"/>
+        <PackageReference Update="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.7"/>
+        <PackageReference Update="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.7"/>
+        <PackageReference Update="Microsoft.EntityFrameworkCore.Design" Version="8.0.7"/>
+        <PackageReference Update="Microsoft.EntityFrameworkCore.InMemory" Version="8.0.7"/>
+        <PackageReference Update="Microsoft.Extensions.Configuration.Binder" Version="8.0.2"/>
         <PackageReference Update="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="8.0.0"/>
         <PackageReference Update="Microsoft.Extensions.Configuration.Json" Version="8.0.0"/>
-        <PackageReference Update="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="8.0.6"/>
+        <PackageReference Update="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore" Version="8.0.7"/>
         <PackageReference Update="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0"/>
         <PackageReference Update="Microsoft.Extensions.Http" Version="8.0.0"/>
         <PackageReference Update="Microsoft.Extensions.Logging.Abstractions" Version="8.0.1"/>
@@ -45,7 +45,7 @@
         <PackageReference Update="OpenTelemetry.Extensions.Hosting" Version="1.9.0"/>
         <PackageReference Update="OpenTelemetry.Instrumentation.AspNetCore" Version="1.9.0"/>
         <PackageReference Update="OpenTelemetry.Instrumentation.EntityFrameworkCore" Version="1.0.0-beta.12"/>
-        <PackageReference Update="Polly" Version="8.4.0"/>
+        <PackageReference Update="Polly" Version="8.4.1"/>
         <PackageReference Update="Serilog.AspNetCore" Version="8.0.1"/>
         <PackageReference Update="Serilog.Enrichers.Span" Version="3.1.0"/>
         <PackageReference Update="Serilog.Enrichers.Thread" Version="4.0.0"/>
@@ -57,16 +57,16 @@
             Use 'Include' XML attribute instead of 'Update' since this reference will be added to all projects affected
             by this .targets file, more specifically, all projects found in this solution!
         -->
-        <PackageReference Include="SonarAnalyzer.CSharp" Version="9.27.0.93347">
+        <PackageReference Include="SonarAnalyzer.CSharp" Version="9.29.0.95321">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
 
         <PackageReference Update="SpecFlow.Plus.LivingDocPlugin" Version="3.9.57"/>
         <PackageReference Update="SpecFlow.xUnit" Version="3.9.74"/>
-        <PackageReference Update="System.IdentityModel.Tokens.Jwt" Version="7.6.2"/>
-        <PackageReference Update="xunit" Version="2.8.1"/>
-        <PackageReference Update="xunit.runner.visualstudio" Version="2.8.1">
+        <PackageReference Update="System.IdentityModel.Tokens.Jwt" Version="7.6.3"/>
+        <PackageReference Update="xunit" Version="2.9.0"/>
+        <PackageReference Update="xunit.runner.visualstudio" Version="2.8.2">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
