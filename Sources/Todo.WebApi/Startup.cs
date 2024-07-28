@@ -34,7 +34,7 @@ namespace Todo.WebApi
 
     using Models;
 
-    using Persistence;
+    using Persistence.DependencyInjection;
 
     using Telemetry.DependencyInjection;
     using Telemetry.Http;
@@ -131,8 +131,9 @@ namespace Todo.WebApi
                 .UseAuthorization()
                 .UseEndpoints(endpoints =>
                 {
-                    endpoints.MapControllers().RequireAuthorization();
-                    endpoints.MapHealthChecks("health").AllowAnonymous();
+                    endpoints
+                        .MapControllers()
+                        .RequireAuthorization();
                 });
 
             hostApplicationLifetime.ApplicationStarted.Register(() => OnApplicationStarted());
@@ -148,7 +149,7 @@ namespace Todo.WebApi
                 .AddLogging(loggingBuilder => loggingBuilder.ClearProviders())
                 .AddSerilog(configuration)
                 .AddOpenTelemetry(configuration, webHostEnvironment)
-                .AddHealthChecks().AddDbContextCheck<TodoDbContext>();
+                .AddPersistenceHealthChecks();
         }
 
         private void ConfigureSecurity(IServiceCollection services)
@@ -181,7 +182,7 @@ namespace Todo.WebApi
                         ValidateAudience = true,
                         ValidateLifetime = true,
                         ClockSkew = TimeSpan.Zero,
-                        // Ensure the User.Identity.Name is set to the user identifier and not to the user name.
+                        // Ensure the User.Identity.Name is set to the user identifier and not to the username.
                         NameClaimType = ClaimTypes.NameIdentifier
                     };
 

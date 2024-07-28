@@ -1,9 +1,8 @@
-using System.Diagnostics.CodeAnalysis;
-
 namespace Todo.WebApi.Controllers
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics.CodeAnalysis;
     using System.Threading.Tasks;
 
     using ApplicationFlows.TodoItems;
