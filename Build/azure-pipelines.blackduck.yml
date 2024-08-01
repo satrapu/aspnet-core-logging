@@ -1,8 +1,8 @@
 trigger:
   batch: False
   branches:
-  include:
-    - '*'
+    include:
+      - '*'
 
 pool:
   vmImage: 'ubuntu-22.04'
