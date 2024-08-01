@@ -12,13 +12,14 @@ variables:
 
 steps:
     - task: SynopsysSecurityScan@1.8.0
-      displayName: 'Black Duck Scan'
+      displayName: 'Run Synopsys security scan'
       ### Configuration to set specific detect environment variables
       env:
           DETECT_PROJECT_NAME: $(Build.Repository.Name)
       inputs:
           BLACKDUCK_URL: $(BLACKDUCK_URL)
           BLACKDUCK_TOKEN: $(BLACKDUCK_TOKEN)
+          BLACKDUCK_SCAN_FULL: true
 
           ### Mandatory when BLACKDUCK_PRCOMMENT_ENABLED or BLACKDUCK_FIXPR_ENABLED is set true
           # AZURE_TOKEN: $(System.AccessToken)
@@ -30,18 +31,18 @@ steps:
           # BLACKDUCK_FIXPR_ENABLED: true
 
           ### SARIF report generation
-          # BLACKDUCK_REPORTS_SARIF_CREATE: true
+          BLACKDUCK_REPORTS_SARIF_CREATE: true
 
           ### Mark build status if policy violating issues are found
-          # MARK_BUILD_STATUS: 'SucceededWithIssues'
+          MARK_BUILD_STATUS: 'SucceededWithIssues'
 
         ### Uncomment below to use returned status in subsequent tasks if MARK_BUILD_STATUS is not set or set to FAILED
         # continueOnError: true
 
-### Uncomment below configuration to add custom logic based on return status
-# - task: CmdLine@2
-#   displayName: 'Command Line'
-#   condition: not(eq(variables['SynopsysSecurityScan.status'], '0'))
-#   inputs:
-#     script: |
-#       echo Synopsys Security Scan exit status - $(SynopsysSecurityScan.status)
+    ### Uncomment below configuration to add custom logic based on return status
+    - task: CmdLine@2
+      displayName: 'Display Synopsys security scan exit code'
+      condition: not(eq(variables['SynopsysSecurityScan.status'], '0'))
+      inputs:
+        script: |
+          echo Synopsys Security Scan exit status - $(SynopsysSecurityScan.status)
