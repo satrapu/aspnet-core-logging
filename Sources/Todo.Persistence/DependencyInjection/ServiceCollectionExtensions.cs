@@ -1,4 +1,4 @@
-﻿namespace Todo.Persistence.DependencyInjection
+namespace Todo.Persistence.DependencyInjection
 {
     using System;
     using System.Linq;
