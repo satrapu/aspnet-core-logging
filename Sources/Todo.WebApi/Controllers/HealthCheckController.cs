@@ -28,7 +28,7 @@
         public async Task<ActionResult> GetHealthReportAsync(CancellationToken cancellationToken)
         {
             TimeSpan maxWaitTimeForHealthChecks = MaxWaitTimeForHealthChecks;
-            Exception checkHealthCheckException = null;
+            Exception checkHealthException = null;
             HealthReport healthReport;
 
             try
@@ -40,7 +40,7 @@
             }
             catch (Exception exception)
             {
-                checkHealthCheckException = exception;
+                checkHealthException = exception;
 
                 healthReport = new HealthReport
                 (
@@ -53,11 +53,11 @@
             return StatusCode
             (
                 statusCode: (int)GetHttpStatusCode(healthReport),
-                value: GetProjectedHealthReport(healthReport, checkHealthCheckException)
+                value: GetProjectedHealthReport(healthReport, checkHealthException)
             );
         }
 
-        private static dynamic GetProjectedHealthReport(HealthReport healthReport, Exception checkHealthCheckException = null)
+        private static dynamic GetProjectedHealthReport(HealthReport healthReport, Exception checkHealthException = null)
         {
             return new
             {
@@ -65,9 +65,9 @@
                 {
                     Status = healthReport.Status.ToString("G"),
                     Description =
-                        checkHealthCheckException is null
+                        checkHealthException is null
                             ? "All dependencies have been successfully checked"
-                            : GetUserFriendlyDescription(checkHealthCheckException),
+                            : GetUserFriendlyDescription(checkHealthException),
                     Duration = healthReport.TotalDuration.ToString("g"),
                     Dependencies = healthReport.Entries.Select(healthReportEntry => new
                     {
