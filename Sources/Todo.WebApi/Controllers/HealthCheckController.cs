@@ -57,7 +57,7 @@
             );
         }
 
-        private static dynamic GetProjectedHealthReport(HealthReport healthReport, Exception checkHealthException = null)
+        private static object GetProjectedHealthReport(HealthReport healthReport, Exception checkHealthException = null)
         {
             return new
             {
