@@ -46,7 +46,7 @@
         <PackageReference Update="OpenTelemetry.Instrumentation.AspNetCore" Version="1.9.0"/>
         <PackageReference Update="OpenTelemetry.Instrumentation.EntityFrameworkCore" Version="1.0.0-beta.12"/>
         <PackageReference Update="Polly" Version="8.4.1"/>
-        <PackageReference Update="Serilog.AspNetCore" Version="8.0.1"/>
+        <PackageReference Update="Serilog.AspNetCore" Version="8.0.2"/>
         <PackageReference Update="Serilog.Enrichers.Span" Version="3.1.0"/>
         <PackageReference Update="Serilog.Enrichers.Thread" Version="4.0.0"/>
         <PackageReference Update="Serilog.Sinks.ApplicationInsights" Version="4.0.0"/>
@@ -57,7 +57,7 @@
             Use 'Include' XML attribute instead of 'Update' since this reference will be added to all projects affected
             by this .targets file, more specifically, all projects found in this solution!
         -->
-        <PackageReference Include="SonarAnalyzer.CSharp" Version="9.30.0.95878">
+        <PackageReference Include="SonarAnalyzer.CSharp" Version="9.31.0.96804">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
