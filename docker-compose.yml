@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   aspnet-core-logging-db-local-dev:
     container_name: aspnet-core-logging-db-for-local-dev
