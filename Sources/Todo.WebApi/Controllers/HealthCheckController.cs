@@ -16,7 +16,7 @@ namespace Todo.WebApi.Controllers
     [ApiController]
     public class HealthCheckController : ControllerBase
     {
-        private static readonly TimeSpan MaxWaitTimeForHealthChecks = TimeSpan.FromSeconds(2);
+        internal static readonly TimeSpan MaxHealthCheckDuration = TimeSpan.FromSeconds(2);
         private readonly HealthCheckService healthCheckService;
 
         public HealthCheckController(HealthCheckService healthCheckService)
@@ -27,7 +27,6 @@ namespace Todo.WebApi.Controllers
         [HttpGet]
         public async Task<ActionResult> GetHealthReportAsync(CancellationToken cancellationToken)
         {
-            TimeSpan maxWaitTimeForHealthChecks = MaxWaitTimeForHealthChecks;
             Exception checkHealthException = null;
             HealthReport healthReport;
 
@@ -37,12 +36,12 @@ namespace Todo.WebApi.Controllers
                     await
                         healthCheckService
                             .CheckHealthAsync(cancellationToken)
-                            .WaitAsync(timeout: maxWaitTimeForHealthChecks);
+                            .WaitAsync(timeout: MaxHealthCheckDuration);
             }
             catch (Exception exception)
             {
                 checkHealthException = exception;
-                healthReport = GetEmptyHealthReport(totalDuration: maxWaitTimeForHealthChecks);
+                healthReport = GetEmptyHealthReport(totalDuration: MaxHealthCheckDuration);
             }
 
             return StatusCode
