@@ -1,6 +1,10 @@
 # This script starts the Docker Compose services residing in a given compose file and will also
 # create one Azure DevOps variable per port per service.
 Param(
+    # The base command used for interacting with Docker Compose V1 or V2.
+    [String]
+    $ComposeBaseCommand = 'docker compose',
+
     # Relative path pointing to a Docker Compose YAML file.
     # This path is resolved using this script location as base path.
     # See more here: https://docs.docker.com/compose/reference/overview/#use--f-to-specify-name-and-path-of-one-or-more-compose-files.
@@ -53,10 +57,7 @@ Write-Output $InfoMessage
 
 # Do not check whether this command has ended successfully since it's writing to
 # standard error stream, thus tricking runtime into thinking it has failed.
-docker compose --file="$ComposeFilePath" `
-               --project-name="$ComposeProjectName" `
-               up `
-               --detach
+Invoke-Expression "$ComposeBaseCommand --file=`"$ComposeFilePath`" --project-name=`"$ComposeProjectName`" up --detach"
 
 $LsCommandOutput = docker container ls -a `
                                     --filter "label=com.docker.compose.project=$ComposeProjectName" `

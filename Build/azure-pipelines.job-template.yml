@@ -27,6 +27,7 @@ parameters:
     databaseUsername: ''
     databasePassword: ''
     databaseDockerImage: ''
+    composeBaseCommand: ''
     composeProjectName: ''
 
 jobs:
@@ -311,6 +312,7 @@ jobs:
       targetType: 'filePath'
       filePath: '$(Build.SourcesDirectory)/Build/RunComposeServices.ps1'
       arguments: >-
+        -ComposeBaseCommand '${{ parameters.tests.composeBaseCommand }}' `
         -ComposeProjectName '${{ parameters.tests.composeProjectName }}' `
         -RelativePathToComposeFile './db4tests/docker-compose.yml' `
         -EnvironmentVariables `

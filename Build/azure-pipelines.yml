@@ -108,6 +108,7 @@ jobs:
       databaseUsername: '$(Tests.Database.Todo.Username)'
       databasePassword: '$(Tests.Database.Todo.Password)'
       databaseDockerImage: '$(Tests.Database.DockerImage.Name):$(Tests.Database.DockerImage.TagPrefix)-linux'
+      composeBaseCommand: 'docker compose'
       composeProjectName: 'test-prerequisites-on-linux'
 
 - template: './azure-pipelines.job-template.yml'
@@ -124,6 +125,7 @@ jobs:
       databaseUsername: '$(Tests.Database.Todo.Username)'
       databasePassword: '$(Tests.Database.Todo.Password)'
       databaseDockerImage: '$(Tests.Database.DockerImage.Name):$(Tests.Database.DockerImage.TagPrefix)-linux'
+      composeBaseCommand: 'docker-compose'
       composeProjectName: 'test-prerequisites-on-macos'
 
 - template: './azure-pipelines.job-template.yml'
@@ -141,4 +143,5 @@ jobs:
       databaseUsername: '$(Tests.Database.Todo.Username)'
       databasePassword: '$(Tests.Database.Todo.Password)'
       databaseDockerImage: '$(Tests.Database.DockerImage.Name):$(Tests.Database.DockerImage.TagPrefix)-windows'
+      composeBaseCommand: 'docker compose'
       composeProjectName: 'test-prerequisites-on-windows'
