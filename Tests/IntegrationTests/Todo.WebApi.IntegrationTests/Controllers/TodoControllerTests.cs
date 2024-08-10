@@ -88,7 +88,7 @@ namespace Todo.WebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [Test]
-        public async Task CreateAsync_UsingNoJsonWebToken_ReturnsUnauthorizedHttpStatusCode()
+        public async Task CreateAsync_WhenRequestIsNotAuthorized_ReturnsUnauthorizedHttpStatusCode()
         {
             // Arrange
             using HttpClient httpClient = testWebApplicationFactory.CreateClient();
@@ -166,7 +166,7 @@ namespace Todo.WebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [Test]
-        public async Task GetByQueryAsync_UsingNoJsonWebToken_ReturnsUnauthorizedHttpStatusCode()
+        public async Task GetByQueryAsync_WhenRequestIsNotAuthorized_ReturnsUnauthorizedHttpStatusCode()
         {
             // Arrange
             using HttpClient httpClient = testWebApplicationFactory.CreateClient();
@@ -253,7 +253,7 @@ namespace Todo.WebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [Test]
-        public async Task GetByIdAsync_UsingNoJsonWebToken_ReturnsUnauthorizedHttpStatusCode()
+        public async Task GetByIdAsync_WhenRequestIsNotAuthorized_ReturnsUnauthorizedHttpStatusCode()
         {
             // Arrange
             using HttpClient httpClient = testWebApplicationFactory.CreateClient();
@@ -349,7 +349,7 @@ namespace Todo.WebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [Test]
-        public async Task UpdateAsync_UsingNoJsonWebToken_ReturnsUnauthorizedHttpStatusCode()
+        public async Task UpdateAsync_WhenRequestIsNotAuthorized_ReturnsUnauthorizedHttpStatusCode()
         {
             // Arrange
             using HttpClient httpClient = testWebApplicationFactory.CreateClient();
@@ -421,7 +421,7 @@ namespace Todo.WebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [Test]
-        public async Task DeleteAsync_UsingNoJsonWebToken_ReturnsUnauthorizedHttpStatusCode()
+        public async Task DeleteAsync_WhenRequestIsNotAuthorized_ReturnsUnauthorizedHttpStatusCode()
         {
             // Arrange
             using HttpClient httpClient = testWebApplicationFactory.CreateClient();

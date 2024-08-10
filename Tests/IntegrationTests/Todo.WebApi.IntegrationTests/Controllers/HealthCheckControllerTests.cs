@@ -115,7 +115,7 @@ namespace Todo.WebApi.Controllers
         }
 
         [Test]
-        public async Task GetHealthReportAsync_WhenRequestDoesNotHaveJsonWebToken_ReturnsUnauthorizedHttpStatusCode()
+        public async Task GetHealthReportAsync_WhenRequestIsNotAuthorized_ReturnsUnauthorizedHttpStatusCode()
         {
             // Arrange
             using HttpClient httpClient = testWebApplicationFactory.CreateClient();
