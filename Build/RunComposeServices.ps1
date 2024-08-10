@@ -53,7 +53,7 @@ Write-Output $InfoMessage
 
 # Do not check whether this command has ended successfully since it's writing to
 # standard error stream, thus tricking runtime into thinking it has failed.
-docker compose --file "$ComposeFilePath" --project-name "$ComposeProjectName" up --detach
+docker compose -f "$ComposeFilePath" -p "$ComposeProjectName" up -d
 
 $LsCommandOutput = docker container ls -a `
                                     --filter "label=com.docker.compose.project=$ComposeProjectName" `
