@@ -55,6 +55,7 @@ namespace Todo.WebApi.Controllers
                 Secret = generateJwtOptions.Secret,
                 Scopes = new[]
                 {
+                    Policies.Infrastructure.HealthCheck,
                     Policies.TodoItems.CreateTodoItem,
                     Policies.TodoItems.DeleteTodoItem,
                     Policies.TodoItems.GetTodoItems,

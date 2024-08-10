@@ -204,6 +204,7 @@ namespace Todo.WebApi
 
             services.AddAuthorization(options =>
             {
+                options.AddPolicy(Policies.Infrastructure.HealthCheck, policy => policy.Requirements.Add(new HasScopeRequirement("read:health", tokenIssuer)));
                 options.AddPolicy(Policies.TodoItems.GetTodoItems, policy => policy.Requirements.Add(new HasScopeRequirement("get:todo", tokenIssuer)));
                 options.AddPolicy(Policies.TodoItems.CreateTodoItem, policy => policy.Requirements.Add(new HasScopeRequirement("create:todo", tokenIssuer)));
                 options.AddPolicy(Policies.TodoItems.UpdateTodoItem, policy => policy.Requirements.Add(new HasScopeRequirement("update:todo", tokenIssuer)));

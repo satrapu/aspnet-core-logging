@@ -48,24 +48,16 @@ namespace Todo.WebApi.Controllers
             {
                 ShouldListenTo = _ => true,
                 Sample = (ref ActivityCreationOptions<ActivityContext> _) => ActivitySamplingResult.AllDataAndRecorded,
-                ActivityStarted = _ =>
-                {
-                },
-                ActivityStopped = _ =>
-                {
-                }
+                ActivityStarted = _ => { },
+                ActivityStopped = _ => { }
             };
 
             noOpActivityListener = new ActivityListener
             {
                 ShouldListenTo = _ => false,
                 Sample = (ref ActivityCreationOptions<ActivityContext> _) => ActivitySamplingResult.None,
-                ActivityStarted = _ =>
-                {
-                },
-                ActivityStopped = _ =>
-                {
-                }
+                ActivityStarted = _ => { },
+                ActivityStopped = _ => { }
             };
 
             ActivitySource.AddActivityListener(activityListener);
@@ -88,7 +80,7 @@ namespace Todo.WebApi.Controllers
             // Arrange
             TimeSpan maxWaitTimeForHealthChecks = HealthCheckController.MaxHealthCheckDuration;
 
-            using HttpClient httpClient = testWebApplicationFactory.CreateClient();
+            using HttpClient httpClient = await testWebApplicationFactory.CreateHttpClientAsync();
 
             // Act
             using HttpResponseMessage response = await httpClient.GetAsync(BaseUrl);
@@ -120,6 +112,21 @@ namespace Todo.WebApi.Controllers
             persistentStorage.Should().NotBeNull();
             persistentStorage!.Value<string>(key: "status").Should().Be("Healthy");
             persistentStorage.Value<string>(key: "duration").As<TimeSpan>().Should().BeLessOrEqualTo(maxWaitTimeForHealthChecks);
+        }
+
+        [Test]
+        public async Task GetHealthReportAsync_WhenRequestDoesNotHaveJsonWebToken_ReturnsUnauthorizedHttpStatusCode()
+        {
+            // Arrange
+            using HttpClient httpClient = testWebApplicationFactory.CreateClient();
+
+            // Act
+            using HttpResponseMessage response = await httpClient.GetAsync(BaseUrl);
+
+            // Assert
+            using AssertionScope _ = new();
+            response.IsSuccessStatusCode.Should().BeFalse();
+            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
         }
     }
 }

@@ -1,3 +1,5 @@
+using Todo.WebApi.Authorization;
+
 namespace Todo.WebApi.Controllers
 {
     using System;
@@ -12,7 +14,7 @@ namespace Todo.WebApi.Controllers
     using Microsoft.AspNetCore.Mvc;
 
     [Route("api/health")]
-    [AllowAnonymous]
+    [Authorize]
     [ApiController]
     public class HealthCheckController : ControllerBase
     {
@@ -25,6 +27,7 @@ namespace Todo.WebApi.Controllers
         }
 
         [HttpGet]
+        [Authorize(Policy = Policies.Infrastructure.HealthCheck)]
         public async Task<ActionResult> GetHealthReportAsync(CancellationToken cancellationToken)
         {
             Exception checkHealthException = null;
