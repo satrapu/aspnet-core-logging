@@ -4,7 +4,7 @@ namespace Todo.WebApi.Authorization
     {
         public static class Infrastructure
         {
-            public const string HealthCheck = "read:health";
+            public const string HealthCheck = "get:health";
         }
 
         public static class TodoItems
