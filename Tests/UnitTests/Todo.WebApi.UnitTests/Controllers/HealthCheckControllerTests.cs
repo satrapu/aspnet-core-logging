@@ -15,7 +15,7 @@ namespace Todo.WebApi.Controllers
     using NUnit.Framework;
 
     /// <summary>
-    /// Contains integration tests targeting <see cref="HealthCheckController" /> class.
+    /// Contains unit tests targeting <see cref="HealthCheckController" /> class.
     /// </summary>
     [TestFixture]
     public class HealthCheckControllerTests
