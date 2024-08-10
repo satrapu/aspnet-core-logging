@@ -1,8 +1,3 @@
-# Use compose file version 3.7 and not a newer one
-# since macOS-based Azure DevOps agents cannot run
-# Docker versions compatible with v3.8+.
-version: "3.7"
-
 services:
   db4it:
     image: "${db_docker_image}"

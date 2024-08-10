@@ -59,7 +59,7 @@ variables:
   # All releases can be found here: https://github.com/danielpalme/ReportGenerator/releases.
   # All NuGet packages can be found here: https://www.nuget.org/packages/ReportGenerator/.
   - name: 'ReportGenerator_Version'
-    value: '5.3.7'
+    value: '5.3.8'
 
   # Specifies the version of the SpecFlowPlusLivingDoc tool used for generating acceptance test results.
   # All NuGet packages can be found here: https://www.nuget.org/packages/SpecFlow.Plus.LivingDocPlugin.
@@ -108,6 +108,7 @@ jobs:
       databaseUsername: '$(Tests.Database.Todo.Username)'
       databasePassword: '$(Tests.Database.Todo.Password)'
       databaseDockerImage: '$(Tests.Database.DockerImage.Name):$(Tests.Database.DockerImage.TagPrefix)-linux'
+      composeBaseCommand: 'docker compose'
       composeProjectName: 'test-prerequisites-on-linux'
 
 - template: './azure-pipelines.job-template.yml'
@@ -124,6 +125,7 @@ jobs:
       databaseUsername: '$(Tests.Database.Todo.Username)'
       databasePassword: '$(Tests.Database.Todo.Password)'
       databaseDockerImage: '$(Tests.Database.DockerImage.Name):$(Tests.Database.DockerImage.TagPrefix)-linux'
+      composeBaseCommand: 'docker-compose'
       composeProjectName: 'test-prerequisites-on-macos'
 
 - template: './azure-pipelines.job-template.yml'
@@ -141,4 +143,5 @@ jobs:
       databaseUsername: '$(Tests.Database.Todo.Username)'
       databasePassword: '$(Tests.Database.Todo.Password)'
       databaseDockerImage: '$(Tests.Database.DockerImage.Name):$(Tests.Database.DockerImage.TagPrefix)-windows'
+      composeBaseCommand: 'docker compose'
       composeProjectName: 'test-prerequisites-on-windows'

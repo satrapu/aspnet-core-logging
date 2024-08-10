@@ -34,7 +34,7 @@ namespace Todo.WebApi
 
     using Models;
 
-    using Persistence;
+    using Persistence.DependencyInjection;
 
     using Telemetry.DependencyInjection;
     using Telemetry.Http;
@@ -131,8 +131,9 @@ namespace Todo.WebApi
                 .UseAuthorization()
                 .UseEndpoints(endpoints =>
                 {
-                    endpoints.MapControllers().RequireAuthorization();
-                    endpoints.MapHealthChecks("health").AllowAnonymous();
+                    endpoints
+                        .MapControllers()
+                        .RequireAuthorization();
                 });
 
             hostApplicationLifetime.ApplicationStarted.Register(() => OnApplicationStarted());
@@ -148,7 +149,7 @@ namespace Todo.WebApi
                 .AddLogging(loggingBuilder => loggingBuilder.ClearProviders())
                 .AddSerilog(configuration)
                 .AddOpenTelemetry(configuration, webHostEnvironment)
-                .AddHealthChecks().AddDbContextCheck<TodoDbContext>();
+                .AddPersistenceHealthChecks();
         }
 
         private void ConfigureSecurity(IServiceCollection services)
@@ -162,6 +163,54 @@ namespace Todo.WebApi
             // ReSharper disable once SettingNotFoundInConfiguration
             string tokenIssuer = generateJwtOptions.GetValue<string>("Issuer");
 
+            ConfigureAuthentication(services, generateJwtOptions, tokenIssuer);
+            ConfigureAuthorization(services, tokenIssuer);
+
+            // Configure options used for customizing generating JWT tokens.
+            // Options pattern: https://learn.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-7.0.
+            services.Configure<GenerateJwtOptions>(generateJwtOptions);
+        }
+
+        private static void ConfigureAuthorization(IServiceCollection services, string tokenIssuer)
+        {
+            services
+                .AddSingleton<IAuthorizationHandler, HasScopeHandler>()
+                .AddAuthorization(options =>
+                {
+                    options.AddPolicy
+                    (
+                        name: Policies.Infrastructure.HealthCheck,
+                        configurePolicy: policy => policy.Requirements.Add(new HasScopeRequirement(Policies.Infrastructure.HealthCheck, tokenIssuer))
+                    );
+
+                    options.AddPolicy
+                    (
+                        name: Policies.TodoItems.GetTodoItems,
+                        configurePolicy: policy => policy.Requirements.Add(new HasScopeRequirement(Policies.TodoItems.GetTodoItems, tokenIssuer))
+                    );
+
+                    options.AddPolicy
+                    (
+                        name: Policies.TodoItems.CreateTodoItem,
+                        configurePolicy: policy => policy.Requirements.Add(new HasScopeRequirement(Policies.TodoItems.CreateTodoItem, tokenIssuer))
+                    );
+
+                    options.AddPolicy
+                    (
+                        name: Policies.TodoItems.UpdateTodoItem,
+                        configurePolicy: policy => policy.Requirements.Add(new HasScopeRequirement(Policies.TodoItems.UpdateTodoItem, tokenIssuer))
+                    );
+
+                    options.AddPolicy
+                    (
+                        name: Policies.TodoItems.DeleteTodoItem,
+                        configurePolicy: policy => policy.Requirements.Add(new HasScopeRequirement(Policies.TodoItems.DeleteTodoItem, tokenIssuer))
+                    );
+                });
+        }
+
+        private static void ConfigureAuthentication(IServiceCollection services, IConfigurationSection generateJwtOptions, string tokenIssuer)
+        {
             services
                 .AddAuthentication(options =>
                 {
@@ -181,7 +230,7 @@ namespace Todo.WebApi
                         ValidateAudience = true,
                         ValidateLifetime = true,
                         ClockSkew = TimeSpan.Zero,
-                        // Ensure the User.Identity.Name is set to the user identifier and not to the user name.
+                        // Ensure the User.Identity.Name is set to the user identifier and not to the username.
                         NameClaimType = ClaimTypes.NameIdentifier
                     };
 
@@ -200,20 +249,6 @@ namespace Todo.WebApi
                         }
                     };
                 });
-
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy(Policies.TodoItems.GetTodoItems, policy => policy.Requirements.Add(new HasScopeRequirement("get:todo", tokenIssuer)));
-                options.AddPolicy(Policies.TodoItems.CreateTodoItem, policy => policy.Requirements.Add(new HasScopeRequirement("create:todo", tokenIssuer)));
-                options.AddPolicy(Policies.TodoItems.UpdateTodoItem, policy => policy.Requirements.Add(new HasScopeRequirement("update:todo", tokenIssuer)));
-                options.AddPolicy(Policies.TodoItems.DeleteTodoItem, policy => policy.Requirements.Add(new HasScopeRequirement("delete:todo", tokenIssuer)));
-            });
-
-            services.AddSingleton<IAuthorizationHandler, HasScopeHandler>();
-
-            // Configure options used for customizing generating JWT tokens.
-            // Options pattern: https://learn.microsoft.com/en-us/aspnet/core/fundamentals/configuration/options?view=aspnetcore-7.0.
-            services.Configure<GenerateJwtOptions>(generateJwtOptions);
         }
 
         private static void ConfigureWebApi(IServiceCollection services)
