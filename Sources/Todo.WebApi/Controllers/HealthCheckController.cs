@@ -34,20 +34,15 @@ namespace Todo.WebApi.Controllers
             try
             {
                 healthReport =
-                    await healthCheckService
-                        .CheckHealthAsync(cancellationToken)
-                        .WaitAsync(timeout: maxWaitTimeForHealthChecks);
+                    await
+                        healthCheckService
+                            .CheckHealthAsync(cancellationToken)
+                            .WaitAsync(timeout: maxWaitTimeForHealthChecks);
             }
             catch (Exception exception)
             {
                 checkHealthException = exception;
-
-                healthReport = new HealthReport
-                (
-                    entries: new Dictionary<string, HealthReportEntry>(),
-                    status: HealthStatus.Unhealthy,
-                    totalDuration: maxWaitTimeForHealthChecks
-                );
+                healthReport = GetEmptyHealthReport(totalDuration: maxWaitTimeForHealthChecks);
             }
 
             return StatusCode
@@ -96,6 +91,16 @@ namespace Todo.WebApi.Controllers
                 TimeoutException _ => "Failed to check dependencies due to a timeout",
                 _ => "Failed to check dependencies due to an unexpected error"
             };
+        }
+
+        private static HealthReport GetEmptyHealthReport(TimeSpan totalDuration)
+        {
+            return new HealthReport
+            (
+                entries: new Dictionary<string, HealthReportEntry>(),
+                status: HealthStatus.Unhealthy,
+                totalDuration
+            );
         }
     }
 }
