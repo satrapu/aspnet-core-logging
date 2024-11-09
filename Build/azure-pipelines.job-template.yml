@@ -107,7 +107,7 @@ jobs:
       SonarCloud: 'sonar-cloud'
       organization: 'satrapu-github'
       projectKey: 'aspnet-core-logging'
-      scannerMode: 'MSBuild'
+      scannerMode: 'dotnet'
       # The 'projectVersion' property is needed to identify what new code means from SonarCloud point of view.
       # Additionally, select "Previous version" inside the New Code page found on SonarCloud site, which is available
       # here: https://sonarcloud.io/project/new_code?id=aspnet-core-logging.
