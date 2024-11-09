@@ -30,6 +30,9 @@ echo 'Checking Docker Compose installation ...'
 docker-compose version
 echo "Docker Compose has been installed successfully"
 
+# Install Colima
+brew install colima
+
 # Start Colima container runtime.
 # Check for Colima usage here: https://github.com/abiosoft/colima?tab=readme-ov-file#usage.
 echo 'Starting Colima container runtime ...'
