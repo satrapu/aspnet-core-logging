@@ -12,7 +12,7 @@
         <!--
           Sets up property "Language version" found in Visual Studio project -> Properties -> Build -> Advanced.
         -->
-        <LangVersion>11.0</LangVersion>
+        <LangVersion>12.0</LangVersion>
 
         <!--
             Fix issue: "error NU1403: Package content hash validation failed for ..." occurring when restoring NuGet
@@ -23,5 +23,5 @@
         <RestoreLockedMode>true</RestoreLockedMode>
         <NoWarn>NU1603</NoWarn>
         <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
-    </PropertyGroup>    
+    </PropertyGroup>
 </Project>
