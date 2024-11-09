@@ -30,6 +30,11 @@ echo 'Checking Docker Compose installation ...'
 docker-compose version
 echo "Docker Compose has been installed successfully"
 
+# Install qemu (a Colima prerequisite)
+# satrapu 2024-11-09: Temporarily install qemu due to https://github.com/abiosoft/colima/issues/1188.
+# Once Colima v0.70.0 is available to brew, qemu should not longer be installed.
+brew install qemu
+
 # Install Colima
 brew install colima
 
