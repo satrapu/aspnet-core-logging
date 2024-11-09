@@ -50,7 +50,7 @@ variables:
   # Specifies the versions of the .NET SDK to install and use when running this pipeline.
   # All releases can be found here: https://dotnet.microsoft.com/download/dotnet.
   - name: 'DotNetSdkVersionUsedByApplication'
-    value: '8.0.303'
+    value: '8.0.403'
   # satrapu 2024-06-24: Version 6.x is used by SpecFlow.Plus.LivingDoc tool.
   - name: 'DotNetSdkVersionUsedByLivingDoc'
     value: '6.0.424'
@@ -59,7 +59,7 @@ variables:
   # All releases can be found here: https://github.com/danielpalme/ReportGenerator/releases.
   # All NuGet packages can be found here: https://www.nuget.org/packages/ReportGenerator/.
   - name: 'ReportGenerator_Version'
-    value: '5.3.8'
+    value: '5.3.11'
 
   # Specifies the version of the SpecFlowPlusLivingDoc tool used for generating acceptance test results.
   # All NuGet packages can be found here: https://www.nuget.org/packages/SpecFlow.Plus.LivingDocPlugin.
@@ -96,7 +96,7 @@ jobs:
       name: 'linux'
       displayName: 'Run on Linux'
     pool:
-      vmImage: 'ubuntu-22.04'
+      vmImage: 'ubuntu-24.04'
     sonar:
       enabled: True
       buildBreaker:
@@ -117,7 +117,7 @@ jobs:
       name: 'macOS'
       displayName: 'Run on macOS'
     pool:
-      vmImage: 'macOS-12'
+      vmImage: 'macOS-15'
     tests:
       runTests: True
       databaseHost: 'localhost'
