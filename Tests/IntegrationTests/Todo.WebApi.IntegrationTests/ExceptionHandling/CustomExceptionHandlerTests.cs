@@ -71,11 +71,14 @@ namespace Todo.WebApi.ExceptionHandling
                 {
                     webHostBuilder.ConfigureAppConfiguration(configurationBuilder =>
                     {
-                        configurationBuilder.AddInMemoryCollection(new[]
-                        {
-                            // Ensure database is not migrated, since having an up-to-date RDBMS would just complicate this test method.
-                            new KeyValuePair<string, string>("MigrateDatabase", bool.FalseString)
-                        });
+                        configurationBuilder.AddInMemoryCollection
+                        (
+                            initialData:
+                            [
+                                // Ensure database is not migrated, since having an up-to-date RDBMS would just complicate this test method.
+                                new KeyValuePair<string, string>("MigrateDatabase", bool.FalseString)
+                            ]
+                        );
                     });
                 });
 

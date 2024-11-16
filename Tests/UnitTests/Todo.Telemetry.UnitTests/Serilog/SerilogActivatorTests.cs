@@ -27,8 +27,8 @@ namespace Todo.Telemetry.Serilog
 
         private static IEnumerable<object[]> GetFileSinkConfigurations()
         {
-            yield return new object[] { FileSinkJsonFragment.ToConfiguration(), true };
-            yield return new object[] { ConsoleSinkJsonFragment.ToConfiguration(), false };
+            yield return [FileSinkJsonFragment.ToConfiguration(), true];
+            yield return [ConsoleSinkJsonFragment.ToConfiguration(), false];
         }
 
         private const string FileSinkJsonFragment = @"

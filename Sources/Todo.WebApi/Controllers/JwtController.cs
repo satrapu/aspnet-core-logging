@@ -53,14 +53,14 @@ namespace Todo.WebApi.Controllers
                 Audience = generateJwtOptions.Audience,
                 Issuer = generateJwtOptions.Issuer,
                 Secret = generateJwtOptions.Secret,
-                Scopes = new[]
-                {
+                Scopes =
+                [
                     Policies.Infrastructure.HealthCheck,
                     Policies.TodoItems.CreateTodoItem,
                     Policies.TodoItems.DeleteTodoItem,
                     Policies.TodoItems.GetTodoItems,
                     Policies.TodoItems.UpdateTodoItem
-                },
+                ],
                 UserName = generateJwtModel.UserName,
                 Password = generateJwtModel.Password
             };

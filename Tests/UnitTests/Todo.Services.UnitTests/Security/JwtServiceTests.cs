@@ -23,7 +23,7 @@ namespace Todo.Services.Security
             {
                 UserName = "some-test-user",
                 Password = "some-password",
-                Scopes = new[] { "resource1", "resource2" },
+                Scopes = ["resource1", "resource2"],
                 Audience = "test-audience",
                 Issuer = "test",
                 Secret = "!z%*mEPs>_[9`MZ\"P:@rm%#zYnGA=HOn<RS=j\"vO9$,cvhh2zd"

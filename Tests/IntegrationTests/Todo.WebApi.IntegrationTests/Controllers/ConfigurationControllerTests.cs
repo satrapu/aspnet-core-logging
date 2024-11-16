@@ -42,35 +42,35 @@ namespace Todo.WebApi.Controllers
 
         private static IEnumerable<object[]> GetConfigurationEndpointContext()
         {
-            yield return new object[]
-            {
+            yield return
+            [
                 EnvironmentNames.Development, HttpStatusCode.OK
-            };
+            ];
 
-            yield return new object[]
-            {
+            yield return
+            [
                 EnvironmentNames.IntegrationTests, HttpStatusCode.Forbidden
-            };
+            ];
 
-            yield return new object[]
-            {
+            yield return
+            [
                 EnvironmentNames.AcceptanceTests, HttpStatusCode.Forbidden
-            };
+            ];
 
-            yield return new object[]
-            {
+            yield return
+            [
                 EnvironmentNames.DemoInAzure, HttpStatusCode.Forbidden
-            };
+            ];
 
-            yield return new object[]
-            {
+            yield return
+            [
                 EnvironmentNames.Staging, HttpStatusCode.Forbidden
-            };
+            ];
 
-            yield return new object[]
-            {
+            yield return
+            [
                 EnvironmentNames.Production, HttpStatusCode.Forbidden
-            };
+            ];
         }
     }
 }

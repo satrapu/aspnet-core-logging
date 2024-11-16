@@ -27,11 +27,14 @@ namespace Todo.Services.Security
                 Issuer = generateJwtInfo.Issuer,
                 Expires = DateTime.UtcNow.AddMonths(6),
                 SigningCredentials = new(signingKey, SecurityAlgorithms.HmacSha256Signature),
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new(ClaimTypes.NameIdentifier, userNameAsBase64),
-                    new("scope", string.Join(separator: ' ', generateJwtInfo.Scopes ?? Array.Empty<string>()))
-                })
+                Subject = new ClaimsIdentity
+                (
+                    claims:
+                    [
+                        new Claim(ClaimTypes.NameIdentifier, userNameAsBase64),
+                        new Claim("scope", string.Join(separator: ' ', generateJwtInfo.Scopes ?? []))
+                    ]
+                )
             };
 
             var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();

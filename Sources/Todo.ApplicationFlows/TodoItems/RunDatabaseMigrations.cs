@@ -19,7 +19,7 @@ namespace Todo.ApplicationFlows.TodoItems
     public class RunDatabaseMigrations : IStartupLogicTask
     {
         private const string FlowName = "ApplicationStartup/ExecuteStartupLogicTasks/RunDatabaseMigrations";
-        private static readonly IPrincipal Principal = new GenericPrincipal(new GenericIdentity("run-database-migrations"), Array.Empty<string>());
+        private static readonly IPrincipal Principal = new GenericPrincipal(new GenericIdentity("run-database-migrations"), []);
 
         private readonly TodoDbContext todoDbContext;
         private readonly IConfiguration configuration;

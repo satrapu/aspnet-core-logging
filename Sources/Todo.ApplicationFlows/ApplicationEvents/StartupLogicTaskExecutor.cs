@@ -16,7 +16,7 @@ namespace Todo.ApplicationFlows.ApplicationEvents
     public class StartupLogicTaskExecutor : IStartupLogicTaskExecutor
     {
         private const string FlowName = "ApplicationStartup/ExecuteStartupLogicTasks";
-        private static readonly IPrincipal Principal = new GenericPrincipal(new GenericIdentity("execute-application-startup-logic"), Array.Empty<string>());
+        private static readonly IPrincipal Principal = new GenericPrincipal(new GenericIdentity("execute-application-startup-logic"), []);
 
         private readonly IEnumerable<IStartupLogicTask> startupLogicTasks;
         private readonly IHostApplicationLifetime hostApplicationLifetime;

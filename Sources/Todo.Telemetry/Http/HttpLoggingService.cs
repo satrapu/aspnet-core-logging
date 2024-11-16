@@ -16,8 +16,8 @@ namespace Todo.Telemetry.Http
     public class HttpLoggingService : IHttpContextLoggingHandler, IHttpObjectConverter
     {
         private const int BufferSize = 1000;
-        private static readonly string[] TextBasedHeaderNames = { "Accept", "Content-Type" };
-        private static readonly string[] TextBasedHeaderValues = { "application/json", "application/xml", "text/" };
+        private static readonly string[] TextBasedHeaderNames = ["Accept", "Content-Type"];
+        private static readonly string[] TextBasedHeaderValues = ["application/json", "application/xml", "text/"];
         private const string AcceptableRequestUrlPrefix = "/api/";
         private readonly ILogger logger;
 
