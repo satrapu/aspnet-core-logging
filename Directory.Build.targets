@@ -65,6 +65,8 @@
         <PackageReference Update="SpecFlow.Plus.LivingDocPlugin" Version="3.9.57"/>
         <PackageReference Update="SpecFlow.xUnit" Version="3.9.74"/>
         <PackageReference Update="System.IdentityModel.Tokens.Jwt" Version="8.2.0"/>
+        <PackageReference Update="Verify.Http" Version="6.4.1" />
+        <PackageReference Update="Verify.NUnit" Version="28.3.1" />
         <PackageReference Update="xunit" Version="2.9.2"/>
         <PackageReference Update="xunit.runner.visualstudio" Version="2.8.2">
             <PrivateAssets>all</PrivateAssets>

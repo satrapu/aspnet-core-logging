@@ -1,0 +1,19 @@
+﻿{
+  Version: 1.1,
+  Status: 401 Unauthorized,
+  Headers: {
+    ConversationId: Guid_1,
+    WWW-Authenticate: Bearer
+  },
+  RequestMessage: {
+    Method: PUT,
+    Uri: http://localhost/api/todo/SomeTodoItemId,
+    Content: {
+      Headers: {
+        Content-Length: 31,
+        Content-Type: application/json; charset=utf-8
+      },
+      Value: 
+    }
+  }
+}

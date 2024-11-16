@@ -1,0 +1,22 @@
+﻿{
+  Status: 200 OK,
+  Headers: {
+    ConversationId: Guid_1
+  },
+  Content: {
+    Headers: {
+      Content-Type: application/json; charset=utf-8
+    },
+    Value: [
+      {
+        id: 436,
+        name: it--GetByQueryAsync_UsingDefaults_ReturnsExpectedResult--Guid_2,
+        isComplete: false,
+        createdBy: dGVzdC11c2Vy,
+        createdOn: DateTimeOffset_1,
+        lastUpdatedBy: null,
+        lastUpdatedOn: null
+      }
+    ]
+  }
+}

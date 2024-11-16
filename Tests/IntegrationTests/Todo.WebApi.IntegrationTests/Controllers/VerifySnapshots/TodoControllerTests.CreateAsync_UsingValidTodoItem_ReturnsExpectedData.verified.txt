@@ -1,0 +1,25 @@
+﻿{
+  Version: 1.1,
+  Status: 201 Created,
+  Headers: {
+    ConversationId: Guid_1,
+    Location: http://localhost/api/todo/SomeTodoItemId
+  },
+  RequestMessage: {
+    Method: POST,
+    Uri: http://localhost/api/todo,
+    Headers: {
+      Authorization: {Scrubbed}
+    },
+    Content: {
+      Headers: {
+        Content-Length: 121,
+        Content-Type: application/json; charset=utf-8
+      },
+      Value: {
+        Name: it--CreateAsync_UsingValidTodoItem_ReturnsExpectedData--Guid_2,
+        IsComplete: true
+      }
+    }
+  }
+}

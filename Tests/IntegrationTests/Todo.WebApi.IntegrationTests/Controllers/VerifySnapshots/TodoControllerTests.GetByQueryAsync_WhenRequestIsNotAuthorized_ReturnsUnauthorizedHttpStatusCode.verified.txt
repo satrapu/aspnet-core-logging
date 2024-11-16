@@ -1,0 +1,19 @@
+﻿{
+  Version: 1.1,
+  Status: 401 Unauthorized,
+  Headers: {
+    ConversationId: Guid_1,
+    WWW-Authenticate: Bearer
+  },
+  RequestMessage: {
+    Uri: {
+      Path: http://localhost/api/todo,
+      Query: {
+        IsSortAscending: False,
+        PageIndex: 0,
+        PageSize: 5,
+        SortBy: CreatedOn
+      }
+    }
+  }
+}

@@ -174,8 +174,8 @@ namespace Todo.WebApi.TestInfrastructure
         {
             GenerateJwtModel generateJwtModel = new()
             {
-                UserName = $"user-{Guid.NewGuid():N}",
-                Password = $"password-{Guid.NewGuid():N}"
+                UserName = "test-user",
+                Password = "Qwerty@123!"
             };
 
             HttpClient httpClient = CreateHttpClientWithLoggingCapabilities();

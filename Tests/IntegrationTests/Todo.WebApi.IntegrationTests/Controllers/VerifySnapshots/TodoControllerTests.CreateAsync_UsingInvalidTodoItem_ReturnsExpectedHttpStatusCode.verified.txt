@@ -1,0 +1,26 @@
+﻿{
+  Status: 422 Unprocessable Entity,
+  Headers: {
+    ConversationId: Guid_1
+  },
+  Content: {
+    Headers: {
+      Content-Type: application/problem+json; charset=utf-8
+    },
+    Value: {
+      title: One or more model validation errors have occurred,
+      status: 422,
+      detail: See the errors property for more details,
+      instance: /api/todo,
+      errors: {
+        Name: [
+          The Name field is required.
+        ],
+        IsComplete: [
+          The IsComplete field is required.
+        ]
+      },
+      TraceId: SomeTraceId
+    }
+  }
+}
