@@ -12,11 +12,11 @@
     },
     Content: {
       Headers: {
-        Content-Length: 130,
+        Content-Length: 79,
         Content-Type: application/json; charset=utf-8
       },
       Value: {
-        Name: CHANGED--it--UpdateAsync_UsingNewlyCreatedTodoItem_MustSucceed--Guid_2,
+        Name: CHANGED--it--Guid_2,
         IsComplete: false
       }
     }

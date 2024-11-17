@@ -11,7 +11,7 @@
       type: https://tools.ietf.org/html/rfc9110#section-15.5.5,
       title: Not Found,
       status: 404,
-      traceId: 00-a9b6b4743b497d47b9df131d1eef272c-0e2ef159efc6d610-01
+      traceId: {Scrubbed}
     }
   }
 }

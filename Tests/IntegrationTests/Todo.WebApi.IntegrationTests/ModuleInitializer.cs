@@ -8,8 +8,8 @@ namespace Todo.WebApi
     public static partial class ModuleInitializer
     {
         private static readonly Regex RegexForItemUrl = GeneratedRegexForItemUrl();
-        private static readonly Regex RegexForTraceIdHeaderValue = GeneratedRegexForTraceIdHeaderValue();
-        internal static readonly VerifySettings VerifySettingsForIntegrationsTests = new();
+
+        internal static readonly VerifySettings VerifySettings = new();
 
         [ModuleInitializer]
         public static void Initialize()
@@ -17,28 +17,20 @@ namespace Todo.WebApi
             VerifierSettings.InitializePlugins();
             Recording.Start();
 
-            VerifySettingsForIntegrationsTests.UseDirectory("VerifySnapshots");
-            VerifySettingsForIntegrationsTests.IgnoreMember("TraceId");
-            VerifySettingsForIntegrationsTests.ScrubEmptyLines();
-            VerifySettingsForIntegrationsTests.ScrubInlineGuids();
-            VerifySettingsForIntegrationsTests.ScrubLinesWithReplace
+            VerifySettings.UseDirectory("VerifySnapshots");
+            VerifySettings.ScrubEmptyLines();
+            VerifySettings.ScrubInlineGuids();
+            VerifySettings.ScrubMember("TraceId");
+            VerifySettings.ScrubMember("traceId");
+            VerifySettings.ScrubLinesWithReplace
             (
                 line => RegexForItemUrl.IsMatch(line)
                     ? "http://localhost/api/todo/SomeTodoItemId"
-                    : line
-            );
-            VerifySettingsForIntegrationsTests.ScrubLinesWithReplace
-            (
-                line => RegexForTraceIdHeaderValue.IsMatch(line)
-                    ? "SomeTraceId"
                     : line
             );
         }
 
         [GeneratedRegex(@"^http://localhost/api/todo/\d+$", RegexOptions.Compiled | RegexOptions.Singleline)]
         private static partial Regex GeneratedRegexForItemUrl();
-
-        [GeneratedRegex(@"^0H\w+$", RegexOptions.Compiled | RegexOptions.Singleline)]
-        private static partial Regex GeneratedRegexForTraceIdHeaderValue();
     }
 }

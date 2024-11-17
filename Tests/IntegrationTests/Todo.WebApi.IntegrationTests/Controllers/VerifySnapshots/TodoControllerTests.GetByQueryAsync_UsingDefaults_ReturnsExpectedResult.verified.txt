@@ -9,8 +9,8 @@
     },
     Value: [
       {
-        id: 436,
-        name: it--GetByQueryAsync_UsingDefaults_ReturnsExpectedResult--Guid_2,
+        id: {Scrubbed},
+        name: it--Guid_2,
         isComplete: false,
         createdBy: dGVzdC11c2Vy,
         createdOn: DateTimeOffset_1,

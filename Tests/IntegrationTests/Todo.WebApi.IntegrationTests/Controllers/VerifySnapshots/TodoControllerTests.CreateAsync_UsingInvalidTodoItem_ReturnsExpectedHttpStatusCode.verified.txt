@@ -20,7 +20,7 @@
           The IsComplete field is required.
         ]
       },
-      TraceId: SomeTraceId
+      TraceId: {Scrubbed}
     }
   }
 }
