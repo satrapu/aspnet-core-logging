@@ -44,32 +44,38 @@ namespace Todo.WebApi.Controllers
         {
             yield return
             [
-                EnvironmentNames.Development, HttpStatusCode.OK
+                EnvironmentNames.Development,
+                HttpStatusCode.OK
             ];
 
             yield return
             [
-                EnvironmentNames.IntegrationTests, HttpStatusCode.Forbidden
+                EnvironmentNames.IntegrationTests,
+                HttpStatusCode.Forbidden
             ];
 
             yield return
             [
-                EnvironmentNames.AcceptanceTests, HttpStatusCode.Forbidden
+                EnvironmentNames.AcceptanceTests,
+                HttpStatusCode.Forbidden
             ];
 
             yield return
             [
-                EnvironmentNames.DemoInAzure, HttpStatusCode.Forbidden
+                EnvironmentNames.DemoInAzure,
+                HttpStatusCode.Forbidden
             ];
 
             yield return
             [
-                EnvironmentNames.Staging, HttpStatusCode.Forbidden
+                EnvironmentNames.Staging,
+                HttpStatusCode.Forbidden
             ];
 
             yield return
             [
-                EnvironmentNames.Production, HttpStatusCode.Forbidden
+                EnvironmentNames.Production,
+                HttpStatusCode.Forbidden
             ];
         }
     }
