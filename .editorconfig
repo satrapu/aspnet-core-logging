@@ -232,8 +232,8 @@ dotnet_naming_symbols.private_static_readonly_symbols.applicable_accessibilities
 dotnet_naming_symbols.private_static_readonly_symbols.applicable_kinds = field
 dotnet_naming_symbols.private_static_readonly_symbols.required_modifiers = static, readonly
 
-# Verify
-[*.{received,verified}.{txt}]
+# Verify settings
+[*.{received,verified}.{json,txt,xml}]
 charset = "utf-8-bom"
 end_of_line = lf
 indent_size = unset
