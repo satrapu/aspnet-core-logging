@@ -32,7 +32,7 @@ namespace Todo.WebApi.Controllers
     ///  and: https://medium.com/@daniel.edwards_82928/using-webapplicationfactory-with-nunit-817a616e26f9.
     /// </summary>
     [TestFixture]
-    public partial class TodoControllerTests
+    public class TodoControllerTests
     {
         private const string BaseUrl = "api/todo";
 
