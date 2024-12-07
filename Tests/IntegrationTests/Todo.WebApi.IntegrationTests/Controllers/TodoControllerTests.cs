@@ -1,3 +1,5 @@
+using FluentAssertions.Execution;
+
 using VerifyNUnit;
 
 using VerifyTests;
@@ -195,11 +197,12 @@ namespace Todo.WebApi.Controllers
             };
 
             using HttpClient httpClient = await testWebApplicationFactory.CreateHttpClientAsync();
+            using HttpResponseMessage createTodoItemResponse = await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemModel);
 
-            using HttpResponseMessage response = await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemModel);
-            response.IsSuccessStatusCode.Should().BeTrue();
-            response.StatusCode.Should().Be(HttpStatusCode.Created);
-            response.Headers.Location.Should().NotBeNull();
+            using AssertionScope _ = new();
+            createTodoItemResponse.IsSuccessStatusCode.Should().BeTrue();
+            createTodoItemResponse.StatusCode.Should().Be(HttpStatusCode.Created);
+            createTodoItemResponse.Headers.Location.Should().NotBeNull();
 
             long id = GetCreatedEntityIdFrom(response);
 
@@ -260,11 +263,12 @@ namespace Todo.WebApi.Controllers
             };
 
             using HttpClient httpClient = await testWebApplicationFactory.CreateHttpClientAsync();
+            using HttpResponseMessage createTodoItemResponse = await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemModel);
 
-            using HttpResponseMessage response = await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemModel);
-            response.IsSuccessStatusCode.Should().BeTrue();
-            response.StatusCode.Should().Be(HttpStatusCode.Created);
-            response.Headers.Location.Should().NotBeNull();
+            using AssertionScope _ = new();
+            createTodoItemResponse.IsSuccessStatusCode.Should().BeTrue();
+            createTodoItemResponse.StatusCode.Should().Be(HttpStatusCode.Created);
+            createTodoItemResponse.Headers.Location.Should().NotBeNull();
 
             long id = GetCreatedEntityIdFrom(response);
 
@@ -338,12 +342,11 @@ namespace Todo.WebApi.Controllers
             };
 
             using HttpClient httpClient = await testWebApplicationFactory.CreateHttpClientAsync();
+            using HttpResponseMessage createTodoItemResponse = await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemInfo);
 
-            using HttpResponseMessage response = await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemInfo);
-            response.IsSuccessStatusCode.Should().BeTrue();
-            response.Headers.Location.Should().NotBeNull();
-
-            long id = GetCreatedEntityIdFrom(response);
+            using AssertionScope _ = new();
+            createTodoItemResponse.IsSuccessStatusCode.Should().BeTrue();
+            createTodoItemResponse.Headers.Location.Should().NotBeNull();
 
             UpdateTodoItemModel updateTodoItemModel = new()
             {
@@ -391,10 +394,11 @@ namespace Todo.WebApi.Controllers
             };
 
             using HttpClient httpClient = await testWebApplicationFactory.CreateHttpClientAsync();
+            using HttpResponseMessage createTodoItemResponse = await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemInfo);
 
-            using HttpResponseMessage response = await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemInfo);
-            response.IsSuccessStatusCode.Should().BeTrue();
-            response.Headers.Location.Should().NotBeNull();
+            using AssertionScope _ = new();
+            createTodoItemResponse.IsSuccessStatusCode.Should().BeTrue();
+            createTodoItemResponse.Headers.Location.Should().NotBeNull();
 
             long? id = GetCreatedEntityIdFrom(response);
 
