@@ -204,7 +204,7 @@ namespace Todo.WebApi.Controllers
             createTodoItemResponse.StatusCode.Should().Be(HttpStatusCode.Created);
             createTodoItemResponse.Headers.Location.Should().NotBeNull();
 
-            long id = GetCreatedEntityIdFrom(response);
+            long id = GetTodoItemIdFrom(createTodoItemResponse);
 
             Dictionary<string, string> queryString = new()
             {
@@ -220,10 +220,10 @@ namespace Todo.WebApi.Controllers
             string requestUri = QueryHelpers.AddQueryString(BaseUrl, queryString);
 
             // Act
-            using HttpResponseMessage getResponse = await httpClient.GetAsync(requestUri);
+            using HttpResponseMessage getTodoItemsResponse = await httpClient.GetAsync(requestUri);
 
             // Assert
-            await Verifier.Verify(getResponse, settings: verifySettings);
+            await Verifier.Verify(getTodoItemsResponse, settings: verifySettings);
         }
 
         /// <summary>
@@ -270,13 +270,13 @@ namespace Todo.WebApi.Controllers
             createTodoItemResponse.StatusCode.Should().Be(HttpStatusCode.Created);
             createTodoItemResponse.Headers.Location.Should().NotBeNull();
 
-            long id = GetCreatedEntityIdFrom(response);
+            long id = GetTodoItemIdFrom(createTodoItemResponse);
 
             // Act
-            using HttpResponseMessage getResponse = await httpClient.GetAsync($"{BaseUrl}/{id}");
+            using HttpResponseMessage getTodoItemResponse = await httpClient.GetAsync($"{BaseUrl}/{id}");
 
             // Assert
-            await Verifier.Verify(getResponse, settings: verifySettings);
+            await Verifier.Verify(getTodoItemResponse, settings: verifySettings);
         }
 
         /// <summary>
@@ -296,16 +296,16 @@ namespace Todo.WebApi.Controllers
 
             using HttpClient httpClient = await testWebApplicationFactory.CreateHttpClientAsync();
 
-            using HttpResponseMessage response = await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemModel);
-            response.EnsureSuccessStatusCode();
+            using HttpResponseMessage createTodoItemResponse = await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemModel);
+            createTodoItemResponse.EnsureSuccessStatusCode();
 
             long nonExistentId = long.MinValue;
 
             // Act
-            using HttpResponseMessage getResponse = await httpClient.GetAsync($"{BaseUrl}/{nonExistentId}");
+            using HttpResponseMessage getTodoItemResponse = await httpClient.GetAsync($"{BaseUrl}/{nonExistentId}");
 
             // Assert
-            await Verifier.Verify(getResponse, settings: ModuleInitializer.VerifySettings);
+            await Verifier.Verify(getTodoItemResponse, settings: ModuleInitializer.VerifySettings);
         }
 
         /// <summary>
@@ -317,8 +317,8 @@ namespace Todo.WebApi.Controllers
         public async Task UpdateAsync_WhenRequestIsNotAuthorized_ReturnsUnauthorizedHttpStatusCode()
         {
             // Arrange
-            using HttpClient httpClient = testWebApplicationFactory.CreateClient();
             UpdateTodoItemModel updateTodoItemModel = new();
+            using HttpClient httpClient = testWebApplicationFactory.CreateClient();
 
             // Act
             using HttpResponseMessage response = await httpClient.PutAsJsonAsync($"{BaseUrl}/{int.MaxValue}", updateTodoItemModel);
@@ -354,11 +354,13 @@ namespace Todo.WebApi.Controllers
                 Name = $"CHANGED--{newTodoItemInfo.Name}"
             };
 
+            long id = GetTodoItemIdFrom(createTodoItemResponse);
+
             // Act
-            using HttpResponseMessage putResponse = await httpClient.PutAsJsonAsync($"{BaseUrl}/{id}", updateTodoItemModel);
+            using HttpResponseMessage updateTodoItemResponse = await httpClient.PutAsJsonAsync($"{BaseUrl}/{id}", updateTodoItemModel);
 
             // Assert
-            await Verifier.Verify(putResponse, settings: ModuleInitializer.VerifySettings);
+            await Verifier.Verify(updateTodoItemResponse, settings: ModuleInitializer.VerifySettings);
         }
 
         /// <summary>
@@ -400,27 +402,32 @@ namespace Todo.WebApi.Controllers
             createTodoItemResponse.IsSuccessStatusCode.Should().BeTrue();
             createTodoItemResponse.Headers.Location.Should().NotBeNull();
 
-            long? id = GetCreatedEntityIdFrom(response);
+            long? id = GetTodoItemIdFrom(createTodoItemResponse);
 
             // Act
-            using HttpResponseMessage deleteResponse = await httpClient.DeleteAsync($"{BaseUrl}/{id}");
+            using HttpResponseMessage deleteTodoItemResponse = await httpClient.DeleteAsync($"{BaseUrl}/{id}");
 
             // Assert
-            await Verifier.Verify(deleteResponse, settings: ModuleInitializer.VerifySettings);
+            await Verifier.Verify(deleteTodoItemResponse, settings: ModuleInitializer.VerifySettings);
         }
 
-        private static long GetCreatedEntityIdFrom(HttpResponseMessage httpResponseMessage)
+        private static long GetTodoItemIdFrom(HttpResponseMessage httpResponseMessage)
         {
-            ArgumentNullException.ThrowIfNull(httpResponseMessage.Headers.Location);
+            string locationAsString = httpResponseMessage.Headers.Location?.ToString();
+            ArgumentException.ThrowIfNullOrWhiteSpace(locationAsString);
 
-            string locationAsString = httpResponseMessage.Headers.Location.ToString();
-            string createdEntityIdAsString = locationAsString.Remove
+            string todoItemIdAsString = locationAsString.Remove
             (
                 startIndex: 0,
                 count: locationAsString.LastIndexOf("/", StringComparison.InvariantCultureIgnoreCase) + 1
             );
 
-            return int.Parse(createdEntityIdAsString);
+            if (int.TryParse(todoItemIdAsString, out int todoItemId))
+            {
+                return todoItemId;
+            }
+
+            throw new FormatException(message: $"Could not extract todo item ID from HTTP response header value: \"{locationAsString}\"");
         }
     }
 }
