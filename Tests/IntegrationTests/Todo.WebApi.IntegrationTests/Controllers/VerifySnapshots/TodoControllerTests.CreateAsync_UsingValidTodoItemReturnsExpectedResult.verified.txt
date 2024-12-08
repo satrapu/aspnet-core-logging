@@ -13,7 +13,7 @@
     },
     {
       Location: [
-        http://localhost/api/todo/SomeTodoItemId
+        http://localhost/api/todo/<TODO_ITEM_ID>
       ]
     }
   ],
@@ -90,7 +90,7 @@
     Headers: [
       {
         Authorization: [
-          Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJkR1Z6ZEMxMWMyVnkiLCJzY29wZSI6ImdldDpoZWFsdGggY3JlYXRlOnRvZG8gZGVsZXRlOnRvZG8gZ2V0OnRvZG8gdXBkYXRlOnRvZG8iLCJuYmYiOjE3MzM2ODM1MjQsImV4cCI6MTc0OTQwODMyNCwiaWF0IjoxNzMzNjgzNTI0LCJpc3MiOiJodHRwczovL2ludGVncmF0aW9udGVzdHMuYXV0aC50b2RvLWJ5LXNhdHJhcHUuY29tIiwiYXVkIjoiaHR0cHM6Ly9pbnRlZ3JhdGlvbnRlc3RzLmFwaS50b2RvLWJ5LXNhdHJhcHUuY29tIn0.7xeOLykTjlDkL3b96yT6ustdTkiZFMXZmejB85Z-Sis
+          Bearer <BEARER_TOKEN>
         ]
       }
     ]

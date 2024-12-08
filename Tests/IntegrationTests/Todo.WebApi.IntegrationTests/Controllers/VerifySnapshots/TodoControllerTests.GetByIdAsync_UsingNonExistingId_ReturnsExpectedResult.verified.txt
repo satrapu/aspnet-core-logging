@@ -1,1 +1,37 @@
-﻿
+﻿{
+  Version: 1.1,
+  Content: {
+    Headers: [
+      {
+        Content-Type: [
+          application/problem+json; charset=utf-8
+        ]
+      }
+    ]
+  },
+  StatusCode: NotFound,
+  ReasonPhrase: Not Found,
+  Headers: [
+    {
+      ConversationId: [
+        Guid_1
+      ]
+    }
+  ],
+  TrailingHeaders: [],
+  RequestMessage: {
+    Version: 1.1,
+    Method: {
+      Method: GET
+    },
+    RequestUri: http://localhost/api/todo/-9223372036854775808,
+    Headers: [
+      {
+        Authorization: [
+          Bearer <BEARER_TOKEN>
+        ]
+      }
+    ]
+  },
+  IsSuccessStatusCode: false
+}

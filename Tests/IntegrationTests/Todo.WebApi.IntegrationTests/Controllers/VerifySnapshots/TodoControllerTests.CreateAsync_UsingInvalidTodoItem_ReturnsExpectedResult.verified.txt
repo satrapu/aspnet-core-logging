@@ -88,7 +88,7 @@
     Headers: [
       {
         Authorization: [
-          Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJkR1Z6ZEMxMWMyVnkiLCJzY29wZSI6ImdldDpoZWFsdGggY3JlYXRlOnRvZG8gZGVsZXRlOnRvZG8gZ2V0OnRvZG8gdXBkYXRlOnRvZG8iLCJuYmYiOjE3MzM2ODM1MjMsImV4cCI6MTc0OTQwODMyMywiaWF0IjoxNzMzNjgzNTIzLCJpc3MiOiJodHRwczovL2ludGVncmF0aW9udGVzdHMuYXV0aC50b2RvLWJ5LXNhdHJhcHUuY29tIiwiYXVkIjoiaHR0cHM6Ly9pbnRlZ3JhdGlvbnRlc3RzLmFwaS50b2RvLWJ5LXNhdHJhcHUuY29tIn0.BZY48TyL1CzFfuhVQP17OxOLj3TyvtFP-owiIGqeylw
+          Bearer <BEARER_TOKEN>
         ]
       }
     ]

@@ -92,7 +92,7 @@ namespace Todo.WebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [Test]
-        public async Task CreateAsync_WhenRequestIsNotAuthorized_ReturnsUnauthorizedHttpStatusCode()
+        public async Task CreateAsync_WhenRequestIsNotAuthorized_ReturnsExpectedResult()
         {
             // Arrange
             NewTodoItemModel newTodoItemModel = new()
@@ -142,6 +142,7 @@ namespace Todo.WebApi.Controllers
         {
             // Arrange
             NewTodoItemModel invalidModel = new();
+
             using HttpClient httpClient = await testWebApplicationFactory.CreateHttpClientAsync();
 
             // Act
@@ -188,7 +189,7 @@ namespace Todo.WebApi.Controllers
         {
             // Arrange
             VerifySettings verifySettings = new(ModuleInitializer.VerifySettings);
-            verifySettings.ScrubMember("id");
+            verifySettings.ScrubMember("RequestUri");
 
             NewTodoItemModel newTodoItemModel = new()
             {
@@ -232,7 +233,7 @@ namespace Todo.WebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [Test]
-        public async Task GetByIdAsync_WhenRequestIsNotAuthorized_ReturnsUnauthorizedHttpStatusCode()
+        public async Task GetByIdAsync_WhenRequestIsNotAuthorized_ReturnsExpectedResult()
         {
             // Arrange
             long? id = int.MaxValue;
@@ -254,7 +255,7 @@ namespace Todo.WebApi.Controllers
         {
             // Arrange
             VerifySettings verifySettings = new(ModuleInitializer.VerifySettings);
-            verifySettings.ScrubMember("id");
+            verifySettings.ScrubMember("RequestUri");
 
             NewTodoItemModel newTodoItemModel = new()
             {
@@ -285,7 +286,7 @@ namespace Todo.WebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [Test]
-        public async Task GetByIdAsync_UsingNonExistingId_ReturnsNotFoundHttpStatusCode()
+        public async Task GetByIdAsync_UsingNonExistingId_ReturnsExpectedResult()
         {
             // Arrange
             NewTodoItemModel newTodoItemModel = new()
@@ -314,7 +315,7 @@ namespace Todo.WebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [Test]
-        public async Task UpdateAsync_WhenRequestIsNotAuthorized_ReturnsUnauthorizedHttpStatusCode()
+        public async Task UpdateAsync_WhenRequestIsNotAuthorized_ReturnsExpectedResult()
         {
             // Arrange
             UpdateTodoItemModel updateTodoItemModel = new();
@@ -332,9 +333,12 @@ namespace Todo.WebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [Test]
-        public async Task UpdateAsync_UsingNewlyCreatedTodoItem_MustSucceed()
+        public async Task UpdateAsync_UsingNewlyCreatedTodoItem_ReturnsExpectedResult()
         {
             // Arrange
+            VerifySettings verifySettings = new(ModuleInitializer.VerifySettings);
+            verifySettings.ScrubMember("RequestUri");
+
             NewTodoItemModel newTodoItemInfo = new()
             {
                 Name = $"it--{Guid.NewGuid():D}",
@@ -360,7 +364,7 @@ namespace Todo.WebApi.Controllers
             using HttpResponseMessage updateTodoItemResponse = await httpClient.PutAsJsonAsync($"{BaseUrl}/{id}", updateTodoItemModel);
 
             // Assert
-            await Verifier.Verify(updateTodoItemResponse, settings: ModuleInitializer.VerifySettings);
+            await Verifier.Verify(updateTodoItemResponse, settings: verifySettings);
         }
 
         /// <summary>
@@ -369,7 +373,7 @@ namespace Todo.WebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [Test]
-        public async Task DeleteAsync_WhenRequestIsNotAuthorized_ReturnsUnauthorizedHttpStatusCode()
+        public async Task DeleteAsync_WhenRequestIsNotAuthorized_ReturnsExpectedResult()
         {
             // Arrange
             using HttpClient httpClient = testWebApplicationFactory.CreateClient();
@@ -386,9 +390,12 @@ namespace Todo.WebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [Test]
-        public async Task DeleteAsync_UsingNewlyCreatedTodoItem_MustSucceed()
+        public async Task DeleteAsync_UsingNewlyCreatedTodoItem_ReturnsExpectedResult()
         {
             // Arrange
+            VerifySettings verifySettings = new(ModuleInitializer.VerifySettings);
+            verifySettings.ScrubMember("RequestUri");
+
             NewTodoItemModel newTodoItemInfo = new()
             {
                 Name = $"it--{Guid.NewGuid():D}",
@@ -408,7 +415,7 @@ namespace Todo.WebApi.Controllers
             using HttpResponseMessage deleteTodoItemResponse = await httpClient.DeleteAsync($"{BaseUrl}/{id}");
 
             // Assert
-            await Verifier.Verify(deleteTodoItemResponse, settings: ModuleInitializer.VerifySettings);
+            await Verifier.Verify(deleteTodoItemResponse, settings: verifySettings);
         }
 
         private static long GetTodoItemIdFrom(HttpResponseMessage httpResponseMessage)
