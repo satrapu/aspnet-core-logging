@@ -1,9 +1,0 @@
-﻿{
-  Version: 1.1,
-  Status: 401 Unauthorized,
-  Headers: {
-    ConversationId: Guid_1,
-    WWW-Authenticate: Bearer
-  },
-  RequestMessage: http://localhost/api/todo/SomeTodoItemId
-}

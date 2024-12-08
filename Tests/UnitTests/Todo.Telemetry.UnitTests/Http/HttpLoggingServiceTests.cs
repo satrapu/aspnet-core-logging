@@ -128,7 +128,7 @@ namespace Todo.Telemetry.Http
         /// Tests the <see cref="HttpLoggingService.ToLogMessageAsync(HttpRequest)"/> method.
         /// </summary>
         [Test]
-        public async Task ToLogMessageAsync_UsingValidHttpRequest_ReturnsExpectedData()
+        public async Task ToLogMessageAsync_UsingValidHttpRequestReturnsExpectedResult()
         {
             // Arrange
             HttpContext httpContext = new DefaultHttpContext();
@@ -149,7 +149,7 @@ namespace Todo.Telemetry.Http
         /// Tests the <see cref="HttpLoggingService.ToLogMessageAsync(HttpResponse)"/> method.
         /// </summary>
         [Test]
-        public async Task ToLogMessageAsync_UsingValidHttpResponse_ReturnsExpectedData()
+        public async Task ToLogMessageAsync_UsingValidHttpResponseReturnsExpectedResult()
         {
             // Arrange
             HttpContext httpContext = new DefaultHttpContext();

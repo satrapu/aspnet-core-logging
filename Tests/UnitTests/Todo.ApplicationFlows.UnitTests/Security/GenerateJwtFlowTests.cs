@@ -62,7 +62,7 @@ namespace Todo.ApplicationFlows.Security
         }
 
         [Test]
-        public async Task ExecuteAsync_WhenGenerateJwtInfoIsValid_ReturnsExpectedData()
+        public async Task ExecuteAsync_WhenGenerateJwtInfoIsValidReturnsExpectedResult()
         {
             // Arrange
             var expectedJwtInfo = new JwtInfo();

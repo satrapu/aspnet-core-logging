@@ -115,7 +115,7 @@ namespace Todo.WebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [Test]
-        public async Task CreateAsync_UsingValidTodoItem_ReturnsExpectedData()
+        public async Task CreateAsync_UsingValidTodoItemReturnsExpectedResult()
         {
             // Arrange
             NewTodoItemModel newTodoItemModel = new()
@@ -138,7 +138,7 @@ namespace Todo.WebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [Test]
-        public async Task CreateAsync_UsingInvalidTodoItem_ReturnsExpectedHttpStatusCode()
+        public async Task CreateAsync_UsingInvalidTodoItem_ReturnsExpectedResult()
         {
             // Arrange
             NewTodoItemModel invalidModel = new();
@@ -157,7 +157,7 @@ namespace Todo.WebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [Test]
-        public async Task GetByQueryAsync_WhenRequestIsNotAuthorized_ReturnsUnauthorizedHttpStatusCode()
+        public async Task GetByQueryAsync_WhenRequestIsNotAuthorized_ReturnsExpectedResult()
         {
             // Arrange
             Dictionary<string, string> queryString = new()

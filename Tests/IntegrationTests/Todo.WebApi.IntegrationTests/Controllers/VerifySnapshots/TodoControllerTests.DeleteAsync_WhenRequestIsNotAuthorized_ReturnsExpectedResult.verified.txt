@@ -1,0 +1,30 @@
+﻿{
+  Version: 1.1,
+  Content: {
+    Headers: []
+  },
+  StatusCode: Unauthorized,
+  ReasonPhrase: Unauthorized,
+  Headers: [
+    {
+      ConversationId: [
+        Guid_1
+      ]
+    },
+    {
+      WWW-Authenticate: [
+        Bearer
+      ]
+    }
+  ],
+  TrailingHeaders: [],
+  RequestMessage: {
+    Version: 1.1,
+    Method: {
+      Method: DELETE
+    },
+    RequestUri: http://localhost/api/todo/2147483647,
+    Headers: []
+  },
+  IsSuccessStatusCode: false
+}
