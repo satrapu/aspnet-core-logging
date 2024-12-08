@@ -1,4 +1,4 @@
-﻿namespace Todo.Persistence.Migrations
+namespace Todo.Persistence.Migrations
 {
     using System.Diagnostics.CodeAnalysis;
 

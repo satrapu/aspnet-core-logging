@@ -19,7 +19,7 @@ namespace Todo.Services.Security
         {
             byte[] userNameAsBytes = Encoding.UTF8.GetBytes(generateJwtInfo.UserName);
             string userNameAsBase64 = Convert.ToBase64String(userNameAsBytes);
-            SymmetricSecurityKey symmetricSecurityKey = new (Encoding.UTF8.GetBytes(generateJwtInfo.Secret));
+            SymmetricSecurityKey symmetricSecurityKey = new(Encoding.UTF8.GetBytes(generateJwtInfo.Secret));
 
             SecurityTokenDescriptor securityTokenDescriptor = new()
             {
