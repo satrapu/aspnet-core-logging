@@ -8,7 +8,7 @@ set -o nounset
 
 # Check for the right Docker Compose version here: https://github.com/docker/compose/releases.
 # Installation steps can be found here: https://docs.docker.com/compose/install/standalone/.
-dockerComposeVersion='2.30.3'
+dockerComposeVersion='2.31.0'
 
 # Check for how to customize Colima VM here: https://github.com/abiosoft/colima?tab=readme-ov-file#customizing-the-vm.
 colimaCpuCount=2
@@ -29,11 +29,6 @@ sudo chmod +x /usr/local/bin/docker-compose
 echo 'Checking Docker Compose installation ...'
 docker-compose version
 echo "Docker Compose has been installed successfully"
-
-# Install qemu (a Colima prerequisite)
-# satrapu 2024-11-09: Temporarily install qemu due to https://github.com/abiosoft/colima/issues/1188.
-# Once Colima v0.70.0 is available to brew, qemu should not longer be installed.
-brew install qemu
 
 # Install Colima
 brew install colima
