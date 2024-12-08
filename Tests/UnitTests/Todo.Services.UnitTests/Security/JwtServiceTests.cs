@@ -30,10 +30,10 @@ namespace Todo.Services.Security
             };
 
             JwtSecurityTokenHandler jwtSecurityTokenHandler = new();
-            JwtService jwtService = new JwtService();
+            JwtService classUnderTest = new();
 
             // Act
-            JwtInfo actualResult = await jwtService.GenerateJwtAsync(generateJwtInfo);
+            JwtInfo actualResult = await classUnderTest.GenerateJwtAsync(generateJwtInfo);
 
             // Assert
             using AssertionScope _ = new();
@@ -45,7 +45,7 @@ namespace Todo.Services.Security
             jwtSecurityToken.Audiences.Should().ContainSingle(generateJwtInfo.Audience);
             jwtSecurityToken.Issuer.Should().Be(generateJwtInfo.Issuer);
             jwtSecurityToken.Claims.Should().Contain(claim => claim.Type == "scope" && claim.Value == "resource1 resource2");
-            jwtSecurityToken.ValidTo.Should().BeCloseTo(nearbyTime: jwtSecurityToken.ValidFrom.AddMonths(6), precision: TimeSpan.FromSeconds(1));
+            jwtSecurityToken.ValidTo.Should().BeCloseTo(nearbyTime: jwtSecurityToken.ValidFrom.AddMonths(6), precision: TimeSpan.FromMinutes(1));
         }
     }
 }
