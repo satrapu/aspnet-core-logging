@@ -72,9 +72,9 @@ namespace Todo.WebApi.ExceptionHandling
 
         private static ProblemDetails ConvertToProblemDetails(Exception exception, bool includeDetails)
         {
-            var exceptionMappingResult = ExceptionMappingResults.GetMappingResult(exception);
+            ExceptionMappingResult exceptionMappingResult = ExceptionMappingResults.GetMappingResult(exception);
 
-            var problemDetails = new ProblemDetails
+            ProblemDetails problemDetails = new()
             {
                 Status = (int)exceptionMappingResult.HttpStatusCode,
                 Title = "An unexpected error occurred while trying to process the current request",

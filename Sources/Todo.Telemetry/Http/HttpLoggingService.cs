@@ -76,7 +76,7 @@ namespace Todo.Telemetry.Http
                     httpRequest.HttpContext.TraceIdentifier);
             }
 
-            var stringBuilder = new StringBuilder(BufferSize);
+            StringBuilder stringBuilder = new(BufferSize);
             stringBuilder.AppendLine($"--- REQUEST {httpRequest.HttpContext.TraceIdentifier}: BEGIN ---");
 
             stringBuilder.AppendLine(
@@ -107,7 +107,7 @@ namespace Todo.Telemetry.Http
                     httpResponse.HttpContext.TraceIdentifier);
             }
 
-            var stringBuilder = new StringBuilder(BufferSize);
+            StringBuilder stringBuilder = new(BufferSize);
             stringBuilder.AppendLine($"--- RESPONSE {httpResponse.HttpContext.TraceIdentifier}: BEGIN ---");
 
             stringBuilder.AppendLine(

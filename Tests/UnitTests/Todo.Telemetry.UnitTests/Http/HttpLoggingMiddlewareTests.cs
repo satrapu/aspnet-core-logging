@@ -25,19 +25,22 @@ namespace Todo.Telemetry.Http
         public void Constructor_WhenInvokedWithValidParameters_MustSucceed()
         {
             // Arrange
-            var requestDelegateMock = new Mock<RequestDelegate>();
-            var httpContextLoggingHandlerMock = new Mock<IHttpContextLoggingHandler>();
-            var httpObjectConverterMock = new Mock<IHttpObjectConverter>();
-            var loggerMock = new Mock<ILogger<HttpLoggingMiddleware>>();
+            Mock<RequestDelegate> requestDelegateMock = new();
+            Mock<IHttpContextLoggingHandler> httpContextLoggingHandlerMock = new();
+            Mock<IHttpObjectConverter> httpObjectConverterMock = new();
+            Mock<ILogger<HttpLoggingMiddleware>> loggerMock = new();
 
             // Act
-            var loggingMiddleware = new HttpLoggingMiddleware(requestDelegateMock.Object
-                , httpContextLoggingHandlerMock.Object
-                , httpObjectConverterMock.Object
-                , loggerMock.Object);
+            HttpLoggingMiddleware classUnderTest = new
+            (
+                requestDelegateMock.Object,
+                httpContextLoggingHandlerMock.Object,
+                httpObjectConverterMock.Object,
+                loggerMock.Object
+            );
 
             // Assert
-            loggingMiddleware.Should().NotBeNull("all constructor parameters are valid");
+            classUnderTest.Should().NotBeNull("all constructor parameters are valid");
         }
 
         /// <summary>
@@ -47,22 +50,25 @@ namespace Todo.Telemetry.Http
         public async Task Invoke_WhenLoggingIsDisabled_MustSucceed()
         {
             // Arrange
-            var requestDelegateMock = new Mock<RequestDelegate>();
+            Mock<RequestDelegate> requestDelegateMock = new();
 
-            var httpContextLoggingHandlerMock = new Mock<IHttpContextLoggingHandler>();
+            Mock<IHttpContextLoggingHandler> httpContextLoggingHandlerMock = new();
             httpContextLoggingHandlerMock.Setup(x => x.ShouldLog(It.IsAny<HttpContext>()))
                 .Returns(false);
 
-            var httpObjectConverterMock = new Mock<IHttpObjectConverter>();
-            var loggerMock = new Mock<ILogger<HttpLoggingMiddleware>>();
+            Mock<IHttpObjectConverter> httpObjectConverterMock = new();
+            Mock<ILogger<HttpLoggingMiddleware>> loggerMock = new();
 
-            var loggingMiddleware = new HttpLoggingMiddleware(requestDelegateMock.Object
-                , httpContextLoggingHandlerMock.Object
-                , httpObjectConverterMock.Object
-                , loggerMock.Object);
+            HttpLoggingMiddleware classUnderTest = new
+            (
+                requestDelegateMock.Object,
+                httpContextLoggingHandlerMock.Object,
+                httpObjectConverterMock.Object,
+                loggerMock.Object
+            );
 
             // Act
-            Func<Task> invoke = async () => await loggingMiddleware.Invoke(new DefaultHttpContext());
+            Func<Task> invoke = async () => await classUnderTest.Invoke(new DefaultHttpContext());
 
             // Assert
             await invoke.Should().NotThrowAsync("logging middleware was built using correct values");
@@ -75,22 +81,25 @@ namespace Todo.Telemetry.Http
         public async Task Invoke_WhenLoggingIsEnabled_MustSucceed()
         {
             // Arrange
-            var requestDelegateMock = new Mock<RequestDelegate>();
+            Mock<RequestDelegate> requestDelegateMock = new();
 
-            var httpContextLoggingHandlerMock = new Mock<IHttpContextLoggingHandler>();
+            Mock<IHttpContextLoggingHandler> httpContextLoggingHandlerMock = new();
             httpContextLoggingHandlerMock.Setup(x => x.ShouldLog(It.IsAny<HttpContext>()))
                 .Returns(true);
 
-            var httpObjectConverterMock = new Mock<IHttpObjectConverter>();
-            var loggerMock = new Mock<ILogger<HttpLoggingMiddleware>>();
+            Mock<IHttpObjectConverter> httpObjectConverterMock = new();
+            Mock<ILogger<HttpLoggingMiddleware>> loggerMock = new();
 
-            var loggingMiddleware = new HttpLoggingMiddleware(requestDelegateMock.Object
-                , httpContextLoggingHandlerMock.Object
-                , httpObjectConverterMock.Object
-                , loggerMock.Object);
+            HttpLoggingMiddleware classUnderTest = new
+            (
+                requestDelegateMock.Object,
+                httpContextLoggingHandlerMock.Object,
+                httpObjectConverterMock.Object,
+                loggerMock.Object
+            );
 
             // Act
-            Func<Task> invoke = async () => await loggingMiddleware.Invoke(new DefaultHttpContext());
+            Func<Task> invoke = async () => await classUnderTest.Invoke(new DefaultHttpContext());
 
             // Assert
             await invoke.Should().NotThrowAsync("logging middleware was built using correct values");

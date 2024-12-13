@@ -26,7 +26,7 @@ namespace Todo.Services.DependencyInjection
             bool isIntegrationTestsEnvironment = EnvironmentNames.IntegrationTests.Equals(EnvironmentName);
             bool isAcceptanceTestsEnvironment = EnvironmentNames.AcceptanceTests.Equals(EnvironmentName);
 
-            var persistenceModule = new PersistenceModule
+            PersistenceModule persistenceModule = new()
             {
                 ConnectionStringName = GetConnectionStringNameByEnvironment(EnvironmentName),
                 EnableDetailedErrors = isDevelopmentEnvironment || isIntegrationTestsEnvironment || isAcceptanceTestsEnvironment,

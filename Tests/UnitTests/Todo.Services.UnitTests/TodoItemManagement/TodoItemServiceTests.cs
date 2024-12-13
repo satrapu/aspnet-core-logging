@@ -37,8 +37,8 @@ namespace Todo.Services.TodoItemManagement
         public void Constructor_WithValidArguments_MustSucceed()
         {
             // Arrange
-            var mockTodoDbContext = new DbContextMock<TodoDbContext>(DummyOptions);
-            var mockLogger = new Mock<ILogger<TodoItemService>>();
+            DbContextMock<TodoDbContext> mockTodoDbContext = new(DummyOptions);
+            Mock<ILogger<TodoItemService>> mockLogger = new();
 
             // Act
             // ReSharper disable once ObjectCreationAsStatement
@@ -58,7 +58,7 @@ namespace Todo.Services.TodoItemManagement
         {
             // Arrange
             TodoDbContext todoDbContext = null;
-            var mockLogger = new Mock<ILogger<TodoItemService>>();
+            Mock<ILogger<TodoItemService>> mockLogger = new();
 
             // Act
             // ReSharper disable once ExpressionIsAlwaysNull
@@ -80,7 +80,7 @@ namespace Todo.Services.TodoItemManagement
         public void Constructor_WithNullLogger_ThrowsException()
         {
             // Arrange
-            var mockTodoDbContext = new DbContextMock<TodoDbContext>(DummyOptions);
+            DbContextMock<TodoDbContext> mockTodoDbContext = new(DummyOptions);
             ILogger<TodoItemService> logger = null;
 
             // Act
@@ -122,9 +122,9 @@ namespace Todo.Services.TodoItemManagement
         public async Task GetByQueryAsync_UsingValidQuery_MustSucceed(TodoItemQuery todoItemQuery)
         {
             // Arrange
-            var mockLogger = new Mock<ILogger<TodoItemService>>();
+            Mock<ILogger<TodoItemService>> mockLogger = new();
 
-            var owner = new Mock<IPrincipal>();
+            Mock<IPrincipal> owner = new();
             owner.SetupGet(x => x.Identity).Returns(new GenericIdentity("test"));
 
             todoItemQuery.Owner = owner.Object;
@@ -200,7 +200,7 @@ namespace Todo.Services.TodoItemManagement
             };
 
             DbContextOptionsBuilder<TodoDbContext> dbContextOptionsBuilder = GetInMemoryDbContextOptionsBuilder();
-            TodoItemService todoItemService = new(new(dbContextOptionsBuilder.Options), mockLogger.Object);
+            TodoItemService todoItemService = new(new TodoDbContext(dbContextOptionsBuilder.Options), mockLogger.Object);
 
             // Act
             Func<Task> updateAsyncCall = async () => await todoItemService.UpdateAsync(updateTodoItemInfo);
@@ -250,7 +250,7 @@ namespace Todo.Services.TodoItemManagement
             };
 
             DbContextOptionsBuilder<TodoDbContext> dbContextOptionsBuilder = GetInMemoryDbContextOptionsBuilder();
-            TodoItemService todoItemService = new(new(dbContextOptionsBuilder.Options), mockLogger.Object);
+            TodoItemService todoItemService = new(new TodoDbContext(dbContextOptionsBuilder.Options), mockLogger.Object);
 
             // Act
             Func<Task> deleteAsyncCall = async () => await todoItemService.DeleteAsync(deleteTodoItemInfo);

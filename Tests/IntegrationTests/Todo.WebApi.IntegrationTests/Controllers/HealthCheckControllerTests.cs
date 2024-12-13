@@ -38,7 +38,7 @@ namespace Todo.WebApi.Controllers
                 shouldRunStartupLogicTasks: true
             );
 
-            activityListener = new ActivityListener
+            activityListener = new ActivityListener()
             {
                 ShouldListenTo = _ => true,
                 Sample = (ref ActivityCreationOptions<ActivityContext> _) => ActivitySamplingResult.AllDataAndRecorded,
@@ -46,7 +46,7 @@ namespace Todo.WebApi.Controllers
                 ActivityStopped = _ => { }
             };
 
-            noOpActivityListener = new ActivityListener
+            noOpActivityListener = new ActivityListener()
             {
                 ShouldListenTo = _ => false,
                 Sample = (ref ActivityCreationOptions<ActivityContext> _) => ActivitySamplingResult.None,

@@ -35,7 +35,7 @@ namespace Todo.WebApi.TestInfrastructure
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
             CancellationToken cancellationToken)
         {
-            var stringBuilder = new StringBuilder();
+            StringBuilder stringBuilder = new();
             await stringBuilder.AppendAsync(request, cancellationToken);
             stringBuilder.AppendLine();
             HttpResponseMessage response = await base.SendAsync(request, cancellationToken);

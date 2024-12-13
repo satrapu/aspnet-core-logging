@@ -46,9 +46,9 @@ namespace Todo.WebApi.AcceptanceTests.Infrastructure
                     httpClient.BaseAddress = new Uri(uriString: $"http://localhost:{port}", uriKind: UriKind.Absolute);
                     httpClient.DefaultRequestHeaders.UserAgent.Add
                     (
-                        new ProductInfoHeaderValue
+                        item: new ProductInfoHeaderValue
                         (
-                            new ProductHeaderValue
+                            product: new ProductHeaderValue
                             (
                                 name: assemblyName.Name ?? DefaultProductName,
                                 version: assemblyName.Version?.ToString() ?? DefaultProductVersion

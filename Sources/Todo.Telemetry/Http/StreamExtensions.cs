@@ -19,23 +19,18 @@ namespace Todo.Telemetry.Http
         /// <returns>The <see cref="Stream"/> contents as a <see cref="Encoding.UTF8"/> string.</returns>
         public static Task<string> ReadAndResetAsync(this Stream stream)
         {
-            if (stream == null)
-            {
-                throw new ArgumentNullException(nameof(stream));
-            }
+            ArgumentNullException.ThrowIfNull(stream);
 
             return ReadAndResetInternalAsync(stream);
         }
 
         private static async Task<string> ReadAndResetInternalAsync(this Stream stream)
         {
-            string result;
+            ArgumentNullException.ThrowIfNull(stream);
             stream.Seek(0, SeekOrigin.Begin);
 
-            using (var streamReader = new StreamReader(stream, Encoding.UTF8, true, BufferSize, true))
-            {
-                result = await streamReader.ReadToEndAsync();
-            }
+            using StreamReader streamReader = new(stream, Encoding.UTF8, true, BufferSize, true);
+            string result = await streamReader.ReadToEndAsync();
 
             stream.Seek(0, SeekOrigin.Begin);
             return result;

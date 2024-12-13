@@ -95,7 +95,7 @@ namespace Todo.WebApi.ExceptionHandling
             httpResponseMessage.StatusCode.Should().Be(expectedStatusCode, $"the hard-coded exception was mapped to HTTP status {expectedStatusCode}");
 
             byte[] problemDetailsAsBytes = await httpResponseMessage.Content.ReadAsByteArrayAsync();
-            await using var memoryStream = new MemoryStream(problemDetailsAsBytes);
+            await using MemoryStream memoryStream = new(problemDetailsAsBytes);
 
             // Must use System.Text.Json.JsonSerializer instead of Newtonsoft.Json.JsonSerializer to ensure
             // ProblemDetails.Extensions property is correctly deserialized and does not end up as an empty
