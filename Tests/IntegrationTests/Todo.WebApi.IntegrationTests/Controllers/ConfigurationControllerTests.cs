@@ -7,11 +7,11 @@ namespace Todo.WebApi.Controllers
 
     using Commons.Constants;
 
-    using FluentAssertions;
-
     using NUnit.Framework;
 
     using TestInfrastructure;
+
+    using VerifyNUnit;
 
     /// <summary>
     /// Contains integration tests targeting <see cref="ConfigurationController" /> class.
@@ -37,7 +37,7 @@ namespace Todo.WebApi.Controllers
             using HttpResponseMessage response = await httpClient.GetAsync("api/configuration");
 
             // Assert
-            response.StatusCode.Should().Be(expectedStatusCode, "because configuration endpoint is available only in certain conditions");
+            await Verifier.Verify(response, settings: ModuleInitializer.VerifySettings);
         }
 
         private static IEnumerable<object[]> GetConfigurationEndpointContext()
