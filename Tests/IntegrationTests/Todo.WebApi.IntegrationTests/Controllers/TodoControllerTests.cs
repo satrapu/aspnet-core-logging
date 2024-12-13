@@ -1,9 +1,3 @@
-using FluentAssertions.Execution;
-
-using VerifyNUnit;
-
-using VerifyTests;
-
 namespace Todo.WebApi.Controllers
 {
     using System;
@@ -16,6 +10,7 @@ namespace Todo.WebApi.Controllers
     using Commons.Constants;
 
     using FluentAssertions;
+    using FluentAssertions.Execution;
 
     using Microsoft.AspNetCore.WebUtilities;
 
@@ -26,6 +21,10 @@ namespace Todo.WebApi.Controllers
     using Persistence.Entities;
 
     using TestInfrastructure;
+
+    using VerifyNUnit;
+
+    using VerifyTests;
 
     /// <summary>
     ///  Contains integration tests targeting <see cref="TodoController" /> class.
