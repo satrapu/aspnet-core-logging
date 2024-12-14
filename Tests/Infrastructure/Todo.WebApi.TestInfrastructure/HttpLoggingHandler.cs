@@ -31,13 +31,13 @@ namespace Todo.WebApi.TestInfrastructure
         /// <param name="cancellationToken">The token used for canceling processing the given HTTP request.</param>
         /// <returns>The HTTP response received from the server.</returns>
         [SuppressMessage("Usage", "CA2254:Template should be a static expression",
-           Justification = "This method logs dynamic data")]
-        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
-            CancellationToken cancellationToken)
+            Justification = "This method logs dynamic data")]
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             StringBuilder stringBuilder = new();
             await stringBuilder.AppendAsync(request, cancellationToken);
             stringBuilder.AppendLine();
+
             HttpResponseMessage response = await base.SendAsync(request, cancellationToken);
             await stringBuilder.AppendAsync(response, cancellationToken);
 
@@ -50,8 +50,7 @@ namespace Todo.WebApi.TestInfrastructure
 
     internal static class StringBuilderExtensions
     {
-        public static async Task AppendAsync(this StringBuilder stringBuilder, HttpRequestMessage request,
-            CancellationToken cancellationToken)
+        public static async Task AppendAsync(this StringBuilder stringBuilder, HttpRequestMessage request, CancellationToken cancellationToken)
         {
             stringBuilder.AppendLine("-- REQUEST: BEGIN --");
             stringBuilder.AppendLine($"{request.Method.Method} {request.RequestUri?.LocalPath} HTTP/{request.Version}");
@@ -60,8 +59,7 @@ namespace Todo.WebApi.TestInfrastructure
             stringBuilder.AppendLine("-- REQUEST: END --");
         }
 
-        public static async Task AppendAsync(this StringBuilder stringBuilder, HttpResponseMessage response,
-            CancellationToken cancellationToken)
+        public static async Task AppendAsync(this StringBuilder stringBuilder, HttpResponseMessage response, CancellationToken cancellationToken)
         {
             stringBuilder.AppendLine("-- RESPONSE: BEGIN --");
             stringBuilder.AppendLine($"HTTP/{response.Version} {(int)response.StatusCode} {response.StatusCode}");
@@ -83,8 +81,7 @@ namespace Todo.WebApi.TestInfrastructure
             }
         }
 
-        private static async Task AppendAsync(this StringBuilder stringBuilder, HttpContent content,
-            CancellationToken cancellationToken)
+        private static async Task AppendAsync(this StringBuilder stringBuilder, HttpContent content, CancellationToken cancellationToken)
         {
             if (content == null)
             {

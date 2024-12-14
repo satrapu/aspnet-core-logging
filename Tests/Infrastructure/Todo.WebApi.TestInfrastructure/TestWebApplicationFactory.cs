@@ -3,6 +3,7 @@ namespace Todo.WebApi.TestInfrastructure
     using System;
     using System.Collections.Generic;
     using System.Net.Http;
+    using System.Net.Http.Headers;
     using System.Net.Http.Json;
     using System.Text;
     using System.Text.Json;
@@ -78,8 +79,9 @@ namespace Todo.WebApi.TestInfrastructure
         public async Task<HttpClient> CreateHttpClientAsync()
         {
             string accessToken = await GetAccessTokenAsync();
+
             HttpClient httpClient = CreateHttpClientWithLoggingCapabilities();
-            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {accessToken}");
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(scheme: "Bearer", parameter: accessToken);
 
             return httpClient;
         }
