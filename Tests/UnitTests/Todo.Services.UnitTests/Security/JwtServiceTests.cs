@@ -1,6 +1,5 @@
 namespace Todo.Services.Security
 {
-    using System;
     using System.IdentityModel.Tokens.Jwt;
     using System.Threading.Tasks;
 
@@ -8,6 +7,10 @@ namespace Todo.Services.Security
     using FluentAssertions.Execution;
 
     using NUnit.Framework;
+
+    using VerifyNUnit;
+
+    using VerifyTests;
 
     /// <summary>
     /// Contains unit tests targeting <see cref="JwtService"/> class.
@@ -19,6 +22,15 @@ namespace Todo.Services.Security
         public async Task GenerateJwtAsync_WhenUsingValidInput_MustReturnExpectedResult()
         {
             // Arrange
+            VerifySettings verifySettings = new(ModuleInitializer.VerifySettings);
+            verifySettings.ScrubMember("nbf");
+            verifySettings.ScrubMember("exp");
+            verifySettings.ScrubMember("iat");
+            verifySettings.ScrubMember("EncodedPayload");
+            verifySettings.ScrubMember("RawData");
+            verifySettings.ScrubMember("RawPayload");
+            verifySettings.ScrubMember("RawSignature");
+
             GenerateJwtInfo generateJwtInfo = new()
             {
                 UserName = "some-test-user",
@@ -41,11 +53,7 @@ namespace Todo.Services.Security
             actualResult.AccessToken.Should().NotBeNullOrWhiteSpace();
 
             JwtSecurityToken jwtSecurityToken = jwtSecurityTokenHandler.ReadJwtToken(actualResult.AccessToken);
-            jwtSecurityToken.Should().NotBeNull();
-            jwtSecurityToken.Audiences.Should().ContainSingle(generateJwtInfo.Audience);
-            jwtSecurityToken.Issuer.Should().Be(generateJwtInfo.Issuer);
-            jwtSecurityToken.Claims.Should().Contain(claim => claim.Type == "scope" && claim.Value == "resource1 resource2");
-            jwtSecurityToken.ValidTo.Should().BeCloseTo(nearbyTime: jwtSecurityToken.ValidFrom.AddMonths(6), precision: TimeSpan.FromMinutes(1));
+            await Verifier.Verify(jwtSecurityToken, settings: verifySettings);
         }
     }
 }

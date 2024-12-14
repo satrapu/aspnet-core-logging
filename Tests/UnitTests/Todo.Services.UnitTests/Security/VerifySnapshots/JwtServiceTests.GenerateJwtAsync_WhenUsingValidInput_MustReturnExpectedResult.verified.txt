@@ -1,0 +1,52 @@
+﻿{
+  Audiences: [
+    test-audience
+  ],
+  Claims: [
+    {
+      nameid: c29tZS10ZXN0LXVzZXI=
+    },
+    {
+      scope: resource1 resource2
+    },
+    {
+      nbf: Scrubbed
+    },
+    {
+      exp: Scrubbed
+    },
+    {
+      iat: Scrubbed
+    },
+    {
+      iss: test
+    },
+    {
+      aud: test-audience
+    }
+  ],
+  EncodedHeader: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9,
+  EncodedPayload: {Scrubbed},
+  Header: {
+    alg: HS256,
+    typ: JWT
+  },
+  Issuer: test,
+  Payload: {
+    aud: test-audience,
+    exp: {Scrubbed},
+    iat: {Scrubbed},
+    iss: test,
+    nameid: c29tZS10ZXN0LXVzZXI=,
+    nbf: {Scrubbed},
+    scope: resource1 resource2
+  },
+  RawData: {Scrubbed},
+  RawHeader: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9,
+  RawPayload: {Scrubbed},
+  RawSignature: {Scrubbed},
+  SignatureAlgorithm: HS256,
+  ValidFrom: DateTime_1,
+  ValidTo: DateTime_2,
+  IssuedAt: DateTime_1
+}

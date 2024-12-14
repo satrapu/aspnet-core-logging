@@ -81,6 +81,25 @@
         "resolved": "10.3.0.106239",
         "contentHash": "Ne5QHx0nUULk7PF+3GIQIC2EnFI93SPRilyqVY6US4JolZOCc9XyUKzvOVsufp7cyrqbOTL07U5mb6poYzllNQ=="
       },
+      "Verify.NUnit": {
+        "type": "Direct",
+        "requested": "[28.5.0, )",
+        "resolved": "28.5.0",
+        "contentHash": "ZGy+tNiErrHUYr9wNglok5mqOATjVc3lYq2B2pH3QdYi58Fh/Sd20lMd80y8p4t25mUiBiCe0biO68Efd/jsEA==",
+        "dependencies": {
+          "Argon": "0.26.0",
+          "DiffEngine": "15.6.0",
+          "NUnit": "4.2.2",
+          "SimpleInfoName": "3.1.0",
+          "System.IO.Hashing": "9.0.0",
+          "Verify": "28.5.0"
+        }
+      },
+      "Argon": {
+        "type": "Transitive",
+        "resolved": "0.26.0",
+        "contentHash": "n7btGXdtRyprGnpLMpBs6rLScxlvPtVWwmTR8h7CtJvpZXBGhGvibEdZxRjeTZNrwf403jJ0ZPpt35Pz/NaNsw=="
+      },
       "Autofac": {
         "type": "Transitive",
         "resolved": "8.1.1",
@@ -96,6 +115,20 @@
         "dependencies": {
           "System.Diagnostics.EventLog": "6.0.0"
         }
+      },
+      "DiffEngine": {
+        "type": "Transitive",
+        "resolved": "15.6.0",
+        "contentHash": "q39O7vQknyZeKo2ipsNqoW2nH7+rntebNEOuYCbSu6rdp89om1VHOkWpERdKLYqQnIq3U20APYagcvvjoMiOlg==",
+        "dependencies": {
+          "EmptyFiles": "8.6.0",
+          "System.Management": "8.0.0"
+        }
+      },
+      "EmptyFiles": {
+        "type": "Transitive",
+        "resolved": "8.6.0",
+        "contentHash": "7QuYKhc8DjllLRviZPeGXfDR5LEtTtBV8loBxfrQt7tFUiPhnHkqEe710yqpSxEebys/lKSJXhPoUX3xCeqkbQ=="
       },
       "EntityFrameworkCoreMock.Shared": {
         "type": "Transitive",
@@ -351,6 +384,16 @@
           "Npgsql": "8.0.5"
         }
       },
+      "SimpleInfoName": {
+        "type": "Transitive",
+        "resolved": "3.1.0",
+        "contentHash": "j+ENh86NhxrgDc6T1ueqIR2QOdDkSJY2dbTFyPN/JvIXifB4GHAunlMw/x7P6m7XaXEHr3s+SMZfKBlmnmkO6g=="
+      },
+      "System.CodeDom": {
+        "type": "Transitive",
+        "resolved": "8.0.0",
+        "contentHash": "WTlRjL6KWIMr/pAaq3rYqh0TJlzpouaQ/W1eelssHgtlwHAH25jXTkUphTYx9HaIIf7XA6qs/0+YhtLEQRkJ+Q=="
+      },
       "System.Configuration.ConfigurationManager": {
         "type": "Transitive",
         "resolved": "6.0.0",
@@ -387,6 +430,19 @@
           "Microsoft.IdentityModel.Tokens": "8.3.0"
         }
       },
+      "System.IO.Hashing": {
+        "type": "Transitive",
+        "resolved": "9.0.0",
+        "contentHash": "seeO8icDfED/Qwl9PDFUx2Gf/7xv7dPsMnw5PnRwNZuz4EWMpy0wIVohC4MfCcTIoJgp+KUrWG4WH3NPSusQOA=="
+      },
+      "System.Management": {
+        "type": "Transitive",
+        "resolved": "8.0.0",
+        "contentHash": "jrK22i5LRzxZCfGb+tGmke2VH7oE0DvcDlJ1HAKYU8cPmD8XnpUT0bYn2Gy98GEhGjtfbR/sxKTVb+dE770pfA==",
+        "dependencies": {
+          "System.CodeDom": "8.0.0"
+        }
+      },
       "System.Reflection.Metadata": {
         "type": "Transitive",
         "resolved": "1.6.0",
@@ -417,6 +473,17 @@
         "contentHash": "IXoJOXIqc39AIe+CIR7koBtRGMiCt/LPM3lI+PELtDIy9XdyeSrwXFdWV9dzJ2Awl0paLWUaknLxFQ5HpHZUog==",
         "dependencies": {
           "System.Drawing.Common": "6.0.0"
+        }
+      },
+      "Verify": {
+        "type": "Transitive",
+        "resolved": "28.5.0",
+        "contentHash": "tXQOZZt18jWeDz1U0GhGxGajt8lDZoVHSyDEJ+TAAi63PQSTde7rZtQfogk0FANdnhdhXagTV8TD32j0i3iu9Q==",
+        "dependencies": {
+          "Argon": "0.26.0",
+          "DiffEngine": "15.6.0",
+          "SimpleInfoName": "3.1.0",
+          "System.IO.Hashing": "9.0.0"
         }
       },
       "todo.commons": {
