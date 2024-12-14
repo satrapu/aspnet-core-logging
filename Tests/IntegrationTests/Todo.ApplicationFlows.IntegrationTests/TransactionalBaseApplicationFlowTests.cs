@@ -20,6 +20,10 @@ namespace Todo.ApplicationFlows
 
     using Services.TodoItemManagement;
 
+    using VerifyNUnit;
+
+    using VerifyTests;
+
     using WebApi.TestInfrastructure;
 
     /// <summary>
@@ -131,16 +135,19 @@ namespace Todo.ApplicationFlows
         public async Task ExecuteAsync_WhenAllStepsSucceeds_MustSucceed()
         {
             // Arrange
-            string userName = $"test-user--{Guid.NewGuid():N}";
+            VerifySettings verifySettings = new(ModuleInitializer.VerifySettings);
+            verifySettings.ScrubMember("Id");
+
+            string userName = $"test-user--{Guid.NewGuid():D}";
             IIdentity identity = new GenericIdentity(userName);
 
-            string[] roles = [$"role--{Guid.NewGuid():N}"];
+            string[] roles = [$"role--{Guid.NewGuid():D}"];
             IPrincipal flowInitiator = new GenericPrincipal(identity, roles);
 
             ITodoItemService todoItemService = testWebApplicationFactory.Services.GetRequiredService<ITodoItemService>();
             ILoggerFactory loggerFactory = testWebApplicationFactory.Services.GetRequiredService<ILoggerFactory>();
             ILogger logger = loggerFactory.CreateLogger<ApplicationFlowServingTestingPurposes>();
-            string namePrefix = $"todo-item--{Guid.NewGuid():N}";
+            string namePrefix = $"todo-item--{Guid.NewGuid():D}";
 
             // This flow is expected to succeed since the service is persisting valid models
             ITodoItemService localTodoItemService = todoItemService;
@@ -184,11 +191,11 @@ namespace Todo.ApplicationFlows
                 NamePattern = $"{namePrefix}%"
             };
 
-            // Get a new instance of ITodoItemService service to ensure data will be fetched from
-            // a new DbContext.
+            // Get a new instance of ITodoItemService service to ensure data will be fetched from a new DbContext.
             todoItemService = testWebApplicationFactory.Services.GetRequiredService<ITodoItemService>();
-            IList<TodoItemInfo> list = await todoItemService.GetByQueryAsync(query);
-            list.Count.Should().Be(expected: 3, "several todo items have been previously created");
+            IList<TodoItemInfo> actualList = await todoItemService.GetByQueryAsync(query);
+
+            await Verifier.Verify(actualList, settings: verifySettings);
         }
 
         /// <summary>
