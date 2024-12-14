@@ -22,13 +22,16 @@ namespace Todo.ApplicationFlows
             Justification = "Newly created instance is discarded for testing purposes")]
         public void Constructor_WhenInvokedUsingNullAsFlowName_ThrowsException()
         {
-            // Arrange & Act
+            // Arrange
+            const string because = "because flow must have a name";
+
+            // Act
             // ReSharper disable once ObjectCreationAsStatement
             Action constructorAction = () => new ApplicationFlowUsingNullAsFlowName();
 
             // Assert
-            const string because = "because flow must have a name";
-            constructorAction.Should().ThrowExactly<ArgumentException>(because)
+            constructorAction
+                .Should().ThrowExactly<ArgumentException>(because)
                 .And.ParamName.Should().Be("flowName", because);
         }
 
@@ -37,13 +40,16 @@ namespace Todo.ApplicationFlows
             Justification = "Newly created instance is discarded for testing purposes")]
         public void Constructor_WhenInvokedUsingNullAsLogger_ThrowsException()
         {
-            // Arrange & Act
+            // Arrange
+            const string because = "because flow must have a logger";
+
+            // Act
             // ReSharper disable once ObjectCreationAsStatement
             Action constructorAction = () => new ApplicationFlowUsingNullAsLogger();
 
             // Assert
-            const string because = "because flow must have a logger";
-            constructorAction.Should().ThrowExactly<ArgumentNullException>(because)
+            constructorAction
+                .Should().ThrowExactly<ArgumentNullException>(because)
                 .And.ParamName.Should().Be("logger", because);
         }
 

@@ -1,10 +1,10 @@
-using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
-
-using VerifyTests;
-
 namespace Todo.WebApi
 {
+    using System.Runtime.CompilerServices;
+    using System.Text.RegularExpressions;
+
+    using VerifyTests;
+
     public static partial class ModuleInitializer
     {
         private static readonly Regex RegexForBearerToken = GetRegexForBearerToken();
