@@ -50,7 +50,7 @@ variables:
   # Specifies the versions of the .NET SDK to install and use when running this pipeline.
   # All releases can be found here: https://dotnet.microsoft.com/download/dotnet.
   - name: 'DotNetSdkVersionUsedByApplication'
-    value: '8.0.404'
+    value: '9.0.101'
   # satrapu 2024-06-24: Version 6.x is used by SpecFlow.Plus.LivingDoc tool.
   - name: 'DotNetSdkVersionUsedByLivingDoc'
     value: '6.0.428'
