@@ -1,0 +1,23 @@
+﻿[
+  {
+    Id: {Scrubbed},
+    Name: todo-item--Guid_1--#1,
+    IsComplete: false,
+    CreatedBy: test-user--Guid_2,
+    CreatedOn: DateTime_1
+  },
+  {
+    Id: {Scrubbed},
+    Name: todo-item--Guid_1--#2,
+    IsComplete: false,
+    CreatedBy: test-user--Guid_2,
+    CreatedOn: DateTime_2
+  },
+  {
+    Id: {Scrubbed},
+    Name: todo-item--Guid_1--#3,
+    IsComplete: false,
+    CreatedBy: test-user--Guid_2,
+    CreatedOn: DateTime_3
+  }
+]

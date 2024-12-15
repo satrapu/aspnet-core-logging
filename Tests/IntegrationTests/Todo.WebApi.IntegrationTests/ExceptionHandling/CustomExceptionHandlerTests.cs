@@ -44,12 +44,6 @@ namespace Todo.WebApi.ExceptionHandling
         public async Task HandleException_WhenApiThrowsException_MustConvertExceptionToInstanceOfProblemDetailsClass()
         {
             // Arrange
-            var generateJwtModel = new GenerateJwtModel
-            {
-                UserName = $"test-user--{Guid.NewGuid():N}",
-                Password = $"test-password--{Guid.NewGuid():N}"
-            };
-
             await using TestWebApplicationFactory webApplicationFactory = await TestWebApplicationFactory.CreateAsync
             (
                 applicationName: nameof(CustomExceptionHandlerTests),
@@ -71,13 +65,22 @@ namespace Todo.WebApi.ExceptionHandling
                 {
                     webHostBuilder.ConfigureAppConfiguration(configurationBuilder =>
                     {
-                        configurationBuilder.AddInMemoryCollection(new[]
-                        {
-                            // Ensure database is not migrated, since having an up-to-date RDBMS would just complicate this test method.
-                            new KeyValuePair<string, string>("MigrateDatabase", bool.FalseString)
-                        });
+                        configurationBuilder.AddInMemoryCollection
+                        (
+                            initialData:
+                            [
+                                // Ensure database is not migrated, since having an up-to-date RDBMS would just complicate this test method.
+                                new KeyValuePair<string, string>("MigrateDatabase", bool.FalseString)
+                            ]
+                        );
                     });
                 });
+
+            GenerateJwtModel generateJwtModel = new()
+            {
+                UserName = $"test-user--{Guid.NewGuid():N}",
+                Password = $"test-password--{Guid.NewGuid():N}"
+            };
 
             using HttpClient httpClient = webApplicationFactory.CreateClient();
 
@@ -92,14 +95,14 @@ namespace Todo.WebApi.ExceptionHandling
             httpResponseMessage.StatusCode.Should().Be(expectedStatusCode, $"the hard-coded exception was mapped to HTTP status {expectedStatusCode}");
 
             byte[] problemDetailsAsBytes = await httpResponseMessage.Content.ReadAsByteArrayAsync();
-            await using var memoryStream = new MemoryStream(problemDetailsAsBytes);
+            await using MemoryStream memoryStream = new(problemDetailsAsBytes);
 
             // Must use System.Text.Json.JsonSerializer instead of Newtonsoft.Json.JsonSerializer to ensure
             // ProblemDetails.Extensions property is correctly deserialized and does not end up as an empty
             // dictionary.
             ProblemDetails problemDetails = await JsonSerializer.DeserializeAsync<ProblemDetails>(memoryStream);
             problemDetails.Should().NotBeNull("application must handle any exception");
-            // ReSharper disable once PossibleNullReferenceException
+            problemDetails.Detail.Should().NotBeNullOrWhiteSpace("an error is expected");
             problemDetails.Extensions.Should().NotBeNull("problem details must contain extra info");
             problemDetails.Extensions.Should().NotContainKey("errorData", "error data must not be present");
             problemDetails.Extensions.Should().ContainKey("rootCauseKey", "root cause key must be present");

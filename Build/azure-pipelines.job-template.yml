@@ -70,9 +70,12 @@ jobs:
   - checkout: self
     name: 'checkout_source_code'
     displayName: 'Checkout source code'
-    clean: False
     lfs: False
     submodules: False
+    # Fetch all history to avoid SonarQube complaining about scanning a shallow clone.
+    # See more here: https://learn.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/steps-checkout?view=azure-pipelines#shallow-fetch.
+    fetchDepth: 0
+    fetchTags: True
     persistCredentials: False
 
   # Install specific .NET SDK version used for building the application.

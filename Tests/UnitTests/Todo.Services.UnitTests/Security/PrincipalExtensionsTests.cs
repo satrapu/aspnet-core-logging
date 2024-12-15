@@ -26,16 +26,20 @@ namespace Todo.Services.Security
             // Arrange
             const string authenticationType = "hard-coded-authentication-type-for-testing-purposes";
 
-            IPrincipal validPrincipal = new TestClaimsPrincipal(
-                     new ClaimsIdentity(
-                         new GenericIdentity($"{nameof(ClaimsPrincipal)}-{Guid.NewGuid():N}", authenticationType),
-                         new List<Claim>
-                         {
-                            new Claim(ClaimTypes.Email, $"person-{Guid.NewGuid():N}@server.net")
-                         }));
+            IPrincipal classUnderTest = new TestClaimsPrincipal
+            (
+                claimsIdentity: new ClaimsIdentity
+                (
+                    identity: new GenericIdentity($"{nameof(ClaimsPrincipal)}-{Guid.NewGuid():N}", authenticationType),
+                    claims: new List<Claim>
+                    {
+                        new(ClaimTypes.Email, $"person-{Guid.NewGuid():N}@server.net")
+                    }
+                )
+            );
 
             // Act
-            string userName = validPrincipal.GetName();
+            string userName = classUnderTest.GetName();
 
             // Assert
             userName.Should().NotBeNullOrWhiteSpace("because principal name must mean something");
@@ -68,12 +72,12 @@ namespace Todo.Services.Security
         public void GetName_UsingNullAsPrincipalIdentity_MustThrowException()
         {
             // Arrange
-            var principalMock = new Mock<IPrincipal>();
+            Mock<IPrincipal> principalMock = new();
             principalMock.SetupGet(principal => principal.Identity).Returns((IIdentity)null);
-            IPrincipal mockedPrincipal = principalMock.Object;
+            IPrincipal classUnderTest = principalMock.Object;
 
             // Act
-            Action getNameAction = () => mockedPrincipal.GetName();
+            Action getNameAction = () => classUnderTest.GetName();
 
             // Assert
             getNameAction
@@ -94,7 +98,7 @@ namespace Todo.Services.Security
             public override string ToString()
             {
                 return $"[{nameof(IIdentity.Name)}={Identity?.Name}; "
-                    + $"{nameof(IIdentity.AuthenticationType)}={Identity?.AuthenticationType}]";
+                       + $"{nameof(IIdentity.AuthenticationType)}={Identity?.AuthenticationType}]";
             }
         }
     }

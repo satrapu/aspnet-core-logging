@@ -98,14 +98,12 @@ namespace Todo.ArchitectureTests
                 .ToArray();
 
             // Act
-            TestResult testResult =
-                webApiControllers.Should().NotHaveDependencyOnAny(persistenceNamespaces).GetResult();
+            TestResult testResult = webApiControllers.Should().NotHaveDependencyOnAny(persistenceNamespaces).GetResult();
 
             await DisplayFailingTypesIfAnyAsync(testResult);
 
             // Assert
-            testResult.IsSuccessful
-                .Should().Be(true, "Web API controllers must *not* depend on persistence related namespaces");
+            testResult.IsSuccessful.Should().Be(true, "Web API controllers must *not* depend on persistence related namespaces");
         }
 
         /// <summary>

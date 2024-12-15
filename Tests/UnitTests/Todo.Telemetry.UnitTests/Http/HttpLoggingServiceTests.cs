@@ -33,10 +33,10 @@ namespace Todo.Telemetry.Http
             // Act
             // ReSharper disable once ObjectCreationAsStatement
             // ReSharper disable once ExpressionIsAlwaysNull
-            Action createServiceAction = () => new HttpLoggingService(logger);
+            Action invokeConstructor = () => new HttpLoggingService(logger);
 
             // Assert
-            createServiceAction
+            invokeConstructor
                 .Should()
                 .ThrowExactly<ArgumentNullException>("must not create instance using null argument")
                 .WithParameterName(nameof(logger));
@@ -49,13 +49,12 @@ namespace Todo.Telemetry.Http
         public void ShouldLog_UsingNullHttpContext_MustThrowException()
         {
             // Arrange
-            var loggerMock = new Mock<ILogger<HttpLoggingService>>();
-            var loggingService = new HttpLoggingService(loggerMock.Object);
             HttpContext httpContext = null;
+            HttpLoggingService classUnderTest = new(logger: GetLogger());
 
             // Act
             // ReSharper disable once ExpressionIsAlwaysNull
-            Action shouldLogAction = () => loggingService.ShouldLog(httpContext);
+            Action shouldLogAction = () => classUnderTest.ShouldLog(httpContext);
 
             // Assert
             shouldLogAction
@@ -65,19 +64,37 @@ namespace Todo.Telemetry.Http
         }
 
         /// <summary>
+        /// Tests the <see cref="HttpLoggingService.ShouldLog"/> method.
+        /// </summary>
+        [Test]
+        public void ShouldLog_UsingDebugAsLogLevel_LogsEverything()
+        {
+            // Arrange
+            HttpContext httpContext = new DefaultHttpContext();
+            httpContext.Request.Headers.Accept = "application/json";
+
+            HttpLoggingService classUnderTest = new(logger: GetLogger());
+
+            // Act
+            bool actualResult = classUnderTest.ShouldLog(httpContext);
+
+            // Assert
+            actualResult.Should().BeTrue();
+        }
+
+        /// <summary>
         /// Tests the <see cref="HttpLoggingService.ToLogMessageAsync(HttpRequest)"/> method.
         /// </summary>
         [Test]
         public async Task ToLogMessageAsync_UsingNullHttpRequest_MustThrowException()
         {
             // Arrange
-            var loggerMock = new Mock<ILogger<HttpLoggingService>>();
-            var loggingService = new HttpLoggingService(loggerMock.Object);
             HttpRequest httpRequest = null;
+            HttpLoggingService classUnderTest = new(logger: GetLogger());
 
             // Act
             // ReSharper disable once ExpressionIsAlwaysNull
-            Func<Task> toLogMessageAsyncCall = async () => await loggingService.ToLogMessageAsync(httpRequest);
+            Func<Task> toLogMessageAsyncCall = async () => await classUnderTest.ToLogMessageAsync(httpRequest);
 
             // Assert
             await toLogMessageAsyncCall
@@ -93,19 +110,70 @@ namespace Todo.Telemetry.Http
         public async Task ToLogMessageAsync_UsingNullHttpResponse_MustThrowException()
         {
             // Arrange
-            var loggerMock = new Mock<ILogger<HttpLoggingService>>();
-            var loggingService = new HttpLoggingService(loggerMock.Object);
             HttpResponse httpResponse = null;
+            HttpLoggingService classUnderTest = new(logger: GetLogger());
 
             // Act
             // ReSharper disable once ExpressionIsAlwaysNull
-            Func<Task> toLogMessageAsyncCall = async () => await loggingService.ToLogMessageAsync(httpResponse);
+            Func<Task> toLogMessageAsyncCall = async () => await classUnderTest.ToLogMessageAsync(httpResponse);
 
             // Assert
             await toLogMessageAsyncCall
                 .Should()
                 .ThrowExactlyAsync<ArgumentNullException>()
                 .WithParameterName(nameof(httpResponse));
+        }
+
+        /// <summary>
+        /// Tests the <see cref="HttpLoggingService.ToLogMessageAsync(HttpRequest)"/> method.
+        /// </summary>
+        [Test]
+        public async Task ToLogMessageAsync_UsingValidHttpRequestReturnsExpectedResult()
+        {
+            // Arrange
+            HttpContext httpContext = new DefaultHttpContext();
+            httpContext.Request.Headers.Append("X-Header1", "header1");
+            httpContext.Request.Headers.Append("X-Header2", "header2");
+
+            HttpLoggingService classUnderTest = new(logger: GetLogger());
+
+            // Act
+            // ReSharper disable once ExpressionIsAlwaysNull
+            string actualLogMessage = await classUnderTest.ToLogMessageAsync(httpContext.Request);
+
+            // Assert
+            actualLogMessage.Should().NotBeNullOrWhiteSpace();
+        }
+
+        /// <summary>
+        /// Tests the <see cref="HttpLoggingService.ToLogMessageAsync(HttpResponse)"/> method.
+        /// </summary>
+        [Test]
+        public async Task ToLogMessageAsync_UsingValidHttpResponseReturnsExpectedResult()
+        {
+            // Arrange
+            HttpContext httpContext = new DefaultHttpContext();
+            httpContext.Response.Headers.Append("X-Header1", "header1");
+            httpContext.Response.Headers.Append("X-Header2", "header2");
+
+            HttpLoggingService classUnderTest = new(logger: GetLogger());
+
+            // Act
+            // ReSharper disable once ExpressionIsAlwaysNull
+            string actualLogMessage = await classUnderTest.ToLogMessageAsync(httpContext.Response);
+
+            // Assert
+            actualLogMessage.Should().NotBeNullOrWhiteSpace();
+        }
+
+        private static ILogger<HttpLoggingService> GetLogger()
+        {
+            Mock<ILogger<HttpLoggingService>> loggerMock = new();
+            loggerMock
+                .Setup(x => x.IsEnabled(It.IsAny<LogLevel>()))
+                .Returns(true);
+
+            return loggerMock.Object;
         }
     }
 }

@@ -1,0 +1,30 @@
+﻿{
+  Version: 1.1,
+  Content: {
+    Headers: []
+  },
+  StatusCode: Unauthorized,
+  ReasonPhrase: Unauthorized,
+  Headers: [
+    {
+      ConversationId: [
+        Guid_1
+      ]
+    },
+    {
+      WWW-Authenticate: [
+        Bearer
+      ]
+    }
+  ],
+  TrailingHeaders: [],
+  RequestMessage: {
+    Version: 1.1,
+    Method: {
+      Method: GET
+    },
+    RequestUri: http://localhost/api/todo?PageIndex=0&PageSize=5&SortBy=CreatedOn&IsSortAscending=False,
+    Headers: []
+  },
+  IsSuccessStatusCode: false
+}

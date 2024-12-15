@@ -56,7 +56,7 @@ namespace Todo.WebApi.Controllers
         [Authorize(Policy = Policies.TodoItems.GetTodoItems)]
         public async IAsyncEnumerable<TodoItemModel> GetByQueryAsync([FromQuery] TodoItemQueryModel todoItemQueryModel)
         {
-            var todoItemQuery = new TodoItemQuery
+            TodoItemQuery todoItemQuery = new()
             {
                 Id = todoItemQueryModel.Id,
                 IsComplete = todoItemQueryModel.IsComplete,
@@ -96,7 +96,7 @@ namespace Todo.WebApi.Controllers
         [Authorize(Policy = Policies.TodoItems.CreateTodoItem)]
         public async Task<IActionResult> CreateAsync(NewTodoItemModel newTodoItemModel)
         {
-            var newTodoItemInfo = new NewTodoItemInfo
+            NewTodoItemInfo newTodoItemInfo = new()
             {
                 IsComplete = newTodoItemModel.IsComplete,
                 Name = newTodoItemModel.Name
@@ -121,7 +121,7 @@ namespace Todo.WebApi.Controllers
         [Authorize(Policy = Policies.TodoItems.UpdateTodoItem)]
         public async Task<IActionResult> UpdateAsync(long id, [FromBody] UpdateTodoItemModel updateTodoItemModel)
         {
-            var updateTodoItemInfo = new UpdateTodoItemInfo
+            UpdateTodoItemInfo updateTodoItemInfo = new()
             {
                 Id = id,
                 IsComplete = updateTodoItemModel.IsComplete,
@@ -138,7 +138,7 @@ namespace Todo.WebApi.Controllers
         [Authorize(Policy = Policies.TodoItems.DeleteTodoItem)]
         public async Task<IActionResult> DeleteAsync(long id)
         {
-            var deleteTodoItemInfo = new DeleteTodoItemInfo
+            DeleteTodoItemInfo deleteTodoItemInfo = new()
             {
                 Id = id,
                 Owner = User

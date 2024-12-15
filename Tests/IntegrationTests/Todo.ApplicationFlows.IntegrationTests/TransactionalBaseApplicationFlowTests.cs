@@ -20,6 +20,10 @@ namespace Todo.ApplicationFlows
 
     using Services.TodoItemManagement;
 
+    using VerifyNUnit;
+
+    using VerifyTests;
+
     using WebApi.TestInfrastructure;
 
     /// <summary>
@@ -63,7 +67,7 @@ namespace Todo.ApplicationFlows
             string userName = $"test-user--{Guid.NewGuid():N}";
             IIdentity identity = new GenericIdentity(userName);
 
-            string[] roles = { $"role--{Guid.NewGuid():N}" };
+            string[] roles = [$"role--{Guid.NewGuid():N}"];
             IPrincipal flowInitiator = new GenericPrincipal(identity, roles);
 
             ITodoItemService todoItemService = testWebApplicationFactory.Services.GetRequiredService<ITodoItemService>();
@@ -76,19 +80,19 @@ namespace Todo.ApplicationFlows
             // This flow is expected to fail since the service is unable to persist invalid models
             async Task<object> FlowExpectedToThrowExceptionAsync()
             {
-                await localTodoItemService.AddAsync(new NewTodoItemInfo
+                await localTodoItemService.AddAsync(new NewTodoItemInfo()
                 {
                     Name = $"{namePrefix}--#1",
                     Owner = flowInitiator
                 });
 
-                await localTodoItemService.AddAsync(new NewTodoItemInfo
+                await localTodoItemService.AddAsync(new NewTodoItemInfo()
                 {
                     Name = $"{namePrefix}--#2",
                     Owner = flowInitiator
                 });
 
-                await localTodoItemService.AddAsync(new NewTodoItemInfo
+                await localTodoItemService.AddAsync(new NewTodoItemInfo()
                 {
                     Name = $"{namePrefix}--#3",
                     Owner = flowInitiator
@@ -131,37 +135,40 @@ namespace Todo.ApplicationFlows
         public async Task ExecuteAsync_WhenAllStepsSucceeds_MustSucceed()
         {
             // Arrange
-            string userName = $"test-user--{Guid.NewGuid():N}";
+            VerifySettings verifySettings = new(ModuleInitializer.VerifySettings);
+            verifySettings.ScrubMember("Id");
+
+            string userName = $"test-user--{Guid.NewGuid():D}";
             IIdentity identity = new GenericIdentity(userName);
 
-            string[] roles = { $"role--{Guid.NewGuid():N}" };
+            string[] roles = [$"role--{Guid.NewGuid():D}"];
             IPrincipal flowInitiator = new GenericPrincipal(identity, roles);
 
             ITodoItemService todoItemService = testWebApplicationFactory.Services.GetRequiredService<ITodoItemService>();
             ILoggerFactory loggerFactory = testWebApplicationFactory.Services.GetRequiredService<ILoggerFactory>();
             ILogger logger = loggerFactory.CreateLogger<ApplicationFlowServingTestingPurposes>();
-            string namePrefix = $"todo-item--{Guid.NewGuid():N}";
+            string namePrefix = $"todo-item--{Guid.NewGuid():D}";
 
             // This flow is expected to succeed since the service is persisting valid models
             ITodoItemService localTodoItemService = todoItemService;
 
             async Task<object> FlowExpectedToSucceedAsync()
             {
-                await localTodoItemService.AddAsync(new()
+                await localTodoItemService.AddAsync(new NewTodoItemInfo
                 {
                     Name = $"{namePrefix}--#1",
                     IsComplete = false,
                     Owner = flowInitiator
                 });
 
-                await localTodoItemService.AddAsync(new()
+                await localTodoItemService.AddAsync(new NewTodoItemInfo
                 {
                     Name = $"{namePrefix}--#2",
                     IsComplete = false,
                     Owner = flowInitiator
                 });
 
-                await localTodoItemService.AddAsync(new()
+                await localTodoItemService.AddAsync(new NewTodoItemInfo
                 {
                     Name = $"{namePrefix}--#3",
                     IsComplete = false,
@@ -184,11 +191,11 @@ namespace Todo.ApplicationFlows
                 NamePattern = $"{namePrefix}%"
             };
 
-            // Get a new instance of ITodoItemService service to ensure data will be fetched from
-            // a new DbContext.
+            // Get a new instance of ITodoItemService service to ensure data will be fetched from a new DbContext.
             todoItemService = testWebApplicationFactory.Services.GetRequiredService<ITodoItemService>();
-            IList<TodoItemInfo> list = await todoItemService.GetByQueryAsync(query);
-            list.Count.Should().Be(expected: 3, "several todo items have been previously created");
+            IList<TodoItemInfo> actualList = await todoItemService.GetByQueryAsync(query);
+
+            await Verifier.Verify(actualList, settings: verifySettings);
         }
 
         /// <summary>
@@ -207,7 +214,7 @@ namespace Todo.ApplicationFlows
             string userName = $"test-user--{Guid.NewGuid():N}";
             IIdentity identity = new GenericIdentity(userName);
 
-            string[] roles = { $"role--{Guid.NewGuid():N}" };
+            string[] roles = [$"role--{Guid.NewGuid():N}"];
             IPrincipal flowInitiator = new GenericPrincipal(identity, roles);
 
             ITodoItemService todoItemService =
@@ -222,14 +229,14 @@ namespace Todo.ApplicationFlows
 
             async Task<object> FlowExpectedToFailAsync()
             {
-                await localTodoItemService.AddAsync(new NewTodoItemInfo
+                await localTodoItemService.AddAsync(new NewTodoItemInfo()
                 {
                     Name = $"{namePrefix}--#1",
                     IsComplete = false,
                     Owner = flowInitiator
                 });
 
-                await localTodoItemService.AddAsync(new NewTodoItemInfo
+                await localTodoItemService.AddAsync(new NewTodoItemInfo()
                 {
                     Name = $"{namePrefix}--#2",
                     IsComplete = false,

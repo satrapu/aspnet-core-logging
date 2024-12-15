@@ -28,14 +28,16 @@ namespace Todo.Services.TodoItemManagement
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public class TodoItemService : ITodoItemService
     {
-        private readonly TodoDbContext todoDbContext;
-        private readonly ILogger logger;
+        private static readonly Expression<Func<TodoItem, object>> DefaultKeySelector = todoItem => todoItem.Id;
+        private static readonly string TypeFullName = typeof(TodoItemService).FullName;
+
         private const string SortByCreatedOn = nameof(TodoItem.CreatedOn);
         private const string SortById = nameof(TodoItem.Id);
         private const string SortByLastUpdatedOn = nameof(TodoItem.LastUpdatedOn);
         private const string SortByName = nameof(TodoItem.Name);
-        private static readonly Expression<Func<TodoItem, object>> DefaultKeySelector = todoItem => todoItem.Id;
-        private static readonly string TypeFullName = typeof(TodoItemService).FullName;
+
+        private readonly TodoDbContext todoDbContext;
+        private readonly ILogger logger;
 
         /// <summary>
         /// Creates a new instance of the <see cref="TodoItemService"/> class.
@@ -132,7 +134,7 @@ namespace Todo.Services.TodoItemManagement
                         name: "Data has been fetched",
                         tags: new ActivityTagsCollection
                         {
-                            new("data", JsonSerializer.Serialize(result))
+                            new KeyValuePair<string, object>("data", JsonSerializer.Serialize(result))
                         }
                     )
                 );
@@ -167,11 +169,15 @@ namespace Todo.Services.TodoItemManagement
                         name: "Data has been added",
                         tags: new ActivityTagsCollection
                         {
-                            new("data", JsonSerializer.Serialize(new
-                            {
-                                newTodoItem.Id,
-                                newTodoItem.CreatedBy
-                            }))
+                            new KeyValuePair<string, object>
+                            (
+                                key: "data",
+                                value: JsonSerializer.Serialize(new
+                                {
+                                    newTodoItem.Id,
+                                    newTodoItem.CreatedBy
+                                })
+                            )
                         }
                     )
                 );
@@ -210,11 +216,15 @@ namespace Todo.Services.TodoItemManagement
                         name: "Data has been updated",
                         tags: new ActivityTagsCollection
                         {
-                            new("data", JsonSerializer.Serialize(new
-                            {
-                                existingTodoItem.Id,
-                                existingTodoItem.LastUpdatedBy
-                            }))
+                            new KeyValuePair<string, object>
+                            (
+                                key: "data",
+                                value: JsonSerializer.Serialize(new
+                                {
+                                    existingTodoItem.Id,
+                                    existingTodoItem.LastUpdatedBy
+                                })
+                            )
                         }
                     )
                 );
@@ -241,11 +251,15 @@ namespace Todo.Services.TodoItemManagement
                         name: "Data has been deleted",
                         tags: new ActivityTagsCollection
                         {
-                            new("data", JsonSerializer.Serialize(new
-                            {
-                                deleteTodoItemInfo.Id,
-                                DeletedBy = deleteTodoItemInfo.Owner.GetName()
-                            }))
+                            new KeyValuePair<string, object>
+                            (
+                                key: "data",
+                                value: JsonSerializer.Serialize(new
+                                {
+                                    deleteTodoItemInfo.Id,
+                                    DeletedBy = deleteTodoItemInfo.Owner.GetName()
+                                })
+                            )
                         }
                     )
                 );
@@ -254,8 +268,11 @@ namespace Todo.Services.TodoItemManagement
 
         private async Task<TodoItem> GetExistingTodoItem(long? id, IPrincipal owner)
         {
-            TodoItem existingTodoItem =
-                await todoDbContext.TodoItems.SingleOrDefaultAsync(todoItem => todoItem.Id == id && todoItem.CreatedBy == owner.GetName());
+            TodoItem existingTodoItem = await todoDbContext.TodoItems.SingleOrDefaultAsync
+            (
+                todoItem => todoItem.Id == id
+                            && todoItem.CreatedBy == owner.GetName()
+            );
 
             if (existingTodoItem == null)
             {
@@ -295,7 +312,11 @@ namespace Todo.Services.TodoItemManagement
                         name: "Data has been filtered",
                         tags: new ActivityTagsCollection
                         {
-                            new("filter.info", JsonSerializer.Serialize(todoItemQuery))
+                            new KeyValuePair<string, object>
+                            (
+                                key: "filter.info",
+                                value: JsonSerializer.Serialize(todoItemQuery)
+                            )
                         }
                     )
                 );
@@ -328,11 +349,15 @@ namespace Todo.Services.TodoItemManagement
                         name: "Data has been sorted",
                         tags: new ActivityTagsCollection
                         {
-                            new("sort.info", JsonSerializer.Serialize(new
-                            {
-                                todoItemQuery.SortBy,
-                                IsSortAscending = todoItemQuery.IsSortAscending?.ToString()
-                            }))
+                            new KeyValuePair<string, object>
+                            (
+                                key: "sort.info",
+                                value: JsonSerializer.Serialize(new
+                                {
+                                    todoItemQuery.SortBy,
+                                    IsSortAscending = todoItemQuery.IsSortAscending?.ToString()
+                                })
+                            )
                         }
                     )
                 );
@@ -412,11 +437,15 @@ namespace Todo.Services.TodoItemManagement
                         name: "Data has been paginated",
                         tags: new ActivityTagsCollection
                         {
-                            new("pagination.info", JsonSerializer.Serialize(new
-                            {
-                                PageIndex = pageIndex,
-                                PageSize = pageSize
-                            }))
+                            new KeyValuePair<string, object>
+                            (
+                                key: "pagination.info",
+                                value: JsonSerializer.Serialize(new
+                                {
+                                    PageIndex = pageIndex,
+                                    PageSize = pageSize
+                                })
+                            )
                         }
                     )
                 );

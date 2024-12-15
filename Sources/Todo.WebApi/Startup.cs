@@ -260,7 +260,7 @@ namespace Todo.WebApi
                 {
                     options.InvalidModelStateResponseFactory = context =>
                     {
-                        var validationProblemDetails = new ValidationProblemDetails(context.ModelState)
+                        ValidationProblemDetails validationProblemDetails = new(context.ModelState)
                         {
                             Title = "One or more model validation errors have occurred",
                             Status = StatusCodes.Status422UnprocessableEntity,

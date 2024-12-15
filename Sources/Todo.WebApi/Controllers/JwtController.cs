@@ -48,26 +48,26 @@ namespace Todo.WebApi.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> GenerateTokenAsync([FromBody] GenerateJwtModel generateJwtModel)
         {
-            var generateJwtInfo = new GenerateJwtInfo
+            GenerateJwtInfo generateJwtInfo = new()
             {
                 Audience = generateJwtOptions.Audience,
                 Issuer = generateJwtOptions.Issuer,
                 Secret = generateJwtOptions.Secret,
-                Scopes = new[]
-                {
+                Scopes =
+                [
                     Policies.Infrastructure.HealthCheck,
                     Policies.TodoItems.CreateTodoItem,
                     Policies.TodoItems.DeleteTodoItem,
                     Policies.TodoItems.GetTodoItems,
                     Policies.TodoItems.UpdateTodoItem
-                },
+                ],
                 UserName = generateJwtModel.UserName,
                 Password = generateJwtModel.Password
             };
 
             JwtInfo jwtInfo = await generateJwtFlow.ExecuteAsync(generateJwtInfo, User);
 
-            var jwtModel = new JwtModel
+            JwtModel jwtModel = new()
             {
                 AccessToken = jwtInfo.AccessToken
             };

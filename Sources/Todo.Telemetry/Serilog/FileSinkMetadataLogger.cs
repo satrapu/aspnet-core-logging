@@ -18,7 +18,7 @@ namespace Todo.Telemetry.Serilog
     public class FileSinkMetadataLogger : IStartupLogicTask
     {
         private const string FlowName = "ApplicationStartup/ExecuteStartupLogicTasks/LogFileSinkDirectory";
-        private static readonly IPrincipal Principal = new GenericPrincipal(new GenericIdentity("serilog-logging-provider"), Array.Empty<string>());
+        private static readonly IPrincipal Principal = new GenericPrincipal(new GenericIdentity("serilog-logging-provider"), []);
 
         private readonly IConfiguration configuration;
         private readonly ILogger logger;

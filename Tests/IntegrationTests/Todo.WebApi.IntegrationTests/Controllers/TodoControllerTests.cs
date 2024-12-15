@@ -3,7 +3,6 @@ namespace Todo.WebApi.Controllers
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
-    using System.Linq;
     using System.Net;
     using System.Net.Http;
     using System.Threading.Tasks;
@@ -22,6 +21,10 @@ namespace Todo.WebApi.Controllers
     using Persistence.Entities;
 
     using TestInfrastructure;
+
+    using VerifyNUnit;
+
+    using VerifyTests;
 
     /// <summary>
     ///  Contains integration tests targeting <see cref="TodoController" /> class.
@@ -52,7 +55,7 @@ namespace Todo.WebApi.Controllers
                 shouldRunStartupLogicTasks: true
             );
 
-            activityListener = new ActivityListener
+            activityListener = new ActivityListener()
             {
                 ShouldListenTo = _ => true,
                 Sample = (ref ActivityCreationOptions<ActivityContext> _) => ActivitySamplingResult.AllDataAndRecorded,
@@ -60,7 +63,7 @@ namespace Todo.WebApi.Controllers
                 ActivityStopped = _ => { }
             };
 
-            noOpActivityListener = new ActivityListener
+            noOpActivityListener = new ActivityListener()
             {
                 ShouldListenTo = _ => false,
                 Sample = (ref ActivityCreationOptions<ActivityContext> _) => ActivitySamplingResult.None,
@@ -88,24 +91,22 @@ namespace Todo.WebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [Test]
-        public async Task CreateAsync_WhenRequestIsNotAuthorized_ReturnsUnauthorizedHttpStatusCode()
+        public async Task CreateAsync_WhenRequestIsNotAuthorized_ReturnsExpectedResult()
         {
             // Arrange
-            using HttpClient httpClient = testWebApplicationFactory.CreateClient();
-
             NewTodoItemModel newTodoItemModel = new()
             {
                 Name = null,
                 IsComplete = null
             };
 
+            using HttpClient httpClient = testWebApplicationFactory.CreateClient();
+
             // Act
             using HttpResponseMessage response = await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemModel);
 
             // Assert
-            using AssertionScope _ = new();
-            response.IsSuccessStatusCode.Should().BeFalse();
-            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+            await Verifier.Verify(response, settings: ModuleInitializer.VerifySettings);
         }
 
         /// <summary>
@@ -113,31 +114,22 @@ namespace Todo.WebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [Test]
-        public async Task CreateAsync_UsingValidTodoItem_ReturnsExpectedData()
+        public async Task CreateAsync_UsingValidTodoItemReturnsExpectedResult()
         {
             // Arrange
-            using HttpClient httpClient = await testWebApplicationFactory.CreateHttpClientAsync();
-
-            const long idThreshold = 1;
-
             NewTodoItemModel newTodoItemModel = new()
             {
-                Name = $"it--{nameof(CreateAsync_UsingValidTodoItem_ReturnsExpectedData)}--{Guid.NewGuid():N}",
-                IsComplete = DateTime.UtcNow.Ticks % 2 == 0
+                Name = $"it--{Guid.NewGuid():D}",
+                IsComplete = true
             };
+
+            using HttpClient httpClient = await testWebApplicationFactory.CreateHttpClientAsync();
 
             // Act
             using HttpResponseMessage response = await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemModel);
 
             // Assert
-            using AssertionScope _ = new();
-            response.IsSuccessStatusCode.Should().BeTrue();
-            response.StatusCode.Should().Be(HttpStatusCode.Created);
-            response.Headers.Location.Should().NotBeNull();
-            response.Headers.Location!.ToString().Should().MatchRegex(@"api/todo/\d+");
-
-            long id = GetCreatedEntityIdFrom(response);
-            id.Should().BeGreaterOrEqualTo(idThreshold);
+            await Verifier.Verify(response, settings: ModuleInitializer.VerifySettings);
         }
 
         /// <summary>
@@ -145,19 +137,18 @@ namespace Todo.WebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [Test]
-        public async Task CreateAsync_UsingInvalidTodoItem_ReturnsExpectedHttpStatusCode()
+        public async Task CreateAsync_UsingInvalidTodoItem_ReturnsExpectedResult()
         {
             // Arrange
-            using HttpClient httpClient = await testWebApplicationFactory.CreateHttpClientAsync();
             NewTodoItemModel invalidModel = new();
+
+            using HttpClient httpClient = await testWebApplicationFactory.CreateHttpClientAsync();
 
             // Act
             using HttpResponseMessage response = await httpClient.PostAsJsonAsync(BaseUrl, invalidModel);
 
             // Assert
-            using AssertionScope _ = new();
-            response.IsSuccessStatusCode.Should().BeFalse();
-            response.StatusCode.Should().Be(HttpStatusCode.UnprocessableEntity);
+            await Verifier.Verify(response, settings: ModuleInitializer.VerifySettings);
         }
 
         /// <summary>
@@ -166,11 +157,9 @@ namespace Todo.WebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [Test]
-        public async Task GetByQueryAsync_WhenRequestIsNotAuthorized_ReturnsUnauthorizedHttpStatusCode()
+        public async Task GetByQueryAsync_WhenRequestIsNotAuthorized_ReturnsExpectedResult()
         {
             // Arrange
-            using HttpClient httpClient = testWebApplicationFactory.CreateClient();
-
             Dictionary<string, string> queryString = new()
             {
                 [nameof(TodoItemQueryModel.PageIndex)] = 0.ToString(),
@@ -180,14 +169,13 @@ namespace Todo.WebApi.Controllers
             };
 
             string requestUri = QueryHelpers.AddQueryString(BaseUrl, queryString);
+            using HttpClient httpClient = testWebApplicationFactory.CreateClient();
 
             // Act
             using HttpResponseMessage response = await httpClient.GetAsync(requestUri);
 
             // Assert
-            using AssertionScope _ = new();
-            response.IsSuccessStatusCode.Should().BeFalse();
-            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+            await Verifier.Verify(response, settings: ModuleInitializer.VerifySettings);
         }
 
         /// <summary>
@@ -199,29 +187,30 @@ namespace Todo.WebApi.Controllers
         public async Task GetByQueryAsync_UsingDefaults_ReturnsExpectedResult()
         {
             // Arrange
-            using HttpClient httpClient = await testWebApplicationFactory.CreateHttpClientAsync();
-
-            string nameSuffix = Guid.NewGuid().ToString("N");
-            string name = $"it--{nameof(GetByQueryAsync_UsingDefaults_ReturnsExpectedResult)}--{nameSuffix}";
+            VerifySettings verifySettings = new(ModuleInitializer.VerifySettings);
+            verifySettings.ScrubMember("RequestUri");
 
             NewTodoItemModel newTodoItemModel = new()
             {
-                IsComplete = DateTime.UtcNow.Ticks % 2 == 0,
-                Name = name
+                Name = $"it--{Guid.NewGuid():D}",
+                IsComplete = false,
             };
 
-            HttpResponseMessage response = await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemModel);
-            response.IsSuccessStatusCode.Should().BeTrue();
-            response.StatusCode.Should().Be(HttpStatusCode.Created);
-            response.Headers.Location.Should().NotBeNull();
+            using HttpClient httpClient = await testWebApplicationFactory.CreateHttpClientAsync();
+            using HttpResponseMessage createTodoItemResponse = await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemModel);
 
-            long id = GetCreatedEntityIdFrom(response);
+            using AssertionScope _ = new();
+            createTodoItemResponse.IsSuccessStatusCode.Should().BeTrue();
+            createTodoItemResponse.StatusCode.Should().Be(HttpStatusCode.Created);
+            createTodoItemResponse.Headers.Location.Should().NotBeNull();
+
+            long id = GetTodoItemIdFrom(createTodoItemResponse);
 
             Dictionary<string, string> queryString = new()
             {
                 [nameof(TodoItemQueryModel.Id)] = id.ToString(),
                 [nameof(TodoItemQueryModel.IsComplete)] = newTodoItemModel.IsComplete.ToString(),
-                [nameof(TodoItemQueryModel.NamePattern)] = name,
+                [nameof(TodoItemQueryModel.NamePattern)] = newTodoItemModel.Name,
                 [nameof(TodoItemQueryModel.PageIndex)] = 0.ToString(),
                 [nameof(TodoItemQueryModel.PageSize)] = 5.ToString(),
                 [nameof(TodoItemQueryModel.SortBy)] = nameof(TodoItem.CreatedOn),
@@ -231,20 +220,10 @@ namespace Todo.WebApi.Controllers
             string requestUri = QueryHelpers.AddQueryString(BaseUrl, queryString);
 
             // Act
-            response = await httpClient.GetAsync(requestUri);
+            using HttpResponseMessage getTodoItemsResponse = await httpClient.GetAsync(requestUri);
 
             // Assert
-            using AssertionScope _ = new();
-            response.IsSuccessStatusCode.Should().BeTrue();
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
-
-            List<TodoItemModel> todoItemModels = await response.Content.ReadAsAsync<List<TodoItemModel>>();
-            todoItemModels.Should().HaveCount(1);
-
-            TodoItemModel todoItemModel = todoItemModels.SingleOrDefault();
-            todoItemModel.Should().NotBeNull();
-            todoItemModel!.Name.Should().Be(newTodoItemModel.Name);
-            todoItemModel!.IsComplete.Should().Be(newTodoItemModel.IsComplete.Value);
+            await Verifier.Verify(getTodoItemsResponse, settings: verifySettings);
         }
 
         /// <summary>
@@ -253,19 +232,17 @@ namespace Todo.WebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [Test]
-        public async Task GetByIdAsync_WhenRequestIsNotAuthorized_ReturnsUnauthorizedHttpStatusCode()
+        public async Task GetByIdAsync_WhenRequestIsNotAuthorized_ReturnsExpectedResult()
         {
             // Arrange
-            using HttpClient httpClient = testWebApplicationFactory.CreateClient();
             long? id = int.MaxValue;
+            using HttpClient httpClient = testWebApplicationFactory.CreateClient();
 
             // Act
             using HttpResponseMessage response = await httpClient.GetAsync($"{BaseUrl}/{id}");
 
             // Assert
-            using AssertionScope _ = new();
-            response.IsSuccessStatusCode.Should().BeFalse();
-            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+            await Verifier.Verify(response, settings: ModuleInitializer.VerifySettings);
         }
 
         /// <summary>
@@ -276,37 +253,30 @@ namespace Todo.WebApi.Controllers
         public async Task GetByIdAsync_UsingNewlyCreatedItem_ReturnsExpectedResult()
         {
             // Arrange
-            using HttpClient httpClient = await testWebApplicationFactory.CreateHttpClientAsync();
-
-            string nameSuffix = Guid.NewGuid().ToString("N");
-            string name = $"it--{nameof(GetByIdAsync_UsingNewlyCreatedItem_ReturnsExpectedResult)}--{nameSuffix}";
+            VerifySettings verifySettings = new(ModuleInitializer.VerifySettings);
+            verifySettings.ScrubMember("RequestUri");
 
             NewTodoItemModel newTodoItemModel = new()
             {
-                IsComplete = DateTime.UtcNow.Ticks % 2 == 0,
-                Name = name
+                Name = $"it--{Guid.NewGuid():D}",
+                IsComplete = true,
             };
 
-            HttpResponseMessage response = await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemModel);
-            response.IsSuccessStatusCode.Should().BeTrue();
-            response.StatusCode.Should().Be(HttpStatusCode.Created);
-            response.Headers.Location.Should().NotBeNull();
+            using HttpClient httpClient = await testWebApplicationFactory.CreateHttpClientAsync();
+            using HttpResponseMessage createTodoItemResponse = await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemModel);
 
-            long id = GetCreatedEntityIdFrom(response);
+            using AssertionScope _ = new();
+            createTodoItemResponse.IsSuccessStatusCode.Should().BeTrue();
+            createTodoItemResponse.StatusCode.Should().Be(HttpStatusCode.Created);
+            createTodoItemResponse.Headers.Location.Should().NotBeNull();
+
+            long id = GetTodoItemIdFrom(createTodoItemResponse);
 
             // Act
-            response = await httpClient.GetAsync($"{BaseUrl}/{id}");
+            using HttpResponseMessage getTodoItemResponse = await httpClient.GetAsync($"{BaseUrl}/{id}");
 
             // Assert
-            using AssertionScope _ = new();
-            response.IsSuccessStatusCode.Should().BeTrue();
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
-
-            TodoItemModel todoItemModel = await response.Content.ReadAsAsync<TodoItemModel>();
-            todoItemModel.Should().NotBeNull();
-            todoItemModel.Id.Should().Be(id);
-            todoItemModel.Name.Should().Be(newTodoItemModel.Name);
-            todoItemModel.IsComplete.Should().Be(newTodoItemModel.IsComplete.Value);
+            await Verifier.Verify(getTodoItemResponse, settings: verifySettings);
         }
 
         /// <summary>
@@ -315,32 +285,27 @@ namespace Todo.WebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [Test]
-        public async Task GetByIdAsync_UsingNonExistingId_ReturnsNotFoundHttpStatusCode()
+        public async Task GetByIdAsync_UsingNonExistingId_ReturnsExpectedResult()
         {
             // Arrange
-            using HttpClient httpClient = await testWebApplicationFactory.CreateHttpClientAsync();
-
-            string nameSuffix = Guid.NewGuid().ToString("N");
-            string name = $"it--{nameof(GetByIdAsync_UsingNonExistingId_ReturnsNotFoundHttpStatusCode)}--{nameSuffix}";
-
             NewTodoItemModel newTodoItemModel = new()
             {
-                IsComplete = DateTime.UtcNow.Ticks % 2 == 0,
-                Name = name
+                Name = $"it--{Guid.NewGuid():D}",
+                IsComplete = true
             };
 
-            HttpResponseMessage response = await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemModel);
-            response.EnsureSuccessStatusCode();
+            using HttpClient httpClient = await testWebApplicationFactory.CreateHttpClientAsync();
+
+            using HttpResponseMessage createTodoItemResponse = await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemModel);
+            createTodoItemResponse.EnsureSuccessStatusCode();
 
             long nonExistentId = long.MinValue;
 
             // Act
-            response = await httpClient.GetAsync($"{BaseUrl}/{nonExistentId}");
+            using HttpResponseMessage getTodoItemResponse = await httpClient.GetAsync($"{BaseUrl}/{nonExistentId}");
 
             // Assert
-            using AssertionScope _ = new();
-            response.IsSuccessStatusCode.Should().BeFalse();
-            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+            await Verifier.Verify(getTodoItemResponse, settings: ModuleInitializer.VerifySettings);
         }
 
         /// <summary>
@@ -349,20 +314,17 @@ namespace Todo.WebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [Test]
-        public async Task UpdateAsync_WhenRequestIsNotAuthorized_ReturnsUnauthorizedHttpStatusCode()
+        public async Task UpdateAsync_WhenRequestIsNotAuthorized_ReturnsExpectedResult()
         {
             // Arrange
-            using HttpClient httpClient = testWebApplicationFactory.CreateClient();
-            long? id = int.MaxValue;
             UpdateTodoItemModel updateTodoItemModel = new();
+            using HttpClient httpClient = testWebApplicationFactory.CreateClient();
 
             // Act
-            using HttpResponseMessage response = await httpClient.PutAsJsonAsync($"{BaseUrl}/{id}", updateTodoItemModel);
+            using HttpResponseMessage response = await httpClient.PutAsJsonAsync($"{BaseUrl}/{int.MaxValue}", updateTodoItemModel);
 
             // Assert
-            using AssertionScope _ = new();
-            response.IsSuccessStatusCode.Should().BeFalse();
-            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+            await Verifier.Verify(response, settings: ModuleInitializer.VerifySettings);
         }
 
         /// <summary>
@@ -370,25 +332,24 @@ namespace Todo.WebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [Test]
-        public async Task UpdateAsync_UsingNewlyCreatedTodoItem_MustSucceed()
+        public async Task UpdateAsync_UsingNewlyCreatedTodoItem_ReturnsExpectedResult()
         {
             // Arrange
-            using HttpClient httpClient = await testWebApplicationFactory.CreateHttpClientAsync();
-
-            string name = $"it--{nameof(UpdateAsync_UsingNewlyCreatedTodoItem_MustSucceed)}--{Guid.NewGuid():N}";
-            bool isComplete = DateTime.UtcNow.Ticks % 2 == 0;
+            VerifySettings verifySettings = new(ModuleInitializer.VerifySettings);
+            verifySettings.ScrubMember("RequestUri");
 
             NewTodoItemModel newTodoItemInfo = new()
             {
-                Name = name,
-                IsComplete = isComplete
+                Name = $"it--{Guid.NewGuid():D}",
+                IsComplete = true
             };
 
-            HttpResponseMessage response = await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemInfo);
-            response.IsSuccessStatusCode.Should().BeTrue();
-            response.Headers.Location.Should().NotBeNull();
+            using HttpClient httpClient = await testWebApplicationFactory.CreateHttpClientAsync();
+            using HttpResponseMessage createTodoItemResponse = await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemInfo);
 
-            long id = GetCreatedEntityIdFrom(response);
+            using AssertionScope _ = new();
+            createTodoItemResponse.IsSuccessStatusCode.Should().BeTrue();
+            createTodoItemResponse.Headers.Location.Should().NotBeNull();
 
             UpdateTodoItemModel updateTodoItemModel = new()
             {
@@ -396,23 +357,13 @@ namespace Todo.WebApi.Controllers
                 Name = $"CHANGED--{newTodoItemInfo.Name}"
             };
 
+            long id = GetTodoItemIdFrom(createTodoItemResponse);
+
             // Act
-            response = await httpClient.PutAsJsonAsync($"{BaseUrl}/{id}", updateTodoItemModel);
+            using HttpResponseMessage updateTodoItemResponse = await httpClient.PutAsJsonAsync($"{BaseUrl}/{id}", updateTodoItemModel);
 
             // Assert
-            using AssertionScope _ = new();
-            response.IsSuccessStatusCode.Should().BeTrue();
-            response.StatusCode.Should().Be(HttpStatusCode.NoContent);
-
-            response = await httpClient.GetAsync($"{BaseUrl}/{id}");
-            response.IsSuccessStatusCode.Should().BeTrue();
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
-
-            TodoItemModel todoItemModel = await response.Content.ReadAsAsync<TodoItemModel>();
-            todoItemModel.Should().NotBeNull();
-            todoItemModel.Id.Should().Be(id);
-            todoItemModel.IsComplete.Should().Be(updateTodoItemModel.IsComplete.Value);
-            todoItemModel.Name.Should().Be(updateTodoItemModel.Name);
+            await Verifier.Verify(updateTodoItemResponse, settings: verifySettings);
         }
 
         /// <summary>
@@ -421,19 +372,16 @@ namespace Todo.WebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [Test]
-        public async Task DeleteAsync_WhenRequestIsNotAuthorized_ReturnsUnauthorizedHttpStatusCode()
+        public async Task DeleteAsync_WhenRequestIsNotAuthorized_ReturnsExpectedResult()
         {
             // Arrange
             using HttpClient httpClient = testWebApplicationFactory.CreateClient();
-            long id = int.MaxValue;
 
             // Act
-            using HttpResponseMessage response = await httpClient.DeleteAsync($"{BaseUrl}/{id}");
+            using HttpResponseMessage response = await httpClient.DeleteAsync($"{BaseUrl}/{int.MaxValue}");
 
             // Assert
-            using AssertionScope _ = new();
-            response.IsSuccessStatusCode.Should().BeFalse();
-            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+            await Verifier.Verify(response, settings: ModuleInitializer.VerifySettings);
         }
 
         /// <summary>
@@ -441,49 +389,51 @@ namespace Todo.WebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [Test]
-        public async Task DeleteAsync_UsingNewlyCreatedTodoItem_MustSucceed()
+        public async Task DeleteAsync_UsingNewlyCreatedTodoItem_ReturnsExpectedResult()
         {
             // Arrange
-            string name = $"it--{nameof(DeleteAsync_UsingNewlyCreatedTodoItem_MustSucceed)}--{Guid.NewGuid():N}";
-            bool isComplete = DateTime.UtcNow.Ticks % 2 == 0;
+            VerifySettings verifySettings = new(ModuleInitializer.VerifySettings);
+            verifySettings.ScrubMember("RequestUri");
 
             NewTodoItemModel newTodoItemInfo = new()
             {
-                Name = name,
-                IsComplete = isComplete
+                Name = $"it--{Guid.NewGuid():D}",
+                IsComplete = true
             };
 
             using HttpClient httpClient = await testWebApplicationFactory.CreateHttpClientAsync();
+            using HttpResponseMessage createTodoItemResponse = await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemInfo);
 
-            HttpResponseMessage response = await httpClient.PostAsJsonAsync(BaseUrl, newTodoItemInfo);
-            response.IsSuccessStatusCode.Should().BeTrue();
-            response.Headers.Location.Should().NotBeNull();
+            using AssertionScope _ = new();
+            createTodoItemResponse.IsSuccessStatusCode.Should().BeTrue();
+            createTodoItemResponse.Headers.Location.Should().NotBeNull();
 
-            long? id = GetCreatedEntityIdFrom(response);
+            long? id = GetTodoItemIdFrom(createTodoItemResponse);
 
             // Act
-            response = await httpClient.DeleteAsync($"{BaseUrl}/{id}");
+            using HttpResponseMessage deleteTodoItemResponse = await httpClient.DeleteAsync($"{BaseUrl}/{id}");
 
             // Assert
-            using AssertionScope _ = new();
-            response.IsSuccessStatusCode.Should().BeTrue();
-
-            response = await httpClient.GetAsync($"{BaseUrl}/{id}");
-            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+            await Verifier.Verify(deleteTodoItemResponse, settings: verifySettings);
         }
 
-        private static long GetCreatedEntityIdFrom(HttpResponseMessage httpResponseMessage)
+        private static long GetTodoItemIdFrom(HttpResponseMessage httpResponseMessage)
         {
-            ArgumentNullException.ThrowIfNull(httpResponseMessage.Headers.Location);
+            string locationAsString = httpResponseMessage.Headers.Location?.ToString();
+            ArgumentException.ThrowIfNullOrWhiteSpace(locationAsString);
 
-            string locationAsString = httpResponseMessage.Headers.Location.ToString();
-            string createdEntityIdAsString = locationAsString.Remove
+            string todoItemIdAsString = locationAsString.Remove
             (
                 startIndex: 0,
                 count: locationAsString.LastIndexOf("/", StringComparison.InvariantCultureIgnoreCase) + 1
             );
 
-            return int.Parse(createdEntityIdAsString);
+            if (int.TryParse(todoItemIdAsString, out int todoItemId))
+            {
+                return todoItemId;
+            }
+
+            throw new FormatException(message: $"Could not extract todo item ID from HTTP response header value: \"{locationAsString}\"");
         }
     }
 }

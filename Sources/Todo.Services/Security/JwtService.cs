@@ -19,25 +19,28 @@ namespace Todo.Services.Security
         {
             byte[] userNameAsBytes = Encoding.UTF8.GetBytes(generateJwtInfo.UserName);
             string userNameAsBase64 = Convert.ToBase64String(userNameAsBytes);
-            var signingKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(generateJwtInfo.Secret));
+            SymmetricSecurityKey symmetricSecurityKey = new(Encoding.UTF8.GetBytes(generateJwtInfo.Secret));
 
-            var securityTokenDescriptor = new SecurityTokenDescriptor
+            SecurityTokenDescriptor securityTokenDescriptor = new()
             {
                 Audience = generateJwtInfo.Audience,
                 Issuer = generateJwtInfo.Issuer,
                 Expires = DateTime.UtcNow.AddMonths(6),
-                SigningCredentials = new(signingKey, SecurityAlgorithms.HmacSha256Signature),
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new(ClaimTypes.NameIdentifier, userNameAsBase64),
-                    new("scope", string.Join(separator: ' ', generateJwtInfo.Scopes ?? Array.Empty<string>()))
-                })
+                SigningCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256Signature),
+                Subject = new ClaimsIdentity
+                (
+                    claims:
+                    [
+                        new Claim(ClaimTypes.NameIdentifier, userNameAsBase64),
+                        new Claim("scope", string.Join(separator: ' ', generateJwtInfo.Scopes ?? []))
+                    ]
+                )
             };
 
-            var jwtSecurityTokenHandler = new JwtSecurityTokenHandler();
+            JwtSecurityTokenHandler jwtSecurityTokenHandler = new();
             SecurityToken securityToken = jwtSecurityTokenHandler.CreateToken(securityTokenDescriptor);
 
-            var jwtInfo = new JwtInfo
+            JwtInfo jwtInfo = new()
             {
                 AccessToken = jwtSecurityTokenHandler.WriteToken(securityToken)
             };

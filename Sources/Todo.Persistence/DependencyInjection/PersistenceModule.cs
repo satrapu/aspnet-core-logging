@@ -41,12 +41,11 @@ namespace Todo.Persistence.DependencyInjection
                     IConfiguration configuration = componentContext.Resolve<IConfiguration>();
                     string connectionString = configuration.GetConnectionString(ConnectionStringName);
 
-                    var dbContextOptions = new DbContextOptions<TodoDbContext>();
-
-                    var dbContextOptionsBuilder = new DbContextOptionsBuilder<TodoDbContext>(dbContextOptions)
-                        .UseApplicationServiceProvider(serviceProvider)
-                        .UseNpgsql(connectionString)
-                        .UseLoggerFactory(loggerFactory);
+                    DbContextOptionsBuilder<TodoDbContext> dbContextOptionsBuilder =
+                        new DbContextOptionsBuilder<TodoDbContext>(options: new DbContextOptions<TodoDbContext>())
+                            .UseApplicationServiceProvider(serviceProvider)
+                            .UseNpgsql(connectionString)
+                            .UseLoggerFactory(loggerFactory);
 
                     if (EnableDetailedErrors)
                     {

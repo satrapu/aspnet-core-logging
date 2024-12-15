@@ -1,0 +1,31 @@
+﻿{
+  Version: 1.1,
+  Content: {
+    Headers: []
+  },
+  StatusCode: NoContent,
+  ReasonPhrase: No Content,
+  Headers: [
+    {
+      ConversationId: [
+        Guid_1
+      ]
+    }
+  ],
+  TrailingHeaders: [],
+  RequestMessage: {
+    Version: 1.1,
+    Method: {
+      Method: DELETE
+    },
+    RequestUri: {Scrubbed},
+    Headers: [
+      {
+        Authorization: [
+          Bearer <BEARER_TOKEN>
+        ]
+      }
+    ]
+  },
+  IsSuccessStatusCode: true
+}

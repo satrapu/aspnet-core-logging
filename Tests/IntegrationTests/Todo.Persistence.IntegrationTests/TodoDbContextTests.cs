@@ -74,7 +74,6 @@ namespace Todo.Persistence
         {
             // Arrange
             DbContextOptions<TodoDbContext> dbContextOptions = GetDbContextOptions(databaseName: "use-concurrent-transactions");
-
             await using TodoDbContext firstTodoDbContext = new(dbContextOptions);
             IMigrator databaseMigrator = firstTodoDbContext.GetInfrastructure().GetRequiredService<IMigrator>();
             await databaseMigrator.MigrateAsync();
@@ -91,24 +90,17 @@ namespace Todo.Persistence
                 await firstTodoDbContext.TodoItems.AddAsync(todoItem);
                 await firstTodoDbContext.SaveChangesAsync();
 
-                await using IDbContextTransaction firstTransaction =
-                    await firstTodoDbContext.Database.BeginTransactionAsync();
+                await using IDbContextTransaction firstTransaction = await firstTodoDbContext.Database.BeginTransactionAsync();
 
-                TodoItem todoItemFromFirstTransaction =
-                    await firstTodoDbContext.TodoItems.FirstAsync(x => x.Name == name);
-
+                TodoItem todoItemFromFirstTransaction = await firstTodoDbContext.TodoItems.FirstAsync(x => x.Name == name);
                 todoItemFromFirstTransaction.IsComplete = true;
                 todoItemFromFirstTransaction.LastUpdatedBy = Guid.NewGuid().ToString("N");
                 todoItemFromFirstTransaction.LastUpdatedOn = DateTime.UtcNow;
 
                 await using TodoDbContext secondTodoDbContext = new(dbContextOptions);
+                await using IDbContextTransaction secondTransaction = await secondTodoDbContext.Database.BeginTransactionAsync();
 
-                await using IDbContextTransaction secondTransaction =
-                    await secondTodoDbContext.Database.BeginTransactionAsync();
-
-                TodoItem todoItemFromSecondTransaction =
-                    await secondTodoDbContext.TodoItems.FirstAsync(x => x.Name == name);
-
+                TodoItem todoItemFromSecondTransaction = await secondTodoDbContext.TodoItems.FirstAsync(x => x.Name == name);
                 todoItemFromSecondTransaction.IsComplete = false;
                 todoItemFromSecondTransaction.LastUpdatedBy = Guid.NewGuid().ToString("N");
                 todoItemFromSecondTransaction.LastUpdatedOn = DateTime.UtcNow;

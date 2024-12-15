@@ -85,7 +85,7 @@ namespace Todo.Telemetry.Http
             // Saves the original response body stream for latter purposes
             Stream originalResponseBodyStream = httpContext.Response.Body;
 
-            await using var memoryStream = new MemoryStream(BufferSizeInBytes);
+            await using MemoryStream memoryStream = new(BufferSizeInBytes);
             // Replace response body stream with a seekable one, like a MemoryStream, to allow logging it
             httpContext.Response.Body = memoryStream;
 

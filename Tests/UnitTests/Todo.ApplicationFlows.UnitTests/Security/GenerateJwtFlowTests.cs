@@ -28,7 +28,7 @@ namespace Todo.ApplicationFlows.Security
         {
             // Arrange
             IJwtService jwtService = null;
-            var logger = new Mock<ILogger<GenerateJwtFlow>>();
+            Mock<ILogger<GenerateJwtFlow>> logger = new();
 
             // Act
             // ReSharper disable once ObjectCreationAsStatement
@@ -47,7 +47,7 @@ namespace Todo.ApplicationFlows.Security
         public void Constructor_WhenLoggerIsNull_ThrowsException()
         {
             // Arrange
-            var jwtService = new Mock<IJwtService>();
+            Mock<IJwtService> jwtService = new();
             ILogger<GenerateJwtFlow> logger = null;
 
             // Act
@@ -62,23 +62,24 @@ namespace Todo.ApplicationFlows.Security
         }
 
         [Test]
-        public async Task ExecuteAsync_WhenGenerateJwtInfoIsValid_ReturnsExpectedData()
+        public async Task ExecuteAsync_WhenGenerateJwtInfoIsValidReturnsExpectedResult()
         {
             // Arrange
-            var expectedJwtInfo = new JwtInfo();
-            var jwtService = new Mock<IJwtService>();
+            JwtInfo expectedJwtInfo = new();
+
+            Mock<IJwtService> jwtService = new();
             jwtService.Setup(x => x.GenerateJwtAsync(It.IsAny<GenerateJwtInfo>())).ReturnsAsync(expectedJwtInfo);
 
-            var logger = new Mock<ILogger<GenerateJwtFlow>>();
-            var generateJwtInfo = new GenerateJwtInfo();
+            Mock<ILogger<GenerateJwtFlow>> logger = new();
+            GenerateJwtInfo generateJwtInfo = new();
 
-            var principal = new Mock<IPrincipal>();
+            Mock<IPrincipal> principal = new();
             principal.SetupGet(x => x.Identity).Returns(new GenericIdentity("test"));
 
-            var generateJwtFlow = new GenerateJwtFlow(jwtService.Object, logger.Object);
+            GenerateJwtFlow generateJwtFlow = new(jwtService.Object, logger.Object);
 
             // Act
-            var actualJwtInfo = await generateJwtFlow.ExecuteAsync(generateJwtInfo, principal.Object);
+            JwtInfo actualJwtInfo = await generateJwtFlow.ExecuteAsync(generateJwtInfo, principal.Object);
 
             // Assert
             actualJwtInfo.Should().BeEquivalentTo(expectedJwtInfo, $"because {nameof(GenerateJwtFlow)} works");

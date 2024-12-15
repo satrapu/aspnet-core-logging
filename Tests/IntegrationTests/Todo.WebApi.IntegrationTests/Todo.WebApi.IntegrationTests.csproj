@@ -23,6 +23,11 @@
         <PackageReference Include="NUnit" />
         <PackageReference Include="NUnit3TestAdapter" />
         <PackageReference Include="NunitXml.TestLogger" />
+        <PackageReference Include="Verify.NUnit" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Controllers\VerifySnapshots\" />
     </ItemGroup>
 
     <PropertyGroup Label="FineCodeCoverage">

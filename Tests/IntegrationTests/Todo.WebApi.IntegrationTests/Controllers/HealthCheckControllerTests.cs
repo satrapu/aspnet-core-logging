@@ -1,22 +1,16 @@
 namespace Todo.WebApi.Controllers
 {
-    using System;
     using System.Diagnostics;
-    using System.Linq;
-    using System.Net;
     using System.Net.Http;
     using System.Threading.Tasks;
 
     using Commons.Constants;
 
-    using FluentAssertions;
-    using FluentAssertions.Execution;
-
-    using Newtonsoft.Json.Linq;
-
     using NUnit.Framework;
 
     using TestInfrastructure;
+
+    using VerifyNUnit;
 
     /// <summary>
     /// Contains integration tests targeting <see cref="HealthCheckController" /> class.
@@ -44,7 +38,7 @@ namespace Todo.WebApi.Controllers
                 shouldRunStartupLogicTasks: true
             );
 
-            activityListener = new ActivityListener
+            activityListener = new ActivityListener()
             {
                 ShouldListenTo = _ => true,
                 Sample = (ref ActivityCreationOptions<ActivityContext> _) => ActivitySamplingResult.AllDataAndRecorded,
@@ -52,7 +46,7 @@ namespace Todo.WebApi.Controllers
                 ActivityStopped = _ => { }
             };
 
-            noOpActivityListener = new ActivityListener
+            noOpActivityListener = new ActivityListener()
             {
                 ShouldListenTo = _ => false,
                 Sample = (ref ActivityCreationOptions<ActivityContext> _) => ActivitySamplingResult.None,
@@ -78,40 +72,13 @@ namespace Todo.WebApi.Controllers
         public async Task GetHealthReportAsync_UsingValidInput_ReturnsExpectedHealthReport()
         {
             // Arrange
-            TimeSpan maxWaitTimeForHealthChecks = HealthCheckController.MaxHealthCheckDuration;
-
             using HttpClient httpClient = await testWebApplicationFactory.CreateHttpClientAsync();
 
             // Act
             using HttpResponseMessage response = await httpClient.GetAsync(BaseUrl);
 
             // Assert
-            using AssertionScope _ = new();
-            response.IsSuccessStatusCode.Should().BeTrue();
-            response.StatusCode.Should().Be(HttpStatusCode.OK);
-
-            JObject responseContent = await response.Content.ReadAsAsync<JObject>();
-            responseContent.Should().NotBeNull();
-
-            JObject healthReport = responseContent.Value<JObject>(key: "healthReport");
-            healthReport.Should().NotBeNull();
-
-            string status = healthReport.Value<string>(key: "status");
-            status.Should().Be("Healthy");
-
-            string description = healthReport.Value<string>(key: "description");
-            description.Should().Be("All dependencies have been successfully checked");
-
-            string duration = healthReport.Value<string>(key: "duration");
-            duration.As<TimeSpan>().Should().BeLessOrEqualTo(maxWaitTimeForHealthChecks);
-
-            JArray dependencies = healthReport.Value<JArray>("dependencies");
-            dependencies.Should().NotBeNullOrEmpty();
-
-            JToken persistentStorage = dependencies.Children().FirstOrDefault(child => child.Value<string>(key: "name") is "Persistent storage");
-            persistentStorage.Should().NotBeNull();
-            persistentStorage!.Value<string>(key: "status").Should().Be("Healthy");
-            persistentStorage.Value<string>(key: "duration").As<TimeSpan>().Should().BeLessOrEqualTo(maxWaitTimeForHealthChecks);
+            await Verifier.Verify(response, settings: ModuleInitializer.VerifySettings);
         }
 
         [Test]
@@ -124,9 +91,7 @@ namespace Todo.WebApi.Controllers
             using HttpResponseMessage response = await httpClient.GetAsync(BaseUrl);
 
             // Assert
-            using AssertionScope _ = new();
-            response.IsSuccessStatusCode.Should().BeFalse();
-            response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+            await Verifier.Verify(response, settings: ModuleInitializer.VerifySettings);
         }
     }
 }

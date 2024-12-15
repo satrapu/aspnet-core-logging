@@ -7,11 +7,11 @@ namespace Todo.WebApi.Controllers
 
     using Commons.Constants;
 
-    using FluentAssertions;
-
     using NUnit.Framework;
 
     using TestInfrastructure;
+
+    using VerifyNUnit;
 
     /// <summary>
     /// Contains integration tests targeting <see cref="ConfigurationController" /> class.
@@ -37,40 +37,46 @@ namespace Todo.WebApi.Controllers
             using HttpResponseMessage response = await httpClient.GetAsync("api/configuration");
 
             // Assert
-            response.StatusCode.Should().Be(expectedStatusCode, "because configuration endpoint is available only in certain conditions");
+            await Verifier.Verify(response, settings: ModuleInitializer.VerifySettings);
         }
 
         private static IEnumerable<object[]> GetConfigurationEndpointContext()
         {
-            yield return new object[]
-            {
-                EnvironmentNames.Development, HttpStatusCode.OK
-            };
+            yield return
+            [
+                EnvironmentNames.Development,
+                HttpStatusCode.OK
+            ];
 
-            yield return new object[]
-            {
-                EnvironmentNames.IntegrationTests, HttpStatusCode.Forbidden
-            };
+            yield return
+            [
+                EnvironmentNames.IntegrationTests,
+                HttpStatusCode.Forbidden
+            ];
 
-            yield return new object[]
-            {
-                EnvironmentNames.AcceptanceTests, HttpStatusCode.Forbidden
-            };
+            yield return
+            [
+                EnvironmentNames.AcceptanceTests,
+                HttpStatusCode.Forbidden
+            ];
 
-            yield return new object[]
-            {
-                EnvironmentNames.DemoInAzure, HttpStatusCode.Forbidden
-            };
+            yield return
+            [
+                EnvironmentNames.DemoInAzure,
+                HttpStatusCode.Forbidden
+            ];
 
-            yield return new object[]
-            {
-                EnvironmentNames.Staging, HttpStatusCode.Forbidden
-            };
+            yield return
+            [
+                EnvironmentNames.Staging,
+                HttpStatusCode.Forbidden
+            ];
 
-            yield return new object[]
-            {
-                EnvironmentNames.Production, HttpStatusCode.Forbidden
-            };
+            yield return
+            [
+                EnvironmentNames.Production,
+                HttpStatusCode.Forbidden
+            ];
         }
     }
 }
