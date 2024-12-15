@@ -50,16 +50,16 @@ variables:
   # Specifies the versions of the .NET SDK to install and use when running this pipeline.
   # All releases can be found here: https://dotnet.microsoft.com/download/dotnet.
   - name: 'DotNetSdkVersionUsedByApplication'
-    value: '8.0.403'
+    value: '8.0.404'
   # satrapu 2024-06-24: Version 6.x is used by SpecFlow.Plus.LivingDoc tool.
   - name: 'DotNetSdkVersionUsedByLivingDoc'
-    value: '6.0.424'
+    value: '6.0.428'
 
   # Specifies the version of the ReportGenerator tool used for generating code coverage reports.
   # All releases can be found here: https://github.com/danielpalme/ReportGenerator/releases.
   # All NuGet packages can be found here: https://www.nuget.org/packages/ReportGenerator/.
   - name: 'ReportGenerator_Version'
-    value: '5.3.11'
+    value: '5.4.1'
 
   # Specifies the version of the SpecFlowPlusLivingDoc tool used for generating acceptance test results.
   # All NuGet packages can be found here: https://www.nuget.org/packages/SpecFlow.Plus.LivingDocPlugin.
