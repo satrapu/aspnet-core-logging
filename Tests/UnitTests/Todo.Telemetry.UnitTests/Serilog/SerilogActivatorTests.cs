@@ -14,6 +14,62 @@ namespace Todo.Telemetry.Serilog
     [TestFixture]
     public class SerilogActivatorTests
     {
+        private const string FileSinkJsonFragment =
+            """
+            {
+                "Serilog": {
+                    "LevelSwitches": {
+                        "$controlSwitch": "Information"
+                    },
+                    "MinimumLevel": {
+                        "ControlledBy": "$controlSwitch"
+                    },
+                    "Using": [
+                        "Serilog.Sinks.File"
+                    ],
+                    "WriteTo": [
+                        {
+                            "Name": "File",
+                            "Args": {
+                                "path": "%LOGS_HOME%/todo-web-api.log",
+                                "outputTemplate": "{SourceContext}{NewLine}{Message:lj}{NewLine}{Properties}{NewLine}{Exception}",
+                                "rollingInterval": "Day",
+                                "rollOnFileSizeLimit": "true",
+                                "fileSizeLimitBytes": "1073741824",
+                                "retainedFileCountLimit": "31"
+                            }
+                        }
+                    ]
+                }
+            }
+            """;
+
+        private const string ConsoleSinkJsonFragment =
+            """
+            {
+                "Serilog": {
+                    "LevelSwitches": {
+                        "$controlSwitch": "Information"
+                    },
+                    "MinimumLevel": {
+                        "ControlledBy": "$controlSwitch"
+                    },
+                    "Using": [
+                        "Serilog.Sinks.Console"
+                    ],
+                    "WriteTo": [
+                        {
+                            "Name": "Console",
+                            "Args": {
+                                "theme": "Serilog.Sinks.SystemConsole.Themes.AnsiConsoleTheme::Code, Serilog.Sinks.Console",
+                                "outputTemplate": "{SourceContext}{NewLine}{Message:lj}{NewLine}{Properties}{NewLine{Exception}"
+                            }
+                        }
+                    ]
+                }
+            }
+            """;
+
         [Test]
         [TestCaseSource(nameof(GetFileSinkConfigurations))]
         public void IsFileSinkConfigured_WhenConfigurationIsValid_MustReturnExpectedValue(IConfiguration configuration, bool expectedReturnValue)
@@ -30,57 +86,5 @@ namespace Todo.Telemetry.Serilog
             yield return [FileSinkJsonFragment.ToConfiguration(), true];
             yield return [ConsoleSinkJsonFragment.ToConfiguration(), false];
         }
-
-        private const string FileSinkJsonFragment = @"
-        {
-	        ""Serilog"": {
-		        ""LevelSwitches"": {
-			        ""$controlSwitch"": ""Information""
-		        },
-		        ""MinimumLevel"": {
-			        ""ControlledBy"": ""$controlSwitch""
-		        },
-		        ""Using"": [
-			        ""Serilog.Sinks.File""
-		        ],
-		        ""WriteTo"": [
-			        {
-				        ""Name"": ""File"",
-				        ""Args"": {
-					        ""path"": ""%LOGS_HOME%/todo-web-api.log"",
-					        ""outputTemplate"": ""{SourceContext}{NewLine}{Message:lj}{NewLine}{Properties}{NewLine}{Exception}"",
-					        ""rollingInterval"": ""Day"",
-					        ""rollOnFileSizeLimit"": ""true"",
-					        ""fileSizeLimitBytes"": ""1073741824"",
-					        ""retainedFileCountLimit"": ""31""
-				        }
-			        }
-		        ]
-	        }
-        }";
-
-        private const string ConsoleSinkJsonFragment = @"
-        {
-	        ""Serilog"": {
-		        ""LevelSwitches"": {
-			        ""$controlSwitch"": ""Information""
-		        },
-		        ""MinimumLevel"": {
-			        ""ControlledBy"": ""$controlSwitch""
-		        },
-		        ""Using"": [
-			        ""Serilog.Sinks.Console""
-		        ],
-		        ""WriteTo"": [
-			        {
-				        ""Name"": ""Console"",
-				        ""Args"": {
-					        ""theme"": ""Serilog.Sinks.SystemConsole.Themes.AnsiConsoleTheme::Code, Serilog.Sinks.Console"",
-					        ""outputTemplate"": ""{SourceContext}{NewLine}{Message:lj}{NewLine}{Properties}{NewLine{Exception}""
-				        }
-			        }
-		        ]
-	        }
-        }";
     }
 }
