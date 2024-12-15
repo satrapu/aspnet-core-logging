@@ -1,5 +1,3 @@
-using System.Net;
-
 namespace Todo.WebApi.Controllers
 {
     using Microsoft.AspNetCore.Mvc;
@@ -9,10 +7,9 @@ namespace Todo.WebApi.Controllers
     using System.Threading;
     using System.Threading.Tasks;
 
-    using FluentAssertions;
-    using FluentAssertions.Execution;
-
     using NUnit.Framework;
+
+    using VerifyNUnit;
 
     /// <summary>
     /// Contains unit tests targeting <see cref="HealthCheckController" /> class.
@@ -38,26 +35,7 @@ namespace Todo.WebApi.Controllers
             ActionResult actionResult = await classUnderTest.GetHealthReportAsync(cancellationToken: CancellationToken.None);
 
             // Assert
-            using AssertionScope _ = new();
-            actionResult.Should().NotBeNull();
-
-            ObjectResult objectResult = actionResult.As<ObjectResult>();
-            objectResult.Should().NotBeNull();
-            objectResult.StatusCode.Should().Be((int)HttpStatusCode.ServiceUnavailable);
-            objectResult.Value.Should().NotBeNull();
-            objectResult.Value.Should().BeEquivalentTo
-            (
-                expectation: new
-                {
-                    HealthReport = new
-                    {
-                        Status = "Unhealthy",
-                        Description = "Failed to check dependencies due to a timeout",
-                        Duration = HealthCheckController.MaxHealthCheckDuration.ToString("g"),
-                        Dependencies = Array.Empty<object>()
-                    }
-                }
-            );
+            await Verifier.Verify(actionResult, settings: ModuleInitializer.VerifySettings);
         }
 
         [Test]
@@ -75,26 +53,7 @@ namespace Todo.WebApi.Controllers
             ActionResult actionResult = await classUnderTest.GetHealthReportAsync(cancellationToken: CancellationToken.None);
 
             // Assert
-            using AssertionScope _ = new();
-            actionResult.Should().NotBeNull();
-
-            ObjectResult objectResult = actionResult.As<ObjectResult>();
-            objectResult.Should().NotBeNull();
-            objectResult.StatusCode.Should().Be((int)HttpStatusCode.ServiceUnavailable);
-            objectResult.Value.Should().NotBeNull();
-            objectResult.Value.Should().BeEquivalentTo
-            (
-                expectation: new
-                {
-                    HealthReport = new
-                    {
-                        Status = "Unhealthy",
-                        Description = "Failed to check dependencies due to an unexpected error",
-                        Duration = HealthCheckController.MaxHealthCheckDuration.ToString("g"),
-                        Dependencies = Array.Empty<object>()
-                    }
-                }
-            );
+            await Verifier.Verify(actionResult, settings: ModuleInitializer.VerifySettings);
         }
 
         private class HealthCheckServiceThrowingExceptions : HealthCheckService

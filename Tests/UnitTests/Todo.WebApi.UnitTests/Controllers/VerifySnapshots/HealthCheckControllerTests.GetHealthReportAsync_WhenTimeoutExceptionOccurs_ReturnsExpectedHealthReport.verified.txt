@@ -1,0 +1,11 @@
+﻿{
+  Value: {
+    HealthReport: {
+      Status: Unhealthy,
+      Description: Failed to check dependencies due to a timeout,
+      Duration: 0:00:02,
+      Dependencies: []
+    }
+  },
+  StatusCode: 503
+}
