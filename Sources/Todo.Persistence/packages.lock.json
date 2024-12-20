@@ -187,7 +187,8 @@
         "dependencies": {
           "Autofac": "[8.2.0, )",
           "Microsoft.Extensions.Hosting.Abstractions": "[9.0.0, )",
-          "Microsoft.Extensions.Logging.Abstractions": "[9.0.0, )"
+          "Microsoft.Extensions.Logging.Abstractions": "[9.0.0, )",
+          "SonarAnalyzer.CSharp": "[10.4.0.108396, )"
         }
       },
       "Autofac": {

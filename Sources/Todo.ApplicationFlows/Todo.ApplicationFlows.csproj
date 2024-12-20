@@ -1,19 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
     <PropertyGroup>
         <TargetFramework>net9.0</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Todo.Commons\Todo.Commons.csproj" />
-        <ProjectReference Include="..\Todo.Services\Todo.Services.csproj" />
+        <ProjectReference Include="..\Todo.Commons\Todo.Commons.csproj"/>
+        <ProjectReference Include="..\Todo.Services\Todo.Services.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="SonarAnalyzer.CSharp">
-        <PrivateAssets>all</PrivateAssets>
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      </PackageReference>
+        <PackageReference Include="SonarAnalyzer.CSharp"/>
     </ItemGroup>
-
 </Project>

@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
     <PropertyGroup>
         <TargetFramework>net9.0</TargetFramework>
         <OutputType>Library</OutputType>
@@ -7,31 +6,25 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\..\Sources\Todo.Services\Todo.Services.csproj" />
+        <ProjectReference Include="..\..\..\Sources\Todo.Services\Todo.Services.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="coverlet.collector">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="EntityFrameworkCoreMock.Moq" />
-        <PackageReference Include="FluentAssertions" />
-        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" />
-        <PackageReference Include="Moq" />
-        <PackageReference Include="NUnit" />
-        <PackageReference Include="NUnit3TestAdapter" />
-        <PackageReference Include="NunitXml.TestLogger" />
-        <PackageReference Include="SonarAnalyzer.CSharp">
-          <PrivateAssets>all</PrivateAssets>
-          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
-        <PackageReference Include="Verify.NUnit" />
+        <PackageReference Include="coverlet.collector"/>
+        <PackageReference Include="EntityFrameworkCoreMock.Moq"/>
+        <PackageReference Include="FluentAssertions"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory"/>
+        <PackageReference Include="Microsoft.NET.Test.Sdk"/>
+        <PackageReference Include="Moq"/>
+        <PackageReference Include="NUnit"/>
+        <PackageReference Include="NUnit3TestAdapter"/>
+        <PackageReference Include="NunitXml.TestLogger"/>
+        <PackageReference Include="SonarAnalyzer.CSharp"/>
+        <PackageReference Include="Verify.NUnit"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Security\VerifySnapshots\" />
+        <Folder Include="Security\VerifySnapshots\"/>
     </ItemGroup>
 
     <PropertyGroup Label="FineCodeCoverage">
@@ -39,5 +32,4 @@
         <Include>[*]*</Include>
         <IncludeTestAssembly>false</IncludeTestAssembly>
     </PropertyGroup>
-
 </Project>

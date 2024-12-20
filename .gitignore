@@ -26,6 +26,7 @@ LivingDoc.html
 
 # Code coverage
 /Tests/**/.CodeCoverageResults/
+/Tests/**/coverage.cobertura.xml
 /Tests/**/coverage.opencover.xml
 /Tests/**/coverage.json
 

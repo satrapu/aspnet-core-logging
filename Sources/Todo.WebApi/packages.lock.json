@@ -608,6 +608,7 @@
       "todo.applicationflows": {
         "type": "Project",
         "dependencies": {
+          "SonarAnalyzer.CSharp": "[10.4.0.108396, )",
           "Todo.Commons": "[1.0.0, )",
           "Todo.Services": "[1.0.0, )"
         }
@@ -617,7 +618,8 @@
         "dependencies": {
           "Autofac": "[8.2.0, )",
           "Microsoft.Extensions.Hosting.Abstractions": "[9.0.0, )",
-          "Microsoft.Extensions.Logging.Abstractions": "[9.0.0, )"
+          "Microsoft.Extensions.Logging.Abstractions": "[9.0.0, )",
+          "SonarAnalyzer.CSharp": "[10.4.0.108396, )"
         }
       },
       "todo.persistence": {
@@ -626,12 +628,14 @@
           "Microsoft.Extensions.Configuration.Binder": "[9.0.0, )",
           "Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore": "[9.0.0, )",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "[9.0.2, )",
+          "SonarAnalyzer.CSharp": "[10.4.0.108396, )",
           "Todo.Commons": "[1.0.0, )"
         }
       },
       "todo.services": {
         "type": "Project",
         "dependencies": {
+          "SonarAnalyzer.CSharp": "[10.4.0.108396, )",
           "System.IdentityModel.Tokens.Jwt": "[8.3.0, )",
           "Todo.Persistence": "[1.0.0, )"
         }
@@ -651,6 +655,7 @@
           "Serilog.Enrichers.Thread": "[4.0.0, )",
           "Serilog.Sinks.ApplicationInsights": "[4.0.0, )",
           "Serilog.Sinks.Seq": "[8.0.0, )",
+          "SonarAnalyzer.CSharp": "[10.4.0.108396, )",
           "Todo.ApplicationFlows": "[1.0.0, )"
         }
       },
