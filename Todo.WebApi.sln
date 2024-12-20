@@ -8,17 +8,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{398FFE78
 		Build\azure-pipelines.job-template.yml = Build\azure-pipelines.job-template.yml
 		Build\azure-pipelines.yml = Build\azure-pipelines.yml
 		Directory.Build.props = Directory.Build.props
-		Directory.Build.targets = Directory.Build.targets
 		Build\PublishComposeServiceLogs.ps1 = Build\PublishComposeServiceLogs.ps1
 		Build\RunComposeServices.ps1 = Build\RunComposeServices.ps1
 		Build\SonarBuildBreaker.ps1 = Build\SonarBuildBreaker.ps1
 		Build\start-docker-on-macOS.sh = Build\start-docker-on-macOS.sh
+		Directory.Build.targets = Directory.Build.targets
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sources", "Sources", "{ED7A5363-C21A-4D47-A2A5-67DEB1E0DDE3}"
 	ProjectSection(SolutionItems) = preProject
 		Sources\Directory.Build.props = Sources\Directory.Build.props
-		Sources\Directory.Build.targets = Sources\Directory.Build.targets
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{280A9085-F56E-43CA-A419-1E4609E378EA}"
@@ -27,6 +26,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{280A9085
 		Tests\Directory.Build.props = Tests\Directory.Build.props
 		Tests\Directory.Build.targets = Tests\Directory.Build.targets
 		Tests\tests.runsettings = Tests\tests.runsettings
+		Tests\Directory.Packages.targets = Tests\Directory.Packages.targets
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{D084DD17-3480-4A70-8296-92FB55BAD433}"
@@ -69,13 +69,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{E773243B-5DCB-46A8-9012-1AD0084F0149}"
 	ProjectSection(SolutionItems) = preProject
 		Tests\Infrastructure\Directory.Build.props = Tests\Infrastructure\Directory.Build.props
-		Tests\Infrastructure\Directory.Build.targets = Tests\Infrastructure\Directory.Build.targets
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ArchitectureTests", "ArchitectureTests", "{AB306CB9-FAA1-4058-9A9C-111EA5BF04C7}"
-	ProjectSection(SolutionItems) = preProject
-		Tests\ArchitectureTests\Directory.Build.targets = Tests\ArchitectureTests\Directory.Build.targets
-	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Todo.ArchitectureTests", "Tests\ArchitectureTests\Todo.ArchitectureTests\Todo.ArchitectureTests.csproj", "{D9CB10FA-DBFB-4A35-8C20-E0CAB538BAC6}"
 EndProject
@@ -92,6 +88,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dependencies", "Dependencies", "{C96E70BB-91DA-49F8-8107-79B3B5F1973D}"
 	ProjectSection(SolutionItems) = preProject
 		nuget.config = nuget.config
+		Directory.Packages.props = Directory.Packages.props
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CodeQuality", "CodeQuality", "{E0671D43-F81A-4829-802B-CCE84A764929}"

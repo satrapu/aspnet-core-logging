@@ -1,10 +1,5 @@
-<!--
-  Customize your build: https://learn.microsoft.com/en-us/visualstudio/msbuild/customize-your-build?view=vs-2022.
-  See more MSBuild properties here: https://learn.microsoft.com/en-us/visualstudio/msbuild/common-msbuild-project-properties?view=vs-2022.
--->
 <Project>
-
-    <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+    <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))"/>
 
     <PropertyGroup>
         <IsPackable>false</IsPackable>
@@ -14,7 +9,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <AdditionalFiles Include="..\..\..\.sonarlint\aspnet-core-logging\CSharp\SonarLint.xml" Link="SonarLint.xml" />
+        <AdditionalFiles Include="..\..\..\.sonarlint\aspnet-core-logging\CSharp\SonarLint.xml" Link="SonarLint.xml"/>
     </ItemGroup>
-
 </Project>
