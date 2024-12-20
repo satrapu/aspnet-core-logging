@@ -48,12 +48,6 @@
         "resolved": "5.0.0",
         "contentHash": "xDeAiPH72KcaNC5JWF2N8fho4PPKcOzNq8hZP8BC6ByrsIJXe9Syq9ClnsGm0R/nQIbVjie6jGauXvuCReRrvg=="
       },
-      "SonarAnalyzer.CSharp": {
-        "type": "Direct",
-        "requested": "[10.4.0.108396, )",
-        "resolved": "10.4.0.108396",
-        "contentHash": "xGcLZ+dvkVuBbd3sjPur9X+1owSL/iDoxVFJLhMx3/vq1fmoKM2fwvrZ8ReAas6l715GJ/dWU2ckwlrRVopmbg=="
-      },
       "Azure.Core": {
         "type": "Transitive",
         "resolved": "1.40.0",
@@ -695,7 +689,6 @@
       "todo.applicationflows": {
         "type": "Project",
         "dependencies": {
-          "SonarAnalyzer.CSharp": "[10.4.0.108396, )",
           "Todo.Commons": "[1.0.0, )",
           "Todo.Services": "[1.0.0, )"
         }
@@ -705,8 +698,7 @@
         "dependencies": {
           "Autofac": "[8.2.0, )",
           "Microsoft.Extensions.Hosting.Abstractions": "[9.0.0, )",
-          "Microsoft.Extensions.Logging.Abstractions": "[9.0.0, )",
-          "SonarAnalyzer.CSharp": "[10.4.0.108396, )"
+          "Microsoft.Extensions.Logging.Abstractions": "[9.0.0, )"
         }
       },
       "todo.persistence": {
@@ -715,14 +707,12 @@
           "Microsoft.Extensions.Configuration.Binder": "[9.0.0, )",
           "Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore": "[9.0.0, )",
           "Npgsql.EntityFrameworkCore.PostgreSQL": "[9.0.2, )",
-          "SonarAnalyzer.CSharp": "[10.4.0.108396, )",
           "Todo.Commons": "[1.0.0, )"
         }
       },
       "todo.services": {
         "type": "Project",
         "dependencies": {
-          "SonarAnalyzer.CSharp": "[10.4.0.108396, )",
           "System.IdentityModel.Tokens.Jwt": "[8.3.0, )",
           "Todo.Persistence": "[1.0.0, )"
         }
@@ -742,7 +732,6 @@
           "Serilog.Enrichers.Thread": "[4.0.0, )",
           "Serilog.Sinks.ApplicationInsights": "[4.0.0, )",
           "Serilog.Sinks.Seq": "[8.0.0, )",
-          "SonarAnalyzer.CSharp": "[10.4.0.108396, )",
           "Todo.ApplicationFlows": "[1.0.0, )"
         }
       },
@@ -752,7 +741,6 @@
           "Autofac.Extensions.DependencyInjection": "[10.0.0, )",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "[9.0.0, )",
           "Microsoft.EntityFrameworkCore.Design": "[9.0.0, )",
-          "SonarAnalyzer.CSharp": "[10.4.0.108396, )",
           "Todo.Commons": "[1.0.0, )",
           "Todo.Telemetry": "[1.0.0, )"
         }

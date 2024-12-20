@@ -17,7 +17,6 @@
         <PackageReference Include="Microsoft.NET.Test.Sdk"/>
         <PackageReference Include="Polly"/>
         <PackageReference Include="SolidToken.SpecFlow.DependencyInjection"/>
-        <PackageReference Include="SonarAnalyzer.CSharp"/>
         <PackageReference Include="SpecFlow.Plus.LivingDocPlugin"/>
         <PackageReference Include="SpecFlow.xUnit"/>
         <PackageReference Include="xunit"/>

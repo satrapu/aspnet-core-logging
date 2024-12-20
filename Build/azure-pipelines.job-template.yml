@@ -99,7 +99,7 @@ jobs:
       version: $(DotNetSdkVersionUsedByLivingDoc)
 
   # Prepares analysis on SonarCloud.
-  # Before using any Sonar tasks, please make sure SonarCloud extension is installed in the Azure DevOps organization
+  # Before using any Sonar tasks, please make sure "SonarQube Cloud" extension is installed in the Azure DevOps organization
   # where the project built using this pipeline resides.
   # See more about this extension here: https://marketplace.visualstudio.com/items?itemName=SonarSource.sonarcloud.
   - task: SonarCloudPrepare@3
@@ -118,14 +118,15 @@ jobs:
       projectVersion: 'build.id.$(Build.BuildId)'
       # Provide more configuration for Sonar - based on this example: https://github.com/SonarSource/sonar-dotnet/blob/master/azure-pipelines.yml.
       # Check the various analysis parameters here:
-      #   - https://docs.sonarqube.org/latest/analysis/analysis-parameters/
-      #   - https://docs.sonarcloud.io/advanced-setup/analysis-scope/
-      #   - https://docs.sonarqube.org/latest/project-administration/narrowing-the-focus/
+      #   - https://docs.sonarsource.com/sonarqube-server/latest/analyzing-source-code/analysis-parameters/
+      #   - https://docs.sonarsource.com/sonarqube-cloud/advanced-setup/analysis-scope/
+      #   - https://docs.sonarsource.com/sonarqube-cloud/enriching/test-coverage/test-coverage-parameters/
+      #   - https://docs.sonarsource.com/sonarqube-cloud/enriching/test-coverage/dotnet-test-coverage/
       extraProperties: |
         sonar.verbose=${{ parameters.sonar.verbose }}
         sonar.sourceEncoding=${{ parameters.sonar.sourceEncoding }}
         sonar.cs.nunit.reportsPaths=$(Build.SourcesDirectory)/Tests/**/TestResults/TestResults.xml
-        sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/Tests/**/coverage.opencover.xml
+        sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/Tests/**/coverage*.xml
         sonar.coverage.exclusions=Sources/Todo.Persistence/Entities/**,Sources/Todo.Persistence/Migrations/**,Sources/Todo.Telemetry.OpenTelemetry.OpenTelemetryActivator,/Tests/**
         sonar.analysis.buildNumber=$(Build.BuildId)
         sonar.analysis.pipeline=$(Build.BuildId)
@@ -246,8 +247,7 @@ jobs:
       --test-adapter-path "."
       --logger "nunit"
       --filter "TestCategory=UnitTests"
-      --collect:"XPlat Code Coverage"
-      --settings $(Build.SourcesDirectory)/Tests/tests.runsettings
+      --collect:"Code Coverage;Format=json,cobertura,opencover"
     name: 'run_unit_tests'
     displayName: 'Run unit tests'
     condition: |
@@ -347,8 +347,7 @@ jobs:
       --test-adapter-path "."
       --logger "nunit"
       --filter "TestCategory=IntegrationTests"
-      --collect:"XPlat Code Coverage"
-      --settings $(Build.SourcesDirectory)/Tests/tests.runsettings
+      --collect:"Code Coverage;Format=json,cobertura,opencover"
     name: 'run_integration_tests'
     displayName: 'Run integration tests'
     condition: |

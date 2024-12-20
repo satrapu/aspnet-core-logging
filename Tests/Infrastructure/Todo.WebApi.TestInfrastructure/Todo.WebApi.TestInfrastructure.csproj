@@ -16,7 +16,6 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing"/>
-        <PackageReference Include="SonarAnalyzer.CSharp"/>
     </ItemGroup>
 
     <PropertyGroup Label="FineCodeCoverage">

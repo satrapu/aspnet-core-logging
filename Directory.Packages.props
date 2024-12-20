@@ -8,12 +8,11 @@
         <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
         <CentralPackageVersionOverrideEnabled>false</CentralPackageVersionOverrideEnabled>
     </PropertyGroup>
-    
     <ItemGroup>
         <PackageVersion Include="Autofac" Version="8.2.0"/>
         <PackageVersion Include="Autofac.Extensions.DependencyInjection" Version="10.0.0"/>
         <PackageVersion Include="Azure.Monitor.OpenTelemetry.Exporter" Version="1.3.0"/>
-        <PackageVersion Include="coverlet.collector" Version="6.0.2"/>
+        <PackageVersion Include="coverlet.msbuild" Version="6.0.2"/>
         <PackageVersion Include="EntityFrameworkCoreMock.Moq" Version="2.4.0"/>
         <PackageVersion Include="FluentAssertions" Version="7.0.0"/>
         <PackageVersion Include="FluentAssertions.Web" Version="1.7.0"/>
@@ -49,7 +48,6 @@
         <PackageVersion Include="Serilog.Sinks.ApplicationInsights" Version="4.0.0"/>
         <PackageVersion Include="Serilog.Sinks.Seq" Version="8.0.0"/>
         <PackageVersion Include="SolidToken.SpecFlow.DependencyInjection" Version="3.9.3"/>
-        <PackageVersion Include="SonarAnalyzer.CSharp" Version="10.4.0.108396"/>
         <PackageVersion Include="SpecFlow.Plus.LivingDocPlugin" Version="3.9.57"/>
         <PackageVersion Include="SpecFlow.xUnit" Version="3.9.74"/>
         <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="8.3.0"/>

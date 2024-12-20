@@ -26,6 +26,5 @@
         <PackageReference Include="Serilog.Enrichers.Thread"/>
         <PackageReference Include="Serilog.Sinks.ApplicationInsights"/>
         <PackageReference Include="Serilog.Sinks.Seq"/>
-        <PackageReference Include="SonarAnalyzer.CSharp"/>
     </ItemGroup>
 </Project>

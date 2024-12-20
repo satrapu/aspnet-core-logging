@@ -7,8 +7,4 @@
         <ProjectReference Include="..\Todo.Commons\Todo.Commons.csproj"/>
         <ProjectReference Include="..\Todo.Services\Todo.Services.csproj"/>
     </ItemGroup>
-
-    <ItemGroup>
-        <PackageReference Include="SonarAnalyzer.CSharp"/>
-    </ItemGroup>
 </Project>

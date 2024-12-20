@@ -15,7 +15,6 @@
         <PackageReference Include="NUnit"/>
         <PackageReference Include="NUnit3TestAdapter"/>
         <PackageReference Include="NunitXml.TestLogger"/>
-        <PackageReference Include="SonarAnalyzer.CSharp"/>
     </ItemGroup>
 
     <PropertyGroup Label="FineCodeCoverage">
