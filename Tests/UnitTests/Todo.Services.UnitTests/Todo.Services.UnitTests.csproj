@@ -11,6 +11,10 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="coverlet.collector">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <PackageReference Include="EntityFrameworkCoreMock.Moq" />
         <PackageReference Include="FluentAssertions" />
         <PackageReference Include="Microsoft.EntityFrameworkCore.InMemory" />
@@ -19,6 +23,10 @@
         <PackageReference Include="NUnit" />
         <PackageReference Include="NUnit3TestAdapter" />
         <PackageReference Include="NunitXml.TestLogger" />
+        <PackageReference Include="SonarAnalyzer.CSharp">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
         <PackageReference Include="Verify.NUnit" />
     </ItemGroup>
 

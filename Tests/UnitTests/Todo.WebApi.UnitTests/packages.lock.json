@@ -2,6 +2,12 @@
   "version": 2,
   "dependencies": {
     "net9.0": {
+      "coverlet.collector": {
+        "type": "Direct",
+        "requested": "[6.0.2, )",
+        "resolved": "6.0.2",
+        "contentHash": "bJShQ6uWRTQ100ZeyiMqcFlhP7WJ+bCuabUs885dJiBEzMsJMSFr7BOyeCw4rgvQokteGi5rKQTlkhfQPUXg2A=="
+      },
       "FluentAssertions": {
         "type": "Direct",
         "requested": "[7.0.0, )",
@@ -50,9 +56,9 @@
       },
       "SonarAnalyzer.CSharp": {
         "type": "Direct",
-        "requested": "[10.3.0.106239, )",
-        "resolved": "10.3.0.106239",
-        "contentHash": "Ne5QHx0nUULk7PF+3GIQIC2EnFI93SPRilyqVY6US4JolZOCc9XyUKzvOVsufp7cyrqbOTL07U5mb6poYzllNQ=="
+        "requested": "[10.4.0.108396, )",
+        "resolved": "10.4.0.108396",
+        "contentHash": "xGcLZ+dvkVuBbd3sjPur9X+1owSL/iDoxVFJLhMx3/vq1fmoKM2fwvrZ8ReAas6l715GJ/dWU2ckwlrRVopmbg=="
       },
       "Verify.NUnit": {
         "type": "Direct",
