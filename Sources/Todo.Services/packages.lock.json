@@ -193,7 +193,7 @@
       "todo.commons": {
         "type": "Project",
         "dependencies": {
-          "Autofac": "[8.1.1, )",
+          "Autofac": "[8.2.0, )",
           "Microsoft.Extensions.Hosting.Abstractions": "[9.0.0, )",
           "Microsoft.Extensions.Logging.Abstractions": "[9.0.0, )"
         }
@@ -209,9 +209,9 @@
       },
       "Autofac": {
         "type": "CentralTransitive",
-        "requested": "[8.1.1, )",
-        "resolved": "8.1.1",
-        "contentHash": "lhHjVB/XJtxPDUQ/FAHWAC7Spu+P9TNfDbyx2W0ABqD1eTRo7TkcZ7l7Oq1S5pKNg7NXswdk9uH73qbOzSwQFA==",
+        "requested": "[8.2.0, )",
+        "resolved": "8.2.0",
+        "contentHash": "T+4+W4byzyUOarCbIcFRbxpYKC+cndfQm/+VeWpB60P2MCN0JMsewUhZqvH5Ooe936HQjn5uHvEY9tq6BfbiIw==",
         "dependencies": {
           "System.Diagnostics.DiagnosticSource": "8.0.1"
         }
