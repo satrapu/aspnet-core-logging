@@ -8,7 +8,7 @@ set -o nounset
 
 # Check for the right Docker Compose version here: https://github.com/docker/compose/releases.
 # Installation steps can be found here: https://docs.docker.com/compose/install/standalone/.
-dockerComposeVersion='2.32.0'
+dockerComposeVersion='2.32.1'
 
 # Check for how to customize Colima VM here: https://github.com/abiosoft/colima?tab=readme-ov-file#customizing-the-vm.
 colimaCpuCount=2
