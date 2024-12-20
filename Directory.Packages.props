@@ -8,12 +8,14 @@
         <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
         <CentralPackageVersionOverrideEnabled>false</CentralPackageVersionOverrideEnabled>
     </PropertyGroup>
+
     <ItemGroup>
         <GlobalPackageReference Include="SonarAnalyzer.CSharp" Version="10.3.0.106239">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </GlobalPackageReference>
     </ItemGroup>
+
     <ItemGroup>
         <PackageVersion Include="Autofac" Version="8.2.0"/>
         <PackageVersion Include="Autofac.Extensions.DependencyInjection" Version="10.0.0"/>
