@@ -248,7 +248,7 @@ jobs:
       --logger "nunit"
       --filter "TestCategory=UnitTests"
       /p:CollectCoverage=true
-      /p:CoverletOutputFormat=\"json,cobertura,opencover\"
+      /p:CoverletOutputFormat=\"opencover\"
       /p:Exclude=\"[Todo.*Tests]*,[Todo.*.TestInfrastructure]*\"
       /p:Include=\"[Todo.*]*\"
     name: 'run_unit_tests'
@@ -352,7 +352,7 @@ jobs:
       --logger "nunit"
       --filter "TestCategory=IntegrationTests"
       /p:CollectCoverage=true
-      /p:CoverletOutputFormat=\"json,cobertura,opencover\"
+      /p:CoverletOutputFormat=\"opencover\"
       /p:Exclude=\"[Todo.*Tests]*,[Todo.*.TestInfrastructure]*\"
       /p:Include=\"[Todo.*]*\"
     name: 'run_integration_tests'
@@ -471,7 +471,7 @@ jobs:
   # enable Azure Boards for your project, as documented here: https://developercommunity.visualstudio.com/solutions/403137/view.html.
   - script: >-
       $(Build.SourcesDirectory)/Tests/.ReportGenerator/reportgenerator
-      "-reports:$(Build.SourcesDirectory)/Tests/**/coverage.cobertura.xml"
+      "-reports:$(Build.SourcesDirectory)/Tests/**/coverage.opencover.xml"
       "-targetdir:$(Build.SourcesDirectory)/Tests/.CodeCoverageReport"
       "-reporttypes:Cobertura"
       "-assemblyfilters:+Todo.*;-Todo.*Tests;-Todo.*.TestInfrastructure"
