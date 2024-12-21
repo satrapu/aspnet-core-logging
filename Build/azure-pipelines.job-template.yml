@@ -126,8 +126,8 @@ jobs:
         sonar.verbose=${{ parameters.sonar.verbose }}
         sonar.sourceEncoding=${{ parameters.sonar.sourceEncoding }}
         sonar.cs.nunit.reportsPaths=$(Build.SourcesDirectory)/Tests/**/TestResults/TestResults.xml
-        sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/Tests/**/TestResults/**/*.cobertura.xml
-        sonar.coverage.exclusions=Sources/Todo.Persistence/Entities/**,Sources/Todo.Persistence/Migrations/**,Sources/Todo.Telemetry.OpenTelemetry.OpenTelemetryActivator,/Tests/**
+        sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/Tests/**/coverage.opencover.xml
+        sonar.coverage.exclusions=$(Build.SourcesDirectory)/Tests/**
         sonar.analysis.buildNumber=$(Build.BuildId)
         sonar.analysis.pipeline=$(Build.BuildId)
 
@@ -248,7 +248,8 @@ jobs:
       --test-adapter-path "."
       --logger "nunit"
       --filter "TestCategory=UnitTests"
-      --collect:"Code Coverage;Format=json,cobertura,opencover"
+      /p:CollectCoverage=true
+      /p:CoverletOutputFormat="json,cobertura,opencover"
     name: 'run_unit_tests'
     displayName: 'Run unit tests'
     condition: |
@@ -349,7 +350,8 @@ jobs:
       --test-adapter-path "."
       --logger "nunit"
       --filter "TestCategory=IntegrationTests"
-      --collect:"Code Coverage;Format=json,cobertura,opencover"
+      /p:CollectCoverage=true
+      /p:CoverletOutputFormat="json,cobertura,opencover"
     name: 'run_integration_tests'
     displayName: 'Run integration tests'
     condition: |
@@ -466,7 +468,7 @@ jobs:
   # enable Azure Boards for your project, as documented here: https://developercommunity.visualstudio.com/solutions/403137/view.html.
   - script: >-
       $(Build.SourcesDirectory)/Tests/.ReportGenerator/reportgenerator
-      "-reports:$(Build.SourcesDirectory)/Tests/**/TestResults/**/*.cobertura.xml"
+      "-reports:$(Build.SourcesDirectory)/Tests/**/TestResults/**/coverage.cobertura.xml"
       "-targetdir:$(Build.SourcesDirectory)/Tests/.CodeCoverageReport"
       "-reporttypes:Cobertura"
       "-assemblyfilters:+Todo.*;-Todo.*Tests;-Todo.*.TestInfrastructure"
