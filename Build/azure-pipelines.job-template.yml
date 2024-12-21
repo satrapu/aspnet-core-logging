@@ -127,7 +127,6 @@ jobs:
         sonar.sourceEncoding=${{ parameters.sonar.sourceEncoding }}
         sonar.cs.nunit.reportsPaths=$(Build.SourcesDirectory)/Tests/**/TestResults/TestResults.xml
         sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/Tests/**/coverage.opencover.xml
-        sonar.coverage.exclusions=$(Build.SourcesDirectory)/Tests/**
         sonar.analysis.buildNumber=$(Build.BuildId)
         sonar.analysis.pipeline=$(Build.BuildId)
 
@@ -240,8 +239,6 @@ jobs:
   # See more about running selective tests here: https://learn.microsoft.com/en-us/dotnet/core/testing/selective-unit-tests#nunit.
   # Decorate the AssemblyInfo.cs found inside each unit test related project with:
   #     [assembly: NUnit.Framework.Category("UnitTests")]
-  # The magic "--%" fragment is needed to avoid an MSBuild error: "MSBUILD : error MSB1006: Property is not valid."; read more about it
-  # here: https://github.com/coverlet-coverage/coverlet/blob/master/Documentation/MSBuildIntegration.md#coverlet-integration-with-msbuild.
   - script: >-
       dotnet test $(Build.SourcesDirectory)/$(SolutionFileName)
       --no-build
@@ -252,6 +249,8 @@ jobs:
       --filter "TestCategory=UnitTests"
       /p:CollectCoverage=true
       /p:CoverletOutputFormat=\"json,cobertura,opencover\"
+      /p:Exclude=\"[Todo.*Tests]*;[Todo.*.TestInfrastructure]*\"
+      /p:Include=\"[Todo.*]*\"
     name: 'run_unit_tests'
     displayName: 'Run unit tests'
     condition: |
@@ -354,6 +353,8 @@ jobs:
       --filter "TestCategory=IntegrationTests"
       /p:CollectCoverage=true
       /p:CoverletOutputFormat=\"json,cobertura,opencover\"
+      /p:Exclude=\"[Todo.*Tests]*;[Todo.*.TestInfrastructure]*\"
+      /p:Include=\"[Todo.*]*\"
     name: 'run_integration_tests'
     displayName: 'Run integration tests'
     condition: |
