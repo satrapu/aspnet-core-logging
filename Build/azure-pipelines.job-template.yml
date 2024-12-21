@@ -470,7 +470,7 @@ jobs:
   # enable Azure Boards for your project, as documented here: https://developercommunity.visualstudio.com/solutions/403137/view.html.
   - script: >-
       $(Build.SourcesDirectory)/Tests/.ReportGenerator/reportgenerator
-      "-reports:$(Build.SourcesDirectory)/Tests/**/TestResults/**/coverage.cobertura.xml"
+      "-reports:$(Build.SourcesDirectory)/Tests/**/coverage.cobertura.xml"
       "-targetdir:$(Build.SourcesDirectory)/Tests/.CodeCoverageReport"
       "-reporttypes:Cobertura"
       "-assemblyfilters:+Todo.*;-Todo.*Tests;-Todo.*.TestInfrastructure"
