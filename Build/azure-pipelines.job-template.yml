@@ -126,7 +126,7 @@ jobs:
         sonar.verbose=${{ parameters.sonar.verbose }}
         sonar.sourceEncoding=${{ parameters.sonar.sourceEncoding }}
         sonar.cs.nunit.reportsPaths=$(Build.SourcesDirectory)/Tests/**/TestResults/TestResults.xml
-        sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/Tests/**/coverage*.xml
+        sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/Tests/**/TestResults/**/*.cobertura.xml
         sonar.coverage.exclusions=Sources/Todo.Persistence/Entities/**,Sources/Todo.Persistence/Migrations/**,Sources/Todo.Telemetry.OpenTelemetry.OpenTelemetryActivator,/Tests/**
         sonar.analysis.buildNumber=$(Build.BuildId)
         sonar.analysis.pipeline=$(Build.BuildId)
@@ -463,7 +463,7 @@ jobs:
   # enable Azure Boards for your project, as documented here: https://developercommunity.visualstudio.com/solutions/403137/view.html.
   - script: >-
       $(Build.SourcesDirectory)/Tests/.ReportGenerator/reportgenerator
-      "-reports:$(Build.SourcesDirectory)/Tests/**/coverage.opencover.xml"
+      "-reports:$(Build.SourcesDirectory)/Tests/**/TestResults/**/*.cobertura.xml"
       "-targetdir:$(Build.SourcesDirectory)/Tests/.CodeCoverageReport"
       "-reporttypes:Cobertura"
     name: 'generate_code_coverage_report'
