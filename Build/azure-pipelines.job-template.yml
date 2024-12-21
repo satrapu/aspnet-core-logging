@@ -228,6 +228,7 @@ jobs:
         , eq(${{ parameters.tests.runTests }}, True)
       )
     inputs:
+      testRunTitle: 'Todo Web API - Architecture Tests'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(Build.SourcesDirectory)/Tests/ArchitectureTests/**/TestResults/TestResults.xml'
       mergeTestResults: True
@@ -280,6 +281,7 @@ jobs:
         , eq(variables['ArchitectureTestsOutcome'], 'success')
       )
     inputs:
+      testRunTitle: 'Todo Web API - Unit Tests'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(Build.SourcesDirectory)/Tests/UnitTests/**/TestResults/TestResults.xml'
       mergeTestResults: True
@@ -433,6 +435,7 @@ jobs:
         , eq(variables['UnitTestsOutcome'], 'success')
       )
     inputs:
+      testRunTitle: 'Todo Web API - Integration Tests'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(Build.SourcesDirectory)/Tests/IntegrationTests/**/TestResults/TestResults.xml'
       mergeTestResults: True
