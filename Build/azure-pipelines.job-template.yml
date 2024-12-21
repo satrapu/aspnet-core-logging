@@ -622,6 +622,13 @@ jobs:
       artifact: 'test-artifacts-$(Agent.OS)-$(Agent.OSArchitecture)-$(Build.BuildNumber)-$(Build.BuildID)'
       path: '$(Build.SourcesDirectory)/Tests'
 
+  # Publish the HTML document storing living doc.
+  # See more about this Azure DevOps task here: https://marketplace.visualstudio.com/items?itemName=LakshayKaushik.PublishHTMLReports.
+  - task: publishhtmlreport@1
+    inputs:
+      htmlType: 'genericHTML'
+      htmlPath: '$(Build.SourcesDirectory)/Tests/AcceptanceTests/LivingDoc.html'
+
   # Run Sonar analysis.
   - task: SonarCloudAnalyze@3
     name: 'run_sonar_analysis'
