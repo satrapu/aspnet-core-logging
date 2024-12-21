@@ -604,15 +604,6 @@ jobs:
         --output $(Build.SourcesDirectory)/Tests/AcceptanceTests
         --output-type HTML
 
-  # Publish the HTML document storing living doc.
-  # See more about this Azure DevOps task here: https://marketplace.visualstudio.com/items?itemName=blakyaks.azure-pipelines-html-reports.
-  - task: PublishHtmlReport@1
-    displayName: 'Publish living doc'
-    inputs:
-        reportDir: '$(Build.SourcesDirectory)/Tests/AcceptanceTests/LivingDoc.html'
-        useFilenameTabs: True
-        tabName: 'Living Doc ($(Agent.OS)-$(Agent.OSArchitecture))'
-
   # Publish test related artifacts.
   # See more here: https://learn.microsoft.com/en-us/azure/devops/pipelines/artifacts/pipeline-artifacts?view=azure-devops&tabs=yaml#publish-a-pipeline-artifact.
   #
