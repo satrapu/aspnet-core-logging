@@ -1,12 +1,12 @@
 {
-  "version": 1,
+  "version": 2,
   "dependencies": {
     "net9.0": {
       "Autofac": {
         "type": "Direct",
-        "requested": "[8.1.1, )",
-        "resolved": "8.1.1",
-        "contentHash": "lhHjVB/XJtxPDUQ/FAHWAC7Spu+P9TNfDbyx2W0ABqD1eTRo7TkcZ7l7Oq1S5pKNg7NXswdk9uH73qbOzSwQFA==",
+        "requested": "[8.2.0, )",
+        "resolved": "8.2.0",
+        "contentHash": "T+4+W4byzyUOarCbIcFRbxpYKC+cndfQm/+VeWpB60P2MCN0JMsewUhZqvH5Ooe936HQjn5uHvEY9tq6BfbiIw==",
         "dependencies": {
           "System.Diagnostics.DiagnosticSource": "8.0.1"
         }
@@ -32,12 +32,6 @@
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.0"
         }
-      },
-      "SonarAnalyzer.CSharp": {
-        "type": "Direct",
-        "requested": "[10.3.0.106239, )",
-        "resolved": "10.3.0.106239",
-        "contentHash": "Ne5QHx0nUULk7PF+3GIQIC2EnFI93SPRilyqVY6US4JolZOCc9XyUKzvOVsufp7cyrqbOTL07U5mb6poYzllNQ=="
       },
       "Microsoft.Extensions.Configuration.Abstractions": {
         "type": "Transitive",

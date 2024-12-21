@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "dependencies": {
     "net9.0": {
       "Microsoft.Extensions.Configuration.Binder": {
@@ -31,20 +31,6 @@
           "Microsoft.EntityFrameworkCore": "[9.0.0, 10.0.0)",
           "Microsoft.EntityFrameworkCore.Relational": "[9.0.0, 10.0.0)",
           "Npgsql": "9.0.2"
-        }
-      },
-      "SonarAnalyzer.CSharp": {
-        "type": "Direct",
-        "requested": "[10.3.0.106239, )",
-        "resolved": "10.3.0.106239",
-        "contentHash": "Ne5QHx0nUULk7PF+3GIQIC2EnFI93SPRilyqVY6US4JolZOCc9XyUKzvOVsufp7cyrqbOTL07U5mb6poYzllNQ=="
-      },
-      "Autofac": {
-        "type": "Transitive",
-        "resolved": "8.1.1",
-        "contentHash": "lhHjVB/XJtxPDUQ/FAHWAC7Spu+P9TNfDbyx2W0ABqD1eTRo7TkcZ7l7Oq1S5pKNg7NXswdk9uH73qbOzSwQFA==",
-        "dependencies": {
-          "System.Diagnostics.DiagnosticSource": "8.0.1"
         }
       },
       "Microsoft.EntityFrameworkCore": {
@@ -153,18 +139,6 @@
           "Microsoft.Extensions.Primitives": "9.0.0"
         }
       },
-      "Microsoft.Extensions.Hosting.Abstractions": {
-        "type": "Transitive",
-        "resolved": "9.0.0",
-        "contentHash": "yUKJgu81ExjvqbNWqZKshBbLntZMbMVz/P7Way2SBx7bMqA08Mfdc9O7hWDKAiSp+zPUGT6LKcSCQIPeDK+CCw==",
-        "dependencies": {
-          "Microsoft.Extensions.Configuration.Abstractions": "9.0.0",
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.0",
-          "Microsoft.Extensions.Diagnostics.Abstractions": "9.0.0",
-          "Microsoft.Extensions.FileProviders.Abstractions": "9.0.0",
-          "Microsoft.Extensions.Logging.Abstractions": "9.0.0"
-        }
-      },
       "Microsoft.Extensions.Logging": {
         "type": "Transitive",
         "resolved": "9.0.0",
@@ -173,14 +147,6 @@
           "Microsoft.Extensions.DependencyInjection": "9.0.0",
           "Microsoft.Extensions.Logging.Abstractions": "9.0.0",
           "Microsoft.Extensions.Options": "9.0.0"
-        }
-      },
-      "Microsoft.Extensions.Logging.Abstractions": {
-        "type": "Transitive",
-        "resolved": "9.0.0",
-        "contentHash": "g0UfujELzlLbHoVG8kPKVBaW470Ewi+jnptGS9KUi6jcb+k2StujtK3m26DFSGGwQ/+bVgZfsWqNzlP6YOejvw==",
-        "dependencies": {
-          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.0"
         }
       },
       "Microsoft.Extensions.Options": {
@@ -213,9 +179,40 @@
       "todo.commons": {
         "type": "Project",
         "dependencies": {
-          "Autofac": "[8.1.1, )",
+          "Autofac": "[8.2.0, )",
           "Microsoft.Extensions.Hosting.Abstractions": "[9.0.0, )",
           "Microsoft.Extensions.Logging.Abstractions": "[9.0.0, )"
+        }
+      },
+      "Autofac": {
+        "type": "CentralTransitive",
+        "requested": "[8.2.0, )",
+        "resolved": "8.2.0",
+        "contentHash": "T+4+W4byzyUOarCbIcFRbxpYKC+cndfQm/+VeWpB60P2MCN0JMsewUhZqvH5Ooe936HQjn5uHvEY9tq6BfbiIw==",
+        "dependencies": {
+          "System.Diagnostics.DiagnosticSource": "8.0.1"
+        }
+      },
+      "Microsoft.Extensions.Hosting.Abstractions": {
+        "type": "CentralTransitive",
+        "requested": "[9.0.0, )",
+        "resolved": "9.0.0",
+        "contentHash": "yUKJgu81ExjvqbNWqZKshBbLntZMbMVz/P7Way2SBx7bMqA08Mfdc9O7hWDKAiSp+zPUGT6LKcSCQIPeDK+CCw==",
+        "dependencies": {
+          "Microsoft.Extensions.Configuration.Abstractions": "9.0.0",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.0",
+          "Microsoft.Extensions.Diagnostics.Abstractions": "9.0.0",
+          "Microsoft.Extensions.FileProviders.Abstractions": "9.0.0",
+          "Microsoft.Extensions.Logging.Abstractions": "9.0.0"
+        }
+      },
+      "Microsoft.Extensions.Logging.Abstractions": {
+        "type": "CentralTransitive",
+        "requested": "[9.0.0, )",
+        "resolved": "9.0.0",
+        "contentHash": "g0UfujELzlLbHoVG8kPKVBaW470Ewi+jnptGS9KUi6jcb+k2StujtK3m26DFSGGwQ/+bVgZfsWqNzlP6YOejvw==",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "9.0.0"
         }
       }
     }

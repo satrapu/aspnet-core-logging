@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
     <PropertyGroup>
         <TargetFramework>net9.0</TargetFramework>
         <OutputType>Library</OutputType>
@@ -25,14 +24,13 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="..\..\..\Sources\Todo.WebApi\appsettings.AcceptanceTests.json">
-        <Link>appsettings.AcceptanceTests.json</Link>
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
-      <Content Include="..\..\..\Sources\Todo.WebApi\appsettings.json">
-        <Link>appsettings.json</Link>
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </Content>
+        <Content Include="..\..\..\Sources\Todo.WebApi\appsettings.AcceptanceTests.json">
+            <Link>appsettings.AcceptanceTests.json</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="..\..\..\Sources\Todo.WebApi\appsettings.json">
+            <Link>appsettings.json</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
     </ItemGroup>
-
 </Project>

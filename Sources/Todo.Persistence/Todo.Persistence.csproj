@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
     <PropertyGroup>
         <TargetFramework>net9.0</TargetFramework>
     </PropertyGroup>
@@ -13,5 +12,4 @@
         <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore"/>
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL"/>
     </ItemGroup>
-
 </Project>

@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
-
     <PropertyGroup>
         <TargetFramework>net9.0</TargetFramework>
         <OutputType>Library</OutputType>
@@ -12,15 +11,14 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\..\Sources\Todo.WebApi\Todo.WebApi.csproj" />
+        <ProjectReference Include="..\..\..\Sources\Todo.WebApi\Todo.WebApi.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing"/>
     </ItemGroup>
 
     <PropertyGroup Label="FineCodeCoverage">
         <Enabled>false</Enabled>
     </PropertyGroup>
-
 </Project>

@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
-
     <PropertyGroup>
         <TargetFramework>net9.0</TargetFramework>
         <OutputType>Library</OutputType>
@@ -12,22 +11,26 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\..\Sources\Todo.WebApi\Todo.WebApi.csproj" />
-        <ProjectReference Include="..\..\Infrastructure\Todo.WebApi.TestInfrastructure\Todo.WebApi.TestInfrastructure.csproj" />
+        <ProjectReference Include="..\..\..\Sources\Todo.WebApi\Todo.WebApi.csproj"/>
+        <ProjectReference Include="..\..\Infrastructure\Todo.WebApi.TestInfrastructure\Todo.WebApi.TestInfrastructure.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentAssertions" />
-        <PackageReference Include="Microsoft.AspNet.WebApi.Client" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" />
-        <PackageReference Include="NUnit" />
-        <PackageReference Include="NUnit3TestAdapter" />
-        <PackageReference Include="NunitXml.TestLogger" />
-        <PackageReference Include="Verify.NUnit" />
+        <PackageReference Include="coverlet.msbuild">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="FluentAssertions"/>
+        <PackageReference Include="Microsoft.AspNet.WebApi.Client"/>
+        <PackageReference Include="Microsoft.NET.Test.Sdk"/>
+        <PackageReference Include="NUnit"/>
+        <PackageReference Include="NUnit3TestAdapter"/>
+        <PackageReference Include="NunitXml.TestLogger"/>
+        <PackageReference Include="Verify.NUnit"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Controllers\VerifySnapshots\" />
+        <Folder Include="Controllers\VerifySnapshots\"/>
     </ItemGroup>
 
     <PropertyGroup Label="FineCodeCoverage">
@@ -38,5 +41,4 @@
         <Include>[*]*</Include>
         <IncludeTestAssembly>false</IncludeTestAssembly>
     </PropertyGroup>
-
 </Project>

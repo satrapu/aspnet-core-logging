@@ -1,5 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
     <PropertyGroup>
         <TargetFramework>net9.0</TargetFramework>
         <OutputType>Library</OutputType>
@@ -11,17 +10,21 @@
             The reference to Todo.WebApi.csproj is needed in order to have access to appsettings.json and
             appsettings.IntegrationTests.json configuration files.
         -->
-        <ProjectReference Include="..\..\..\Sources\Todo.WebApi\Todo.WebApi.csproj" />
-        <ProjectReference Include="..\..\Infrastructure\Todo.WebApi.TestInfrastructure\Todo.WebApi.TestInfrastructure.csproj" />
+        <ProjectReference Include="..\..\..\Sources\Todo.WebApi\Todo.WebApi.csproj"/>
+        <ProjectReference Include="..\..\Infrastructure\Todo.WebApi.TestInfrastructure\Todo.WebApi.TestInfrastructure.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentAssertions" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" />
-        <PackageReference Include="NUnit" />
-        <PackageReference Include="NUnit3TestAdapter" />
-        <PackageReference Include="NunitXml.TestLogger" />
-        <PackageReference Include="Verify.NUnit" />
+        <PackageReference Include="coverlet.msbuild">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="FluentAssertions"/>
+        <PackageReference Include="Microsoft.NET.Test.Sdk"/>
+        <PackageReference Include="NUnit"/>
+        <PackageReference Include="NUnit3TestAdapter"/>
+        <PackageReference Include="NunitXml.TestLogger"/>
+        <PackageReference Include="Verify.NUnit"/>
     </ItemGroup>
 
     <PropertyGroup Label="FineCodeCoverage">
@@ -32,5 +35,4 @@
         <Include>[*]*</Include>
         <IncludeTestAssembly>false</IncludeTestAssembly>
     </PropertyGroup>
-
 </Project>

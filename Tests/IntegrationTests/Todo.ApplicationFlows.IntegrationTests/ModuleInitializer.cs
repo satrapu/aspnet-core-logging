@@ -4,7 +4,7 @@ namespace Todo.ApplicationFlows
 
     using VerifyTests;
 
-    public static partial class ModuleInitializer
+    public static class ModuleInitializer
     {
         internal static readonly VerifySettings VerifySettings = new();
 

@@ -99,7 +99,7 @@ jobs:
       version: $(DotNetSdkVersionUsedByLivingDoc)
 
   # Prepares analysis on SonarCloud.
-  # Before using any Sonar tasks, please make sure SonarCloud extension is installed in the Azure DevOps organization
+  # Before using any Sonar tasks, please make sure "SonarQube Cloud" extension is installed in the Azure DevOps organization
   # where the project built using this pipeline resides.
   # See more about this extension here: https://marketplace.visualstudio.com/items?itemName=SonarSource.sonarcloud.
   - task: SonarCloudPrepare@3
@@ -118,15 +118,16 @@ jobs:
       projectVersion: 'build.id.$(Build.BuildId)'
       # Provide more configuration for Sonar - based on this example: https://github.com/SonarSource/sonar-dotnet/blob/master/azure-pipelines.yml.
       # Check the various analysis parameters here:
-      #   - https://docs.sonarqube.org/latest/analysis/analysis-parameters/
-      #   - https://docs.sonarcloud.io/advanced-setup/analysis-scope/
-      #   - https://docs.sonarqube.org/latest/project-administration/narrowing-the-focus/
+      #   - https://docs.sonarsource.com/sonarqube-server/latest/analyzing-source-code/analysis-parameters/
+      #   - https://docs.sonarsource.com/sonarqube-cloud/advanced-setup/analysis-scope/
+      #   - https://docs.sonarsource.com/sonarqube-cloud/enriching/test-coverage/test-coverage-parameters/
+      #   - https://docs.sonarsource.com/sonarqube-cloud/enriching/test-coverage/dotnet-test-coverage/
       extraProperties: |
         sonar.verbose=${{ parameters.sonar.verbose }}
         sonar.sourceEncoding=${{ parameters.sonar.sourceEncoding }}
         sonar.cs.nunit.reportsPaths=$(Build.SourcesDirectory)/Tests/**/TestResults/TestResults.xml
         sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/Tests/**/coverage.opencover.xml
-        sonar.coverage.exclusions=Sources/Todo.Persistence/Entities/**,Sources/Todo.Persistence/Migrations/**,Sources/Todo.Telemetry.OpenTelemetry.OpenTelemetryActivator,/Tests/**
+        sonar.coverage.exclusions=$(Build.SourcesDirectory)/Tests/**
         sonar.analysis.buildNumber=$(Build.BuildId)
         sonar.analysis.pipeline=$(Build.BuildId)
 
@@ -227,6 +228,7 @@ jobs:
         , eq(${{ parameters.tests.runTests }}, True)
       )
     inputs:
+      testRunTitle: 'Todo Web API - Architecture Tests ($(Agent.OS) $(Agent.OSArchitecture))'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(Build.SourcesDirectory)/Tests/ArchitectureTests/**/TestResults/TestResults.xml'
       mergeTestResults: True
@@ -238,6 +240,8 @@ jobs:
   # See more about running selective tests here: https://learn.microsoft.com/en-us/dotnet/core/testing/selective-unit-tests#nunit.
   # Decorate the AssemblyInfo.cs found inside each unit test related project with:
   #     [assembly: NUnit.Framework.Category("UnitTests")]
+  # The magic "--%" fragment is needed to avoid an MSBuild error: "MSBUILD : error MSB1006: Property is not valid."; read more about it
+  # here: https://github.com/coverlet-coverage/coverlet/blob/master/Documentation/MSBuildIntegration.md#coverlet-integration-with-msbuild.
   - script: >-
       dotnet test $(Build.SourcesDirectory)/$(SolutionFileName)
       --no-build
@@ -246,7 +250,8 @@ jobs:
       --test-adapter-path "."
       --logger "nunit"
       --filter "TestCategory=UnitTests"
-      --settings $(Build.SourcesDirectory)/Tests/tests.runsettings
+      /p:CollectCoverage=true
+      /p:CoverletOutputFormat=\"json,cobertura,opencover\"
     name: 'run_unit_tests'
     displayName: 'Run unit tests'
     condition: |
@@ -279,6 +284,7 @@ jobs:
         , eq(variables['ArchitectureTestsOutcome'], 'success')
       )
     inputs:
+      testRunTitle: 'Todo Web API - Unit Tests ($(Agent.OS) $(Agent.OSArchitecture))'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(Build.SourcesDirectory)/Tests/UnitTests/**/TestResults/TestResults.xml'
       mergeTestResults: True
@@ -346,7 +352,8 @@ jobs:
       --test-adapter-path "."
       --logger "nunit"
       --filter "TestCategory=IntegrationTests"
-      --settings $(Build.SourcesDirectory)/Tests/tests.runsettings
+      /p:CollectCoverage=true
+      /p:CoverletOutputFormat=\"json,cobertura,opencover\"
     name: 'run_integration_tests'
     displayName: 'Run integration tests'
     condition: |
@@ -432,6 +439,7 @@ jobs:
         , eq(variables['UnitTestsOutcome'], 'success')
       )
     inputs:
+      testRunTitle: 'Todo Web API - Integration Tests ($(Agent.OS) $(Agent.OSArchitecture))'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(Build.SourcesDirectory)/Tests/IntegrationTests/**/TestResults/TestResults.xml'
       mergeTestResults: True
@@ -462,9 +470,10 @@ jobs:
   # enable Azure Boards for your project, as documented here: https://developercommunity.visualstudio.com/solutions/403137/view.html.
   - script: >-
       $(Build.SourcesDirectory)/Tests/.ReportGenerator/reportgenerator
-      "-reports:$(Build.SourcesDirectory)/Tests/**/coverage.opencover.xml"
+      "-reports:$(Build.SourcesDirectory)/Tests/**/coverage.cobertura.xml"
       "-targetdir:$(Build.SourcesDirectory)/Tests/.CodeCoverageReport"
       "-reporttypes:Cobertura"
+      "-assemblyfilters:+Todo.*;-Todo.*Tests;-Todo.*.TestInfrastructure"
     name: 'generate_code_coverage_report'
     displayName: 'Generate code coverage report'
     condition: |
