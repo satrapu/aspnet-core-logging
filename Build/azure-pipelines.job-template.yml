@@ -466,7 +466,7 @@ jobs:
       "-reports:$(Build.SourcesDirectory)/Tests/**/TestResults/**/*.cobertura.xml"
       "-targetdir:$(Build.SourcesDirectory)/Tests/.CodeCoverageReport"
       "-reporttypes:Cobertura"
-      "-assemblyfilters:+Todo.*-Todo.*Tests;-*"
+      "-assemblyfilters:+Todo.*;-Todo.*Tests;-Todo.*.TestInfrastructure"
     name: 'generate_code_coverage_report'
     displayName: 'Generate code coverage report'
     condition: |
