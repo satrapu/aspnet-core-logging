@@ -227,7 +227,7 @@ jobs:
         , eq(${{ parameters.tests.runTests }}, True)
       )
     inputs:
-      testRunTitle: 'Todo Web API - Architecture Tests ($(Agent.OS) $(Agent.OSArchitecture))'
+      testRunTitle: 'Todo Web API - Architecture Tests ($(Agent.OS)-$(Agent.OSArchitecture))'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(Build.SourcesDirectory)/Tests/ArchitectureTests/**/TestResults/TestResults.xml'
       mergeTestResults: True
@@ -283,7 +283,7 @@ jobs:
         , eq(variables['ArchitectureTestsOutcome'], 'success')
       )
     inputs:
-      testRunTitle: 'Todo Web API - Unit Tests ($(Agent.OS) $(Agent.OSArchitecture))'
+      testRunTitle: 'Todo Web API - Unit Tests ($(Agent.OS)-$(Agent.OSArchitecture))'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(Build.SourcesDirectory)/Tests/UnitTests/**/TestResults/TestResults.xml'
       mergeTestResults: True
@@ -440,7 +440,7 @@ jobs:
         , eq(variables['UnitTestsOutcome'], 'success')
       )
     inputs:
-      testRunTitle: 'Todo Web API - Integration Tests ($(Agent.OS) $(Agent.OSArchitecture))'
+      testRunTitle: 'Todo Web API - Integration Tests ($(Agent.OS)-$(Agent.OSArchitecture))'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(Build.SourcesDirectory)/Tests/IntegrationTests/**/TestResults/TestResults.xml'
       mergeTestResults: True
@@ -629,7 +629,7 @@ jobs:
     inputs:
       reportDir: '$(Build.SourcesDirectory)/Tests/AcceptanceTests/LivingDoc.html'
       useFilenameTabs: True
-      tabName: 'Living Doc'
+      tabName: 'Living Doc ($(Agent.OS)-$(Agent.OSArchitecture))'
 
   # Run Sonar analysis.
   - task: SonarCloudAnalyze@3
