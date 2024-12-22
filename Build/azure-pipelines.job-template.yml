@@ -610,7 +610,7 @@ jobs:
     displayName: 'Publish living doc'
     inputs:
       reportDir: '$(Build.SourcesDirectory)/Tests/AcceptanceTests/LivingDoc.html'
-      useFilenameTabs: True
+      useFilenameTabs: False
       tabName: 'Living Doc ($(Agent.OS)-$(Agent.OSArchitecture))'
 
   # Publish test related artifacts.
