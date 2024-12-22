@@ -127,7 +127,6 @@ jobs:
         sonar.sourceEncoding=${{ parameters.sonar.sourceEncoding }}
         sonar.cs.nunit.reportsPaths=$(Build.SourcesDirectory)/Tests/**/TestResults/TestResults.xml
         sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/Tests/**/coverage.opencover.xml
-        sonar.coverage.exclusions=$(Build.SourcesDirectory)/Tests/**
         sonar.analysis.buildNumber=$(Build.BuildId)
         sonar.analysis.pipeline=$(Build.BuildId)
 
@@ -228,7 +227,7 @@ jobs:
         , eq(${{ parameters.tests.runTests }}, True)
       )
     inputs:
-      testRunTitle: 'Todo Web API - Architecture Tests ($(Agent.OS) $(Agent.OSArchitecture))'
+      testRunTitle: 'Todo Web API - Architecture Tests ($(Agent.OS)-$(Agent.OSArchitecture))'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(Build.SourcesDirectory)/Tests/ArchitectureTests/**/TestResults/TestResults.xml'
       mergeTestResults: True
@@ -240,8 +239,6 @@ jobs:
   # See more about running selective tests here: https://learn.microsoft.com/en-us/dotnet/core/testing/selective-unit-tests#nunit.
   # Decorate the AssemblyInfo.cs found inside each unit test related project with:
   #     [assembly: NUnit.Framework.Category("UnitTests")]
-  # The magic "--%" fragment is needed to avoid an MSBuild error: "MSBUILD : error MSB1006: Property is not valid."; read more about it
-  # here: https://github.com/coverlet-coverage/coverlet/blob/master/Documentation/MSBuildIntegration.md#coverlet-integration-with-msbuild.
   - script: >-
       dotnet test $(Build.SourcesDirectory)/$(SolutionFileName)
       --no-build
@@ -251,7 +248,9 @@ jobs:
       --logger "nunit"
       --filter "TestCategory=UnitTests"
       /p:CollectCoverage=true
-      /p:CoverletOutputFormat=\"json,cobertura,opencover\"
+      /p:CoverletOutputFormat=\"opencover\"
+      /p:Exclude=\"[Todo.*Tests]*,[Todo.*.TestInfrastructure]*\"
+      /p:Include=\"[Todo.*]*\"
     name: 'run_unit_tests'
     displayName: 'Run unit tests'
     condition: |
@@ -284,7 +283,7 @@ jobs:
         , eq(variables['ArchitectureTestsOutcome'], 'success')
       )
     inputs:
-      testRunTitle: 'Todo Web API - Unit Tests ($(Agent.OS) $(Agent.OSArchitecture))'
+      testRunTitle: 'Todo Web API - Unit Tests ($(Agent.OS)-$(Agent.OSArchitecture))'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(Build.SourcesDirectory)/Tests/UnitTests/**/TestResults/TestResults.xml'
       mergeTestResults: True
@@ -353,7 +352,9 @@ jobs:
       --logger "nunit"
       --filter "TestCategory=IntegrationTests"
       /p:CollectCoverage=true
-      /p:CoverletOutputFormat=\"json,cobertura,opencover\"
+      /p:CoverletOutputFormat=\"opencover\"
+      /p:Exclude=\"[Todo.*Tests]*,[Todo.*.TestInfrastructure]*\"
+      /p:Include=\"[Todo.*]*\"
     name: 'run_integration_tests'
     displayName: 'Run integration tests'
     condition: |
@@ -439,7 +440,7 @@ jobs:
         , eq(variables['UnitTestsOutcome'], 'success')
       )
     inputs:
-      testRunTitle: 'Todo Web API - Integration Tests ($(Agent.OS) $(Agent.OSArchitecture))'
+      testRunTitle: 'Todo Web API - Integration Tests ($(Agent.OS)-$(Agent.OSArchitecture))'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(Build.SourcesDirectory)/Tests/IntegrationTests/**/TestResults/TestResults.xml'
       mergeTestResults: True
@@ -470,7 +471,7 @@ jobs:
   # enable Azure Boards for your project, as documented here: https://developercommunity.visualstudio.com/solutions/403137/view.html.
   - script: >-
       $(Build.SourcesDirectory)/Tests/.ReportGenerator/reportgenerator
-      "-reports:$(Build.SourcesDirectory)/Tests/**/coverage.cobertura.xml"
+      "-reports:$(Build.SourcesDirectory)/Tests/**/coverage.opencover.xml"
       "-targetdir:$(Build.SourcesDirectory)/Tests/.CodeCoverageReport"
       "-reporttypes:Cobertura"
       "-assemblyfilters:+Todo.*;-Todo.*Tests;-Todo.*.TestInfrastructure"
