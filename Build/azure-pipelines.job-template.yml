@@ -461,7 +461,7 @@ jobs:
     inputs:
       reports: '$(Build.SourcesDirectory)/Tests/**/coverage.opencover.xml'
       targetdir: '$(Build.SourcesDirectory)/Tests/.CodeCoverageReport'
-      reporttypes: 'HtmlInline_AzurePipelines'
+      reporttypes: 'HtmlInline_AzurePipelines;Cobertura'
       assemblyfilters: '+Todo.*;-Todo.*Tests;-Todo.*.TestInfrastructure'
       title: 'Todo Web API - Code Coverage Report ($(Agent.OS)-$(Agent.OSArchitecture))'
       publishCodeCoverageResults: true
