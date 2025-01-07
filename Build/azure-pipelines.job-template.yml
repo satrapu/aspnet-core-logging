@@ -69,7 +69,7 @@ jobs:
     AllTestsOutcome: 'failure'
     CodeCoverageHistory.FeedName: 'aspnet-core-logging/code-coverage-history'
     CodeCoverageHistory.FeedPackageName: 'code-coverage-history'
-    CodeCoverageHistory.LocalDirectory: '$(Build.ArtifactStagingDirectory)\.CodeCoverageHistory'
+    CodeCoverageHistory.LocalDirectory: '$(Build.ArtifactStagingDirectory)/.CodeCoverageHistory'
   steps:
   # Customize the way this job checkouts the current Git branch.
   # See more here: https://learn.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/steps-checkout?view=azure-pipelines.
