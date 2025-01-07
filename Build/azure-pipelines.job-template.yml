@@ -458,6 +458,7 @@ jobs:
   # See more here: https://github.com/danielpalme/ReportGenerator/wiki/Integration#history-1.
   - task: UniversalPackages@0
     displayName: Get code coverage history from Azure Artifacts
+    # @satrapu 2025-01-07: Ignore download errors since the first time a branch is build, there will be no current code coverage history artifact.
     continueOnError: true
     condition: |
       and
