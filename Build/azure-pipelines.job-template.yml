@@ -67,7 +67,7 @@ jobs:
     IntegrationTestsOutcome: 'failure'
     AcceptanceTestsOutcome: 'failure'
     AllTestsOutcome: 'failure'
-    CodeCoverageHistory.FeedName: 'code-coverage-history'
+    CodeCoverageHistory.FeedName: 'aspnet-core-logging/code-coverage-history'
     CodeCoverageHistory.FeedPackageName: 'code-coverage-history'
     CodeCoverageHistory.LocalDirectory: '$(Build.ArtifactStagingDirectory)\.CodeCoverageHistory'
   steps:
