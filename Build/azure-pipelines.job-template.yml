@@ -447,58 +447,24 @@ jobs:
       buildConfiguration: ${{ parameters.build.configuration }}
       publishRunAttachments: True
 
-  # Install reportgenerator tool to be able to generate code coverage related reports using 'dotnet tool install' command.
-  # See more about this command here: https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-tool-install.
-  - script: >-
-      dotnet tool install dotnet-reportgenerator-globaltool
-      --tool-path $(Build.SourcesDirectory)/Tests/.ReportGenerator
-      --version $(ReportGenerator_Version)
-    name: 'install_code_coverage_report_generator'
-    displayName: 'Install code coverage report generator tool'
-    condition: |
-     and
-     (
-       eq(${{ parameters.tests.runTests }}, True)
-       , eq(variables['IntegrationTestsOutcome'], 'success')
-     )
-
-  # Generate code coverage report:
-  #   - combine several OpenCover coverage data files into one single file in Cobertura format
-  #   - generate coverage HTML report ready to be displayed by Azure DevOps
-  # See more here: https://github.com/danielpalme/ReportGenerator#usage.
-  # See more about the output formats here: https://github.com/danielpalme/ReportGenerator/wiki/Output-formats.
-  # In order to be able to see the report inside the Code Coverage tab on Azure DevOps,
-  # enable Azure Boards for your project, as documented here: https://developercommunity.visualstudio.com/solutions/403137/view.html.
-  - script: >-
-      $(Build.SourcesDirectory)/Tests/.ReportGenerator/reportgenerator
-      "-reports:$(Build.SourcesDirectory)/Tests/**/coverage.opencover.xml"
-      "-targetdir:$(Build.SourcesDirectory)/Tests/.CodeCoverageReport"
-      "-reporttypes:Cobertura"
-      "-assemblyfilters:+Todo.*;-Todo.*Tests;-Todo.*.TestInfrastructure"
-    name: 'generate_code_coverage_report'
-    displayName: 'Generate code coverage report'
+  # Publish code coverage report.
+  # See more here: https://marketplace.visualstudio.com/items?itemName=Palmmedia.reportgenerator.
+  - task: reportgenerator@5
+    name: 'publish_code_coverage_report'
+    displayName: 'Publish code coverage report'
     condition: |
       and
       (
         eq(${{ parameters.tests.runTests }}, True)
         , eq(variables['IntegrationTestsOutcome'], 'success')
       )
-
-  # Publish code coverage report.
-  # See more here: https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/publish-code-coverage-results-v1?view=azure-pipelines.
-  - task: PublishCodeCoverageResults@1
-    name: 'publish_code_coverage_report'
-    displayName: 'Publish code coverage report'
-    condition: |
-     and
-     (
-       eq(${{ parameters.tests.runTests }}, True)
-       , eq(variables['IntegrationTestsOutcome'], 'success')
-     )
     inputs:
-      codeCoverageTool: 'Cobertura'
-      pathToSources: '$(Build.SourcesDirectory)/Sources'
-      summaryFileLocation: '$(Build.SourcesDirectory)/Tests/.CodeCoverageReport/Cobertura.xml'
+      reports: '$(Build.SourcesDirectory)/Tests/**/coverage.opencover.xml'
+      targetdir: '$(Build.SourcesDirectory)/Tests/.CodeCoverageReport'
+      reporttypes: 'HtmlInline_AzurePipelines;Cobertura'
+      assemblyfilters: '+Todo.*;-Todo.*Tests;-Todo.*.TestInfrastructure'
+      title: 'Todo Web API - Code Coverage Report ($(Agent.OS)-$(Agent.OSArchitecture))'
+      publishCodeCoverageResults: true
 
   # Run acceptance tests.
   - script: >-
