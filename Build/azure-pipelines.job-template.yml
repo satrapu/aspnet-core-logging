@@ -32,9 +32,6 @@ parameters:
     codeCoverage:
       history:
         enabled: True
-        localDirectory: '$(Build.ArtifactStagingDirectory)\.CodeCoverageHistory'
-        feedName: 'code-coverage-history'
-        feedPackageName: 'code-coverage-history'
 
 jobs:
 - job: ${{ parameters.job.name }}
@@ -70,6 +67,9 @@ jobs:
     IntegrationTestsOutcome: 'failure'
     AcceptanceTestsOutcome: 'failure'
     AllTestsOutcome: 'failure'
+    CodeCoverageHistory.FeedName: 'code-coverage-history'
+    CodeCoverageHistory.FeedPackageName: 'code-coverage-history'
+    CodeCoverageHistory.LocalDirectory: '$(Build.ArtifactStagingDirectory)\.CodeCoverageHistory'
   steps:
   # Customize the way this job checkouts the current Git branch.
   # See more here: https://learn.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/steps-checkout?view=azure-pipelines.
@@ -467,10 +467,10 @@ jobs:
       )
     inputs:
       command: 'download'
-      downloadDirectory: ${{ parameters.build.tests.codeCoverage.history.localDirectory }}
+      downloadDirectory: $(CodeCoverageHistory.LocalDirectory)
       feedsToUse: 'internal'
-      vstsFeed: ${{ parameters.build.tests.codeCoverage.history.feedName }}
-      vstsFeedPackage: ${{ parameters.build.tests.codeCoverage.history.feedPackageName }}
+      vstsFeed: $(CodeCoverageHistory.FeedName)
+      vstsFeedPackage: $(CodeCoverageHistory.FeedPackageName)
       vstsPackageVersion: '0.*'
 
   # Publish code coverage report.
@@ -489,7 +489,7 @@ jobs:
       targetdir: '$(Build.SourcesDirectory)/Tests/.CodeCoverageReport'
       reporttypes: 'HtmlInline_AzurePipelines;Cobertura'
       assemblyfilters: '+Todo.*;-Todo.*Tests;-Todo.*.TestInfrastructure'
-      historydir: ${{ parameters.build.tests.codeCoverage.history.localDirectory }}
+      historydir: $(CodeCoverageHistory.LocalDirectory)
       title: 'Todo Web API - Code Coverage Report ($(Agent.OS)-$(Agent.OSArchitecture))'
       publishCodeCoverageResults: true
 
@@ -503,12 +503,12 @@ jobs:
         )
     inputs:
       command: 'publish'
-      publishDirectory: ${{ parameters.build.tests.codeCoverage.history.localDirectory }}
+      publishDirectory: $(CodeCoverageHistory.LocalDirectory)
       feedsToUsePublish: 'internal'
-      vstsFeedPublish: ${{ parameters.build.tests.codeCoverage.history.feedName }}
-      vstsFeedPackagePublish: ${{ parameters.build.tests.codeCoverage.history.feedPackageName }}
+      vstsFeedPublish: $(CodeCoverageHistory.FeedName)
+      vstsFeedPackagePublish: $(CodeCoverageHistory.FeedPackageName)
       versionOption: 'patch'
-      packagePublishDescription: 'Code Coverage History for repository $(Build.Repository.Name) on branch $(Build.SourceBranchName)'
+      packagePublishDescription: 'Code coverage history for repository $(Build.Repository.Name) on branch $(Build.SourceBranchName)'
       verbosity: 'Information'
 
   # Run acceptance tests.
