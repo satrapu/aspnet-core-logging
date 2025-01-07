@@ -125,9 +125,9 @@ jobs:
       extraProperties: |
         sonar.verbose=${{ parameters.sonar.verbose }}
         sonar.sourceEncoding=${{ parameters.sonar.sourceEncoding }}
-        sonar.exclusions=$(Build.SourcesDirectory)/Tests/.CodeCoverageReport/**
-        sonar.cs.nunit.reportsPaths=$(Build.SourcesDirectory)/Tests/**/TestResults/TestResults.xml
-        sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/Tests/**/coverage.opencover.xml
+        sonar.exclusions=Tests/.CodeCoverageReport/**
+        sonar.cs.nunit.reportsPaths=Tests/**/TestResults/TestResults.xml
+        sonar.cs.opencover.reportsPaths=Tests/**/coverage.opencover.xml
         sonar.analysis.buildNumber=$(Build.BuildId)
         sonar.analysis.pipeline=$(Build.BuildId)
 
