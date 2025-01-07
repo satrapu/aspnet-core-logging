@@ -4,9 +4,9 @@
     "net9.0": {
       "coverlet.msbuild": {
         "type": "Direct",
-        "requested": "[6.0.2, )",
-        "resolved": "6.0.2",
-        "contentHash": "8b4jBNH7mcQy1otyQErjjIUuGD74XxKZ1wvDufbY7jhWwckl7wIa+icjwdPYeI0aYMS4Tp63LIZvyMFjWwOMDw=="
+        "requested": "[6.0.3, )",
+        "resolved": "6.0.3",
+        "contentHash": "QptuqnNCaVlSJcO4lfAPv+9X1Ke+TW216HYD5gSkSb1mbK4K+di1MtsWa3zGCAjnTHDN2TvWVs/Wuw6+mQDhhA=="
       },
       "FluentAssertions": {
         "type": "Direct",
@@ -38,9 +38,9 @@
       },
       "NUnit": {
         "type": "Direct",
-        "requested": "[4.3.0, )",
-        "resolved": "4.3.0",
-        "contentHash": "dPClyF8aAmN8w/a7csFXUUbj0sivFVmSfX9CplV+dVeVUqnzoNFsLf7TjAPaxlrwbqHsr+F/pLd7ZEV4Sw9YHg=="
+        "requested": "[4.3.2, )",
+        "resolved": "4.3.2",
+        "contentHash": "puVXayXNmEu7MFQSUswGmUjOy3M3baprMbkLl5PAutpeDoGTr+jPv33qAYsqxywi2wJCq8l/O3EhHoLulPE1iQ=="
       },
       "NUnit3TestAdapter": {
         "type": "Direct",

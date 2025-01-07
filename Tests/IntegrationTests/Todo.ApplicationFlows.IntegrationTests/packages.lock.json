@@ -4,9 +4,9 @@
     "net9.0": {
       "coverlet.msbuild": {
         "type": "Direct",
-        "requested": "[6.0.2, )",
-        "resolved": "6.0.2",
-        "contentHash": "8b4jBNH7mcQy1otyQErjjIUuGD74XxKZ1wvDufbY7jhWwckl7wIa+icjwdPYeI0aYMS4Tp63LIZvyMFjWwOMDw=="
+        "requested": "[6.0.3, )",
+        "resolved": "6.0.3",
+        "contentHash": "QptuqnNCaVlSJcO4lfAPv+9X1Ke+TW216HYD5gSkSb1mbK4K+di1MtsWa3zGCAjnTHDN2TvWVs/Wuw6+mQDhhA=="
       },
       "FluentAssertions": {
         "type": "Direct",
@@ -29,9 +29,9 @@
       },
       "NUnit": {
         "type": "Direct",
-        "requested": "[4.3.0, )",
-        "resolved": "4.3.0",
-        "contentHash": "dPClyF8aAmN8w/a7csFXUUbj0sivFVmSfX9CplV+dVeVUqnzoNFsLf7TjAPaxlrwbqHsr+F/pLd7ZEV4Sw9YHg=="
+        "requested": "[4.3.2, )",
+        "resolved": "4.3.2",
+        "contentHash": "puVXayXNmEu7MFQSUswGmUjOy3M3baprMbkLl5PAutpeDoGTr+jPv33qAYsqxywi2wJCq8l/O3EhHoLulPE1iQ=="
       },
       "NUnit3TestAdapter": {
         "type": "Direct",
@@ -47,16 +47,16 @@
       },
       "Verify.NUnit": {
         "type": "Direct",
-        "requested": "[28.6.1, )",
-        "resolved": "28.6.1",
-        "contentHash": "wGJHxlWFatJNM7jBi23z6Ij+Hurl9dJIZh6cMByasoKAvpZIUqtG/DTnWhIdhNVauKqX4M/UIk6eETfkFtXh6g==",
+        "requested": "[28.8.1, )",
+        "resolved": "28.8.1",
+        "contentHash": "/zWHIPdYWkkueWBc0RyPG5GIv8jpkbslz0sOqBhUOqhuvLD+KshsPndF53ml926cMLi7o93hfvc/oYJwI2+g1g==",
         "dependencies": {
           "Argon": "0.26.0",
           "DiffEngine": "15.6.0",
-          "NUnit": "4.3.0",
+          "NUnit": "4.3.2",
           "SimpleInfoName": "3.1.0",
           "System.IO.Hashing": "9.0.0",
-          "Verify": "28.6.1"
+          "Verify": "28.8.1"
         }
       },
       "Argon": {
@@ -873,8 +873,8 @@
       },
       "Verify": {
         "type": "Transitive",
-        "resolved": "28.6.1",
-        "contentHash": "XvwxRwquFTh4DD8Y2BUuvewIoQh+TT0gwIu9VUBXo5vssYgN748T5x5gwFWG9w4ScLZW1lo4WyqXMq2FQdJeBg==",
+        "resolved": "28.8.1",
+        "contentHash": "lq4wiGgiTYOI6QR38qgY1H+SB4ejSrXReGiFFh5fjh7ZDdJtcEiVMbnReV3MF+4anw+SXmtIXWX6O3/cC4KIow==",
         "dependencies": {
           "Argon": "0.26.0",
           "DiffEngine": "15.6.0",
@@ -927,7 +927,7 @@
           "Serilog.Enrichers.Span": "[3.1.0, )",
           "Serilog.Enrichers.Thread": "[4.0.0, )",
           "Serilog.Sinks.ApplicationInsights": "[4.0.0, )",
-          "Serilog.Sinks.Seq": "[8.0.0, )",
+          "Serilog.Sinks.Seq": "[9.0.0, )",
           "Todo.ApplicationFlows": "[1.0.0, )"
         }
       },
@@ -1199,12 +1199,12 @@
       },
       "Serilog.Sinks.Seq": {
         "type": "CentralTransitive",
-        "requested": "[8.0.0, )",
-        "resolved": "8.0.0",
-        "contentHash": "z5ig56/qzjkX6Fj4U/9m1g8HQaQiYPMZS4Uevtjg1I+WWzoGSf5t/E+6JbMP/jbZYhU63bA5NJN5y0x+qqx2Bw==",
+        "requested": "[9.0.0, )",
+        "resolved": "9.0.0",
+        "contentHash": "aNU8A0K322q7+voPNmp1/qNPH+9QK8xvM1p72sMmCG0wGlshFzmtDW9QnVSoSYCj0MgQKcMOlgooovtBhRlNHw==",
         "dependencies": {
-          "Serilog": "4.0.0",
-          "Serilog.Sinks.File": "5.0.0"
+          "Serilog": "4.2.0",
+          "Serilog.Sinks.File": "6.0.0"
         }
       },
       "System.IdentityModel.Tokens.Jwt": {
