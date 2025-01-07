@@ -29,6 +29,12 @@ parameters:
     databaseDockerImage: ''
     composeBaseCommand: ''
     composeProjectName: ''
+    codeCoverage:
+      history:
+        enabled: True
+        localDirectory: '$(Build.ArtifactStagingDirectory)\.CodeCoverageHistory'
+        feedName: 'code-coverage-history'
+        feedPackageName: 'code-coverage-history'
 
 jobs:
 - job: ${{ parameters.job.name }}
@@ -448,6 +454,24 @@ jobs:
       buildConfiguration: ${{ parameters.build.configuration }}
       publishRunAttachments: True
 
+  # Employ code coverage history support offered by ReportGenerator.
+  # See more here: https://github.com/danielpalme/ReportGenerator/wiki/Integration#history-1.
+  - task: UniversalPackages@0
+    displayName: Get code coverage history from Azure Artifacts
+    continueOnError: true
+    condition: |
+      and
+      (
+        eq(${{ parameters.build.tests.codeCoverage.history.enabled }}, True)
+      )
+    inputs:
+      command: 'download'
+      downloadDirectory: ${{ parameters.build.tests.codeCoverage.history.localDirectory }}
+      feedsToUse: 'internal'
+      vstsFeed: ${{ parameters.build.tests.codeCoverage.history.feedName }}
+      vstsFeedPackage: ${{ parameters.build.tests.codeCoverage.history.feedPackageName }}
+      vstsPackageVersion: '0.*'
+
   # Publish code coverage report.
   # See more here: https://marketplace.visualstudio.com/items?itemName=Palmmedia.reportgenerator.
   - task: reportgenerator@5
@@ -464,8 +488,26 @@ jobs:
       targetdir: '$(Build.SourcesDirectory)/Tests/.CodeCoverageReport'
       reporttypes: 'HtmlInline_AzurePipelines;Cobertura'
       assemblyfilters: '+Todo.*;-Todo.*Tests;-Todo.*.TestInfrastructure'
+      historydir: ${{ parameters.build.tests.codeCoverage.history.localDirectory }}
       title: 'Todo Web API - Code Coverage Report ($(Agent.OS)-$(Agent.OSArchitecture))'
       publishCodeCoverageResults: true
+
+  - task: UniversalPackages@0
+    displayName: Publish code coverage history to Azure Artifacts
+    condition: |
+      and
+      (
+        eq(${{ parameters.build.tests.codeCoverage.history.enabled }}, True)
+      )
+    inputs:
+      command: 'publish'
+      publishDirectory: ${{ parameters.build.tests.codeCoverage.history.localDirectory }}
+      feedsToUsePublish: 'internal'
+      vstsFeedPublish: ${{ parameters.build.tests.codeCoverage.history.feedName }}
+      vstsFeedPackagePublish: ${{ parameters.build.tests.codeCoverage.history.feedPackageName }}
+      versionOption: 'patch'
+      packagePublishDescription: 'Code Coverage History for repository $(Build.Repository.Name) on branch $(Build.SourceBranchName)'
+      verbosity: 'Information'
 
   # Run acceptance tests.
   - script: >-
