@@ -462,7 +462,8 @@ jobs:
     condition: |
       and
       (
-        eq(${{ parameters.build.tests.codeCoverage.history.enabled }}, True)
+        eq(${{ parameters.tests.runTests }}, True)
+        , eq(${{ parameters.tests.codeCoverage.history.enabled }}, True)
       )
     inputs:
       command: 'download'
@@ -496,9 +497,10 @@ jobs:
     displayName: Publish code coverage history to Azure Artifacts
     condition: |
       and
-      (
-        eq(${{ parameters.build.tests.codeCoverage.history.enabled }}, True)
-      )
+        (
+          eq(${{ parameters.tests.runTests }}, True)
+          , eq(${{ parameters.tests.codeCoverage.history.enabled }}, True)
+        )
     inputs:
       command: 'publish'
       publishDirectory: ${{ parameters.build.tests.codeCoverage.history.localDirectory }}
