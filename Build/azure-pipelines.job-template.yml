@@ -509,7 +509,7 @@ jobs:
       vstsFeedPublish: $(CodeCoverageHistory.FeedName)
       vstsFeedPackagePublish: $(CodeCoverageHistory.FeedPackageName)
       versionOption: 'patch'
-      packagePublishDescription: 'Code coverage history for repository $(Build.Repository.Name) on branch $(Build.SourceBranchName)'
+      packagePublishDescription: 'Code coverage history for branch: [$(Build.SourceBranchName)]'
       verbosity: 'Information'
 
   # Run acceptance tests.
