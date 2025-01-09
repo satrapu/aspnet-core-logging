@@ -524,7 +524,7 @@ jobs:
       rootFolderOrFile: '$(CodeCoverageHistory.LocalDirectory)/decompressed'
       includeRootFolder: False
       archiveType: 'zip'
-      archiveFile: 'code-coverage-history.zip'
+      archiveFile: '$(CodeCoverageHistory.LocalDirectory)/compressed/code-coverage-history.zip'
       verbose: True
       quiet: False
 
@@ -538,7 +538,7 @@ jobs:
         )
     inputs:
       command: 'publish'
-      publishDirectory: '$(CodeCoverageHistory.LocalDirectory)/decompressed'
+      publishDirectory: '$(CodeCoverageHistory.LocalDirectory)/compressed'
       feedsToUsePublish: 'internal'
       vstsFeedPublish: '$(CodeCoverageHistory.FeedName)'
       vstsFeedPackagePublish: '$(CodeCoverageHistory.FeedPackageName)'
