@@ -457,7 +457,8 @@ jobs:
   # Employ code coverage history support offered by ReportGenerator.
   # See more here: https://github.com/danielpalme/ReportGenerator/wiki/Integration#history-1.
   - task: UniversalPackages@0
-    displayName: Get code coverage history from Azure Artifacts
+    name: 'download_code_coverage_history'
+    displayName: 'Get code coverage history from Azure Artifacts'
     # @satrapu 2025-01-07: Ignore download errors since the first time a branch is build, there will be no current code coverage history artifact.
     continueOnError: true
     condition: |
@@ -468,11 +469,26 @@ jobs:
       )
     inputs:
       command: 'download'
-      downloadDirectory: $(CodeCoverageHistory.LocalDirectory)
+      downloadDirectory: '$(CodeCoverageHistory.LocalDirectory)'
       feedsToUse: 'internal'
-      vstsFeed: $(CodeCoverageHistory.FeedName)
-      vstsFeedPackage: $(CodeCoverageHistory.FeedPackageName)
+      vstsFeed: '$(CodeCoverageHistory.FeedName)'
+      vstsFeedPackage: '$(CodeCoverageHistory.FeedPackageName)'
       vstsPackageVersion: '0.*'
+
+  - task: ExtractFiles@1
+    name: 'decompress_code_coverage_history'
+    displayName: 'Decompress code coverage history'
+    continueOnError: true
+    condition: |
+      and
+      (
+        eq(${{ parameters.tests.runTests }}, True)
+        , eq(${{ parameters.tests.codeCoverage.history.enabled }}, True)
+      )
+    inputs:
+      archiveFilePatterns: '$(CodeCoverageHistory.LocalDirectory)/*.zip'
+      destinationFolder: '$(CodeCoverageHistory.LocalDirectory)/decompressed'
+      cleanDestinationFolder: False
 
   # Publish code coverage report.
   # See more here: https://marketplace.visualstudio.com/items?itemName=Palmmedia.reportgenerator.
@@ -490,12 +506,30 @@ jobs:
       targetdir: '$(Build.SourcesDirectory)/Tests/.CodeCoverageReport'
       reporttypes: 'HtmlInline_AzurePipelines;Cobertura'
       assemblyfilters: '+Todo.*;-Todo.*Tests;-Todo.*.TestInfrastructure'
-      historydir: $(CodeCoverageHistory.LocalDirectory)
+      historydir: '$(CodeCoverageHistory.LocalDirectory)/decompressed'
       title: 'Todo Web API - Code Coverage Report ($(Agent.OS)-$(Agent.OSArchitecture))'
       publishCodeCoverageResults: true
 
+  - task: ArchiveFiles@2
+    name: 'compress_code_coverage_history'
+    displayName: 'Compress code coverage history'
+    continueOnError: true
+    condition: |
+      and
+      (
+        eq(${{ parameters.tests.runTests }}, True)
+        , eq(${{ parameters.tests.codeCoverage.history.enabled }}, True)
+      )
+    inputs:
+      rootFolderOrFile: '$(CodeCoverageHistory.LocalDirectory)/decompressed'
+      includeRootFolder: False
+      archiveType: 'zip'
+      archiveFile: 'code-coverage-history.zip'
+      verbose: True
+      quiet: False
+
   - task: UniversalPackages@0
-    displayName: Publish code coverage history to Azure Artifacts
+    displayName: 'Publish code coverage history to Azure Artifacts'
     condition: |
       and
         (
@@ -504,10 +538,10 @@ jobs:
         )
     inputs:
       command: 'publish'
-      publishDirectory: $(CodeCoverageHistory.LocalDirectory)
+      publishDirectory: '$(CodeCoverageHistory.LocalDirectory)/decompressed'
       feedsToUsePublish: 'internal'
-      vstsFeedPublish: $(CodeCoverageHistory.FeedName)
-      vstsFeedPackagePublish: $(CodeCoverageHistory.FeedPackageName)
+      vstsFeedPublish: '$(CodeCoverageHistory.FeedName)'
+      vstsFeedPackagePublish: '$(CodeCoverageHistory.FeedPackageName)'
       versionOption: 'patch'
       packagePublishDescription: 'Code coverage history for branch: [$(Build.SourceBranchName)]'
       verbosity: 'Information'
