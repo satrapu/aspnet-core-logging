@@ -84,6 +84,46 @@ jobs:
     fetchTags: True
     persistCredentials: False
 
+  # Load the current Git branch name into a build variable.
+  # This task will be run only in case the build was triggered by a pull request.
+  - task: PowerShell@2
+    name: 'load_current_git_branch_name_from_pull_request_info'
+    displayName: 'Load current Git branch name from PR info'
+    condition: eq(variables['Build.Reason'], 'PullRequest')
+    inputs:
+      targetType: 'inline'
+      errorActionPreference: 'stop'
+      script: |
+        Write-Output "##vso[task.setvariable variable=CurrentGitBranchName]$(System.PullRequest.SourceBranch)"
+
+  # Load the current Git branch name into a build variable.
+  # This task will be run only in case the build was triggered by anything else but a pull request (e.g. a mere commit on a branch, a scheduled build, etc.).
+  - task: PowerShell@2
+    name: 'load_current_git_branch_name_from_commit_info'
+    displayName: 'Load current Git branch name from commit info'
+    condition: ne(variables['Build.Reason'], 'PullRequest')
+    inputs:
+      targetType: 'inline'
+      errorActionPreference: 'stop'
+      script: |
+        Write-Output "##vso[task.setvariable variable=CurrentGitBranchName]$(Build.SourceBranch)"
+
+  # Normalize Git branch name since Azure DevOps does not provide the expected one (e.g. 'master' or 'feature/my-feature-branch').
+  # See more here: https://stackoverflow.com/questions/59956206/how-to-get-a-branch-name-with-a-slash-in-azure-devops
+  # and here: https://learn.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml#build-variables.
+  - task: PowerShell@2
+    name: 'normalize_current_git_branch_name'
+    displayName: 'Normalize current Git branch name'
+    inputs:
+      targetType: 'inline'
+      errorActionPreference: 'stop'
+      script: |
+        $currentGitBranchName = "$(CurrentGitBranchName)"
+        $normalizedCurrentGitBranchName = $currentGitBranchName -Replace 'refs/heads/', ''
+        Write-Output "##vso[task.setvariable variable=NormalizedCurrentGitBranchName]$normalizedCurrentGitBranchName"
+        Write-Output "The current Git branch name is: $currentGitBranchName"
+        Write-Output "The normalized Git branch name is: $normalizedCurrentGitBranchName"
+
   # Install specific .NET SDK version used for building the application.
   # See more here: https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/tool/dotnet-core-tool-installer?view=azure-devops.
   # Installing a specific .NET SDK version is needed to avoid installing a .NET global tool in a following task and
@@ -543,7 +583,7 @@ jobs:
       vstsFeedPublish: '$(CodeCoverageHistory.FeedName)'
       vstsFeedPackagePublish: '$(CodeCoverageHistory.FeedPackageName)'
       versionOption: 'patch'
-      packagePublishDescription: 'Code coverage history for branch: [$(Build.SourceBranchName)]'
+      packagePublishDescription: 'Code coverage history for branch: [$(NormalizedCurrentGitBranchName)]'
       verbosity: 'Information'
 
   # Run acceptance tests.
@@ -703,70 +743,6 @@ jobs:
     inputs:
       pollingTimeoutSeconds: ${{ parameters.sonar.publishPollingTimeoutSeconds }}
 
-  # Load the current Git branch name into a build variable to be later used when querying SonarCloud web API for the
-  # results of the static analysis performed against this branch.
-  # This build step will be run only in case the build was triggered by a pull request.
-  - task: PowerShell@2
-    name: 'load_current_git_branch_name_from_pull_request_info'
-    displayName: 'Load current Git branch name from PR info'
-    condition: |
-      and
-      (
-          eq(${{ parameters.sonar.enabled }}, True)
-        , eq(${{ parameters.sonar.buildBreaker.enabled }}, True)
-        , eq(variables['AllTestsOutcome'], 'success')
-        , eq(variables['Build.Reason'], 'PullRequest')
-      )
-    inputs:
-      targetType: 'inline'
-      errorActionPreference: 'stop'
-      script: |
-        Write-Output "##vso[task.setvariable variable=CurrentGitBranchName]$(System.PullRequest.SourceBranch)"
-
-  # Load the current Git branch name into a build variable to be later used when querying SonarCloud web API for the
-  # results of the static analysis performed against this branch.
-  # This build step will be run only in case the build was triggered by anything else but a pull request (e.g. a mere
-  # commit, a scheduled build, etc.).
-  - task: PowerShell@2
-    name: 'load_current_git_branch_name_from_commit_info'
-    displayName: 'Load current Git branch name from commit info'
-    condition: |
-      and
-      (
-          eq(${{ parameters.sonar.enabled }}, True)
-        , eq(${{ parameters.sonar.buildBreaker.enabled }}, True)
-        , eq(variables['AllTestsOutcome'], 'success')
-        , ne(variables['Build.Reason'], 'PullRequest')
-      )
-    inputs:
-      targetType: 'inline'
-      errorActionPreference: 'stop'
-      script: |
-        Write-Output "##vso[task.setvariable variable=CurrentGitBranchName]$(Build.SourceBranch)"
-
-  # Normalize Git branch name since Azure DevOps does not provide the expected one (e.g. 'master' or 'feature/my-feature-branch').
-  # See more here: https://stackoverflow.com/questions/59956206/how-to-get-a-branch-name-with-a-slash-in-azure-devops
-  # and here: https://learn.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml#build-variables.
-  - task: PowerShell@2
-    name: 'normalize_current_git_branch_name'
-    displayName: 'Normalize current Git branch name'
-    condition: |
-      and
-      (
-          eq(${{ parameters.sonar.enabled }}, True)
-        , eq(${{ parameters.sonar.buildBreaker.enabled }}, True)
-        , eq(variables['AllTestsOutcome'], 'success')
-      )
-    inputs:
-      targetType: 'inline'
-      errorActionPreference: 'stop'
-      script: |
-        $currentGitBranchName = "$(CurrentGitBranchName)"
-        $normalizedGitBranchName = $currentGitBranchName -Replace 'refs/heads/', ''
-        Write-Output "##vso[task.setvariable variable=NormalizedGitBranchName]$normalizedGitBranchName"
-        Write-Output "The current Git branch name is: $currentGitBranchName"
-        Write-Output "The normalized Git branch name is: $normalizedGitBranchName"
-
   # Run a PowerShell script to break the build in case Sonar quality gate has failed.
   # See more here: https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/powershell-v2?view=azure-pipelines.
   - task: PowerShell@2
@@ -787,7 +763,7 @@ jobs:
         -SonarProjectKey 'aspnet-core-logging'
         -SonarServerBaseUrl 'https://sonarcloud.io'
         -SonarToken "$(CurrentProject.Sonar.Token)"
-        -GitBranchName "$(NormalizedGitBranchName)"
+        -GitBranchName "$(NormalizedCurrentGitBranchName)"
       errorActionPreference: 'stop'
       failOnStderr: True
       workingDirectory: $(Build.SourcesDirectory)
