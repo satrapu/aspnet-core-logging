@@ -583,7 +583,7 @@ jobs:
       vstsFeedPublish: '$(CodeCoverageHistory.FeedName)'
       vstsFeedPackagePublish: '$(CodeCoverageHistory.FeedPackageName)'
       versionOption: 'patch'
-      packagePublishDescription: 'Code coverage history for branch: [$(NormalizedCurrentGitBranchName)]'
+      packagePublishDescription: 'Code coverage history for branch: $(NormalizedCurrentGitBranchName)'
       verbosity: 'Information'
 
   # Run acceptance tests.
