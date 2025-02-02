@@ -515,6 +515,19 @@ jobs:
       vstsFeedPackage: '$(CodeCoverageHistory.FeedPackageName)'
       vstsPackageVersion: '*'
 
+  - powershell: |
+      $fileExists = Test-Path -Path "$(CodeCoverageHistory.LocalDirectory)/*.zip"
+      Write-Output "##vso[task.setvariable variable=CodeCoverageHistoryExists]$fileExists"
+    name: 'set_code_coverage_history_exists_variable'
+    displayName: 'Set CodeCoverageHistoryExists variable'
+    condition: |
+        and
+        (
+          succeeded()
+          , eq(${{ parameters.tests.runTests }}, True)
+          , eq(${{ parameters.tests.codeCoverage.history.enabled }}, True)
+        )
+
   - task: ExtractFiles@1
     name: 'decompress_code_coverage_history'
     displayName: 'Decompress code coverage history'
@@ -524,6 +537,7 @@ jobs:
       (
         eq(${{ parameters.tests.runTests }}, True)
         , eq(${{ parameters.tests.codeCoverage.history.enabled }}, True)
+        , eq(variables['CodeCoverageHistoryExists'], True)
       )
     inputs:
       archiveFilePatterns: '$(CodeCoverageHistory.LocalDirectory)/*.zip'
