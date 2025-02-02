@@ -575,7 +575,7 @@ jobs:
       and
         (
           eq(${{ parameters.tests.runTests }}, True)
-          , eq(${{ parameters.tests.codeCoverage.history.enabled }}, True),
+          , eq(${{ parameters.tests.codeCoverage.history.enabled }}, True)
           , eq($(NormalizedCurrentGitBranchName), 'master')
         )
     inputs:
