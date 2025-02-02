@@ -568,7 +568,7 @@ jobs:
       verbose: True
       quiet: False
 
-  # Code coverage history is updated only via commits made on 'master' branch as it acts as the coverage baseline.
+  # A new version of code coverage history is published only via commits made on 'master' branch as it acts as the coverage baseline.
   - task: UniversalPackages@0
     displayName: 'Publish code coverage history to Azure Artifacts'
     condition: |
