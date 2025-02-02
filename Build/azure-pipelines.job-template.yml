@@ -29,6 +29,9 @@ parameters:
     databaseDockerImage: ''
     composeBaseCommand: ''
     composeProjectName: ''
+    codeCoverage:
+      history:
+        enabled: True
 
 jobs:
 - job: ${{ parameters.job.name }}
@@ -64,6 +67,9 @@ jobs:
     IntegrationTestsOutcome: 'failure'
     AcceptanceTestsOutcome: 'failure'
     AllTestsOutcome: 'failure'
+    CodeCoverageHistory.FeedName: 'aspnet-core-logging/code-coverage-history'
+    CodeCoverageHistory.FeedPackageName: 'code-coverage-history'
+    CodeCoverageHistory.LocalDirectory: '$(Build.ArtifactStagingDirectory)/.CodeCoverageHistory'
   steps:
   # Customize the way this job checkouts the current Git branch.
   # See more here: https://learn.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/steps-checkout?view=azure-pipelines.
@@ -77,6 +83,46 @@ jobs:
     fetchDepth: 0
     fetchTags: True
     persistCredentials: False
+
+  # Load the current Git branch name into a build variable.
+  # This task will be run only in case the build was triggered by a pull request.
+  - task: PowerShell@2
+    name: 'load_current_git_branch_name_from_pull_request_info'
+    displayName: 'Load current Git branch name from PR info'
+    condition: eq(variables['Build.Reason'], 'PullRequest')
+    inputs:
+      targetType: 'inline'
+      errorActionPreference: 'stop'
+      script: |
+        Write-Output "##vso[task.setvariable variable=CurrentGitBranchName]$(System.PullRequest.SourceBranch)"
+
+  # Load the current Git branch name into a build variable.
+  # This task will be run only in case the build was triggered by anything else but a pull request (e.g. a mere commit on a branch, a scheduled build, etc.).
+  - task: PowerShell@2
+    name: 'load_current_git_branch_name_from_commit_info'
+    displayName: 'Load current Git branch name from commit info'
+    condition: ne(variables['Build.Reason'], 'PullRequest')
+    inputs:
+      targetType: 'inline'
+      errorActionPreference: 'stop'
+      script: |
+        Write-Output "##vso[task.setvariable variable=CurrentGitBranchName]$(Build.SourceBranch)"
+
+  # Normalize Git branch name since Azure DevOps does not provide the expected one (e.g. 'master' or 'feature/my-feature-branch').
+  # See more here: https://stackoverflow.com/questions/59956206/how-to-get-a-branch-name-with-a-slash-in-azure-devops
+  # and here: https://learn.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml#build-variables.
+  - task: PowerShell@2
+    name: 'normalize_current_git_branch_name'
+    displayName: 'Normalize current Git branch name'
+    inputs:
+      targetType: 'inline'
+      errorActionPreference: 'stop'
+      script: |
+        $currentGitBranchName = "$(CurrentGitBranchName)"
+        $normalizedCurrentGitBranchName = $currentGitBranchName -Replace 'refs/heads/', ''
+        Write-Output "##vso[task.setvariable variable=NormalizedCurrentGitBranchName]$normalizedCurrentGitBranchName"
+        Write-Output "The current Git branch name is: $currentGitBranchName"
+        Write-Output "The normalized Git branch name is: $normalizedCurrentGitBranchName"
 
   # Install specific .NET SDK version used for building the application.
   # See more here: https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/tool/dotnet-core-tool-installer?view=azure-devops.
@@ -448,6 +494,56 @@ jobs:
       buildConfiguration: ${{ parameters.build.configuration }}
       publishRunAttachments: True
 
+  # Employ code coverage history support offered by ReportGenerator.
+  # See more here: https://github.com/danielpalme/ReportGenerator/wiki/Integration#history-1.
+  - task: UniversalPackages@0
+    name: 'download_code_coverage_history'
+    displayName: 'Get code coverage history from Azure Artifacts'
+    # @satrapu 2025-01-07: Ignore download errors since the first time a branch is build, there will be no current code coverage history artifact.
+    continueOnError: true
+    condition: |
+      and
+      (
+        eq(${{ parameters.tests.runTests }}, True)
+        , eq(${{ parameters.tests.codeCoverage.history.enabled }}, True)
+      )
+    inputs:
+      command: 'download'
+      downloadDirectory: '$(CodeCoverageHistory.LocalDirectory)'
+      feedsToUse: 'internal'
+      vstsFeed: '$(CodeCoverageHistory.FeedName)'
+      vstsFeedPackage: '$(CodeCoverageHistory.FeedPackageName)'
+      vstsPackageVersion: '*'
+
+  - powershell: |
+      $fileExists = Test-Path -Path "$(CodeCoverageHistory.LocalDirectory)/*.zip"
+      Write-Output "##vso[task.setvariable variable=CodeCoverageHistoryExists]$fileExists"
+    name: 'set_code_coverage_history_exists_variable'
+    displayName: 'Set CodeCoverageHistoryExists variable'
+    condition: |
+        and
+        (
+          succeeded()
+          , eq(${{ parameters.tests.runTests }}, True)
+          , eq(${{ parameters.tests.codeCoverage.history.enabled }}, True)
+        )
+
+  - task: ExtractFiles@1
+    name: 'decompress_code_coverage_history'
+    displayName: 'Decompress code coverage history'
+    continueOnError: true
+    condition: |
+      and
+      (
+        eq(${{ parameters.tests.runTests }}, True)
+        , eq(${{ parameters.tests.codeCoverage.history.enabled }}, True)
+        , eq(variables['CodeCoverageHistoryExists'], True)
+      )
+    inputs:
+      archiveFilePatterns: '$(CodeCoverageHistory.LocalDirectory)/*.zip'
+      destinationFolder: '$(CodeCoverageHistory.LocalDirectory)/decompressed'
+      cleanDestinationFolder: False
+
   # Publish code coverage report.
   # See more here: https://marketplace.visualstudio.com/items?itemName=Palmmedia.reportgenerator.
   - task: reportgenerator@5
@@ -464,8 +560,47 @@ jobs:
       targetdir: '$(Build.SourcesDirectory)/Tests/.CodeCoverageReport'
       reporttypes: 'HtmlInline_AzurePipelines;Cobertura'
       assemblyfilters: '+Todo.*;-Todo.*Tests;-Todo.*.TestInfrastructure'
+      historydir: '$(CodeCoverageHistory.LocalDirectory)/decompressed'
       title: 'Todo Web API - Code Coverage Report ($(Agent.OS)-$(Agent.OSArchitecture))'
       publishCodeCoverageResults: true
+
+  - task: ArchiveFiles@2
+    name: 'compress_code_coverage_history'
+    displayName: 'Compress code coverage history'
+    continueOnError: true
+    condition: |
+      and
+      (
+        eq(${{ parameters.tests.runTests }}, True)
+        , eq(${{ parameters.tests.codeCoverage.history.enabled }}, True)
+      )
+    inputs:
+      rootFolderOrFile: '$(CodeCoverageHistory.LocalDirectory)/decompressed'
+      includeRootFolder: False
+      archiveType: 'zip'
+      archiveFile: '$(CodeCoverageHistory.LocalDirectory)/compressed/code-coverage-history.zip'
+      verbose: True
+      quiet: False
+
+  # A new version of code coverage history is published only via commits made on 'master' branch as it acts as the coverage baseline.
+  - task: UniversalPackages@0
+    displayName: 'Publish code coverage history to Azure Artifacts'
+    condition: |
+      and
+        (
+          eq(${{ parameters.tests.runTests }}, True)
+          , eq(${{ parameters.tests.codeCoverage.history.enabled }}, True)
+          , eq(variables['NormalizedCurrentGitBranchName'], 'master')
+        )
+    inputs:
+      command: 'publish'
+      publishDirectory: '$(CodeCoverageHistory.LocalDirectory)/compressed'
+      feedsToUsePublish: 'internal'
+      vstsFeedPublish: '$(CodeCoverageHistory.FeedName)'
+      vstsFeedPackagePublish: '$(CodeCoverageHistory.FeedPackageName)'
+      versionOption: 'minor'
+      packagePublishDescription: 'Code coverage history for branch: $(NormalizedCurrentGitBranchName)'
+      verbosity: 'Information'
 
   # Run acceptance tests.
   - script: >-
@@ -624,70 +759,6 @@ jobs:
     inputs:
       pollingTimeoutSeconds: ${{ parameters.sonar.publishPollingTimeoutSeconds }}
 
-  # Load the current Git branch name into a build variable to be later used when querying SonarCloud web API for the
-  # results of the static analysis performed against this branch.
-  # This build step will be run only in case the build was triggered by a pull request.
-  - task: PowerShell@2
-    name: 'load_current_git_branch_name_from_pull_request_info'
-    displayName: 'Load current Git branch name from PR info'
-    condition: |
-      and
-      (
-          eq(${{ parameters.sonar.enabled }}, True)
-        , eq(${{ parameters.sonar.buildBreaker.enabled }}, True)
-        , eq(variables['AllTestsOutcome'], 'success')
-        , eq(variables['Build.Reason'], 'PullRequest')
-      )
-    inputs:
-      targetType: 'inline'
-      errorActionPreference: 'stop'
-      script: |
-        Write-Output "##vso[task.setvariable variable=CurrentGitBranchName]$(System.PullRequest.SourceBranch)"
-
-  # Load the current Git branch name into a build variable to be later used when querying SonarCloud web API for the
-  # results of the static analysis performed against this branch.
-  # This build step will be run only in case the build was triggered by anything else but a pull request (e.g. a mere
-  # commit, a scheduled build, etc.).
-  - task: PowerShell@2
-    name: 'load_current_git_branch_name_from_commit_info'
-    displayName: 'Load current Git branch name from commit info'
-    condition: |
-      and
-      (
-          eq(${{ parameters.sonar.enabled }}, True)
-        , eq(${{ parameters.sonar.buildBreaker.enabled }}, True)
-        , eq(variables['AllTestsOutcome'], 'success')
-        , ne(variables['Build.Reason'], 'PullRequest')
-      )
-    inputs:
-      targetType: 'inline'
-      errorActionPreference: 'stop'
-      script: |
-        Write-Output "##vso[task.setvariable variable=CurrentGitBranchName]$(Build.SourceBranch)"
-
-  # Normalize Git branch name since Azure DevOps does not provide the expected one (e.g. 'master' or 'feature/my-feature-branch').
-  # See more here: https://stackoverflow.com/questions/59956206/how-to-get-a-branch-name-with-a-slash-in-azure-devops
-  # and here: https://learn.microsoft.com/en-us/azure/devops/pipelines/build/variables?view=azure-devops&tabs=yaml#build-variables.
-  - task: PowerShell@2
-    name: 'normalize_current_git_branch_name'
-    displayName: 'Normalize current Git branch name'
-    condition: |
-      and
-      (
-          eq(${{ parameters.sonar.enabled }}, True)
-        , eq(${{ parameters.sonar.buildBreaker.enabled }}, True)
-        , eq(variables['AllTestsOutcome'], 'success')
-      )
-    inputs:
-      targetType: 'inline'
-      errorActionPreference: 'stop'
-      script: |
-        $currentGitBranchName = "$(CurrentGitBranchName)"
-        $normalizedGitBranchName = $currentGitBranchName -Replace 'refs/heads/', ''
-        Write-Output "##vso[task.setvariable variable=NormalizedGitBranchName]$normalizedGitBranchName"
-        Write-Output "The current Git branch name is: $currentGitBranchName"
-        Write-Output "The normalized Git branch name is: $normalizedGitBranchName"
-
   # Run a PowerShell script to break the build in case Sonar quality gate has failed.
   # See more here: https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/powershell-v2?view=azure-pipelines.
   - task: PowerShell@2
@@ -708,7 +779,7 @@ jobs:
         -SonarProjectKey 'aspnet-core-logging'
         -SonarServerBaseUrl 'https://sonarcloud.io'
         -SonarToken "$(CurrentProject.Sonar.Token)"
-        -GitBranchName "$(NormalizedGitBranchName)"
+        -GitBranchName "$(NormalizedCurrentGitBranchName)"
       errorActionPreference: 'stop'
       failOnStderr: True
       workingDirectory: $(Build.SourcesDirectory)
