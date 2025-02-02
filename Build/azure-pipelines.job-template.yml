@@ -513,7 +513,7 @@ jobs:
       feedsToUse: 'internal'
       vstsFeed: '$(CodeCoverageHistory.FeedName)'
       vstsFeedPackage: '$(CodeCoverageHistory.FeedPackageName)'
-      vstsPackageVersion: '0.*'
+      vstsPackageVersion: '*'
 
   - task: ExtractFiles@1
     name: 'decompress_code_coverage_history'
@@ -568,13 +568,15 @@ jobs:
       verbose: True
       quiet: False
 
+  # Code coverage history is updated only via commits made on 'master' branch as it acts as the coverage baseline.
   - task: UniversalPackages@0
     displayName: 'Publish code coverage history to Azure Artifacts'
     condition: |
       and
         (
           eq(${{ parameters.tests.runTests }}, True)
-          , eq(${{ parameters.tests.codeCoverage.history.enabled }}, True)
+          , eq(${{ parameters.tests.codeCoverage.history.enabled }}, True),
+          , eq($(NormalizedCurrentGitBranchName), 'master')
         )
     inputs:
       command: 'publish'
@@ -582,7 +584,7 @@ jobs:
       feedsToUsePublish: 'internal'
       vstsFeedPublish: '$(CodeCoverageHistory.FeedName)'
       vstsFeedPackagePublish: '$(CodeCoverageHistory.FeedPackageName)'
-      versionOption: 'patch'
+      versionOption: 'minor'
       packagePublishDescription: 'Code coverage history for branch: $(NormalizedCurrentGitBranchName)'
       verbosity: 'Information'
 
