@@ -576,7 +576,7 @@ jobs:
         (
           eq(${{ parameters.tests.runTests }}, True)
           , eq(${{ parameters.tests.codeCoverage.history.enabled }}, True)
-          , eq($(NormalizedCurrentGitBranchName), 'master')
+          , eq(variables['NormalizedCurrentGitBranchName'], 'master')
         )
     inputs:
       command: 'publish'
