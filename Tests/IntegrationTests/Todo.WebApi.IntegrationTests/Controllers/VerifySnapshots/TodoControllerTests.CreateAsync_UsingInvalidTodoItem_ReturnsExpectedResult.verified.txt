@@ -29,7 +29,7 @@
         MaxDepth: 256,
         SerializerSettings: {
           ContractResolver: {
-            DynamicCodeGeneration: false,
+            DynamicCodeGeneration: true,
             SerializeCompilerGeneratedMembers: false,
             IgnoreSerializableInterface: false,
             IgnoreSerializableAttribute: false,
