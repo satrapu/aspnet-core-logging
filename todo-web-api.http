@@ -22,18 +22,36 @@ GET {{baseUrl}}/api/todo
 Accept: application/json
 Authorization:  Bearer {{authorization.bearer.token}}
 
-### Get todo item by ID
-GET {{baseUrl}}/api/todo/5
-Accept: application/json
-Authorization:  Bearer {{authorization.bearer.token}}
-
 ### Create todo item
 POST {{baseUrl}}/api/todo
 Accept: application/json
 Authorization:  Bearer {{authorization.bearer.token}}
 Content-Type: application/json
 
+
+### Get todo item by ID
+GET {{baseUrl}}/api/todo/{{entities.todo.currentId}}
+Accept: application/json
+Authorization:  Bearer {{authorization.bearer.token}}
+
 {
     "name": "Hello, world!",
     "isComplete": false
 }
+
+### Update todo item
+PUT {{baseUrl}}/api/todo/{{entities.todo.currentId}}
+Accept: application/json
+Authorization:  Bearer {{authorization.bearer.token}}
+Content-Type: application/json
+
+{
+    "name": "Hello, world! - version 2",
+    "isComplete": false
+}
+
+### Delete todo item
+DELETE {{baseUrl}}/api/todo/{{entities.todo.currentId}}
+Accept: application/json
+Authorization:  Bearer {{authorization.bearer.token}}
+Content-Type: application/json
