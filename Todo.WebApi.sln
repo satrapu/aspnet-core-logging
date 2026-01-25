@@ -96,6 +96,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Run", "Run", "{2760AF02-37DB-441B-B0BA-75AE3ACC882A}"
 	ProjectSection(SolutionItems) = preProject
 		docker-compose.yml = docker-compose.yml
+		todo-web-api.http = todo-web-api.http
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Todo.Commons", "Sources\Todo.Commons\Todo.Commons.csproj", "{6935CABF-0DBD-4315-AB8B-DE92A4D81B00}"

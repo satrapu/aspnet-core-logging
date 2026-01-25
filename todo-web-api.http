@@ -1,0 +1,39 @@
+﻿### Generate JWT
+POST {{baseUrl}}/api/jwt
+Accept: application/json
+Content-Type: application/json
+
+{
+    "userName": "{{authentication.generateJwt.credentials.username}}",
+    "password": "{{authentication.generateJwt.credentials.password}}"
+}
+
+### Check health status
+GET {{baseUrl}}/api/health
+Accept: application/json
+Authorization:  Bearer {{authorization.bearer.token}}
+
+### Get todo items
+GET {{baseUrl}}/api/todo
+    ?pageSize=50
+    &pageIndex=0
+    &sortBy=id
+    &isSortAscending=true
+Accept: application/json
+Authorization:  Bearer {{authorization.bearer.token}}
+
+### Get todo item by ID
+GET {{baseUrl}}/api/todo/5
+Accept: application/json
+Authorization:  Bearer {{authorization.bearer.token}}
+
+### Create todo item
+POST {{baseUrl}}/api/todo
+Accept: application/json
+Authorization:  Bearer {{authorization.bearer.token}}
+Content-Type: application/json
+
+{
+    "name": "Hello, world!",
+    "isComplete": false
+}

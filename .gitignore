@@ -45,3 +45,6 @@ LivingDoc.html
 # Verify
 *.received.*
 *.received/
+
+# HTTP requests - environment files
+/http-client.private.env.json
