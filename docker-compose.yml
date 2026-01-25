@@ -1,6 +1,7 @@
 services:
   aspnet-core-logging-db-local-dev:
     container_name: aspnet-core-logging-db-for-local-dev
+    # Container image tags can be found here: https://hub.docker.com/r/satrapu/postgresql/tags.
     image: satrapu/postgresql:15.1-linux
     restart: unless-stopped
     healthcheck:
@@ -79,11 +80,11 @@ services:
 
   jaeger:
     container_name: jaeger
-    image: jaegertracing/all-in-one:1.62.0
+    # Container image tags can be found here: https://www.jaegertracing.io/download/#container-images.
+    image: cr.jaegertracing.io/jaegertracing/jaeger:2.14.1
     restart: unless-stopped
     ports:
-      # The ports used by various Jaeger services and their meaning are taken from here: https://github.com/jaegertracing/jaeger/blob/main/crossdock/jaeger-docker-compose.yml
-      # and here: https://www.jaegertracing.io/docs/next-release/deployment/.
+      # The ports used by various Jaeger services and their meaning are taken from here: https://github.com/jaegertracing/jaeger/blob/main/ports/ports.go.
       # jaeger-agent port
       - "6831:6831/udp"
       # jaeger-collector port
@@ -98,11 +99,13 @@ services:
 
   pgadmin:
     container_name: pgadmin-ui
-    image: dpage/pgadmin4:2024-10-19-2
+    # Container image tags can be found here: https://hub.docker.com/r/dpage/pgadmin4/tags.
+    image: dpage/pgadmin4:9.11.0
     restart: unless-stopped
     volumes:
       - pgadmin_data:/var/lib/pgadmin
     ports:
+      # UI port
       - "8080:80/tcp"
     networks:
       - local_postgresql
@@ -116,7 +119,8 @@ services:
 
   seq:
     container_name: seq
-    image: datalust/seq:2024.3
+    # Container image tags can be found here: https://hub.docker.com/r/datalust/seq/tags.
+    image: datalust/seq:2025.2
     restart: unless-stopped
     volumes:
       - seq_data:/data
