@@ -50,7 +50,7 @@ variables:
   # Specifies the versions of the .NET SDK to install and use when running this pipeline.
   # All releases can be found here: https://dotnet.microsoft.com/download/dotnet.
   - name: 'DotNetSdkVersionUsedByApplication'
-    value: '9.0.300'
+    value: '9.0.310'
   # @satrapu 2024-06-24: Version 6.x is used by SpecFlow.Plus.LivingDoc tool.
   - name: 'DotNetSdkVersionUsedByLivingDoc'
     value: '6.0.428'
@@ -134,7 +134,7 @@ jobs:
       name: 'windows'
       displayName: 'Run on Windows'
     pool:
-      vmImage: 'windows-2022'
+      vmImage: 'windows-2025'
     runDotNetFormatCommand: True
     tests:
       runTests: True
