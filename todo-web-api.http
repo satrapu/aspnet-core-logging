@@ -28,16 +28,15 @@ Accept: application/json
 Authorization:  Bearer {{authorization.bearer.token}}
 Content-Type: application/json
 
+{
+    "name": "Hello, world!",
+    "isComplete": false
+}
 
 ### Get todo item by ID
 GET {{baseUrl}}/api/todo/{{entities.todo.currentId}}
 Accept: application/json
 Authorization:  Bearer {{authorization.bearer.token}}
-
-{
-    "name": "Hello, world!",
-    "isComplete": false
-}
 
 ### Update todo item
 PUT {{baseUrl}}/api/todo/{{entities.todo.currentId}}
