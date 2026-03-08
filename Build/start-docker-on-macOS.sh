@@ -17,10 +17,12 @@ DOCKER_CLI_INSTALL_DIR="$(mktemp -d)"
 # Installation steps can be found here: https://docs.docker.com/compose/install/standalone/.
 DOCKER_COMPOSE_VERSION='5.1.0'
 DOCKER_COMPOSE_ARCH="x86_64"
+DOCKER_COMPOSE_OS_NAME="darwin"
 
 # Check for the right Colima version here: https://github.com/abiosoft/colima/releases.
 COLIMA_VERSION="0.10.1"
 COLIMA_ARCH="x86_64"
+COLIMA_OS_NAME="Darwin"
 
 # Check for how to customize Colima VM here: https://github.com/abiosoft/colima?tab=readme-ov-file#customizing-the-vm.
 colimaCpuCount=2
@@ -38,28 +40,33 @@ sudo chmod +x /usr/local/bin/docker
 echo 'Checking Docker CLI installation ...'
 docker --version
 echo "Docker CLI has been installed successfully"
+printf "\n\n\n"
 
 # Install Docker Compose
 echo "Installing Docker Compose with version: ${DOCKER_COMPOSE_VERSION} ..."
 echo "Downloading Docker Compose archive ..."
-sudo curl -L "https://github.com/docker/compose/releases/download/v${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -m)-${DOCKER_COMPOSE_ARCH}" -o /usr/local/bin/docker-compose -v
+sudo curl -L "https://github.com/docker/compose/releases/download/v${DOCKER_COMPOSE_VERSION}/docker-compose-${DOCKER_COMPOSE_OS_NAME}-${DOCKER_COMPOSE_ARCH}" -o
+/usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 echo 'Checking Docker Compose installation ...'
 docker-compose version
 echo "Docker Compose has been installed successfully"
+printf "\n\n\n"
 
 # Install Colima
 echo "Installing Colima with version: ${COLIMA_VERSION} ..."
 echo "Downloading Colima archive ..."
-curl -L "https://github.com/abiosoft/colima/releases/download/v${COLIMA_VERSION}/colima-$(uname -m)-${COLIMA_ARCH}" -o /usr/local/bin/colima
+curl -L "https://github.com/abiosoft/colima/releases/download/v${COLIMA_VERSION}/colima-${COLIMA_OS_NAME}-${COLIMA_ARCH}" -o /usr/local/bin/colima
 chmod +x /usr/local/bin/colima
 echo 'Checking Colima installation ...'
 colima version
 echo "Colima has been installed successfully"
+printf "\n\n\n"
 
 # Start Colima container runtime.
 # Check for Colima usage here: https://github.com/abiosoft/colima?tab=readme-ov-file#usage.
 echo 'Starting Colima container runtime ...'
 colima start --cpu $colimaCpuCount --memory $colimaMemorySizeInGigabytes --disk $colimaDiskSizeInGigabytes
 echo 'Colima container runtime has started'
+printf "\n\n\n"
 echo 'All good :)'
