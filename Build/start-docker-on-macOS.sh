@@ -7,7 +7,7 @@ set -o errexit
 set -o nounset
 
 # Check for the right Docker CLI version here: https://github.com/docker/cli/tags.
-DOCKER_CLI_VERSION=29.3.0
+DOCKER_CLI_VERSION="29.3.0"
 DOCKER_CLI_ARCH="x86_64"
 DOCKER_CLI_DOWNLOAD_BASE_URL="https://download.docker.com/mac/static/stable/$DOCKER_CLI_ARCH"
 DOCKER_CLI_TAR_FILE="docker-${DOCKER_VERSION}.tgz"
