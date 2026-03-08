@@ -5,12 +5,7 @@ VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{398FFE78-1C6A-4CC2-AB9F-220B7F1CDAE3}"
 	ProjectSection(SolutionItems) = preProject
-		Build\azure-pipelines.job-template.yml = Build\azure-pipelines.job-template.yml
-		Build\azure-pipelines.yml = Build\azure-pipelines.yml
 		Directory.Build.props = Directory.Build.props
-		Build\PublishComposeServiceLogs.ps1 = Build\PublishComposeServiceLogs.ps1
-		Build\RunComposeServices.ps1 = Build\RunComposeServices.ps1
-		Build\SonarBuildBreaker.ps1 = Build\SonarBuildBreaker.ps1
 		Build\start-docker-on-macOS.sh = Build\start-docker-on-macOS.sh
 		Directory.Build.targets = Directory.Build.targets
 	EndProjectSection
@@ -76,6 +71,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "db4tests", "db4tests", "{851D8B4A-A6C9-469E-8633-E6679738DA72}"
 	ProjectSection(SolutionItems) = preProject
 		Build\db4tests\docker-compose.yml = Build\db4tests\docker-compose.yml
+		Build\PublishComposeServiceLogs.ps1 = Build\PublishComposeServiceLogs.ps1
+		Build\RunComposeServices.ps1 = Build\RunComposeServices.ps1
+		Build\SonarBuildBreaker.ps1 = Build\SonarBuildBreaker.ps1
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CodeStyle", "CodeStyle", "{3FCA9560-CE93-4B1F-9DE3-21461427E995}"
@@ -115,6 +113,12 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "AcceptanceTests", "AcceptanceTests", "{9D8E7050-5E0A-4BFF-86CB-3EE4F1223FA6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.WebApi.AcceptanceTests", "Tests\AcceptanceTests\Todo.WebApi.AcceptanceTests\Todo.WebApi.AcceptanceTests.csproj", "{7B7FAB6D-3290-43C7-AB0B-3125102C4C62}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Pipelines", "Pipelines", "{EBCE3C3B-6DAD-43E6-8443-B69A841D97C9}"
+	ProjectSection(SolutionItems) = preProject
+		Build\azure-pipelines.yml = Build\azure-pipelines.yml
+		Build\azure-pipelines.job-template.yml = Build\azure-pipelines.job-template.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -207,7 +211,6 @@ Global
 		{E773243B-5DCB-46A8-9012-1AD0084F0149} = {280A9085-F56E-43CA-A419-1E4609E378EA}
 		{AB306CB9-FAA1-4058-9A9C-111EA5BF04C7} = {280A9085-F56E-43CA-A419-1E4609E378EA}
 		{D9CB10FA-DBFB-4A35-8C20-E0CAB538BAC6} = {AB306CB9-FAA1-4058-9A9C-111EA5BF04C7}
-		{851D8B4A-A6C9-469E-8633-E6679738DA72} = {398FFE78-1C6A-4CC2-AB9F-220B7F1CDAE3}
 		{74414D41-EEF5-4217-9B47-52B19342A987} = {D084DD17-3480-4A70-8296-92FB55BAD433}
 		{6935CABF-0DBD-4315-AB8B-DE92A4D81B00} = {ED7A5363-C21A-4D47-A2A5-67DEB1E0DDE3}
 		{EA22758E-FC4F-45E3-B278-6E9AC413634F} = {9F40326A-D20A-40DE-A0D9-6D06EB4C71C5}
@@ -216,6 +219,7 @@ Global
 		{786AAED2-C350-4575-92A8-7BEF82889CD6} = {D084DD17-3480-4A70-8296-92FB55BAD433}
 		{9D8E7050-5E0A-4BFF-86CB-3EE4F1223FA6} = {280A9085-F56E-43CA-A419-1E4609E378EA}
 		{7B7FAB6D-3290-43C7-AB0B-3125102C4C62} = {9D8E7050-5E0A-4BFF-86CB-3EE4F1223FA6}
+		{851D8B4A-A6C9-469E-8633-E6679738DA72} = {EBCE3C3B-6DAD-43E6-8443-B69A841D97C9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {74318BEF-DB50-4852-A16D-E2FB8671BE7F}
