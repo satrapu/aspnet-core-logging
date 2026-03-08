@@ -19,6 +19,11 @@ DOCKER_COMPOSE_VERSION='5.1.0'
 DOCKER_COMPOSE_ARCH="x86_64"
 DOCKER_COMPOSE_OS_NAME="darwin"
 
+# Check for the right Lima version here: https://github.com/lima-vm/lima/releases.
+LIMA_VERSION="2.0.3"
+LIMA_ARCH="x86_64"
+LIMA_OS_NAME="Darwin"
+
 # Check for the right Colima version here: https://github.com/abiosoft/colima/releases.
 COLIMA_VERSION="0.10.1"
 COLIMA_ARCH="x86_64"
@@ -51,6 +56,18 @@ sudo chmod +x /usr/local/bin/docker-compose
 echo 'Checking Docker Compose installation ...'
 docker-compose version
 echo "Docker Compose has been installed successfully"
+printf "\n\n\n"
+
+# Install Lima (required for Colima)
+echo "Installing Lima with version: ${LIMA_VERSION} ..."
+echo "Downloading Lima archive ..."
+sudo curl -L "https://github.com/lima-vm/lima/releases/download/v${LIMA_VERSION}/lima-${LIMA_VERSION}-${LIMA_OS_NAME}-${LIMA_ARCH}.tar.gz" \
+          -o /usr/local/bin/lima.tar.gz
+sudo tar -xzf /usr/local/bin/lima.tar.gz -C /usr/local/bin --strip-components=1
+sudo chmod +x /usr/local/bin/limactl
+echo 'Checking Lima installation ...'
+limactl --version
+echo "Lima has been installed successfully"
 printf "\n\n\n"
 
 # Install Colima
