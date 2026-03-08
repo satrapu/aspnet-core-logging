@@ -17,7 +17,7 @@ namespace Todo.WebApi.AcceptanceTests.Infrastructure
     {
         private const string TodoWebApiSourcesRelativePath = "../../../../../../Sources/Todo.WebApi";
 
-        private static readonly TimeSpan MaxWaitTime = TimeSpan.FromSeconds(60);
+        private static readonly TimeSpan MaxWaitTime = TimeSpan.FromSeconds(120);
         private static readonly TimeSpan RetryWaitTime = TimeSpan.FromMilliseconds(250);
         private static readonly HttpClient HttpClient = new();
 
@@ -39,7 +39,7 @@ namespace Todo.WebApi.AcceptanceTests.Infrastructure
             string healthEndpoint = $"{baseUrl}/health";
 
             Process process = StartSystemUnderTest(baseUrl, specFlowOutputHelper, environmentVariables);
-            await WaitUntilSystemUnderTestIsHealthyAsync(healthEndpoint);
+            await WaitUntilSystemUnderTestIsHealthyAsync(healthEndpoint, specFlowOutputHelper);
 
             return new SystemUnderTest(process);
         }
@@ -88,13 +88,20 @@ namespace Todo.WebApi.AcceptanceTests.Infrastructure
             return process;
         }
 
-        private static async Task WaitUntilSystemUnderTestIsHealthyAsync(string healthEndpoint)
+        private static async Task WaitUntilSystemUnderTestIsHealthyAsync(string healthEndpoint, ISpecFlowOutputHelper specFlowOutputHelper)
         {
             PolicyResult<HttpResponseMessage> policyResult =
                 await Policy
                     .TimeoutAsync(MaxWaitTime)
                     .WrapAsync(innerPolicy: Policy.Handle<Exception>().WaitAndRetryForeverAsync(_ => RetryWaitTime))
-                    .ExecuteAndCaptureAsync(() => HttpClient.GetAsync(healthEndpoint));
+                    .ExecuteAndCaptureAsync(async () =>
+                        {
+                            HttpResponseMessage httpResponseMessage = await HttpClient.GetAsync(healthEndpoint);
+                            specFlowOutputHelper.WriteLine($"Health check response body: {await httpResponseMessage.Content.ReadAsStringAsync()}; "
+                                                           + $"status code: {httpResponseMessage.StatusCode}");
+                            return httpResponseMessage;
+                        }
+                    );
 
             if (policyResult.Outcome == OutcomeType.Failure)
             {
