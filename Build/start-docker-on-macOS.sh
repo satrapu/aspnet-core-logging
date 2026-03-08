@@ -32,7 +32,7 @@ colimaDiskSizeInGigabytes=10
 # Install Docker CLI
 echo "Installing Docker CLI with version: ${DOCKER_CLI_VERSION} ..."
 echo "Downloading Docker CLI archive ..."
-curl -L "${DOCKER_CLI_DOWNLOAD_BASE_URL}/${DOCKER_CLI_TAR_FILE}" -o "${DOCKER_CLI_INSTALL_DIR}/${DOCKER_CLI_TAR_FILE}"
+sudo curl -L "${DOCKER_CLI_DOWNLOAD_BASE_URL}/${DOCKER_CLI_TAR_FILE}" -o "${DOCKER_CLI_INSTALL_DIR}/${DOCKER_CLI_TAR_FILE}"
 echo "Extracting Docker CLI archive ..."
 tar -xzf "${DOCKER_CLI_INSTALL_DIR}/${DOCKER_CLI_TAR_FILE}" -C "${DOCKER_CLI_INSTALL_DIR}"
 sudo mv "${DOCKER_CLI_INSTALL_DIR}/docker/docker" /usr/local/bin/docker
@@ -45,8 +45,8 @@ printf "\n\n\n"
 # Install Docker Compose
 echo "Installing Docker Compose with version: ${DOCKER_COMPOSE_VERSION} ..."
 echo "Downloading Docker Compose archive ..."
-sudo curl -L "https://github.com/docker/compose/releases/download/v${DOCKER_COMPOSE_VERSION}/docker-compose-${DOCKER_COMPOSE_OS_NAME}-${DOCKER_COMPOSE_ARCH}" -o
-/usr/local/bin/docker-compose
+sudo curl -L "https://github.com/docker/compose/releases/download/v${DOCKER_COMPOSE_VERSION}/docker-compose-${DOCKER_COMPOSE_OS_NAME}-${DOCKER_COMPOSE_ARCH}" \
+          -o /usr/local/bin/docker-compose
 sudo chmod +x /usr/local/bin/docker-compose
 echo 'Checking Docker Compose installation ...'
 docker-compose version
@@ -56,8 +56,9 @@ printf "\n\n\n"
 # Install Colima
 echo "Installing Colima with version: ${COLIMA_VERSION} ..."
 echo "Downloading Colima archive ..."
-curl -L "https://github.com/abiosoft/colima/releases/download/v${COLIMA_VERSION}/colima-${COLIMA_OS_NAME}-${COLIMA_ARCH}" -o /usr/local/bin/colima
-chmod +x /usr/local/bin/colima
+sudo curl -L "https://github.com/abiosoft/colima/releases/download/v${COLIMA_VERSION}/colima-${COLIMA_OS_NAME}-${COLIMA_ARCH}" \
+          -o /usr/local/bin/colima
+sudo chmod +x /usr/local/bin/colima
 echo 'Checking Colima installation ...'
 colima version
 echo "Colima has been installed successfully"
