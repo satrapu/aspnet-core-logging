@@ -11,7 +11,7 @@ DOCKER_CLI_VERSION=29.3.0
 DOCKER_CLI_ARCH="x86_64"
 DOCKER_CLI_DOWNLOAD_BASE_URL="https://download.docker.com/mac/static/stable/$DOCKER_CLI_ARCH"
 DOCKER_CLI_TAR_FILE="docker-${DOCKER_VERSION}.tgz"
-DOCKER_CLI_INSTALL_TMP_DIR="$(mktemp -d)"
+DOCKER_CLI_INSTALL_DIR="$(mktemp -d)"
 
 # Check for the right Docker Compose version here: https://github.com/docker/compose/releases.
 # Installation steps can be found here: https://docs.docker.com/compose/install/standalone/.
@@ -27,10 +27,10 @@ colimaDiskSizeInGigabytes=10
 
 # Install Docker CLI
 echo "Installing Docker CLI with version: $DOCKER_CLI_VERSION ..."
-curl -L "$DOCKER_CLI_DOWNLOAD_BASE_URL/$DOCKER_CLI_TAR_FILE" -o "$DOCKER_CLI_INSTALL_TMP_DIR/$DOCKER_CLI_TAR_FILE"
+curl -L "$DOCKER_CLI_DOWNLOAD_BASE_URL/$DOCKER_CLI_TAR_FILE" -o "$DOCKER_CLI_INSTALL_DIR/$DOCKER_CLI_TAR_FILE"
 echo "Extracting Docker CLI archive ..."
-tar -xzf "$DOCKER_CLI_INSTALL_TMP_DIR/$DOCKER_CLI_TAR_FILE" -C "$DOCKER_CLI_INSTALL_TMP_DIR"
-sudo mv "$DOCKER_CLI_INSTALL_TMP_DIR/docker/docker" /usr/local/bin/docker
+tar -xzf "$DOCKER_CLI_INSTALL_DIR/$DOCKER_CLI_TAR_FILE" -C "$DOCKER_CLI_INSTALL_DIR"
+sudo mv "$DOCKER_CLI_INSTALL_DIR/docker/docker" /usr/local/bin/docker
 sudo chmod +x /usr/local/bin/docker
 echo 'Checking Docker CLI installation ...'
 docker --version
