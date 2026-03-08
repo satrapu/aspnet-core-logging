@@ -67,6 +67,7 @@ sudo curl -L "https://github.com/lima-vm/lima/releases/download/v${LIMA_VERSION}
 echo "Extracting Lima archive ..."
 sudo tar -xzf "${LIMA_INSTALL_DIR}/lima.tar.gz" -C "${LIMA_INSTALL_DIR}"
 sudo mv "${LIMA_INSTALL_DIR}/bin/limactl" /usr/local/bin/limactl
+sudo cp -r "${LIMA_INSTALL_DIR}/share/lima" /usr/local/share/lima
 sudo chmod +x /usr/local/bin/limactl
 echo 'Checking Lima installation ...'
 limactl --version
