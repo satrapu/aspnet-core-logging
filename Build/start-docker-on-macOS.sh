@@ -23,6 +23,7 @@ DOCKER_COMPOSE_OS_NAME="darwin"
 LIMA_VERSION="2.0.3"
 LIMA_ARCH="x86_64"
 LIMA_OS_NAME="Darwin"
+LIMA_INSTALL_DIR="$(mktemp -d)"
 
 # Check for the right Colima version here: https://github.com/abiosoft/colima/releases.
 COLIMA_VERSION="0.10.1"
@@ -62,8 +63,10 @@ printf "\n\n\n"
 echo "Installing Lima with version: ${LIMA_VERSION} ..."
 echo "Downloading Lima archive ..."
 sudo curl -L "https://github.com/lima-vm/lima/releases/download/v${LIMA_VERSION}/lima-${LIMA_VERSION}-${LIMA_OS_NAME}-${LIMA_ARCH}.tar.gz" \
-          -o /usr/local/bin/lima.tar.gz
-sudo tar -xzf /usr/local/bin/lima.tar.gz -C /usr/local/bin --strip-components=1
+          -o "${LIMA_INSTALL_DIR}/lima.tar.gz"
+echo "Extracting Lima archive ..."
+sudo tar -xzf "${LIMA_INSTALL_DIR}/lima.tar.gz" -C "${LIMA_INSTALL_DIR}"
+sudo mv "${LIMA_INSTALL_DIR}/bin/limactl" /usr/local/bin/limactl
 sudo chmod +x /usr/local/bin/limactl
 echo 'Checking Lima installation ...'
 limactl --version
