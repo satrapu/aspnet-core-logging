@@ -6,7 +6,6 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{398FFE78-1C6A-4CC2-AB9F-220B7F1CDAE3}"
 	ProjectSection(SolutionItems) = preProject
 		Directory.Build.props = Directory.Build.props
-		Build\start-docker-on-macOS.sh = Build\start-docker-on-macOS.sh
 		Directory.Build.targets = Directory.Build.targets
 	EndProjectSection
 EndProject
@@ -118,6 +117,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Pipelines", "Pipelines", "{
 	ProjectSection(SolutionItems) = preProject
 		Build\azure-pipelines.yml = Build\azure-pipelines.yml
 		Build\azure-pipelines.job-template.yml = Build\azure-pipelines.job-template.yml
+		Build\start-docker-on-macOS.sh = Build\start-docker-on-macOS.sh
 	EndProjectSection
 EndProject
 Global
