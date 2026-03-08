@@ -9,7 +9,7 @@ set -o nounset
 # Check for the right Docker CLI version here: https://github.com/docker/cli/tags.
 DOCKER_CLI_VERSION="29.3.0"
 DOCKER_CLI_ARCH="x86_64"
-DOCKER_CLI_DOWNLOAD_BASE_URL="https://download.docker.com/mac/static/stable/$DOCKER_CLI_ARCH"
+DOCKER_CLI_DOWNLOAD_BASE_URL="https://download.docker.com/mac/static/stable/${DOCKER_CLI_ARCH}"
 DOCKER_CLI_TAR_FILE="docker-${DOCKER_VERSION}.tgz"
 DOCKER_CLI_INSTALL_DIR="$(mktemp -d)"
 
@@ -27,26 +27,29 @@ colimaMemorySizeInGigabytes=2
 colimaDiskSizeInGigabytes=10
 
 # Install Docker CLI
-echo "Installing Docker CLI with version: $DOCKER_CLI_VERSION ..."
-curl -L "$DOCKER_CLI_DOWNLOAD_BASE_URL/$DOCKER_CLI_TAR_FILE" -o "$DOCKER_CLI_INSTALL_DIR/$DOCKER_CLI_TAR_FILE"
+echo "Installing Docker CLI with version: ${DOCKER_CLI_VERSION} ..."
+echo "Downloading Docker CLI archive ..."
+curl -L "${DOCKER_CLI_DOWNLOAD_BASE_URL}/${DOCKER_CLI_TAR_FILE}" -o "${DOCKER_CLI_INSTALL_DIR}/${DOCKER_CLI_TAR_FILE}"
 echo "Extracting Docker CLI archive ..."
-tar -xzf "$DOCKER_CLI_INSTALL_DIR/$DOCKER_CLI_TAR_FILE" -C "$DOCKER_CLI_INSTALL_DIR"
-sudo mv "$DOCKER_CLI_INSTALL_DIR/docker/docker" /usr/local/bin/docker
+tar -xzf "${DOCKER_CLI_INSTALL_DIR}/${DOCKER_CLI_TAR_FILE}" -C "${DOCKER_CLI_INSTALL_DIR}"
+sudo mv "${DOCKER_CLI_INSTALL_DIR}/docker/docker" /usr/local/bin/docker
 sudo chmod +x /usr/local/bin/docker
 echo 'Checking Docker CLI installation ...'
 docker --version
 echo "Docker CLI has been installed successfully"
 
 # Install Docker Compose
-echo "Installing Docker Compose with version: $DOCKER_COMPOSE_VERSION ..."
-sudo curl -L "https://github.com/docker/compose/releases/download/v$DOCKER_COMPOSE_VERSION/docker-compose-darwin-$DOCKER_COMPOSE_ARCH" -o /usr/local/bin/docker-compose -v
+echo "Installing Docker Compose with version: ${DOCKER_COMPOSE_VERSION} ..."
+echo "Downloading Docker Compose archive ..."
+sudo curl -L "https://github.com/docker/compose/releases/download/v${DOCKER_COMPOSE_VERSION}/docker-compose-darwin-${DOCKER_COMPOSE_ARCH}" -o /usr/local/bin/docker-compose -v
 sudo chmod +x /usr/local/bin/docker-compose
 echo 'Checking Docker Compose installation ...'
 docker-compose version
 echo "Docker Compose has been installed successfully"
 
 # Install Colima
-echo "Installing Colima with version: $COLIMA_VERSION ..."
+echo "Installing Colima with version: ${COLIMA_VERSION} ..."
+echo "Downloading Colima archive ..."
 curl -L "https://github.com/abiosoft/colima/releases/download/v${COLIMA_VERSION}/colima-$(uname -m)" -o /usr/local/bin/colima
 chmod +x /usr/local/bin/colima
 echo 'Checking Colima installation ...'
