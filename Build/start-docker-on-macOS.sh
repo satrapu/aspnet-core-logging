@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Install Docker on macOS via CLI commands.
+# Run Docker containers on macOS with the help of Colima.
 
 # Fail script in case a command fails or in case of unset variables - see more here: https://www.davidpashley.com/articles/writing-robust-shell-scripts/.
 set -o errexit
@@ -35,7 +35,7 @@ colimaCpuCount=2
 colimaMemorySizeInGigabytes=2
 colimaDiskSizeInGigabytes=10
 
-# Install Docker CLI
+# Install Docker CLI.
 echo "Installing Docker CLI with version: ${DOCKER_CLI_VERSION} ..."
 echo "Downloading Docker CLI archive ..."
 sudo curl -L "${DOCKER_CLI_DOWNLOAD_BASE_URL}/${DOCKER_CLI_TAR_FILE}" -o "${DOCKER_CLI_INSTALL_DIR}/${DOCKER_CLI_TAR_FILE}"
@@ -48,7 +48,7 @@ docker --version
 echo "Docker CLI has been installed successfully"
 printf "\n\n\n"
 
-# Install Docker Compose
+# Install Docker Compose.
 echo "Installing Docker Compose with version: ${DOCKER_COMPOSE_VERSION} ..."
 echo "Downloading Docker Compose archive ..."
 sudo curl -L "https://github.com/docker/compose/releases/download/v${DOCKER_COMPOSE_VERSION}/docker-compose-${DOCKER_COMPOSE_OS_NAME}-${DOCKER_COMPOSE_ARCH}" \
@@ -59,7 +59,7 @@ docker-compose version
 echo "Docker Compose has been installed successfully"
 printf "\n\n\n"
 
-# Install Lima (required for Colima)
+# Install Lima (required for Colima).
 echo "Installing Lima with version: ${LIMA_VERSION} ..."
 echo "Downloading Lima archive ..."
 sudo curl -L "https://github.com/lima-vm/lima/releases/download/v${LIMA_VERSION}/lima-${LIMA_VERSION}-${LIMA_OS_NAME}-${LIMA_ARCH}.tar.gz" \
@@ -73,7 +73,13 @@ limactl --version
 echo "Lima has been installed successfully"
 printf "\n\n\n"
 
-# Install Colima
+# Start Lima (required before using Colima).
+echo "Starting Lima ..."
+limactl start
+echo "Lima has been started successfully"
+printf "\n\n\n"
+
+# Install Colima.
 echo "Installing Colima with version: ${COLIMA_VERSION} ..."
 echo "Downloading Colima archive ..."
 sudo curl -L "https://github.com/abiosoft/colima/releases/download/v${COLIMA_VERSION}/colima-${COLIMA_OS_NAME}-${COLIMA_ARCH}" \
@@ -84,7 +90,7 @@ colima version
 echo "Colima has been installed successfully"
 printf "\n\n\n"
 
-# Start Colima container runtime.
+# Start Colima.
 # Check for Colima usage here: https://github.com/abiosoft/colima?tab=readme-ov-file#usage.
 echo 'Starting Colima container runtime ...'
 colima start --cpu $colimaCpuCount --memory $colimaMemorySizeInGigabytes --disk $colimaDiskSizeInGigabytes
