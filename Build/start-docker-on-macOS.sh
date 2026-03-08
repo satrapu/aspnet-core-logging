@@ -16,6 +16,7 @@ DOCKER_CLI_INSTALL_DIR="$(mktemp -d)"
 # Check for the right Docker Compose version here: https://github.com/docker/compose/releases.
 # Installation steps can be found here: https://docs.docker.com/compose/install/standalone/.
 DOCKER_COMPOSE_VERSION='5.1.0'
+DOCKER_COMPOSE_ARCH="x86_64"
 
 # Check for the right Colima version here: https://github.com/abiosoft/colima/releases.
 COLIMA_VERSION=0.10.1
@@ -38,7 +39,7 @@ echo "Docker CLI has been installed successfully"
 
 # Install Docker Compose
 echo "Installing Docker Compose with version: $DOCKER_COMPOSE_VERSION ..."
-sudo curl -L https://github.com/docker/compose/releases/download/v$DOCKER_COMPOSE_VERSION/docker-compose-darwin-x86_64 -o /usr/local/bin/docker-compose -v
+sudo curl -L "https://github.com/docker/compose/releases/download/v$DOCKER_COMPOSE_VERSION/docker-compose-darwin-$DOCKER_COMPOSE_ARCH" -o /usr/local/bin/docker-compose -v
 sudo chmod +x /usr/local/bin/docker-compose
 echo 'Checking Docker Compose installation ...'
 docker-compose version
