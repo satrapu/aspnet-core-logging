@@ -80,8 +80,8 @@ services:
 
   jaeger:
     container_name: jaeger
-    # Container image tags can be found here: https://www.jaegertracing.io/download/#container-images.
-    image: cr.jaegertracing.io/jaegertracing/jaeger:2.14.1
+    # Container image tags can be found here: https://hub.docker.com/r/jaegertracing/jaeger/tags.
+    image: cr.jaegertracing.io/jaegertracing/jaeger:2.16.0
     restart: unless-stopped
     ports:
       # The ports used by various Jaeger services and their meaning are taken from here: https://github.com/jaegertracing/jaeger/blob/main/ports/ports.go.
@@ -100,7 +100,7 @@ services:
   pgadmin:
     container_name: pgadmin-ui
     # Container image tags can be found here: https://hub.docker.com/r/dpage/pgadmin4/tags.
-    image: dpage/pgadmin4:9.11.0
+    image: dpage/pgadmin4:9.13.0
     restart: unless-stopped
     volumes:
       - pgadmin_data:/var/lib/pgadmin
