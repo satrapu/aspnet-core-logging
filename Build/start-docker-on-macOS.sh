@@ -19,7 +19,8 @@ DOCKER_COMPOSE_VERSION='5.1.0'
 DOCKER_COMPOSE_ARCH="x86_64"
 
 # Check for the right Colima version here: https://github.com/abiosoft/colima/releases.
-COLIMA_VERSION=0.10.1
+COLIMA_VERSION="0.10.1"
+COLIMA_ARCH="x86_64"
 
 # Check for how to customize Colima VM here: https://github.com/abiosoft/colima?tab=readme-ov-file#customizing-the-vm.
 colimaCpuCount=2
@@ -41,7 +42,7 @@ echo "Docker CLI has been installed successfully"
 # Install Docker Compose
 echo "Installing Docker Compose with version: ${DOCKER_COMPOSE_VERSION} ..."
 echo "Downloading Docker Compose archive ..."
-sudo curl -L "https://github.com/docker/compose/releases/download/v${DOCKER_COMPOSE_VERSION}/docker-compose-darwin-${DOCKER_COMPOSE_ARCH}" -o /usr/local/bin/docker-compose -v
+sudo curl -L "https://github.com/docker/compose/releases/download/v${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -m)-${DOCKER_COMPOSE_ARCH}" -o /usr/local/bin/docker-compose -v
 sudo chmod +x /usr/local/bin/docker-compose
 echo 'Checking Docker Compose installation ...'
 docker-compose version
@@ -50,7 +51,7 @@ echo "Docker Compose has been installed successfully"
 # Install Colima
 echo "Installing Colima with version: ${COLIMA_VERSION} ..."
 echo "Downloading Colima archive ..."
-curl -L "https://github.com/abiosoft/colima/releases/download/v${COLIMA_VERSION}/colima-$(uname -m)" -o /usr/local/bin/colima
+curl -L "https://github.com/abiosoft/colima/releases/download/v${COLIMA_VERSION}/colima-$(uname -m)-${COLIMA_ARCH}" -o /usr/local/bin/colima
 chmod +x /usr/local/bin/colima
 echo 'Checking Colima installation ...'
 colima version
