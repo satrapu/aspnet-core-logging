@@ -75,11 +75,21 @@ curl -L "https://github.com/lima-vm/lima/releases/download/v${LIMA_VERSION}/lima
 echo "Extracting Lima archive ..."
 tar -xzf "${LIMA_INSTALL_DIR}/lima.tar.gz" --strip-components=1 -C "${LIMA_INSTALL_DIR}"
 mv "${LIMA_INSTALL_DIR}/bin/limactl" /usr/local/bin/limactl
+chmod +x /usr/local/bin/limactl
 mkdir -p /usr/local/share
 cp -r "${LIMA_INSTALL_DIR}/share/lima" /usr/local/share/lima
-chmod +x /usr/local/bin/limactl
+## If the Lima tarball contains the Lima binary, install it as well.
+if [ -f "${LIMA_INSTALL_DIR}/bin/lima" ]; then
+  mv "${LIMA_INSTALL_DIR}/bin/lima" /usr/local/bin/lima
+  chmod +x /usr/local/bin/lima
+fi
 echo 'Checking Lima installation ...'
 limactl --version
+if command -v lima >/dev/null 2>&1; then
+  lima --version
+else
+  echo "Warning: Lima binary not found in PATH. Colima may report an error if Lima is unavailable."
+fi
 echo "Lima has been installed successfully"
 printf "\n\n\n"
 
