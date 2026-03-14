@@ -8,12 +8,6 @@ set -o nounset
 
 export PATH="/usr/local/bin:$PATH"
 
-# Ensure Lima does not run.
-limactl stop || true
-
-# Ensure Colima does not run.
-colima stop || true
-
 # Check for the right Docker CLI version here: https://github.com/docker/cli/tags.
 DOCKER_CLI_VERSION="29.3.0"
 DOCKER_CLI_ARCH="x86_64"
@@ -54,7 +48,7 @@ chmod +x /usr/local/bin/docker
 echo 'Checking Docker CLI installation ...'
 docker --version
 echo "Docker CLI has been installed successfully"
-printf "\n\n\n"
+printf "\n\n"
 
 # Install Docker Compose.
 echo "Installing Docker Compose with version: ${DOCKER_COMPOSE_VERSION} ..."
@@ -65,7 +59,7 @@ chmod +x /usr/local/bin/docker-compose
 echo 'Checking Docker Compose installation ...'
 docker-compose version
 echo "Docker Compose has been installed successfully"
-printf "\n\n\n"
+printf "\n\n"
 
 # Install Lima (required for Colima).
 echo "Installing Lima with version: ${LIMA_VERSION} ..."
@@ -78,20 +72,24 @@ mv "${LIMA_INSTALL_DIR}/bin/limactl" /usr/local/bin/limactl
 chmod +x /usr/local/bin/limactl
 mkdir -p /usr/local/share
 cp -r "${LIMA_INSTALL_DIR}/share/lima" /usr/local/share/lima
+
 ## If the Lima tarball contains the Lima binary, install it as well.
 if [ -f "${LIMA_INSTALL_DIR}/bin/lima" ]; then
   mv "${LIMA_INSTALL_DIR}/bin/lima" /usr/local/bin/lima
   chmod +x /usr/local/bin/lima
 fi
+
 echo 'Checking Lima installation ...'
 limactl --version
+
 if command -v lima >/dev/null 2>&1; then
   lima --version
 else
   echo "Warning: Lima binary not found in PATH. Colima may report an error if Lima is unavailable."
 fi
+
 echo "Lima has been installed successfully"
-printf "\n\n\n"
+printf "\n\n"
 
 # Install Colima.
 echo "Installing Colima with version: ${COLIMA_VERSION} ..."
@@ -102,12 +100,12 @@ chmod +x /usr/local/bin/colima
 echo 'Checking Colima installation ...'
 colima version
 echo "Colima has been installed successfully"
-printf "\n\n\n"
+printf "\n\n"
 
 # Start Colima.
 # Check for Colima usage here: https://github.com/abiosoft/colima?tab=readme-ov-file#usage.
 echo 'Starting Colima container runtime ...'
 env PATH="/usr/local/bin:$PATH" colima start --cpu $COLIMA_CPU_COUNT --memory $COLIMA_MEMORY_SIZE_IN_GIGABYTES --disk $COLIMA_DISK_SIZE_IN_GIGABYTES
 echo 'Colima container runtime has started'
-printf "\n\n\n"
+printf "\n\n"
 echo 'All good :)'
