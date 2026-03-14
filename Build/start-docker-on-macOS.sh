@@ -75,6 +75,7 @@ curl -L "https://github.com/lima-vm/lima/releases/download/v${LIMA_VERSION}/lima
 echo "Extracting Lima archive ..."
 tar -xzf "${LIMA_INSTALL_DIR}/lima.tar.gz" --strip-components=1 -C "${LIMA_INSTALL_DIR}"
 mv "${LIMA_INSTALL_DIR}/bin/limactl" /usr/local/bin/limactl
+mkdir -p /usr/local/share
 cp -r "${LIMA_INSTALL_DIR}/share/lima" /usr/local/share/lima
 chmod +x /usr/local/bin/limactl
 echo 'Checking Lima installation ...'
