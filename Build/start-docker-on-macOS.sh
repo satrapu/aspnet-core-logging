@@ -40,8 +40,8 @@ echo "Installing Docker CLI with version: ${DOCKER_CLI_VERSION} ..."
 echo "Downloading Docker CLI archive ..."
 sudo curl -L "${DOCKER_CLI_DOWNLOAD_BASE_URL}/${DOCKER_CLI_TAR_FILE}" -o "${DOCKER_CLI_INSTALL_DIR}/${DOCKER_CLI_TAR_FILE}"
 echo "Extracting Docker CLI archive ..."
-tar -xzf "${DOCKER_CLI_INSTALL_DIR}/${DOCKER_CLI_TAR_FILE}" -C "${DOCKER_CLI_INSTALL_DIR}"
-sudo mv "${DOCKER_CLI_INSTALL_DIR}/docker/docker" /usr/local/bin/docker
+tar -xzf "${DOCKER_CLI_INSTALL_DIR}/${DOCKER_CLI_TAR_FILE}" --strip-components=1 -C "${DOCKER_CLI_INSTALL_DIR}"
+sudo mv "${DOCKER_CLI_INSTALL_DIR}/docker" /usr/local/bin/docker
 sudo chmod +x /usr/local/bin/docker
 echo 'Checking Docker CLI installation ...'
 docker --version
@@ -65,7 +65,7 @@ echo "Downloading Lima archive ..."
 sudo curl -L "https://github.com/lima-vm/lima/releases/download/v${LIMA_VERSION}/lima-${LIMA_VERSION}-${LIMA_OS_NAME}-${LIMA_ARCH}.tar.gz" \
           -o "${LIMA_INSTALL_DIR}/lima.tar.gz"
 echo "Extracting Lima archive ..."
-sudo tar -xzf "${LIMA_INSTALL_DIR}/lima.tar.gz" -C "${LIMA_INSTALL_DIR}"
+sudo tar -xzf "${LIMA_INSTALL_DIR}/lima.tar.gz" --strip-components=1 -C "${LIMA_INSTALL_DIR}"
 sudo mv "${LIMA_INSTALL_DIR}/bin/limactl" /usr/local/bin/limactl
 sudo cp -r "${LIMA_INSTALL_DIR}/share/lima" /usr/local/share/lima
 sudo chmod +x /usr/local/bin/limactl
