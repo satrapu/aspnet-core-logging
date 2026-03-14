@@ -340,8 +340,8 @@ jobs:
   # Install and start Docker Engine on macOS based agents only.
   # See more here: https://web.archive.org/web/20201012054023if_/https://github.com/microsoft/azure-pipelines-image-generation/issues/738#issuecomment-519571491.
   - script: |
-      chmod +x $(Build.SourcesDirectory)/Build/start-docker-on-macOS.sh
-      $(Build.SourcesDirectory)/Build/start-docker-on-macOS.sh
+      chmod +x $(Build.SourcesDirectory)/Pipelines/start-docker-on-macOS.sh
+      $(Build.SourcesDirectory)/Pipelines/start-docker-on-macOS.sh
     name: 'install_and_start_docker_on_macos'
     displayName: 'Install and start Docker on macOS'
     condition: |
@@ -365,7 +365,7 @@ jobs:
       )
     inputs:
       targetType: 'filePath'
-      filePath: '$(Build.SourcesDirectory)/Build/RunComposeServices.ps1'
+      filePath: '$(Build.SourcesDirectory)/Pipelines/RunComposeServices.ps1'
       arguments: >-
         -ComposeBaseCommand '${{ parameters.tests.composeBaseCommand }}' `
         -ComposeProjectName '${{ parameters.tests.composeProjectName }}' `
@@ -461,7 +461,7 @@ jobs:
       )
     inputs:
       targetType: 'filePath'
-      filePath: '$(Build.SourcesDirectory)/Build/PublishComposeServiceLogs.ps1'
+      filePath: '$(Build.SourcesDirectory)/Pipelines/PublishComposeServiceLogs.ps1'
       arguments: >-
         -ComposeProjectName '${{ parameters.tests.composeProjectName }}' `
         -LogsOutputFolder '$(Build.SourcesDirectory)/Tests/.ComposeService-Logs'
@@ -774,7 +774,7 @@ jobs:
       )
     inputs:
       targetType: 'filePath'
-      filePath: '$(Build.SourcesDirectory)/Build/SonarBuildBreaker.ps1'
+      filePath: '$(Build.SourcesDirectory)/Pipelines/SonarBuildBreaker.ps1'
       arguments: >-
         -SonarProjectKey 'aspnet-core-logging'
         -SonarServerBaseUrl 'https://sonarcloud.io'
