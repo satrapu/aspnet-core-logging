@@ -96,7 +96,7 @@ printf "\n\n\n"
 # Start Colima.
 # Check for Colima usage here: https://github.com/abiosoft/colima?tab=readme-ov-file#usage.
 echo 'Starting Colima container runtime ...'
-colima start --cpu $COLIMA_CPU_COUNT --memory $COLIMA_MEMORY_SIZE_IN_GIGABYTES --disk $COLIMA_DISK_SIZE_IN_GIGABYTES
+env PATH="/usr/local/bin:$PATH" colima start --cpu $COLIMA_CPU_COUNT --memory $COLIMA_MEMORY_SIZE_IN_GIGABYTES --disk $COLIMA_DISK_SIZE_IN_GIGABYTES
 echo 'Colima container runtime has started'
 printf "\n\n\n"
 echo 'All good :)'
