@@ -107,12 +107,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Todo.WebApi.AcceptanceTests
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Pipelines", "Pipelines", "{748C829A-E59F-4976-975B-D23DDF51B607}"
 	ProjectSection(SolutionItems) = preProject
-		Pipelines\azure-pipelines.job-template.yml = Pipelines\azure-pipelines.job-template.yml
-		Pipelines\azure-pipelines.yml = Pipelines\azure-pipelines.yml
 		Pipelines\PublishComposeServiceLogs.ps1 = Pipelines\PublishComposeServiceLogs.ps1
 		Pipelines\RunComposeServices.ps1 = Pipelines\RunComposeServices.ps1
 		Pipelines\SonarBuildBreaker.ps1 = Pipelines\SonarBuildBreaker.ps1
 		Pipelines\start-docker-on-macOS.sh = Pipelines\start-docker-on-macOS.sh
+		Pipelines\ci-pipeline.template.yml = Pipelines\ci-pipeline.template.yml
+		Pipelines\ci-pipeline.yml = Pipelines\ci-pipeline.yml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "db4tests", "db4tests", "{11025F2D-3B8D-4316-A4DE-EBA830BFD0F0}"
