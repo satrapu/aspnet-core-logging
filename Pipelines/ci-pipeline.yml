@@ -102,7 +102,7 @@ jobs:
       targetType: 'filePath'
       filePath: '$(Build.SourcesDirectory)/Pipelines/RunComposeServices.ps1'
       arguments: >-
-        -ComposeBaseCommand 'docker compose' `
+        -ComposeBaseCommand 'docker-compose' `
         -ComposeProjectName 'test-prerequisites-on-macos' `
         -RelativePathToComposeFile './db4tests/docker-compose.yml' `
         -EnvironmentVariables `
