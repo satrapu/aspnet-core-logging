@@ -84,99 +84,99 @@ variables:
 # See more here: https://learn.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/jobs-template?view=azure-pipelines
 # and here: https://learn.microsoft.com/en-us/azure/devops/pipelines/process/templates?view=azure-devops.
 jobs:
-- job: 'install_and_start_docker_on_macos'
-  displayName: 'Install and start Docker on macOS'
-  pool:
-    vmImage: 'macOS-15'
-  steps:
-  - script: |
-      chmod +x $(Build.SourcesDirectory)/Pipelines/start-docker-on-macOS.sh
-      $(Build.SourcesDirectory)/Pipelines/start-docker-on-macOS.sh
-    name: 'run_script'
-    displayName: 'Run script'
+#- job: 'install_and_start_docker_on_macos'
+#  displayName: 'Install and start Docker on macOS'
+#  pool:
+#    vmImage: 'macOS-15'
+#  steps:
+#  - script: |
+#      chmod +x $(Build.SourcesDirectory)/Pipelines/start-docker-on-macOS.sh
+#      $(Build.SourcesDirectory)/Pipelines/start-docker-on-macOS.sh
+#    name: 'run_script'
+#    displayName: 'Run script'
+#
+#  - task: PowerShell@2
+#    name: 'start_compose_services'
+#    displayName: 'Start compose services'
+#    inputs:
+#      targetType: 'filePath'
+#      filePath: '$(Build.SourcesDirectory)/Pipelines/RunComposeServices.ps1'
+#      arguments: >-
+#        -ComposeBaseCommand 'docker-compose' `
+#        -ComposeProjectName 'test-prerequisites-on-macos' `
+#        -RelativePathToComposeFile './db4tests/docker-compose.yml' `
+#        -EnvironmentVariables `
+#         @{ `
+#           'db_docker_image'='$(Tests.Database.DockerImage.Name):$(Tests.Database.DockerImage.TagPrefix)-linux'; `
+#           'db_name'='db-for-macos'; `
+#           'db_username'='$(Tests.Database.Todo.Username)'; `
+#           'db_password'='$(Tests.Database.Todo.Password)'; `
+#         }
+#      errorActionPreference: 'Continue'
+#      failOnStderr: False
+#      workingDirectory: $(Build.SourcesDirectory)
 
-  - task: PowerShell@2
-    name: 'start_compose_services'
-    displayName: 'Start compose services'
-    inputs:
-      targetType: 'filePath'
-      filePath: '$(Build.SourcesDirectory)/Pipelines/RunComposeServices.ps1'
-      arguments: >-
-        -ComposeBaseCommand 'docker-compose' `
-        -ComposeProjectName 'test-prerequisites-on-macos' `
-        -RelativePathToComposeFile './db4tests/docker-compose.yml' `
-        -EnvironmentVariables `
-         @{ `
-           'db_docker_image'='$(Tests.Database.DockerImage.Name):$(Tests.Database.DockerImage.TagPrefix)-linux'; `
-           'db_name'='db-for-macos'; `
-           'db_username'='$(Tests.Database.Todo.Username)'; `
-           'db_password'='$(Tests.Database.Todo.Password)'; `
-         }
-      errorActionPreference: 'Continue'
-      failOnStderr: False
-      workingDirectory: $(Build.SourcesDirectory)
+- template: './ci-pipeline.template.yml'
+  parameters:
+    job:
+      name: 'linux'
+      displayName: 'Run on Linux'
+    pool:
+      vmImage: 'ubuntu-24.04'
+    sonar:
+      enabled: True
+      buildBreaker:
+        enabled: True
+    tests:
+      runTests: True
+      databaseHost: 'localhost'
+      databaseName: 'db-for-linux'
+      databaseUsername: '$(Tests.Database.Todo.Username)'
+      databasePassword: '$(Tests.Database.Todo.Password)'
+      databaseDockerImage: '$(Tests.Database.DockerImage.Name):$(Tests.Database.DockerImage.TagPrefix)-linux'
+      composeBaseCommand: 'docker compose'
+      composeProjectName: 'test-prerequisites-on-linux'
+      codeCoverage:
+        history:
+          enabled: True
 
-#- template: './ci-pipeline.template.yml'
-#  parameters:
-#    job:
-#      name: 'linux'
-#      displayName: 'Run on Linux'
-#    pool:
-#      vmImage: 'ubuntu-24.04'
-#    sonar:
-#      enabled: True
-#      buildBreaker:
-#        enabled: True
-#    tests:
-#      runTests: True
-#      databaseHost: 'localhost'
-#      databaseName: 'db-for-linux'
-#      databaseUsername: '$(Tests.Database.Todo.Username)'
-#      databasePassword: '$(Tests.Database.Todo.Password)'
-#      databaseDockerImage: '$(Tests.Database.DockerImage.Name):$(Tests.Database.DockerImage.TagPrefix)-linux'
-#      composeBaseCommand: 'docker compose'
-#      composeProjectName: 'test-prerequisites-on-linux'
-#      codeCoverage:
-#        history:
-#          enabled: True
+- template: './ci-pipeline.template.yml'
+  parameters:
+    job:
+      name: 'macOS'
+      displayName: 'Run on macOS'
+    pool:
+      vmImage: 'macOS-15'
+    tests:
+      runTests: True
+      databaseHost: 'localhost'
+      databaseName: 'db-for-macos'
+      databaseUsername: '$(Tests.Database.Todo.Username)'
+      databasePassword: '$(Tests.Database.Todo.Password)'
+      databaseDockerImage: '$(Tests.Database.DockerImage.Name):$(Tests.Database.DockerImage.TagPrefix)-linux'
+      composeBaseCommand: 'docker-compose'
+      composeProjectName: 'test-prerequisites-on-macos'
+      codeCoverage:
+        history:
+          enabled: True
 
-#- template: './ci-pipeline.template.yml'
-#  parameters:
-#    job:
-#      name: 'macOS'
-#      displayName: 'Run on macOS'
-#    pool:
-#      vmImage: 'macOS-15'
-#    tests:
-#      runTests: True
-#      databaseHost: 'localhost'
-#      databaseName: 'db-for-macos'
-#      databaseUsername: '$(Tests.Database.Todo.Username)'
-#      databasePassword: '$(Tests.Database.Todo.Password)'
-#      databaseDockerImage: '$(Tests.Database.DockerImage.Name):$(Tests.Database.DockerImage.TagPrefix)-linux'
-#      composeBaseCommand: 'docker-compose'
-#      composeProjectName: 'test-prerequisites-on-macos'
-#      codeCoverage:
-#        history:
-#          enabled: True
-
-#- template: './ci-pipeline.template.yml'
-#  parameters:
-#    job:
-#      name: 'windows'
-#      displayName: 'Run on Windows'
-#    pool:
-#      vmImage: 'windows-2025'
-#    runDotNetFormatCommand: True
-#    tests:
-#      runTests: True
-#      databaseHost: 'localhost'
-#      databaseName: 'db-for-windows'
-#      databaseUsername: '$(Tests.Database.Todo.Username)'
-#      databasePassword: '$(Tests.Database.Todo.Password)'
-#      databaseDockerImage: '$(Tests.Database.DockerImage.Name):$(Tests.Database.DockerImage.TagPrefix)-windows'
-#      composeBaseCommand: 'docker compose'
-#      composeProjectName: 'test-prerequisites-on-windows'
-#      codeCoverage:
-#        history:
-#          enabled: True
+- template: './ci-pipeline.template.yml'
+  parameters:
+    job:
+      name: 'windows'
+      displayName: 'Run on Windows'
+    pool:
+      vmImage: 'windows-2025'
+    runDotNetFormatCommand: True
+    tests:
+      runTests: True
+      databaseHost: 'localhost'
+      databaseName: 'db-for-windows'
+      databaseUsername: '$(Tests.Database.Todo.Username)'
+      databasePassword: '$(Tests.Database.Todo.Password)'
+      databaseDockerImage: '$(Tests.Database.DockerImage.Name):$(Tests.Database.DockerImage.TagPrefix)-windows'
+      composeBaseCommand: 'docker compose'
+      composeProjectName: 'test-prerequisites-on-windows'
+      codeCoverage:
+        history:
+          enabled: True
