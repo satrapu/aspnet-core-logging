@@ -40,7 +40,12 @@ COLIMA_DISK_SIZE_IN_GIGABYTES=5
 # Install Docker CLI.
 echo "Installing Docker CLI with version: ${DOCKER_CLI_VERSION} ..."
 echo "Downloading Docker CLI archive ..."
-curl -L "${DOCKER_CLI_DOWNLOAD_BASE_URL}/${DOCKER_CLI_TAR_FILE}" -o "${DOCKER_CLI_INSTALL_DIR}/${DOCKER_CLI_TAR_FILE}"
+curl --silent \
+     --show-error \
+     --location \
+     --output "${DOCKER_CLI_INSTALL_DIR}/${DOCKER_CLI_TAR_FILE}" \
+     "${DOCKER_CLI_DOWNLOAD_BASE_URL}/${DOCKER_CLI_TAR_FILE}" \
+     > /dev/null
 echo "Extracting Docker CLI archive ..."
 tar -xzf "${DOCKER_CLI_INSTALL_DIR}/${DOCKER_CLI_TAR_FILE}" --strip-components=1 -C "${DOCKER_CLI_INSTALL_DIR}"
 mv "${DOCKER_CLI_INSTALL_DIR}/docker" /usr/local/bin/docker
@@ -53,8 +58,12 @@ printf "\n\n"
 # Install Docker Compose.
 echo "Installing Docker Compose with version: ${DOCKER_COMPOSE_VERSION} ..."
 echo "Downloading Docker Compose archive ..."
-curl -L "https://github.com/docker/compose/releases/download/v${DOCKER_COMPOSE_VERSION}/docker-compose-${DOCKER_COMPOSE_OS_NAME}-${DOCKER_COMPOSE_ARCH}" \
-          -o /usr/local/bin/docker-compose
+curl --silent \
+     --show-error \
+     --location \
+     --output '/usr/local/bin/docker-compose' \
+     "https://github.com/docker/compose/releases/download/v${DOCKER_COMPOSE_VERSION}/docker-compose-${DOCKER_COMPOSE_OS_NAME}-${DOCKER_COMPOSE_ARCH}" \
+     > /dev/null
 chmod +x /usr/local/bin/docker-compose
 echo 'Checking Docker Compose installation ...'
 docker-compose version
@@ -64,8 +73,12 @@ printf "\n\n"
 # Install Lima (required for Colima).
 echo "Installing Lima with version: ${LIMA_VERSION} ..."
 echo "Downloading Lima archive ..."
-curl -L "https://github.com/lima-vm/lima/releases/download/v${LIMA_VERSION}/lima-${LIMA_VERSION}-${LIMA_OS_NAME}-${LIMA_ARCH}.tar.gz" \
-          -o "${LIMA_INSTALL_DIR}/lima.tar.gz"
+curl --silent \
+     --show-error \
+     --location \
+     --output "${LIMA_INSTALL_DIR}/lima.tar.gz" \
+     "https://github.com/lima-vm/lima/releases/download/v${LIMA_VERSION}/lima-${LIMA_VERSION}-${LIMA_OS_NAME}-${LIMA_ARCH}.tar.gz" \
+      > /dev/null
 echo "Extracting Lima archive ..."
 tar -xzf "${LIMA_INSTALL_DIR}/lima.tar.gz" --strip-components=1 -C "${LIMA_INSTALL_DIR}"
 mv "${LIMA_INSTALL_DIR}/bin/limactl" /usr/local/bin/limactl
@@ -94,8 +107,12 @@ printf "\n\n"
 # Install Colima.
 echo "Installing Colima with version: ${COLIMA_VERSION} ..."
 echo "Downloading Colima archive ..."
-curl -L "https://github.com/abiosoft/colima/releases/download/v${COLIMA_VERSION}/colima-${COLIMA_OS_NAME}-${COLIMA_ARCH}" \
-          -o /usr/local/bin/colima
+curl --silent \
+     --show-error \
+     --location \
+     --output '/usr/local/bin/colima' \
+     "https://github.com/abiosoft/colima/releases/download/v${COLIMA_VERSION}/colima-${COLIMA_OS_NAME}-${COLIMA_ARCH}" \
+     > /dev/null
 chmod +x /usr/local/bin/colima
 echo 'Checking Colima installation ...'
 colima version
