@@ -9,7 +9,7 @@ set -o nounset
 export PATH="/usr/local/bin:$PATH"
 
 # Check for the right Docker CLI version here: https://github.com/docker/cli/tags.
-DOCKER_CLI_VERSION="29.3.0"
+DOCKER_CLI_VERSION="29.3.1"
 DOCKER_CLI_ARCH="x86_64"
 DOCKER_CLI_DOWNLOAD_BASE_URL="https://download.docker.com/mac/static/stable/${DOCKER_CLI_ARCH}"
 DOCKER_CLI_TAR_FILE="docker-${DOCKER_CLI_VERSION}.tgz"
@@ -17,12 +17,12 @@ DOCKER_CLI_INSTALL_DIR="$(mktemp -d)"
 
 # Check for the right Docker Compose version here: https://github.com/docker/compose/releases.
 # Installation steps can be found here: https://docs.docker.com/compose/install/standalone/.
-DOCKER_COMPOSE_VERSION='5.1.0'
+DOCKER_COMPOSE_VERSION='5.1.1'
 DOCKER_COMPOSE_ARCH="x86_64"
 DOCKER_COMPOSE_OS_NAME="darwin"
 
 # Check for the right Lima version here: https://github.com/lima-vm/lima/releases.
-LIMA_VERSION="2.0.3"
+LIMA_VERSION="2.1.1"
 LIMA_ARCH="x86_64"
 LIMA_OS_NAME="Darwin"
 LIMA_INSTALL_DIR="$(mktemp -d)"
