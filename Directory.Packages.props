@@ -9,10 +9,10 @@
         <CentralPackageVersionOverrideEnabled>false</CentralPackageVersionOverrideEnabled>
     </PropertyGroup>
     <ItemGroup>
-        <PackageVersion Include="Autofac" Version="9.0.0"/>
-        <PackageVersion Include="Autofac.Extensions.DependencyInjection" Version="10.0.0"/>
+        <PackageVersion Include="Autofac" Version="9.1.0"/>
+        <PackageVersion Include="Autofac.Extensions.DependencyInjection" Version="11.0.0"/>
         <PackageVersion Include="Azure.Monitor.OpenTelemetry.Exporter" Version="1.6.0"/>
-        <PackageVersion Include="coverlet.msbuild" Version="8.0.0">
+        <PackageVersion Include="coverlet.msbuild" Version="8.0.1">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageVersion>
@@ -39,13 +39,13 @@
         <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="9.0.4"/>
         <PackageVersion Include="NetArchTest.Rules" Version="1.3.2"/>
         <PackageVersion Include="NUnit" Version="4.5.1"/>
-        <PackageVersion Include="NUnit3TestAdapter" Version="6.1.0"/>
+        <PackageVersion Include="NUnit3TestAdapter" Version="6.2.0"/>
         <PackageVersion Include="NunitXml.TestLogger" Version="8.0.0"/>
-        <PackageVersion Include="OpenTelemetry" Version="1.15.0"/>
+        <PackageVersion Include="OpenTelemetry" Version="1.15.1"/>
         <PackageVersion Include="OpenTelemetry.Exporter.Jaeger" Version="1.5.1"/>
         <PackageVersion Include="OpenTelemetry.Extensions" Version="1.0.0-beta.4"/>
-        <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.15.0"/>
-        <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.15.0"/>
+        <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.15.1"/>
+        <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.15.1"/>
         <PackageVersion Include="OpenTelemetry.Instrumentation.EntityFrameworkCore" Version="1.0.0-beta.12"/>
         <PackageVersion Include="Polly" Version="8.6.6"/>
         <PackageVersion Include="Serilog.AspNetCore" Version="9.0.0"/>
@@ -56,9 +56,9 @@
         <PackageVersion Include="SolidToken.SpecFlow.DependencyInjection" Version="3.9.3"/>
         <PackageVersion Include="SpecFlow.Plus.LivingDocPlugin" Version="3.9.57"/>
         <PackageVersion Include="SpecFlow.xUnit" Version="3.9.74"/>
-        <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="8.16.0"/>
+        <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="8.17.0"/>
         <PackageVersion Include="Verify.Http" Version="6.4.1"/>
-        <PackageVersion Include="Verify.NUnit" Version="31.13.2"/>
+        <PackageVersion Include="Verify.NUnit" Version="31.15.0"/>
         <PackageVersion Include="xunit" Version="2.9.3"/>
         <PackageVersion Include="xunit.runner.visualstudio" Version="3.1.5">
             <PrivateAssets>all</PrivateAssets>

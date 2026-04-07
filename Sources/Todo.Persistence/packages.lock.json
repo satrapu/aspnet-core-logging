@@ -179,16 +179,16 @@
       "todo.commons": {
         "type": "Project",
         "dependencies": {
-          "Autofac": "[9.0.0, )",
+          "Autofac": "[9.1.0, )",
           "Microsoft.Extensions.Hosting.Abstractions": "[9.0.13, )",
           "Microsoft.Extensions.Logging.Abstractions": "[9.0.13, )"
         }
       },
       "Autofac": {
         "type": "CentralTransitive",
-        "requested": "[9.0.0, )",
-        "resolved": "9.0.0",
-        "contentHash": "G8TpUMVIq1pEAMuAao8h5MKduY91SotjgK93wQb5LaxbJUVE0/XjCA6t2SOp+AkPC3GB/C2MAiF2D7krYjraFw==",
+        "requested": "[9.1.0, )",
+        "resolved": "9.1.0",
+        "contentHash": "onT/BcnnfWcQNXiuC7R/0h8ALQzRdsAI20gpB7nfrudXpFMXdVZKz1umdtHXDwjc/bmWEsrCBAxck3+Arnk15g==",
         "dependencies": {
           "System.Diagnostics.DiagnosticSource": "10.0.0"
         }
