@@ -219,7 +219,7 @@ namespace Todo.WebApi.AcceptanceTests.Features
                 TechTalk.SpecFlow.Table table6 = new TechTalk.SpecFlow.Table(new string[] {
                             "HttpStatusCode"});
                 table6.AddRow(new string[] {
-                            "403"});
+                            "401"});
 #line 36
         testRunner.And("reply with a failed response", ((string)(null)), table6, "And ");
 #line hidden

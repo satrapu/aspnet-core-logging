@@ -35,4 +35,4 @@ As a user I want to be able to add new todo items so I won't forget about the im
         Then the system must not add the new todo item
         And reply with a failed response
           | HttpStatusCode |
-          | 403            |
+          | 401            |

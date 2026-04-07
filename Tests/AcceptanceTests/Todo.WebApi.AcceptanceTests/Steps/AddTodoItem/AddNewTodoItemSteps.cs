@@ -38,8 +38,7 @@ namespace Todo.WebApi.AcceptanceTests.Steps.AddTodoItem
         public async Task GivenTheCurrentUserIsNotAuthorizedToAddTodoItems()
         {
             UserDetails unauthorizedUser = new(UserName: "unauthorized-user-tests", Password: Guid.NewGuid().ToString("N"));
-            authenticationHeaderValue =
-                await todoWebApiDriver.GetAuthorizationHeaderAsync(unauthorizedUser, scopes: [$"dummy-scope-{Guid.NewGuid():N}"]);
+            authenticationHeaderValue = await todoWebApiDriver.GetAuthorizationHeaderAsync(unauthorizedUser, scopes: [$"dummy-scope-{Guid.NewGuid():N}"]);
         }
 
         [Given("the current user is not authenticated")]
@@ -58,6 +57,12 @@ namespace Todo.WebApi.AcceptanceTests.Steps.AddTodoItem
                     VerifyAllColumnsBound = true
                 }
             );
+
+            newTodoItemInfo = newTodoItemInfo with
+            {
+                // @satrapu 2026-04-07: Ensure multiple test runs will not end up failing due to trying to duplicate existing data.
+                Name = $"{newTodoItemInfo.Name}--{Guid.NewGuid():N}"
+            };
 
             httpResponseMessage = await todoWebApiDriver.AddNewTodoItemAsync(newTodoItemInfo, authenticationHeaderValue);
         }
