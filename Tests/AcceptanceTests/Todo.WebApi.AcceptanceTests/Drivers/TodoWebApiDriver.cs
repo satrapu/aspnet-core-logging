@@ -12,10 +12,7 @@ namespace Todo.WebApi.AcceptanceTests.Drivers
 
     public class TodoWebApiDriver
     {
-        private static readonly Type AccessTokenType = new
-        {
-            accessToken = ""
-        }.GetType();
+        private static readonly Type AccessTokenType = new { accessToken = "" }.GetType();
 
         internal const string HttpClientName = nameof(TodoWebApiDriver);
         private const string AuthenticationScheme = "Bearer";
