@@ -680,7 +680,7 @@ jobs:
       errorActionPreference: 'stop'
       script: |
         $acceptanceTestsHomeFolder = Resolve-Path -Path '$(AcceptanceTestsHomeFolder)'
-        $normalizedTestExecutionFilePath = [IO.Path]::Combine($acceptanceTestsHomeFolder, 'bin', '${{ parameters.build.configuration }}', 'net9.0',
+        $normalizedTestExecutionFilePath = [IO.Path]::Combine($acceptanceTestsHomeFolder, 'bin', '${{ parameters.build.configuration }}', 'net10.0',
           'TestExecution.json')
         Write-Output "##vso[task.setvariable variable=NormalizedTestExecutionFilePath]$normalizedTestExecutionFilePath"
         Write-Output "The normalized test execution file path is: $normalizedTestExecutionFilePath"
