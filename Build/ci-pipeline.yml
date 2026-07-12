@@ -84,7 +84,7 @@ variables:
 # See more here: https://learn.microsoft.com/en-us/azure/devops/pipelines/yaml-schema/jobs-template?view=azure-pipelines
 # and here: https://learn.microsoft.com/en-us/azure/devops/pipelines/process/templates?view=azure-devops.
 jobs:
-- template: './azure-pipelines.job-template.yml'
+- template: './ci-pipeline.job-template.yml'
   parameters:
     job:
       name: 'linux'
@@ -108,7 +108,7 @@ jobs:
         history:
           enabled: True
 
-- template: './azure-pipelines.job-template.yml'
+- template: './ci-pipeline.job-template.yml'
   parameters:
     job:
       name: 'macOS'
@@ -128,7 +128,7 @@ jobs:
         history:
           enabled: True
 
-- template: './azure-pipelines.job-template.yml'
+- template: './ci-pipeline.job-template.yml'
   parameters:
     job:
       name: 'windows'
