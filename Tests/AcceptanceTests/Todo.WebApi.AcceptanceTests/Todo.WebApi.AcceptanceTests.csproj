@@ -5,22 +5,25 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\..\Sources\Todo.Services\Todo.Services.csproj"/>
+        <ProjectReference Include="..\..\..\Sources\Todo.Services\Todo.Services.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentAssertions"/>
-        <PackageReference Include="FluentAssertions.Web"/>
-        <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables"/>
-        <PackageReference Include="Microsoft.Extensions.Configuration.Json"/>
-        <PackageReference Include="Microsoft.Extensions.Http"/>
-        <PackageReference Include="Microsoft.NET.Test.Sdk"/>
-        <PackageReference Include="Polly"/>
-        <PackageReference Include="SolidToken.SpecFlow.DependencyInjection"/>
-        <PackageReference Include="SpecFlow.Plus.LivingDocPlugin"/>
-        <PackageReference Include="SpecFlow.xUnit"/>
-        <PackageReference Include="xunit"/>
-        <PackageReference Include="xunit.runner.visualstudio"/>
+        <PackageReference Include="FluentAssertions" />
+        <PackageReference Include="FluentAssertions.Web" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" />
+        <PackageReference Include="Microsoft.Extensions.Configuration.Json" />
+        <PackageReference Include="Microsoft.Extensions.Http" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" />
+        <PackageReference Include="Polly" />
+        <PackageReference Include="SolidToken.SpecFlow.DependencyInjection" />
+        <PackageReference Include="SpecFlow.Plus.LivingDocPlugin" />
+        <PackageReference Include="SpecFlow.xUnit" />
+        <PackageReference Include="xunit" />
+        <PackageReference Include="xunit.runner.visualstudio">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
     </ItemGroup>
 
     <ItemGroup>
