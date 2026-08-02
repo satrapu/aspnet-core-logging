@@ -1,0 +1,10 @@
+bin/
+obj/
+.vs/
+.git/
+*.dll
+*.exe
+*.pdb
+*.png
+*.jpg
+*.ico
