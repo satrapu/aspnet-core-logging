@@ -1,3 +1,24 @@
-﻿*.verified.txt text eol=lf working-tree-encoding=UTF-8
-*.verified.xml text eol=lf working-tree-encoding=UTF-8
-*.verified.json text eol=lf working-tree-encoding=UTF-8
+﻿# Set the default behavior, in case people don't have core.autocrlf set.
+* text=auto
+
+# Explicitly declare text files you want to always be normalized and converted
+# to native line endings on checkout.
+*.config text
+*.cs text
+*.json text
+LICENSE text
+*.md text
+*.props text
+*.ps1 text
+*.sh text
+*.sln text
+*.targets text
+*.txt text
+*.yml text
+*.yaml text
+
+# Denote all files that are truly binary and should not be modified.
+*.ico binary
+*.jpg binary
+*.pdf binary
+*.png binary
