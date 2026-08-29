@@ -5,6 +5,7 @@ namespace Todo.WebApi.AcceptanceTests.Infrastructure
     using System.Diagnostics;
     using System.IO;
     using System.Net.Http;
+    using System.Text;
     using System.Threading.Tasks;
 
     using Commons.Constants;
@@ -21,11 +22,11 @@ namespace Todo.WebApi.AcceptanceTests.Infrastructure
         private static readonly TimeSpan RetryWaitTime = TimeSpan.FromMilliseconds(250);
         private static readonly HttpClient HttpClient = new();
 
-        private readonly Process systemUnderTest;
+        private readonly Process systemUnderTestProcess;
 
-        private SystemUnderTest(Process systemUnderTest)
+        private SystemUnderTest(Process systemUnderTestProcess)
         {
-            this.systemUnderTest = systemUnderTest;
+            this.systemUnderTestProcess = systemUnderTestProcess;
         }
 
         public static async Task<SystemUnderTest> StartNewAsync
@@ -51,11 +52,23 @@ namespace Todo.WebApi.AcceptanceTests.Infrastructure
             IDictionary<string, string> environmentVariables = null
         )
         {
+            StringBuilder sb = null;
+
+            if (environmentVariables is not null)
+            {
+                sb = new StringBuilder(value: "--environment ");
+
+                foreach (KeyValuePair<string, string> environmentVariable in environmentVariables)
+                {
+                    sb.Append($"{environmentVariable.Key}={environmentVariable.Value} ");
+                }
+            }
+
             ProcessStartInfo processStartInfo = new()
             {
                 FileName = "dotnet",
                 Arguments = $"""
-                             run --urls="{urls}" --environment="{EnvironmentNames.AcceptanceTests}"
+                             run --urls="{urls}" {sb?.ToString()}
                              """,
                 CreateNoWindow = true,
                 RedirectStandardOutput = true,
@@ -63,14 +76,6 @@ namespace Todo.WebApi.AcceptanceTests.Infrastructure
                 UseShellExecute = false,
                 WorkingDirectory = new DirectoryInfo(path: TodoWebApiSourcesRelativePath).FullName
             };
-
-            if (environmentVariables is not null)
-            {
-                foreach (KeyValuePair<string, string> environmentVariable in environmentVariables)
-                {
-                    processStartInfo.EnvironmentVariables[environmentVariable.Key] = environmentVariable.Value;
-                }
-            }
 
             Process process = Process.Start(processStartInfo);
 
@@ -91,10 +96,9 @@ namespace Todo.WebApi.AcceptanceTests.Infrastructure
         private static async Task WaitUntilSystemUnderTestIsHealthyAsync(string healthEndpoint)
         {
             PolicyResult<HttpResponseMessage> policyResult =
-                await Policy
-                    .TimeoutAsync(MaxWaitTime)
-                    .WrapAsync(innerPolicy: Policy.Handle<Exception>().WaitAndRetryForeverAsync(_ => RetryWaitTime))
-                    .ExecuteAndCaptureAsync(() => HttpClient.GetAsync(healthEndpoint));
+                await Policy.TimeoutAsync(MaxWaitTime)
+                            .WrapAsync(innerPolicy: Policy.Handle<Exception>().WaitAndRetryForeverAsync(_ => RetryWaitTime))
+                            .ExecuteAndCaptureAsync(() => HttpClient.GetAsync(healthEndpoint));
 
             if (policyResult.Outcome == OutcomeType.Failure)
             {
@@ -104,13 +108,13 @@ namespace Todo.WebApi.AcceptanceTests.Infrastructure
 
         public ValueTask DisposeAsync()
         {
-            if (!systemUnderTest.HasExited)
+            if (!systemUnderTestProcess.HasExited)
             {
-                systemUnderTest.Kill(entireProcessTree: true);
+                systemUnderTestProcess.Kill(entireProcessTree: true);
             }
 
-            systemUnderTest.Close();
-            systemUnderTest.Dispose();
+            systemUnderTestProcess.Close();
+            systemUnderTestProcess.Dispose();
 
             return ValueTask.CompletedTask;
         }
