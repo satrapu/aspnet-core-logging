@@ -1,6 +1,7 @@
 services:
   aspnet-core-logging-db-local-dev:
     container_name: aspnet-core-logging-db-for-local-dev
+    # Image tags can be found here: https://hub.docker.com/r/satrapu/postgresql/tags.
     image: satrapu/postgresql:15.1-linux
     restart: unless-stopped
     healthcheck:
@@ -23,7 +24,7 @@ services:
     environment:
       - POSTGRES_USER=${DB_LOCAL_POSTGRES_USER}
       - POSTGRES_PASSWORD=${DB_LOCAL_POSTGRES_PASSWORD}
-      - POSTGRES_DB=aspnet-core-logging-db-local-dev
+      - POSTGRES_DB=aspnet-core-logging-db-for-local-dev
 
   aspnet-core-logging-db-integration-tests:
     container_name: aspnet-core-logging-db-for-integration-tests
@@ -49,7 +50,7 @@ services:
     environment:
       - POSTGRES_USER=${DB_INTEGRATION_TESTS_POSTGRES_USER}
       - POSTGRES_PASSWORD=${DB_INTEGRATION_TESTS_POSTGRES_PASSWORD}
-      - POSTGRES_DB=aspnet-core-logging-db-integration-tests
+      - POSTGRES_DB=aspnet-core-logging-db-for-integration-tests
 
   aspnet-core-logging-db-acceptance-tests:
       container_name: aspnet-core-logging-db-for-acceptance-tests
@@ -75,11 +76,12 @@ services:
       environment:
         - POSTGRES_USER=${DB_ACCEPTANCE_TESTS_POSTGRES_USER}
         - POSTGRES_PASSWORD=${DB_ACCEPTANCE_TESTS_POSTGRES_PASSWORD}
-        - POSTGRES_DB=aspnet-core-logging-db-acceptance-tests
+        - POSTGRES_DB=aspnet-core-logging-db-for-acceptance-tests
 
   jaeger:
     container_name: jaeger
-    image: jaegertracing/all-in-one:1.62.0
+    # Image tags can be found here: https://hub.docker.com/r/jaegertracing/all-in-one/tags.
+    image: jaegertracing/all-in-one:1.76.0
     restart: unless-stopped
     ports:
       # The ports used by various Jaeger services and their meaning are taken from here: https://github.com/jaegertracing/jaeger/blob/main/crossdock/jaeger-docker-compose.yml
@@ -98,7 +100,8 @@ services:
 
   pgadmin:
     container_name: pgadmin-ui
-    image: dpage/pgadmin4:2024-10-19-2
+    # Image tags can be found here: https://hub.docker.com/r/dpage/pgadmin4/tags.
+    image: dpage/pgadmin4:9.17
     restart: unless-stopped
     volumes:
       - pgadmin_data:/var/lib/pgadmin
@@ -116,7 +119,8 @@ services:
 
   seq:
     container_name: seq
-    image: datalust/seq:2024.3
+    # Image tags can be found here: https://hub.docker.com/r/datalust/seq/tags.
+    image: datalust/seq:2026.1
     restart: unless-stopped
     volumes:
       - seq_data:/data
