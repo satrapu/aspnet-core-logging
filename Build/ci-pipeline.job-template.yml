@@ -14,7 +14,6 @@ parameters:
     enabled: False
     verbose: 'true'
     sourceEncoding: 'UTF-8'
-    runAnalysisTimeoutInMinutes: 5
     publishPollingTimeoutSeconds: 300
     buildBreaker:
       enabled: False
@@ -148,7 +147,7 @@ jobs:
   # Before using any Sonar tasks, please make sure "SonarQube Cloud" extension is installed in the Azure DevOps organization
   # where the project built using this pipeline resides.
   # See more about this extension here: https://marketplace.visualstudio.com/items?itemName=SonarSource.sonarcloud.
-  - task: SonarCloudPrepare@3
+  - task: SonarCloudPrepare@4
     name: 'prepare_analysis_on_sonar'
     displayName: 'Prepare analysis on SonarCloud'
     condition: eq(${{ parameters.sonar.enabled }}, True)
@@ -735,7 +734,7 @@ jobs:
       path: '$(Build.SourcesDirectory)/Tests'
 
   # Run Sonar analysis.
-  - task: SonarCloudAnalyze@3
+  - task: SonarCloudAnalyze@4
     name: 'run_sonar_analysis'
     displayName: 'Run Sonar analysis'
     condition: |
@@ -744,11 +743,9 @@ jobs:
           eq(${{ parameters.sonar.enabled }}, True)
         , eq(variables['AllTestsOutcome'], 'success')
       )
-    inputs:
-      timeoutInMinutes: ${{ parameters.sonar.runAnalysisTimeoutInMinutes }}
 
   # Publish Sonar analysis results to the remote server.
-  - task: SonarCloudPublish@3
+  - task: SonarCloudPublish@4
     name: 'publish_sonar_quality_gate_result'
     displayName: 'Publish Sonar quality gate result'
     condition: |
@@ -758,7 +755,7 @@ jobs:
         , eq(variables['AllTestsOutcome'], 'success')
       )
     inputs:
-      pollingTimeoutSeconds: ${{ parameters.sonar.publishPollingTimeoutSeconds }}
+      pollingTimeoutSec: ${{ parameters.sonar.publishPollingTimeoutSeconds }}
 
   # Run a PowerShell script to break the build in case Sonar quality gate has failed.
   # See more here: https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/powershell-v2?view=azure-pipelines.
