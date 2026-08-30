@@ -784,4 +784,5 @@ jobs:
       workingDirectory: $(Build.SourcesDirectory)
     env:
       # Map the Service Connection endpoint data into the task process boundary safely
-      SONARQUBE_CLOUD_TOKEN: $(ENDPOINT_DATA_SonarQubeCloud_PASSWORD)
+      #SONARQUBE_CLOUD_TOKEN: $(ENDPOINT_DATA_SonarQubeCloud_PASSWORD)
+      SONARQUBE_CLOUD_TOKEN: $(SONAR_TOKEN)
