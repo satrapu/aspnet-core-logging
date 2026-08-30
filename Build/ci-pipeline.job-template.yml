@@ -777,7 +777,7 @@ jobs:
       arguments: >-
         -SonarProjectKey 'aspnet-core-logging'
         -SonarServerBaseUrl 'https://sonarcloud.io'
-        -SonarToken '$env:SONAR_TOKEN'
+        -SonarToken "$env:SONAR_TOKEN"
         -GitBranchName '$(NormalizedCurrentGitBranchName)'
       errorActionPreference: 'stop'
       failOnStderr: True
