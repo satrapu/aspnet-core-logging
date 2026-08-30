@@ -777,8 +777,11 @@ jobs:
       arguments: >-
         -SonarProjectKey 'aspnet-core-logging'
         -SonarServerBaseUrl 'https://sonarcloud.io'
-        -SonarToken '$(ENDPOINT_DATA_SonarQubeCloud_PASSWORD)'
+        -SonarToken '$env:SONARQUBE_CLOUD_TOKEN'
         -GitBranchName '$(NormalizedCurrentGitBranchName)'
       errorActionPreference: 'stop'
       failOnStderr: True
       workingDirectory: $(Build.SourcesDirectory)
+    env:
+      # Map the Service Connection endpoint data into the task process boundary safely
+      SONARQUBE_CLOUD_TOKEN: $(ENDPOINT_DATA_SonarQubeCloud_PASSWORD)
