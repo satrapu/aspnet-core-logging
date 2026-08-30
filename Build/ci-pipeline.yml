@@ -91,10 +91,8 @@ jobs:
       displayName: 'Run on Linux'
     pool:
       vmImage: 'ubuntu-24.04'
-    sonar:
-      enabled: True
-      buildBreaker:
-        enabled: True
+    sonarEnabled: True
+    sonarBuildBreakerEnabled: True
     tests:
       runTests: True
       databaseHost: 'localhost'
