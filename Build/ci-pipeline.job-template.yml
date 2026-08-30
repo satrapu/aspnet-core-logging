@@ -10,14 +10,12 @@ parameters:
   # NuGet packages takes considerably more time than just doing a restore
   # with each build, this feature has been turned off.
   cacheRestoredNuGetPackages: False
-  sonar:
-    enabled: False
-    verbose: 'true'
-    sourceEncoding: 'UTF-8'
-    runAnalysisPollingTimeoutInSeconds: 3000
-    publishPollingTimeoutInSeconds: 300
-    buildBreaker:
-      enabled: False
+  sonarBuildBreakerEnabled: False
+  sonarEnabled: False
+  sonarVerbose: 'true'
+  sonarSourceEncoding: 'UTF-8'
+  sonarRunAnalysisPollingTimeoutInSeconds: 300
+  sonarPublishPollingTimeoutInSeconds: 300
   publishPipelineArtifacts: True
   runDotNetFormatCommand: False
   tests:
@@ -151,7 +149,7 @@ jobs:
   - task: SonarCloudPrepare@4
     name: 'prepare_analysis_on_sonar'
     displayName: 'Prepare analysis on SonarCloud'
-    condition: eq(${{ parameters.sonar.enabled }}, True)
+    condition: eq(${{ parameters.sonarEnabled }}, True)
     inputs:
       # Use the name of a service connection pointing to the appropriate SonarQube Cloud account.
       SonarCloud: 'SonarQubeCloud'
@@ -170,8 +168,8 @@ jobs:
       #   - https://docs.sonarsource.com/sonarqube-cloud/enriching/test-coverage/test-coverage-parameters/
       #   - https://docs.sonarsource.com/sonarqube-cloud/enriching/test-coverage/dotnet-test-coverage/
       extraProperties: |
-        sonar.verbose=${{ parameters.sonar.verbose }}
-        sonar.sourceEncoding=${{ parameters.sonar.sourceEncoding }}
+        sonar.verbose=${{ parameters.sonarVerbose }}
+        sonar.sourceEncoding=${{ parameters.sonarSourceEncoding }}
         sonar.exclusions=Tests/.CodeCoverageReport/**
         sonar.cs.nunit.reportsPaths=Tests/**/TestResults/TestResults.xml
         sonar.cs.opencover.reportsPaths=Tests/**/coverage.opencover.xml
@@ -741,7 +739,7 @@ jobs:
     condition: |
       and
       (
-          eq(${{ parameters.sonar.enabled }}, True)
+          eq(${{ parameters.sonarEnabled }}, True)
         , eq(variables['AllTestsOutcome'], 'success')
       )
     inputs:
@@ -754,7 +752,7 @@ jobs:
     condition: |
       and
       (
-          eq(${{ parameters.sonar.enabled }}, True)
+          eq(${{ parameters.sonarEnabled }}, True)
         , eq(variables['AllTestsOutcome'], 'success')
       )
     inputs:
@@ -769,8 +767,8 @@ jobs:
     condition: |
       and
       (
-          eq(${{ parameters.sonar.enabled }}, True)
-        , eq(${{ parameters.sonar.buildBreaker.enabled }}, True)
+          eq(${{ parameters.sonarEnabled }}, True)
+        , eq(${{ parameters.sonarBuildBreakerEnabled }}, True)
         , eq(variables['AllTestsOutcome'], 'success')
       )
     inputs:
