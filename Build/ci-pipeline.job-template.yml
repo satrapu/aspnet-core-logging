@@ -745,7 +745,7 @@ jobs:
         , eq(variables['AllTestsOutcome'], 'success')
       )
     inputs:
-      pollingTimeoutSec: ${{ parameters.sonar.runAnalysisPollingTimeoutInSeconds }}
+      pollingTimeoutSec: '${{ parameters.sonar.runAnalysisPollingTimeoutInSeconds }}'
 
   # Publish Sonar analysis results to the remote server.
   - task: SonarCloudPublish@4
@@ -758,7 +758,7 @@ jobs:
         , eq(variables['AllTestsOutcome'], 'success')
       )
     inputs:
-      pollingTimeoutSec: ${{ parameters.sonar.publishPollingTimeoutInSeconds }}
+      pollingTimeoutSec: '${{ parameters.sonar.publishPollingTimeoutInSeconds }}'
 
   # Run a PowerShell script to break the build in case Sonar quality gate has failed.
   # See more here: https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/powershell-v2?view=azure-pipelines.
