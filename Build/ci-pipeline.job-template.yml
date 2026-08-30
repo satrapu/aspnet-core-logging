@@ -10,14 +10,12 @@ parameters:
   # NuGet packages takes considerably more time than just doing a restore
   # with each build, this feature has been turned off.
   cacheRestoredNuGetPackages: False
-  sonar:
-    enabled: False
-    verbose: 'true'
-    sourceEncoding: 'UTF-8'
-    runAnalysisTimeoutInMinutes: 5
-    publishPollingTimeoutSeconds: 300
-    buildBreaker:
-      enabled: False
+  sonarBuildBreakerEnabled: False
+  sonarEnabled: False
+  sonarVerbose: 'true'
+  sonarSourceEncoding: 'UTF-8'
+  sonarRunAnalysisPollingTimeoutInSeconds: 300
+  sonarPublishPollingTimeoutInSeconds: 300
   publishPipelineArtifacts: True
   runDotNetFormatCommand: False
   tests:
@@ -148,12 +146,13 @@ jobs:
   # Before using any Sonar tasks, please make sure "SonarQube Cloud" extension is installed in the Azure DevOps organization
   # where the project built using this pipeline resides.
   # See more about this extension here: https://marketplace.visualstudio.com/items?itemName=SonarSource.sonarcloud.
-  - task: SonarCloudPrepare@3
+  - task: SonarCloudPrepare@4
     name: 'prepare_analysis_on_sonar'
     displayName: 'Prepare analysis on SonarCloud'
-    condition: eq(${{ parameters.sonar.enabled }}, True)
+    condition: eq(${{ parameters.sonarEnabled }}, True)
     inputs:
-      SonarCloud: 'sonar-cloud'
+      # Use the name of a service connection pointing to the appropriate SonarQube Cloud account.
+      SonarCloud: 'SonarQubeCloud'
       organization: 'satrapu-github'
       projectKey: 'aspnet-core-logging'
       scannerMode: 'dotnet'
@@ -169,12 +168,12 @@ jobs:
       #   - https://docs.sonarsource.com/sonarqube-cloud/enriching/test-coverage/test-coverage-parameters/
       #   - https://docs.sonarsource.com/sonarqube-cloud/enriching/test-coverage/dotnet-test-coverage/
       extraProperties: |
-        sonar.verbose=${{ parameters.sonar.verbose }}
-        sonar.sourceEncoding=${{ parameters.sonar.sourceEncoding }}
-        sonar.exclusions=Tests/.CodeCoverageReport/**
-        sonar.cs.nunit.reportsPaths=Tests/**/TestResults/TestResults.xml
-        sonar.cs.opencover.reportsPaths=Tests/**/coverage.opencover.xml
-        sonar.analysis.buildNumber=$(Build.BuildId)
+        sonar.verbose=${{ parameters.sonarVerbose }}
+        sonar.sourceEncoding=${{ parameters.sonarSourceEncoding }}
+        sonar.exclusions=$(Build.SourcesDirectory)/Tests/.CodeCoverageReport/**
+        sonar.cs.nunit.reportsPaths=$(Build.SourcesDirectory)/Tests/**/TestResults/TestResults.xml
+        sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/Tests/**/coverage.opencover.xml
+        sonar.analysis.buildNumber=$(Build.BuildNumber)
         sonar.analysis.pipeline=$(Build.BuildId)
 
   # Cache NuGet packages to avoid having to restore them during each build.
@@ -295,7 +294,7 @@ jobs:
       --logger "nunit"
       --filter "TestCategory=UnitTests"
       /p:CollectCoverage=true
-      /p:CoverletOutputFormat=\"opencover\"
+      /p:CoverletOutputFormat=opencover
       /p:Exclude=\"[Todo.*Tests]*,[Todo.*.TestInfrastructure]*\"
       /p:Include=\"[Todo.*]*\"
     name: 'run_unit_tests'
@@ -399,7 +398,7 @@ jobs:
       --logger "nunit"
       --filter "TestCategory=IntegrationTests"
       /p:CollectCoverage=true
-      /p:CoverletOutputFormat=\"opencover\"
+      /p:CoverletOutputFormat=opencover
       /p:Exclude=\"[Todo.*Tests]*,[Todo.*.TestInfrastructure]*\"
       /p:Include=\"[Todo.*]*\"
     name: 'run_integration_tests'
@@ -680,7 +679,7 @@ jobs:
       errorActionPreference: 'stop'
       script: |
         $acceptanceTestsHomeFolder = Resolve-Path -Path '$(AcceptanceTestsHomeFolder)'
-        $normalizedTestExecutionFilePath = [IO.Path]::Combine($acceptanceTestsHomeFolder, 'bin', '${{ parameters.build.configuration }}', 'net9.0',
+        $normalizedTestExecutionFilePath = [IO.Path]::Combine($acceptanceTestsHomeFolder, 'bin', '${{ parameters.build.configuration }}', 'net10.0',
           'TestExecution.json')
         Write-Output "##vso[task.setvariable variable=NormalizedTestExecutionFilePath]$normalizedTestExecutionFilePath"
         Write-Output "The normalized test execution file path is: $normalizedTestExecutionFilePath"
@@ -734,30 +733,30 @@ jobs:
       path: '$(Build.SourcesDirectory)/Tests'
 
   # Run Sonar analysis.
-  - task: SonarCloudAnalyze@3
+  - task: SonarCloudAnalyze@4
     name: 'run_sonar_analysis'
     displayName: 'Run Sonar analysis'
     condition: |
       and
       (
-          eq(${{ parameters.sonar.enabled }}, True)
+          eq(${{ parameters.sonarEnabled }}, True)
         , eq(variables['AllTestsOutcome'], 'success')
       )
     inputs:
-      timeoutInMinutes: ${{ parameters.sonar.runAnalysisTimeoutInMinutes }}
+      pollingTimeoutSec: '${{ parameters.sonarRunAnalysisPollingTimeoutInSeconds }}'
 
   # Publish Sonar analysis results to the remote server.
-  - task: SonarCloudPublish@3
+  - task: SonarCloudPublish@4
     name: 'publish_sonar_quality_gate_result'
     displayName: 'Publish Sonar quality gate result'
     condition: |
       and
       (
-          eq(${{ parameters.sonar.enabled }}, True)
+          eq(${{ parameters.sonarEnabled }}, True)
         , eq(variables['AllTestsOutcome'], 'success')
       )
     inputs:
-      pollingTimeoutSeconds: ${{ parameters.sonar.publishPollingTimeoutSeconds }}
+      pollingTimeoutSec: '${{ parameters.sonarPublishPollingTimeoutInSeconds }}'
 
   # Run a PowerShell script to break the build in case Sonar quality gate has failed.
   # See more here: https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/powershell-v2?view=azure-pipelines.
@@ -768,8 +767,8 @@ jobs:
     condition: |
       and
       (
-          eq(${{ parameters.sonar.enabled }}, True)
-        , eq(${{ parameters.sonar.buildBreaker.enabled }}, True)
+          eq(${{ parameters.sonarEnabled }}, True)
+        , eq(${{ parameters.sonarBuildBreakerEnabled }}, True)
         , eq(variables['AllTestsOutcome'], 'success')
       )
     inputs:
@@ -778,8 +777,10 @@ jobs:
       arguments: >-
         -SonarProjectKey 'aspnet-core-logging'
         -SonarServerBaseUrl 'https://sonarcloud.io'
-        -SonarToken "$(CurrentProject.Sonar.Token)"
-        -GitBranchName "$(NormalizedCurrentGitBranchName)"
+        -SonarToken "$env:SONAR_TOKEN"
+        -GitBranchName '$(NormalizedCurrentGitBranchName)'
       errorActionPreference: 'stop'
       failOnStderr: True
       workingDirectory: $(Build.SourcesDirectory)
+    env:
+      SONAR_TOKEN: $(SonarQubeCloudToken)

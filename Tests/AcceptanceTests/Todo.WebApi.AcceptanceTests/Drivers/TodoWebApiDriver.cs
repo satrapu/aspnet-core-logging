@@ -52,7 +52,7 @@ namespace Todo.WebApi.AcceptanceTests.Drivers
 
             using HttpResponseMessage httpResponseMessage = await httpClient.SendAsync(httpRequestMessage);
             httpResponseMessage.EnsureSuccessStatusCode();
-            dynamic dynamicResult = await httpResponseMessage.Content.ReadAsAsync(type: AccessTokenType);
+            dynamic dynamicResult = await httpResponseMessage.Content.ReadFromJsonAsync(type: AccessTokenType);
 
             return new AuthenticationHeaderValue(scheme: AuthenticationScheme, parameter: dynamicResult.accessToken);
         }

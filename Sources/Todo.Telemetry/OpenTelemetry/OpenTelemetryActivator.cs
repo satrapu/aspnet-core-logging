@@ -63,10 +63,7 @@ namespace Todo.Telemetry.OpenTelemetry
                         // by OpenTelemetry.
                         .AddSource(ActivitySources.TodoWebApi.Name)
                         .AddAspNetCoreInstrumentation()
-                        .AddEntityFrameworkCoreInstrumentation(options =>
-                        {
-                            options.SetDbStatementForText = openTelemetryOptions.Instrumentation.EntityFrameworkCore.SetDbStatementForText;
-                        });
+                        .AddEntityFrameworkCoreInstrumentation();
 
                     if (openTelemetryOptions.Exporters.AzureMonitor.Enabled)
                     {

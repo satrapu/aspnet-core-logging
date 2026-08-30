@@ -114,7 +114,7 @@ namespace Todo.WebApi.Controllers
         /// </summary>
         /// <returns></returns>
         [Test]
-        public async Task CreateAsync_UsingValidTodoItemReturnsExpectedResult()
+        public async Task CreateAsync_UsingValidTodoItem_ReturnsExpectedResult()
         {
             // Arrange
             NewTodoItemModel newTodoItemModel = new()
