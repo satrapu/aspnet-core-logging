@@ -170,10 +170,10 @@ jobs:
       extraProperties: |
         sonar.verbose=${{ parameters.sonarVerbose }}
         sonar.sourceEncoding=${{ parameters.sonarSourceEncoding }}
-        sonar.exclusions=Tests/.CodeCoverageReport/**
-        sonar.cs.nunit.reportsPaths=Tests/**/TestResults/TestResults.xml
-        sonar.cs.opencover.reportsPaths=Tests/**/coverage.opencover.xml
-        sonar.analysis.buildNumber=$(Build.BuildId)
+        sonar.exclusions=$(Build.SourcesDirectory)/Tests/.CodeCoverageReport/**
+        sonar.cs.nunit.reportsPaths=$(Build.SourcesDirectory)/Tests/**/TestResults/TestResults.xml
+        sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/Tests/**/coverage.opencover.xml
+        sonar.analysis.buildNumber=$(Build.BuildNumber)
         sonar.analysis.pipeline=$(Build.BuildId)
 
   # Cache NuGet packages to avoid having to restore them during each build.
