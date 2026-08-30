@@ -153,7 +153,8 @@ jobs:
     displayName: 'Prepare analysis on SonarCloud'
     condition: eq(${{ parameters.sonar.enabled }}, True)
     inputs:
-      SonarCloud: 'sonar-cloud'
+      # Use the name of a service connection pointing to the appropriate SonarQube Cloud account.
+      SonarCloud: 'SonarQubeCloud'
       organization: 'satrapu-github'
       projectKey: 'aspnet-core-logging'
       scannerMode: 'dotnet'
@@ -778,8 +779,8 @@ jobs:
       arguments: >-
         -SonarProjectKey 'aspnet-core-logging'
         -SonarServerBaseUrl 'https://sonarcloud.io'
-        -SonarToken "$(CurrentProject.Sonar.Token)"
-        -GitBranchName "$(NormalizedCurrentGitBranchName)"
+        -SonarToken '$(SONAR_TOKEN)'
+        -GitBranchName '$(NormalizedCurrentGitBranchName)'
       errorActionPreference: 'stop'
       failOnStderr: True
       workingDirectory: $(Build.SourcesDirectory)
