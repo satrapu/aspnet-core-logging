@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.Web">
     <PropertyGroup>
-        <TargetFramework>net9.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Todo.Commons\Todo.Commons.csproj"/>
-        <ProjectReference Include="..\Todo.Telemetry\Todo.Telemetry.csproj"/>
+        <ProjectReference Include="..\Todo.Commons\Todo.Commons.csproj" />
+        <ProjectReference Include="..\Todo.Telemetry\Todo.Telemetry.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -21,11 +21,14 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Autofac.Extensions.DependencyInjection"/>
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer"/>
+        <PackageReference Include="Autofac.Extensions.DependencyInjection" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" />
         <!--
         The Microsoft.EntityFrameworkCore.Design NuGet package is required by the dotnet-ef tool.
         -->
-        <PackageReference Include="Microsoft.EntityFrameworkCore.Design"/>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
     </ItemGroup>
 </Project>

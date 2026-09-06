@@ -87,8 +87,8 @@ namespace Todo.WebApi.AcceptanceTests.Steps.AddTodoItem
             using AssertionScope _ = new();
             httpResponseMessage.StatusCode.Should().Be(expectedStatusCode);
             httpResponseMessage.Headers.Location.Should().NotBeNull();
-            httpResponseMessage.Headers.Location!.IsAbsoluteUri.Should().BeTrue();
-            httpResponseMessage.Headers.Location!.ToString().Should().Match(responseDetailsTable.Rows[0]["LocationHeaderValueMatchExpression"]);
+            httpResponseMessage.Headers.Location.IsAbsoluteUri.Should().BeTrue();
+            httpResponseMessage.Headers.Location.AbsoluteUri.Should().Match(responseDetailsTable.Rows[0]["LocationHeaderValueMatchExpression"]);
         }
 
         [Then("the system must not add the new todo item")]
