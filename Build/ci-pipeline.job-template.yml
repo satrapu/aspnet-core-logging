@@ -10,6 +10,7 @@ parameters:
   # NuGet packages takes considerably more time than just doing a restore
   # with each build, this feature has been turned off.
   cacheRestoredNuGetPackages: False
+  fossaEnabled: False
   sonarBuildBreakerEnabled: False
   sonarEnabled: False
   sonarVerbose: 'true'
@@ -784,3 +785,41 @@ jobs:
       workingDirectory: $(Build.SourcesDirectory)
     env:
       SONAR_TOKEN: $(SonarQubeCloudToken)
+
+  - script: |
+      set -o errexit
+      set -o nounset
+
+      echo 'Downloading FOSSA CLI ...'
+      wget https://github.com/fossas/fossa-cli/releases/download/v$(Fossa.Cli.Version)/fossa_$(Fossa.Cli.Version)_$(Fossa.Cli.BinaryType).zip \
+        --max-redirect=1 \
+        --no-verbose \
+        --output-document fossa.zip
+      echo 'Download has finished'
+
+      echo 'Preparing FOSSA CLI to be run locally ...'
+      unzip fossa.zip
+      mv fossa /usr/local/bin/fossa
+      echo 'Preparation has finished'
+
+      echo 'Start analyzing code base via FOSSA CLI ...'
+      cd $(Build.SourcesDirectory)
+      fossa analyze \
+        --branch $(NormalizedCurrentGitBranchName) \
+        --tee-output \
+        --exclude-path ./Tests/.CodeCoverageReport \
+        --exclude-path ./Tests/.SpecFlow.Plus.LivingDoc 
+      echo 'Analysis has finished'
+
+      echo 'Checking for issues reported by FOSSA ...'
+      fossa test
+      echo 'Checking for issues has finished'
+    env:
+      FOSSA_API_KEY: $(Fossa.ApiKey)
+    displayName: Run FOSSA CLI
+    condition: |
+      and
+      (
+          eq(${{ parameters.fossaEnabled }}, True)
+        , eq(variables['AllTestsOutcome'], 'success')
+      )

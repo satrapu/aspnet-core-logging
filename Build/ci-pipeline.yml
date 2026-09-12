@@ -32,6 +32,9 @@ trigger:
 
 # See more about Azure Pipelines variables here: https://learn.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&tabs=yaml%2Cbatch.
 variables:
+  # Load group containing variables used by FOSSA CLI tool when scanning the code base.
+  - group: 'FOSSA'
+
   # Load group containing variables applicable to all pipelines belonging to this project.
   - group: 'GlobalVariables'
 
@@ -68,6 +71,14 @@ variables:
   - name: 'Tests.Database.DockerImage.TagPrefix'
     value: '15.1'
 
+  # Specifies the version of the FOSSA CLI tool used for scanning source code.
+  # All versions can be found here: https://github.com/fossas/fossa-cli/releases.
+  - name: 'Fossa.Cli.Version'
+    value: '3.18.4'
+
+  - name: 'Fossa.Cli.BinaryType'
+    value: 'linux_amd64'
+
   - name: SolutionFileName
     value: 'Todo.WebApi.sln'
 
@@ -91,6 +102,7 @@ jobs:
       displayName: 'Run on Linux'
     pool:
       vmImage: 'ubuntu-24.04'
+    fossaEnabled: True
     sonarEnabled: True
     sonarBuildBreakerEnabled: True
     tests:
