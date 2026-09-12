@@ -73,6 +73,9 @@ variables:
   - name: 'Fossa.Cli.Version'
     value: '3.18.4'
 
+  - name: 'Fossa.Cli.BinaryType'
+    value: 'linux_amd64'
+
   - name: SolutionFileName
     value: 'Todo.WebApi.sln'
 
