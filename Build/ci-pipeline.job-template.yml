@@ -792,11 +792,8 @@ jobs:
 
       echo 'Downloading FOSSA CLI ...'
       wget https://github.com/fossas/fossa-cli/releases/download/v$(Fossa.Cli.Version)/fossa_$(Fossa.Cli.Version)_$(Fossa.Cli.BinaryType).zip \
-        # Disable redirects as instructed by SonarQube
         --max-redirect=0 \
-        # Reduce command output verbosity.
         --no-verbose \
-        # Rename downloaded file to something simple for the next commands to use.
         --output-document fossa.zip \
       echo 'Download has finished'
 
