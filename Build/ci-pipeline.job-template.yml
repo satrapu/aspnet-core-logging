@@ -10,6 +10,7 @@ parameters:
   # NuGet packages takes considerably more time than just doing a restore
   # with each build, this feature has been turned off.
   cacheRestoredNuGetPackages: False
+  fossaEnabled: False
   sonarBuildBreakerEnabled: False
   sonarEnabled: False
   sonarVerbose: 'true'
@@ -784,3 +785,34 @@ jobs:
       workingDirectory: $(Build.SourcesDirectory)
     env:
       SONAR_TOKEN: $(SonarQubeCloudToken)
+
+  - script: |
+    curl -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/fossas/fossa-cli/master/install-latest.sh | bash -s -- v$(Fossa.Cli.Version)
+  displayName: Install FOSSA CLI
+  condition: |
+    and
+    (
+        eq(${{ parameters.fossaEnabled }}, True)
+      , eq(variables['AllTestsOutcome'], 'success')
+    )
+
+  - script: |
+    set -o errexit
+    set -o nounset
+
+    echo 'Start analyzing code base via FOSSA CLI ...'
+    fossa analyze
+    echo 'Analyzis has finished'
+
+    echo 'Checking for issues reported by FOSSA ...'
+    fossa test
+    echo 'Checking for issue has finished'
+  env:
+    FOSSA_API_KEY: $(Fossa.ApiKey)
+  displayName: Run FOSSA CLI
+  condition: |
+    and
+    (
+        eq(${{ parameters.fossaEnabled }}, True)
+      , eq(variables['AllTestsOutcome'], 'success')
+    )
