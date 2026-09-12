@@ -800,7 +800,10 @@ jobs:
       echo 'Preparation has finished'
 
       echo 'Start analyzing code base via FOSSA CLI ...'
-      fossa analyze
+      fossa analyze $(Build.SourcesDirectory)
+        --tee-output \
+        --exclude-path $(Build.SourcesDirectory)/Tests/.CodeCoverageReport \
+        --exclude-path $(Build.SourcesDirectory)/Tests/.SpecFlow.Plus.LivingDoc
       echo 'Analysis has finished'
 
       echo 'Checking for issues reported by FOSSA ...'
