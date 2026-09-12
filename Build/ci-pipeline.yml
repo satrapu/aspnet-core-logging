@@ -32,6 +32,9 @@ trigger:
 
 # See more about Azure Pipelines variables here: https://learn.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&tabs=yaml%2Cbatch.
 variables:
+  # Load group containing variables used by FOSSA CLI tool when scanning the code base.
+  - group: 'FOSSA'
+
   # Load group containing variables applicable to all pipelines belonging to this project.
   - group: 'GlobalVariables'
 
