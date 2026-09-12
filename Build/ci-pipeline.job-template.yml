@@ -792,9 +792,9 @@ jobs:
 
       echo 'Downloading FOSSA CLI ...'
       wget https://github.com/fossas/fossa-cli/releases/download/v$(Fossa.Cli.Version)/fossa_$(Fossa.Cli.Version)_$(Fossa.Cli.BinaryType).zip \
-        --max-redirect=0 \
+        --max-redirect=1 \
         --no-verbose \
-        --output-document fossa.zip \
+        --output-document fossa.zip
       echo 'Download has finished'
 
       echo 'Preparing FOSSA CLI to be run locally ...'
