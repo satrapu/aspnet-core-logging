@@ -170,7 +170,7 @@ jobs:
       extraProperties: |
         sonar.verbose=${{ parameters.sonarVerbose }}
         sonar.sourceEncoding=${{ parameters.sonarSourceEncoding }}
-        sonar.exclusions=$(Build.SourcesDirectory)/Tests/.CodeCoverageReport/**
+        sonar.exclusions=Tests/.CodeCoverageReport/**
         sonar.cs.nunit.reportsPaths=$(Build.SourcesDirectory)/Tests/**/TestResults/TestResults.xml
         sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/Tests/**/coverage.opencover.xml
         sonar.analysis.buildNumber=$(Build.BuildNumber)
