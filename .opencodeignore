@@ -1,0 +1,36 @@
+# Version Control & Metadata
+.git/
+.github/
+.vscode/
+
+# Package Managers (Massive Token Hogs)
+node_modules/
+bower_components/
+.npm/
+
+# Build Outputs & Compiled Code
+dist/
+build/
+out/
+target/
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Lock Files (Thousands of lines Qwen doesn't need to read)
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+Cargo.lock
+Gemfile.lock
+Pipfile.lock
+
+# Media, Assets, and Logs
+*.log
+*.mp4
+*.png
+*.jpg
+*.jpeg
+*.svg
+*.gif
