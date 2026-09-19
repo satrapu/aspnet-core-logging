@@ -643,12 +643,29 @@ jobs:
         , eq(variables['AcceptanceTestsOutcome'], 'success')
       )
 
+  # Find the full path of the HTML document storing living doc.
+  - task: PowerShell@2
+    displayName: 'Find living doc file path'
+    inputs:
+      targetType: 'inline'
+      script: |
+        $basePath = "$(Build.SourcesDirectory)/Tests/AcceptanceTests/Todo.WebApi.AcceptanceTests"
+        $file = Get-ChildItem -Path $basePath -Recurse -Include "LivingDoc.html" -File -ErrorAction SilentlyContinue
+      
+        if ($null -eq $file) {
+          Write-Error "LivingDoc.html not found in AcceptanceTests project"
+          exit 1
+        }
+      
+        $livingDocPath = $file.FullName
+        Write-Output "##vso[task.setvariable variable=LivingDocHtmlPath]$(Resolve-Path -Path `"$livingDocPath`")"
+
   # Publish the HTML document storing living doc.
   # See more about this Azure DevOps task here: https://marketplace.visualstudio.com/items?itemName=blakyaks.azure-pipelines-html-reports.
   - task: PublishHtmlReport@1
     displayName: 'Publish living doc'
     inputs:
-      reportDir: '$(Build.SourcesDirectory)/Tests/AcceptanceTests/**/LivingDoc.html'
+      reportDir: '$(LivingDocHtmlPath)'
       useFilenameTabs: False
       tabName: 'Living Doc ($(Agent.OS)-$(Agent.OSArchitecture))'
 
