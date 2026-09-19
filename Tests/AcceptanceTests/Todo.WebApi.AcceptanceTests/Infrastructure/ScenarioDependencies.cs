@@ -1,19 +1,14 @@
 namespace Todo.WebApi.AcceptanceTests.Infrastructure
 {
+    using Commons.Constants;
+    using Drivers;
+    using Microsoft.Extensions.Configuration;
+    using Microsoft.Extensions.DependencyInjection;
+    using Reqnroll.Microsoft.Extensions.DependencyInjection;
+    using Services.Security;
     using System;
     using System.Net.Http.Headers;
     using System.Reflection;
-
-    using Microsoft.Extensions.Configuration;
-    using Microsoft.Extensions.DependencyInjection;
-
-    using SolidToken.SpecFlow.DependencyInjection;
-
-    using Commons.Constants;
-
-    using Drivers;
-
-    using Services.Security;
 
     public static class ScenarioDependencies
     {

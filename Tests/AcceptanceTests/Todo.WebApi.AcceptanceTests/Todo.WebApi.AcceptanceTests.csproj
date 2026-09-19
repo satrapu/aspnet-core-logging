@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFramework>net10.0</TargetFramework>
         <OutputType>Library</OutputType>
@@ -13,12 +13,13 @@
         <PackageReference Include="FluentAssertions.Web" />
         <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" />
         <PackageReference Include="Microsoft.Extensions.Configuration.Json" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
         <PackageReference Include="Microsoft.Extensions.Http" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" />
         <PackageReference Include="Polly" />
-        <PackageReference Include="SolidToken.SpecFlow.DependencyInjection" />
-        <PackageReference Include="SpecFlow.Plus.LivingDocPlugin" />
-        <PackageReference Include="SpecFlow.xUnit" />
+        <PackageReference Include="Reqnroll" />
+        <PackageReference Include="Reqnroll.Microsoft.Extensions.DependencyInjection" />
+        <PackageReference Include="Reqnroll.xUnit" />
         <PackageReference Include="xunit" />
         <PackageReference Include="xunit.runner.visualstudio">
             <PrivateAssets>all</PrivateAssets>

@@ -1,11 +1,9 @@
 namespace Todo.WebApi.AcceptanceTests.Infrastructure
 {
+    using Reqnroll;
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Threading.Tasks;
-
-    using TechTalk.SpecFlow;
-    using TechTalk.SpecFlow.Infrastructure;
     using Todo.Commons.Constants;
 
     [Binding]
@@ -20,7 +18,7 @@ namespace Todo.WebApi.AcceptanceTests.Infrastructure
             SystemUnderTest systemUnderTestProcess = await SystemUnderTest.StartNewAsync
             (
                 port: featureContext.FeatureContainer.Resolve<TcpPortProvider>().GetAvailableTcpPort(),
-                specFlowOutputHelper: featureContext.FeatureContainer.Resolve<ISpecFlowOutputHelper>(),
+                outputHelper: featureContext.FeatureContainer.Resolve<IReqnrollOutputHelper>(),
                 environmentVariables: new Dictionary<string, string>() { ["ASPNETCORE_ENVIRONMENT"] = EnvironmentNames.AcceptanceTests }
             );
 
