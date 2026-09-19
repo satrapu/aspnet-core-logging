@@ -655,11 +655,10 @@ jobs:
         if ($null -eq $file) {
           Write-Error "The living-doc.html file was not found in AcceptanceTests project"
           exit 1
-        } else {
-            Write-Output "The living-doc.html file path is: $livingDocPath"
         }
       
         $livingDocPath = $file.FullName
+        Write-Output "The living-doc.html file path is: $livingDocPath"
         Write-Output "##vso[task.setvariable variable=LivingDocHtmlFilePath]$(Resolve-Path -Path `"$livingDocPath`")"
 
   # Publish the HTML document storing living doc.
@@ -667,7 +666,7 @@ jobs:
   - task: PublishHtmlReport@1
     displayName: 'Publish living doc'
     inputs:
-      reportDir: '$(LivingDocHtmFilelPath)'
+      reportDir: '$(LivingDocHtmlFilePath)'
       useFilenameTabs: False
       tabName: 'Living Doc ($(Agent.OS)-$(Agent.OSArchitecture))'
 
