@@ -2,16 +2,6 @@
   "version": 2,
   "dependencies": {
     "net10.0": {
-      "Expressium.LivingDoc.ReqnrollPlugin": {
-        "type": "Direct",
-        "requested": "[1.5.0, )",
-        "resolved": "1.5.0",
-        "contentHash": "9zY8zUJtft4g/bk2D/4jpPJFMTBiVJ6jIX7T6baXD1PVzZJvyzuQFkzt2ymCcLejzZQartBGdAh6h2F3gbJ77Q==",
-        "dependencies": {
-          "Expressium.LivingDoc": "1.5.0",
-          "Reqnroll.CustomPlugin": "3.3.4"
-        }
-      },
       "FluentAssertions": {
         "type": "Direct",
         "requested": "[7.1.0, 7.1.0]",
@@ -147,11 +137,6 @@
         "resolved": "4.0.0",
         "contentHash": "kzLFyBYUnoidpGOXvpNOfIo8C92gVgVR6X8ncHwhcrDYugiOut5rrhDkr0L3cWHd7J2pKXf6LgaeXoBBDlx1ag=="
       },
-      "AngleSharp": {
-        "type": "Transitive",
-        "resolved": "1.7.1",
-        "contentHash": "QBblGpRB3SYD66Mls7fHyl1mWkP93n7ErWDWHc1vd9sPHhdlTkmUoY3CjgfjcWNxGF9m7xjNyztRfErXqoBKOA=="
-      },
       "Cucumber.CucumberExpressions": {
         "type": "Transitive",
         "resolved": "17.1.0",
@@ -167,17 +152,8 @@
       },
       "Cucumber.Messages": {
         "type": "Transitive",
-        "resolved": "34.2.1",
-        "contentHash": "OQG21Bk4C6ximDDKjsaQG/0bBwOOvGlRnCrcWxk2h2b67YW/dZfrNEW+ayadqDGMzr+z1Nzva/3tjy0Ok1EJYQ=="
-      },
-      "Expressium.LivingDoc": {
-        "type": "Transitive",
-        "resolved": "1.5.0",
-        "contentHash": "WRV0zgznXjWPNx8ypyHFWoH15PWbTZcspKikUh3WBjCuT7W1E5Z7bKQQE5APYMEOJZXah+mkYYGTrZN9HT2JrQ==",
-        "dependencies": {
-          "AngleSharp": "1.7.1",
-          "Cucumber.Messages": "34.2.1"
-        }
+        "resolved": "30.1.0",
+        "contentHash": "HDfIzDd7JFDEwiNHpgOHBPEiyVjXQws+CEnVb+Lwiq58jHNA/xYwmTswbqknOxcAejCRFP1de/hHHw+ZuTzV6A=="
       },
       "Gherkin": {
         "type": "Transitive",
@@ -476,24 +452,10 @@
         "resolved": "8.8.0",
         "contentHash": "TewV9uNFsoRFggoFbTAGFwsMYPuckA+wTIpQPyhLL9BANRPQRENz2S4bwATrB3HBOakN5oKLFIllPiDnVecmJg=="
       },
-      "Reqnroll.CustomPlugin": {
-        "type": "Transitive",
-        "resolved": "3.3.4",
-        "contentHash": "j/CqTq4P2mgkBSfjAwA7sXEsYR0+Y3E4HzwAe6LR7ZIj3ZY2ZS2HvLBN60rkVGcnDI3GFoZRJxdelBK9DuEneg==",
-        "dependencies": {
-          "Reqnroll": "[3.3.4, 4.0.0)",
-          "System.CodeDom": "8.0.0"
-        }
-      },
       "Reqnroll.Tools.MsBuild.Generation": {
         "type": "Transitive",
         "resolved": "3.3.4",
         "contentHash": "atTwejJRcKgUcJCofp4uSPKNXBav6ZITHtuD6dhByg1ubyVJirjz5TkcVCR9oFnHAEbZvOdd4cYCJNPO9rSAsQ=="
-      },
-      "System.CodeDom": {
-        "type": "Transitive",
-        "resolved": "8.0.0",
-        "contentHash": "WTlRjL6KWIMr/pAaq3rYqh0TJlzpouaQ/W1eelssHgtlwHAH25jXTkUphTYx9HaIIf7XA6qs/0+YhtLEQRkJ+Q=="
       },
       "System.Configuration.ConfigurationManager": {
         "type": "Transitive",
