@@ -24,4 +24,14 @@
         <NoWarn>NU1603;NU1902;NU1903</NoWarn>
         <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>
     </PropertyGroup>
+
+    <!--
+    OSS license check required by Verify NuGet package starting with v33.1.0, released on September 19th, 2026.
+    The below properties were generated folowing the instructions found here: https://github.com/VerifyTests/Verify#open-source-maintenance-fee.
+    -->
+    <PropertyGroup>
+        <Verify_SponsorshipExemption>OpenSource</Verify_SponsorshipExemption>
+        <Verify_SponsorshipExemptionUntil>2027-09</Verify_SponsorshipExemptionUntil>
+    </PropertyGroup>
+    
 </Project>
