@@ -8,11 +8,9 @@ namespace Todo.WebApi.AcceptanceTests.Infrastructure
     using System.Text;
     using System.Threading.Tasks;
 
-    using Commons.Constants;
-
     using Polly;
 
-    using TechTalk.SpecFlow.Infrastructure;
+    using Reqnroll;
 
     public sealed class SystemUnderTest : IAsyncDisposable
     {
@@ -32,14 +30,14 @@ namespace Todo.WebApi.AcceptanceTests.Infrastructure
         public static async Task<SystemUnderTest> StartNewAsync
         (
             int port,
-            ISpecFlowOutputHelper specFlowOutputHelper,
+            IReqnrollOutputHelper outputHelper,
             IDictionary<string, string> environmentVariables = null
         )
         {
             string baseUrl = $"http://localhost:{port}";
             string healthEndpoint = $"{baseUrl}/health";
 
-            Process process = StartSystemUnderTest(baseUrl, specFlowOutputHelper, environmentVariables);
+            Process process = StartSystemUnderTest(baseUrl, outputHelper, environmentVariables);
             await WaitUntilSystemUnderTestIsHealthyAsync(healthEndpoint);
 
             return new SystemUnderTest(process);
@@ -48,7 +46,7 @@ namespace Todo.WebApi.AcceptanceTests.Infrastructure
         private static Process StartSystemUnderTest
         (
             string urls,
-            ISpecFlowOutputHelper specFlowOutputHelper,
+            IReqnrollOutputHelper outputHelper,
             IDictionary<string, string> environmentVariables = null
         )
         {
@@ -84,10 +82,10 @@ namespace Todo.WebApi.AcceptanceTests.Infrastructure
                 throw new InvalidOperationException("Failed to start ASP.NET Core process");
             }
 
-            process.OutputDataReceived += (_, dataReceivedEventArgs) => specFlowOutputHelper.WriteLine(dataReceivedEventArgs.Data);
+            process.OutputDataReceived += (_, dataReceivedEventArgs) => outputHelper.WriteLine(dataReceivedEventArgs.Data);
             process.BeginOutputReadLine();
 
-            process.ErrorDataReceived += (_, dataReceivedEventArgs) => specFlowOutputHelper.WriteLine(dataReceivedEventArgs.Data);
+            process.ErrorDataReceived += (_, dataReceivedEventArgs) => outputHelper.WriteLine(dataReceivedEventArgs.Data);
             process.BeginErrorReadLine();
 
             return process;
