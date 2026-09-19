@@ -9,6 +9,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="Expressium.LivingDoc.ReqnrollPlugin" />
         <PackageReference Include="FluentAssertions" />
         <PackageReference Include="FluentAssertions.Web" />
         <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" />

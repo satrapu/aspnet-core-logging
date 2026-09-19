@@ -1,0 +1,10 @@
+{
+    "$schema": "https://schemas.reqnroll.net/reqnroll-config-latest.json",
+    "formatters": {
+        "expressium": {
+            "outputFilePath": "LivingDoc.ndjson",
+            "outputFileTitle": "Todo Web API - Acceptance Test Results",
+            "historyPath": "History/*.ndjson"
+        }
+    }
+}

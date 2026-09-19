@@ -136,13 +136,6 @@ jobs:
       packageType: 'sdk'
       version: $(DotNetSdkVersionUsedByApplication)
 
-  - task: UseDotNet@2
-    name: 'install_dotnet_sdk_required_by_livingdoc'
-    displayName: 'Install .NET SDK required by living doc'
-    inputs:
-      packageType: 'sdk'
-      version: $(DotNetSdkVersionUsedByLivingDoc)
-
   # Prepares analysis on SonarCloud.
   # Before using any Sonar tasks, please make sure "SonarQube Cloud" extension is installed in the Azure DevOps organization
   # where the project built using this pipeline resides.
@@ -604,7 +597,7 @@ jobs:
 
   # Run acceptance tests.
   - script: >-
-      dotnet test $(AcceptanceTestsHomeFolder)
+      dotnet test $(Build.SourcesDirectory)/$(SolutionFileName)
       --no-build
       --no-restore
       --configuration ${{ parameters.build.configuration }}
@@ -650,68 +643,12 @@ jobs:
         , eq(variables['AcceptanceTestsOutcome'], 'success')
       )
 
-  # Install SpecFlow.Plus.LivingDoc.CLI tool to be able to generate acceptance test results report.
-  # See more about this tool here: https://docs.specflow.org/projects/getting-started/en/latest/gettingstartedrider/Step8r.html.
-  - script: >-
-      dotnet tool install SpecFlow.Plus.LivingDoc.CLI
-      --tool-path $(Build.SourcesDirectory)/Tests/.SpecFlow.Plus.LivingDoc
-      --version $(SpecFlowPlusLivingDoc_Version)
-    name: 'install_specflow_plus_livingdoc'
-    displayName: 'Install SpecFlow.Plus.LivingDoc tool'
-    condition: |
-      and
-      (
-        eq(${{ parameters.tests.runTests }}, True)
-        , eq(variables['IntegrationTestsOutcome'], 'success')
-      )
-
-  # Ensure the path pointing to the acceptance test execution file contains the proper file separator.
-  - task: PowerShell@2
-    name: 'normalize_acceptance_test_execution_file_path'
-    displayName: 'Normalize acceptance test execution file path'
-    condition: |
-      and
-      (
-        eq(${{ parameters.tests.runTests }}, True)
-        , eq(variables['IntegrationTestsOutcome'], 'success')
-      )
-    inputs:
-      targetType: 'inline'
-      errorActionPreference: 'stop'
-      script: |
-        $acceptanceTestsHomeFolder = Resolve-Path -Path '$(AcceptanceTestsHomeFolder)'
-        $normalizedTestExecutionFilePath = [IO.Path]::Combine($acceptanceTestsHomeFolder, 'bin', '${{ parameters.build.configuration }}', 'net10.0',
-          'TestExecution.json')
-        Write-Output "##vso[task.setvariable variable=NormalizedTestExecutionFilePath]$normalizedTestExecutionFilePath"
-        Write-Output "The normalized test execution file path is: $normalizedTestExecutionFilePath"
-
-  # Generate living doc.
-  # See more here: https://docs.specflow.org/projects/specflow-livingdoc/en/latest/LivingDocGenerator/CLI/livingdoc-feature-folder.html.
-  - task: PowerShell@2
-    name: 'generate_living_doc'
-    displayName: 'Generate living doc'
-    condition: |
-      and
-      (
-        eq(${{ parameters.tests.runTests }}, True)
-        , eq(variables['IntegrationTestsOutcome'], 'success')
-      )
-    inputs:
-      targetType: 'inline'
-      errorActionPreference: 'stop'
-      script: >-
-        $(Build.SourcesDirectory)/Tests/.SpecFlow.Plus.LivingDoc/livingdoc
-        feature-folder $(AcceptanceTestsHomeFolder)
-        --test-execution-json $(NormalizedTestExecutionFilePath)
-        --output $(Build.SourcesDirectory)/Tests/AcceptanceTests
-        --output-type HTML
-
   # Publish the HTML document storing living doc.
   # See more about this Azure DevOps task here: https://marketplace.visualstudio.com/items?itemName=blakyaks.azure-pipelines-html-reports.
   - task: PublishHtmlReport@1
     displayName: 'Publish living doc'
     inputs:
-      reportDir: '$(Build.SourcesDirectory)/Tests/AcceptanceTests/LivingDoc.html'
+      reportDir: '$(Build.SourcesDirectory)/Tests/AcceptanceTests/**/LivingDoc.html'
       useFilenameTabs: False
       tabName: 'Living Doc ($(Agent.OS)-$(Agent.OSArchitecture))'
 
